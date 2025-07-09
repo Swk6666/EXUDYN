@@ -102,15 +102,15 @@ subFolder = ''
 if multiprocessing.cpu_count() == 20:
     subFolder = 'i7-1370P/' #this is for internal use only!
     
-logFileName = '../PerformanceLogs/'+subFolder+'performanceLog_V'+exu.GetVersionString()+'_'+platformString+'.txt'
+logFileName = '../PerformanceLogs/'+subFolder+'performanceLog_V'+exu.config.Version()+'_'+platformString+'.txt'
 exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=False) #write all testSuite logs to files
 
-exu.SetWriteToConsole(writeToConsole) #stop output from now on
+exu.config.printToConsole = writeToConsole #stop output from now on
 
 exu.Print('\n+++++++++++++++++++++++++++++++++++++++++++')
 exu.Print('+++++    EXUDYN PERFORMANCE TESTS     +++++')
 exu.Print('+++++++++++++++++++++++++++++++++++++++++++')
-exu.Print('EXUDYN version      = '+exu.GetVersionString())
+exu.Print('EXUDYN version      = '+exu.config.Version())
 exu.Print('EXUDYN build date   = '+exuDateStr)
 exu.Print('platform            = '+platform.architecture()[0])
 exu.Print('system              = '+sys.platform)
@@ -197,7 +197,7 @@ for file in testFileList:
     testExamplesCnt += 1
 
 exu.Print('\n')
-exu.SetWriteToConsole(True) #final output always written
+exu.config.printToConsole = True #final output always written
 exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=True) #write also to file (needed?)
 
 if psutilExists:

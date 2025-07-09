@@ -130,15 +130,15 @@ if False: #set to true to perform static/dynamic analysis and visualize results
     simulationSettings.timeIntegration.endTime = tEnd
     simulationSettings.timeIntegration.numberOfSteps = int(tEnd/stepSize)
     
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
     
     mbs.SolveStatic(simulationSettings)
-    SC.WaitForRenderEngineStopFlag()
+    SC.renderer.DoIdleTasks()
     mbs.SolveDynamic(simulationSettings)
     
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer()
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop()
 
     mbs.PlotSensor(sRigid, components=[0,1,2]) #plot vertical displacement
 

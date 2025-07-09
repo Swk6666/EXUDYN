@@ -316,7 +316,7 @@ public:
 			PReal* ptrVector = (PReal*)(vector.GetDataPointer());
 
 			ParallelPRealMultAdd(nAVX, ptrData, ptrVector, scalarPD);
-			//exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector, &scalar](NGSsizeType i)
+			//ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector, &scalar](ParallelSizeType i)
 			//{
 			//	ptrData[i] += scalar * ptrVector[i]; //AVX operation, gives ~4 time speedup for AVX2 in chached operations
 			//}, nThreads); //for numberOfItems=400.000, ideal factor=32, numberOfItems=100.000, ideal factor=8;

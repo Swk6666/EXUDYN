@@ -31,12 +31,6 @@ from exudyn.processing import SingleIndex2SubIndices
 
 listMarkerStyles = ['. ', '+', 'x ', 'v ', '^ ', '< ', '> ', '* ', 'd ', 'D', 's', 'X ', 'P', 'o', 'p ', 'h ', 'H ']
 
-def GetMarkerColorCode(i):
-    j = int(i/7)
-    if j >= len(listMarkerStyles):
-        j = 0
-    c = PlotLineCode(i%7)[0]+listMarkerStyles[j]
-
 x = np.linspace(0, 6*np.pi, 100)
 y = np.sin(x)
 

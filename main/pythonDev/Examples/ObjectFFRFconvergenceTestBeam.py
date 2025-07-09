@@ -264,10 +264,10 @@ if True: #now import mesh as mechanical model to EXUDYN
     if useGraphics:
         SC.visualizationSettings.general.autoFitScene=False
 
-        exu.StartRenderer()
-        if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+        SC.renderer.Start()
+        if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
     
-        mbs.WaitForUserToContinue() #press space to continue
+        SC.renderer.DoIdleTasks() #press space to continue
 
 
     if doStatic:
@@ -300,8 +300,8 @@ if True: #now import mesh as mechanical model to EXUDYN
 
         
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     
 
 

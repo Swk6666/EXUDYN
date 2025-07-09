@@ -51,10 +51,11 @@ public:
 	ResizableVector numericalJacobianf0;	//!< temporary vector for numerical differentiation
 	ResizableVector numericalJacobianf1;	//!< temporary vector for numerical differentiation
 
-    ArrayIndex tempIndex;					//!< for PostNewton ltg rebuild; e.g. for local to global coordinate mapping
-    ArrayIndex tempIndex2;					//!< for loads jacobians
-    ArrayIndex tempIndex3;					//!< for loads jacobians
-    EXUmath::SparseVector sparseVector;		//!< used for temporary assembly of ode2RHS, contact, etc.
+    ArrayIndex tempIndex;					//!< for PostNewton ltg rebuild; e.g. for local to global coordinate mapping; JacobianODE2Loads
+    ArrayIndex tempIndex2;					//!< for JacobianODE2Loads
+	ArrayIndex tempIndex3;					//!< for JacobianODE2Loads
+	ArrayIndex tempIndex4;					//!< for ComputeODE2SingleLoad, multi-object markers
+	EXUmath::SparseVector sparseVector;		//!< used for temporary assembly of ode2RHS, contact, etc.
 
 	//these sparsetriplets are either filled directly or as a buffer, if the regular section in the global sparse matrix is full
 	SparseTripletVector sparseTriplets;		//!< used for temporary assembly of jacobian, mass matrix, etc.

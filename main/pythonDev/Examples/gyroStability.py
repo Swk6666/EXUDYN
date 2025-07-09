@@ -118,11 +118,11 @@ SC.visualizationSettings.nodes.showBasis=False
 
 if useGraphics:
     simulationSettings.timeIntegration.simulateInRealtime = True
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys: #reload old view
-        SC.SetRenderState(exu.sys['renderState'])
+        SC.renderer.SetState(exu.sys['renderState'])
     
-    mbs.WaitForUserToContinue() #stop before simulating
+    SC.renderer.DoIdleTasks() #stop before simulating
 
 if doImplicit:
     mbs.SolveDynamic(simulationSettings = simulationSettings,
@@ -132,8 +132,8 @@ else:
                      solverType=exu.DynamicSolverType.RK44)
     
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag() #stop before closing
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks() #stop before closing
+    SC.renderer.Stop() #safely close rendering window!
 
 
 for i, n in enumerate(nodeList):

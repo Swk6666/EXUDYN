@@ -25,35 +25,28 @@
 
 #define MEMORY_ORDER_SYNCLOAD std::memory_order_relaxed //on intel same as memory_order_seq_cst?
 #define MEMORY_ORDER_SYNCSTORE std::memory_order_seq_cst
-//#define MEMORY_ORDER_FETCHADD std::memory_order_seq_cst
 
-//#define USETHREADFENCE
 //#define PRINTDEBUGINFORMATION
 
-//static objects
-namespace MicroThreading
-{
-	TaskManager * task_manager = nullptr;
+#include "Main/Experimental.h"
+extern PySpecial pySpecial;			//! special features; affects exudyn globally; treat with care
+
+namespace ExuThreading {
+	TaskManager* task_manager = nullptr;
 	int TaskManager::num_threads = 1;
 	int TaskManager::max_threads = std::thread::hardware_concurrency();
-	//std::atomic<bool> TaskManager::isRunning = false;
-	bool TaskManager::isRunning = false;
-
+	std::atomic<bool> TaskManager::isRunning{ false };
 	//bool TaskManager::isRunning = false;
+	bool TaskManager::loadBalancing = false;
+
 	thread_local int TaskManager::thread_id;
 
-	const std::function<void(TaskInfo&)> * TaskManager::func;
+	const std::function<void(TaskInfo&)>* TaskManager::func;
 
 	static std::mutex copyex_mutex;
 	static std::mutex printexception_mutex;
 
-};
-
-
-//! a very slim and efficient multithreading approach for small loops
-namespace MicroThreading
-{
-	inline Exception::Exception(const std::string & s)
+	inline Exception::Exception(const std::string& s)
 		: m_what(s)
 	{
 		{
@@ -61,7 +54,7 @@ namespace MicroThreading
 		}
 	}
 
-	inline Exception::Exception(const char * s)
+	inline Exception::Exception(const char* s)
 		: m_what(s)
 	{
 		{
@@ -69,65 +62,125 @@ namespace MicroThreading
 		}
 	}
 
-
-	void TaskManager::CreateJob(const std::function<void(TaskInfo&)> & afunc,
-		Index numberOfJobTasks) //numberOfJobTasks == numberOfThreads
+	void TaskManager::CreateJob(const std::function<void(TaskInfo&)>& afunc, Index numberOfJobTasks)
 	{
-#ifdef PRINTDEBUGINFORMATION
-		std::cout << "main thread: create job\n";
-#endif
 		func = &afunc;
-
 		ex = nullptr;
 
 		TaskInfo ti;
 		ti.nthreads = GetNumThreads();
-		ti.ntasks = ti.nthreads; //here both are same!
+		numberOfTasks = numberOfJobTasks;
 		ti.thread_nr = 0;
-		ti.task_nr = ti.thread_nr; //here both are same!
+		ti.task_nr = ti.thread_nr;
 
-#ifdef PRINTDEBUGINFORMATION
-		std::cout << "main thread: send starting sync\n";
-#endif
-		for (Index i = 1; i < sync.NumberOfItems(); i++)
+		if (loadBalancing)
 		{
-			sync[i]->store(0, MEMORY_ORDER_SYNCSTORE);//sync==0 means that job is ready to be computed
+			next_task.store(0, std::memory_order_relaxed);  // Reset shared task index for dynamic load balancing
+		}
+		//go signal for other sthreads
+		for (Index i = 1; i < sync.NumberOfItems(); i++) //not for main thread!
+		{
+			sync[i]->value.store(0, MEMORY_ORDER_SYNCSTORE);
 		}
 
-#ifdef PRINTDEBUGINFORMATION
-		std::cout << "main thread: compute job\n";
-#endif
+
 		try
 		{
-			//just complete own task (expands into range!)
-			(*func)(ti);
-
+			// Execute the task for the main thread
+			if (!loadBalancing)
+			{
+				// Static range splitting
+				ti.ntasks = ti.nthreads; //not needed, as ti.task_nr == 0
+				(*func)(ti);
+			}
+			else
+			{
+				// Dynamic load balancing: main thread grabs tasks
+				ti.ntasks = numberOfTasks.load(std::memory_order_relaxed);
+				while (true)
+				{
+					Index task_id = next_task.fetch_add(1, std::memory_order_relaxed);
+					if (task_id >= ti.ntasks) { break; }
+					ti.task_nr = task_id;
+					(*func)(ti);
+				}
+			}
 		}
 		catch (const Exception& e)
 		{
+			std::lock_guard<std::mutex> guard(copyex_mutex);
+			if (ex) { delete ex; }
+			ex = new Exception(e);
+		}
+
+		if (ex) throw Exception(*ex);
+
+		// Wait for other threads to finish
+		for (Index i = 1; i < sync.NumberOfItems(); i++)
+		{
+			while (!sync[i]->value.load(MEMORY_ORDER_SYNCLOAD))
+			{
+				std::this_thread::yield();
+			}
+		}
+	}
+
+	inline void TaskManager::Loop(Index threadID)
+	{
+		thread_id = threadID;
+
+		//sync[thread_id] = new std::atomic_int(1);
+		sync[thread_id] = new PaddedAtomicInt();
+		sync[thread_id]->value.store(1, MEMORY_ORDER_SYNCSTORE);
+
+		TaskInfo ti;
+		ti.nthreads = GetNumThreads();
+		ti.thread_nr = thread_id;
+		ti.task_nr = ti.thread_nr;
+
+		active_workers++;
+		bool stop = !isRunning;
+		while (!stop)
+		{
+			while (sync[thread_id]->value.load(MEMORY_ORDER_SYNCLOAD) && !stop)
+			{
+				stop = !isRunning.load(std::memory_order_relaxed);
+				std::this_thread::yield();
+			}
+			if (stop) { break; }
+
+			try
+			{
+				if (!loadBalancing)
+				{
+					ti.ntasks = ti.nthreads;
+					(*func)(ti);  // Static range assignment
+				}
+				else
+				{
+					// Dynamic load balancing: thread grabs tasks
+					ti.ntasks = numberOfTasks.load();
+					while (true)
+					{
+						Index task_id = next_task.fetch_add(1, std::memory_order_relaxed); 
+						if (task_id >= ti.ntasks) { break; }
+						ti.task_nr = task_id;
+						(*func)(ti);
+					}
+				}
+			}
+			catch (const Exception& e)
 			{
 				std::lock_guard<std::mutex> guard(copyex_mutex);
 				if (ex) { delete ex; }
 				ex = new Exception(e);
 			}
+
+			sync[thread_id]->value.store(1, MEMORY_ORDER_SYNCSTORE);
 		}
 
-		//throw exception after work
-		if (ex)
-			throw Exception(*ex);
-
-#ifdef PRINTDEBUGINFORMATION
-		std::cout << " main thread: wait for signal finished\n";
-#endif
-		//! wait until other threads are ready
-		//==> use loop from 1 .. nThreads-1
-		for (Index i = 1; i < sync.NumberOfItems(); i++)
-		{
-			while (!sync[i]->load(MEMORY_ORDER_SYNCLOAD)) { ; }//wait until sync is 1
-#ifdef PRINTDEBUGINFORMATION
-			std::cout << " main thread: task " << i << " signal finished\n";
-#endif
-		}
+		delete sync[thread_id];
+		active_workers--;
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -140,6 +193,7 @@ namespace MicroThreading
 			return 0;
 		}
 
+		task_manager->SetLoadBalancing(pySpecial.solver.multiThreadingLoadBalancing);
 		task_manager = new TaskManager();
 
 #ifndef _WIN32
@@ -171,16 +225,19 @@ namespace MicroThreading
 
 	inline void TaskManager::StartWorkers()
 	{
-		isRunning = true;
-		restartLoops = false; //for safety, should be already initialized
-		newJob = false; //for safety, should be already initialized
+		isRunning.store(true, std::memory_order_relaxed);
 
 #ifdef PRINTDEBUGINFORMATION
 		std::cout << "start " << num_threads << " workers ****\n";
 #endif
 
 		sync.SetNumberOfItems(num_threads);
-		sync[0] = new std::atomic_int(0); //sync[0] in fact not needed!
+		//sync[0] = new std::atomic_int(0); //sync[0] in fact not needed!
+		sync[0] = new PaddedAtomicInt();
+		sync[0]->value.store(0, MEMORY_ORDER_SYNCSTORE);
+
+
+		completedThreads.store(num_threads-1);
 
 
 		//! start (num_threads-1) additional threads (+ main thread)
@@ -189,13 +246,12 @@ namespace MicroThreading
 			std::thread([this, i]() { this->Loop(i); }).detach();
 		}
 
-		while (active_workers < num_threads - 1)
-			;
+		while (active_workers < num_threads - 1) { ; }
 	}
 
 	inline void TaskManager::StopWorkers()
 	{
-		isRunning = false;
+		isRunning.store(false, std::memory_order_relaxed);
 
 		//wait for other threads to stop
 		while (active_workers) { ; }
@@ -207,70 +263,12 @@ namespace MicroThreading
 		}
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//this is run on every thread
-	inline void TaskManager::Loop(Index threadID)
-	{
-		thread_id = threadID;
-#ifdef PRINTDEBUGINFORMATION
-		std::cout << "  start Loop in thread" << thread_id << "\n";
-#endif
-
-		sync[thread_id] = new std::atomic_int(1);
-
-		TaskInfo ti;
-		ti.nthreads = GetNumThreads();
-		ti.ntasks = ti.nthreads; //here both are same!
-		ti.thread_nr = thread_id;
-		ti.task_nr = ti.thread_nr; //here both are same!
-
-
-		active_workers++; //register that thread is running; after sync=0 !
-		bool stop = !isRunning;// .load(MEMORY_ORDER_SYNCLOAD);
-		while (!stop)
-		{
-			//wait for new job; HOT WAIT!:
-			//wait until main thread switches sync to 0, then job is available
-			while (sync[thread_id]->load(MEMORY_ORDER_SYNCLOAD) && !stop)
-			{
-				stop = !isRunning;// .load(std::memory_order_relaxed); //this is not urgent, as it is only performed at end of many computations
-			}
-			if (stop)
-			{ 
-				break; 
-			}
-
-#ifdef PRINTDEBUGINFORMATION
-			std::cout << "  thread" << thread_id << ": compute task\n";
-#endif
-			//now complete task
-			try
-			{
-				//just complete own task (expands into range!)
-				(*func)(ti);
-
-			}
-			catch (const Exception& e)
-			{
-				{
-					std::lock_guard<std::mutex> guard(copyex_mutex);
-					if (ex) { delete ex; }
-					ex = new Exception(e);
-				}
-			}
-
-#ifdef PRINTDEBUGINFORMATION
-			std::cout << "  thread" << thread_id << ": send signal finished\n";
-#endif
-			sync[thread_id]->store(1, MEMORY_ORDER_SYNCSTORE); // , memory_order_release); //main thread receives message that job is done!
-		}
-
-		//finish loops!
-		delete sync[thread_id];
-		active_workers--;
-	}
 };
+
+
+
+
+
 
 //with MicroThreading (OLD):
 //AVXsize = 4

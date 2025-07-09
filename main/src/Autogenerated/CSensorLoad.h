@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2022-02-19  00:16:29 (last modified)
+* @date         2025-05-06  23:20:45 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -80,6 +80,12 @@ public: // AUTO:
     virtual Index GetLoadNumber() const override
     {
         return parameters.loadNumber;
+    }
+
+    //! AUTO:  change loadNumber
+    virtual void SetLoadNumber(Index loadNumber) override
+    {
+        parameters.loadNumber = loadNumber;
     }
 
     //! AUTO:  return sensor type

@@ -146,6 +146,11 @@ public:
 		CHECKandTHROWstring("ERROR: illegal call to CObject::GetNodeNumber");
 		return EXUstd::InvalidIndex;
 	}
+	//! local to global node number transformation
+	virtual void SetNodeNumber(Index localIndex, Index nodeNumber)
+	{
+		CHECKandTHROWstring("ERROR: illegal call to CObject::SetNodeNumber");
+	}
 	//! number of nodes
 	virtual Index GetNumberOfNodes() const { return 0; }
 	//before: {	CHECKandTHROWstring("ERROR: illegal call to CObject::GetNumberOfNodes"); return EXUstd::InvalidIndex;	}

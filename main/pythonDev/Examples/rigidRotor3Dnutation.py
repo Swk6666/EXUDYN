@@ -22,7 +22,7 @@ import numpy as np
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 m = 2                   #mass in kg
 r = 0.5                 #radius for disc mass distribution
@@ -116,10 +116,10 @@ simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1
 #start solver:
 mbs.SolveDynamic(simulationSettings)
 
-exu.StartRenderer()              #start graphics visualization
-mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+SC.renderer.Start()              #start graphics visualization
+SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
-exu.StopRenderer()               #safely close rendering window!
+SC.renderer.Stop()               #safely close rendering window!
 
 mbs.SolutionViewer()
 

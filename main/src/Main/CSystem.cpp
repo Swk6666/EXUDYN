@@ -279,18 +279,20 @@ bool CSystem::CheckSystemIntegrity(const MainSystem& mainSystem)
 		if (item->GetCMarker()->GetType() & Marker::Node)
 		{
 			Index nodeIndex = item->GetCMarker()->GetNodeNumber();
-			if (!EXUstd::IndexIsInRange(nodeIndex, 0, numberOfNodes))
+			Marker::Type markerType = item->GetCMarker()->GetType();
+			bool acceptInvalidNodeNumber = EXUstd::IsOfType(markerType, (Marker::Type)(Marker::HasPostNewton));
+
+			if (!EXUstd::IndexIsInRange(nodeIndex, 0, numberOfNodes) && !(acceptInvalidNodeNumber && nodeIndex == EXUstd::InvalidIndex) )
 			{
 				PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() + 
 					", contains invalid (global) node number " + EXUstd::ToString(nodeIndex));
 				systemIsInteger = false;
 			}
-			if (systemIsInteger)
+			if (systemIsInteger && !(acceptInvalidNodeNumber && nodeIndex == EXUstd::InvalidIndex))
 			{
 				const CNode* node = mainSystem.GetMainSystemData().GetMainNode(nodeIndex).GetCNode();
 				Node::Type nodeType = node->GetType();
-				Marker::Type markerType = item->GetCMarker()->GetType();
-				if (EXUstd::IsOfType(markerType, Marker::Position))
+				if (EXUstd::IsOfType(markerType, Marker::Position) && !EXUstd::IsOfType(markerType, Marker::Body))
 				{
 					if (!EXUstd::IsOfType(nodeType, Node::Position) && !EXUstd::IsOfType(nodeType, Node::Position2D))
 					{
@@ -299,7 +301,7 @@ bool CSystem::CheckSystemIntegrity(const MainSystem& mainSystem)
 						systemIsInteger = false;
 					}
 				}
-				if (EXUstd::IsOfType(markerType, Marker::Orientation))
+				if (EXUstd::IsOfType(markerType, Marker::Orientation) && !EXUstd::IsOfType(markerType, Marker::Body))
 				{
 					if (!EXUstd::IsOfType(nodeType, Node::Orientation) && !EXUstd::IsOfType(nodeType, Node::Orientation2D))
 					{
@@ -313,43 +315,46 @@ bool CSystem::CheckSystemIntegrity(const MainSystem& mainSystem)
 		//else //must be object (usually body, but could also be connector)
 		if (item->GetCMarker()->GetType() & Marker::Object) //might also be Marker::Body
 		{
-			Index objectIndex = item->GetCMarker()->GetObjectNumber();
-			if (!EXUstd::IndexIsInRange(objectIndex, 0, numberOfObjects))
+			for (Index iLocal = 0; iLocal < item->GetCMarker()->GetNumberOfObjects(); iLocal++)
 			{
-				PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
-					", contains invalid (global) object number " + EXUstd::ToString(objectIndex));
-				systemIsInteger = false;
-			}
-			if (systemIsConsistent)
-			{
-				if (((Index)mainSystem.GetMainSystemData().GetMainObjects()[objectIndex]->GetCObject()->GetType() & (Index)CObjectType::Body) == 0)
+				Index objectIndex = item->GetCMarker()->GetObjectNumber(iLocal);
+				if (!EXUstd::IndexIsInRange(objectIndex, 0, numberOfObjects))
 				{
 					PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
-						": expected ObjectType::Body, but received object (object number=" + EXUstd::ToString(objectIndex) + ")");
+						", contains invalid (global) object number " + EXUstd::ToString(objectIndex));
 					systemIsInteger = false;
 				}
-			}
-			if (systemIsInteger)
-			{
-				const CObject* object = mainSystem.GetMainSystemData().GetMainObjects()[objectIndex]->GetCObject();
-				AccessFunctionType afType = object->GetAccessFunctionTypes();
-				Marker::Type markerType = item->GetCMarker()->GetType();
-				if (EXUstd::IsOfType(markerType, Marker::Position))
+				if (systemIsInteger)
 				{
-					if (!EXUstd::IsOfType(afType, AccessFunctionType::TranslationalVelocity_qt))
+					if (!EXUstd::IsOfType(mainSystem.GetMainSystemData().GetMainObjects()[objectIndex]->GetCObject()->GetType(), CObjectType::Body))
 					{
 						PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
-							" requires an object with position information, but object number " + EXUstd::ToString(objectIndex) + " does not provide this");
+							": expected ObjectType::Body, but received object (object number=" + EXUstd::ToString(objectIndex) + ")");
 						systemIsInteger = false;
 					}
 				}
-				if (EXUstd::IsOfType(markerType, Marker::Orientation))
+				if (systemIsInteger)
 				{
-					if (!EXUstd::IsOfType(afType, AccessFunctionType::AngularVelocity_qt))
+					const CObject* object = mainSystem.GetMainSystemData().GetMainObjects()[objectIndex]->GetCObject();
+					AccessFunctionType afType = object->GetAccessFunctionTypes();
+					Marker::Type markerType = item->GetCMarker()->GetType();
+					if (EXUstd::IsOfType(markerType, Marker::Position))
 					{
-						PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
-							" requires an object with orienation (rotation) information, but object number " + EXUstd::ToString(itemIndex) + " does not provide this");
-						systemIsInteger = false;
+						if (!EXUstd::IsOfType(afType, AccessFunctionType::TranslationalVelocity_qt))
+						{
+							PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
+								" requires an object with position information, but object number " + EXUstd::ToString(objectIndex) + " does not provide this");
+							systemIsInteger = false;
+						}
+					}
+					if (EXUstd::IsOfType(markerType, Marker::Orientation))
+					{
+						if (!EXUstd::IsOfType(afType, AccessFunctionType::AngularVelocity_qt))
+						{
+							PyError(STDstring("Marker ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type=" + item->GetTypeName() +
+								" requires an object with orienation (rotation) information, but object number " + EXUstd::ToString(itemIndex) + " does not provide this");
+							systemIsInteger = false;
+						}
 					}
 				}
 			}
@@ -418,39 +423,51 @@ bool CSystem::CheckSystemIntegrity(const MainSystem& mainSystem)
 				PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::Node, contains invalid node number " + EXUstd::ToString(n));
 			}
 		}
-		else if (item->GetCSensor()->GetType() == SensorType::Object)
+		else if (item->GetCSensor()->HasObjectNumber()) //type=object, body, super element, ...
 		{
-			Index n = item->GetCSensor()->GetObjectNumber();
-			if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
 			{
-				PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + 
-					"', type = SensorType::Object, contains invalid object number " + EXUstd::ToString(n));
+				Index n = item->GetCSensor()->GetObjectNumber();
+				if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
+				{
+					PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() +
+						"', type = SensorType::" + GetSensorTypeString(item->GetCSensor()->GetType()) + ", contains invalid object number " + EXUstd::ToString(n));
+				}
 			}
 		}
-		else if (item->GetCSensor()->GetType() == SensorType::Body)
-		{
-			Index n = item->GetCSensor()->GetObjectNumber();
-			if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
-			{
-				PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::Body, contains invalid object number " + EXUstd::ToString(n));
-			}
-		}
-		else if (item->GetCSensor()->GetType() == SensorType::SuperElement)
-		{
-			Index n = item->GetCSensor()->GetObjectNumber();
-			if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
-			{
-				PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::SuperElement, contains invalid object number " + EXUstd::ToString(n));
-			}
-		}
-		else if (item->GetCSensor()->GetType() == SensorType::KinematicTree)
-		{
-			Index n = item->GetCSensor()->GetObjectNumber();
-			if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
-			{
-				PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::KinematicTree, contains invalid object number " + EXUstd::ToString(n));
-			}
-		}
+		//DELETE:
+ 	//	else if (item->GetCSensor()->GetType() == SensorType::Object)
+		//{
+		//	Index n = item->GetCSensor()->GetObjectNumber();
+		//	if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
+		//	{
+		//		PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + 
+		//			"', type = SensorType::Object, contains invalid object number " + EXUstd::ToString(n));
+		//	}
+		//}
+		//else if (item->GetCSensor()->GetType() == SensorType::Body)
+		//{
+		//	Index n = item->GetCSensor()->GetObjectNumber();
+		//	if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
+		//	{
+		//		PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::Body, contains invalid object number " + EXUstd::ToString(n));
+		//	}
+		//}
+		//else if (item->GetCSensor()->GetType() == SensorType::SuperElement)
+		//{
+		//	Index n = item->GetCSensor()->GetObjectNumber();
+		//	if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
+		//	{
+		//		PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::SuperElement, contains invalid object number " + EXUstd::ToString(n));
+		//	}
+		//}
+		//else if (item->GetCSensor()->GetType() == SensorType::KinematicTree)
+		//{
+		//	Index n = item->GetCSensor()->GetObjectNumber();
+		//	if (!EXUstd::IndexIsInRange(n, 0, numberOfObjects))
+		//	{
+		//		PyError(STDstring("Sensor ") + EXUstd::ToString(itemIndex) + ", name = '" + item->GetName() + "', type = SensorType::KinematicTree, contains invalid object number " + EXUstd::ToString(n));
+		//	}
+		//}
 		else if (item->GetCSensor()->GetType() == SensorType::Marker)
 		{
 			Index n = item->GetCSensor()->GetMarkerNumber();
@@ -838,6 +855,7 @@ void CSystem::PreComputeItemLists()
 	cSystemData.listDiscontinuousIteration.Flush();
 	cSystemData.listOfLoadsNoUF.Flush();
 	cSystemData.listOfLoadsUF.Flush();
+	cSystemData.listOfMarkersPostNewton.Flush();
 
 	cSystemData.objectsBodyWithAE.Flush();
 	cSystemData.nodesODE2WithAE.Flush();
@@ -988,6 +1006,16 @@ void CSystem::PreComputeItemLists()
 		else
 		{
 			cSystemData.listOfLoadsNoUF.Append(i);
+		}
+	}
+
+	
+	for (Index i = 0; i < cSystemData.GetCMarkers().NumberOfItems(); i++)
+	{
+		CMarker* marker = cSystemData.GetCMarkers()[i];
+		if (EXUstd::IsOfType(marker->GetType(), Marker::HasPostNewton))
+		{
+			cSystemData.listOfMarkersPostNewton.Append(i);
 		}
 	}
 
@@ -1245,7 +1273,7 @@ void CSystem::ComputeMassMatrix(TemporaryComputationDataArray& tempArray, Genera
 	}
 	else //GeneralMatrix is sparse matrix
 	{
-		Index nThreads = exuThreading::TaskManager::GetNumThreads();
+		Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 		bool doParallel = (nThreads > 1) && (cSystemData.objectsBodyWithODE2CoordsNoUF.NumberOfItems() >= solverData.multithreadedLLimitMassMatrix);
 		const ArrayIndex& processObjectsSerial = doParallel ? cSystemData.objectsBodyWithODE2CoordsUF : cSystemData.objectsBodyWithODE2Coords;
 		//const ArrayIndex& processObjectsSerial = cSystemData.objectsBodyWithODE2Coords;
@@ -1318,10 +1346,10 @@ void CSystem::ComputeMassMatrix(TemporaryComputationDataArray& tempArray, Genera
 			Index nItems = cSystemData.objectsBodyWithODE2CoordsNoUF.NumberOfItems();
 			Index taskSplit = GetTaskSplit(nItems, nThreads);
 
-			exuThreading::ParallelFor(nItems, [this, &tempArray, &nItems, &computeInverse](NGSsizeType i) //&temp,&systemODE2Rhs,&cSystemData
+			ExuThreading::ParallelFor(nItems, [this, &tempArray, &nItems, &computeInverse](ParallelSizeType i) //&temp,&systemODE2Rhs,&cSystemData
 			{
 				Index j = cSystemData.objectsBodyWithODE2CoordsNoUF[(Index)i];
-				Index threadID = exuThreading::TaskManager::GetThreadId();
+				Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 				TemporaryComputationData& temp = tempArray[threadID];
 
@@ -1449,7 +1477,7 @@ void CSystem::ComputeSystemODE2RHS(TemporaryComputationDataArray& tempArray, Vec
 	systemODE2Rhs.SetAll(0.);
 
 	int nItems = cSystemData.listComputeObjectODE2LhsNoUF.NumberOfItems();
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 	if (nThreads > 1 && (nItems >= solverData.multithreadedLLimitResiduals) )
 	{
 		//std::mutex mtx;           // mutex for critical section
@@ -1463,10 +1491,10 @@ void CSystem::ComputeSystemODE2RHS(TemporaryComputationDataArray& tempArray, Vec
 
 		//STARTGLOBALTIMER(TScomputeObjectODE2);
 		Index taskSplit = GetTaskSplit(nItems, nThreads);
-		exuThreading::ParallelFor(nItems, [this, &systemODE2Rhs, &tempArray, &nItems](NGSsizeType j) //&temp,&systemODE2Rhs,&cSystemData
+		ExuThreading::ParallelFor(nItems, [this, &systemODE2Rhs, &tempArray, &nItems](ParallelSizeType j) //&temp,&systemODE2Rhs,&cSystemData
 		{
 			Index i = cSystemData.listComputeObjectODE2Lhs[(Index)j];
-			Index threadID = exuThreading::TaskManager::GetThreadId();
+			Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 			TemporaryComputationData& temp = tempArray[threadID];
 			ArrayIndex& ltgODE2 = cSystemData.GetLocalToGlobalODE2()[i];
@@ -1648,7 +1676,7 @@ void CSystem::ComputeODE2LoadsRHS(TemporaryComputationDataArray& tempArray, Vect
 	//Index nLoads = cSystemData.GetCLoads().NumberOfItems();
 	Real currentTime = cSystemData.GetCData().currentState.time;
 
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 	Index nItems = cSystemData.listOfLoadsNoUF.NumberOfItems(); 
 
 	if (nThreads > 1 && nItems >= solverData.multithreadedLLimitLoads)
@@ -1662,9 +1690,9 @@ void CSystem::ComputeODE2LoadsRHS(TemporaryComputationDataArray& tempArray, Vect
 
 
 		Index taskSplit = GetTaskSplit(nItems, nThreads);
-		exuThreading::ParallelFor(nItems, [this, &systemODE2Rhs, &tempArray, &currentTime, &nItems](NGSsizeType i) //&temp,&systemODE2Rhs,&cSystemData
+		ExuThreading::ParallelFor(nItems, [this, &systemODE2Rhs, &tempArray, &currentTime, &nItems](ParallelSizeType i) //&temp,&systemODE2Rhs,&cSystemData
 		{
-			Index threadID = exuThreading::TaskManager::GetThreadId();
+			Index threadID = ExuThreading::TaskManager::GetThreadId();
 			const bool fillSparseVector = true;
 
 			ComputeODE2SingleLoad(cSystemData.listOfLoadsNoUF[(Index)i], tempArray[threadID], currentTime, systemODE2Rhs, fillSparseVector);
@@ -1742,14 +1770,31 @@ void CSystem::ComputeODE2SingleLoad(Index loadIndex, TemporaryComputationData& t
     {
         if (marker->GetType() & Marker::Body) //code for body markers
         {
-            Index markerBodyNumber = marker->GetObjectNumber();
-            if (!((Index)cSystemData.GetCObjectBody(markerBodyNumber).GetType() & (Index)CObjectType::Ground)) //no action on ground objects!
-            {
-                ltg = &cSystemData.GetLocalToGlobalODE2()[markerBodyNumber];
-                if (ltg->NumberOfItems() != 0) { applyLoad = true; } //only apply load, if object is not attached to ground node!
-            }
+			if (marker->GetNumberOfObjects() == 1)
+			{
+				Index markerBodyNumber = marker->GetObjectNumber();
+				if (!((Index)cSystemData.GetCObjectBody(markerBodyNumber).GetType() & (Index)CObjectType::Ground)) //no action on ground objects!
+				{
+					ltg = &cSystemData.GetLocalToGlobalODE2()[markerBodyNumber];
+					if (ltg->NumberOfItems() != 0) { applyLoad = true; } //only apply load, if object is not attached to ground node!
+				}
+			}
+			else
+			{
+				ltg = &temp.tempIndex4;
+				ltg->SetNumberOfItems0();
+				for (Index iLocal = 0; iLocal < marker->GetNumberOfObjects(); iLocal++)
+				{
+					Index markerBodyNumber = marker->GetObjectNumber(iLocal);
+					if (!((Index)cSystemData.GetCObjectBody(markerBodyNumber).GetType() & (Index)CObjectType::Ground)) //no action on ground objects!
+					{
+						ltg->AppendArray(cSystemData.GetLocalToGlobalODE2()[markerBodyNumber]);
+						if (ltg->NumberOfItems() != 0) { applyLoad = true; } //only apply load, if object is not attached to ground node!
+					}
+				}
+			}
         }
-        else if (marker->GetType() & Marker::Node) //code for body markers
+        else if ((marker->GetType() & Marker::Node)) // take care: there are mixed types: !EXUstd::IsOfType(marker->GetType(), Marker::Body) //code for node markers; exclude bodies again for safety!
         {
             Index markerNodeNumber = marker->GetNodeNumber();
             if (!cSystemData.GetCNodes()[markerNodeNumber]->IsGroundNode()) //if node has zero coordinates ==> ground node; no action on ground nodes!
@@ -1903,13 +1948,17 @@ void CSystem::ComputeODE2SingleLoadLTG(Index loadIndex, ArrayIndex& ltgODE2equat
     //LoadType loadType = cLoad->GetType();
 
     //loads only applied to Marker::Body or Marker::Node
-    if (marker->GetType() & Marker::Body) //code for body markers
+    if (marker->GetType() & Marker::Body) //code for body markers or body markers including GenericData nodes!
     {
-        Index markerBodyNumber = marker->GetObjectNumber();
-        if (!((Index)cSystemData.GetCObjectBody(markerBodyNumber).GetType() & (Index)CObjectType::Ground)) //no action on ground objects!
-        {
-            ltgODE2coords = cSystemData.GetLocalToGlobalODE2()[markerBodyNumber];
-        }
+		for (Index iLocal = 0; iLocal < marker->GetNumberOfObjects(); iLocal++)
+		{
+			Index markerBodyNumber = marker->GetObjectNumber(iLocal);
+			if (!((Index)cSystemData.GetCObjectBody(markerBodyNumber).GetType() & (Index)CObjectType::Ground)) //no action on ground objects!
+			{
+				if (iLocal == 0) { ltgODE2coords = cSystemData.GetLocalToGlobalODE2()[markerBodyNumber]; }
+				else { ltgODE2coords.AppendArray(cSystemData.GetLocalToGlobalODE2()[markerBodyNumber]); }
+			}
+		}
     }
     else if (marker->GetType() & Marker::Node) //code for body markers
     {
@@ -2080,7 +2129,7 @@ void CSystem::ComputeODE1Loads(TemporaryComputationData& temp, Vector& systemODE
 		Index nodeCoordinate = 99999;//initialize with arbitrary value for gcc; starting index for nodes (consecutively numbered)
 		bool applyLoad = false;		//loads are not applied to ground objects/nodes
 
-		if (marker->GetType() & Marker::Node) //code for body markers
+		if (EXUstd::IsOfType(marker->GetType(), Marker::Node) && !EXUstd::IsOfType(marker->GetType(), Marker::Body)) //only for pure node markers!
 		{
 			Index markerNodeNumber = marker->GetNodeNumber();
 			if (!cSystemData.GetCNodes()[markerNodeNumber]->IsGroundNode()) //if node has zero coordinates ==> ground node; no action on ground nodes!
@@ -2172,7 +2221,7 @@ void CSystem::ComputeAlgebraicEquations(TemporaryComputationDataArray& tempArray
 	int nItemsNodes = cSystemData.nodesODE2WithAE.NumberOfItems();
 	int nItemsNodesObjectsNoUF = nItemsObjectsNoUF + nItemsNodes;
 
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 	bool doParallel = (nThreads > 1) && (nItemsNodesObjectsNoUF >= solverData.multithreadedLLimitResiduals);
 
 	//+++++++++++++++++++++++++++++++++++++++
@@ -2190,10 +2239,10 @@ void CSystem::ComputeAlgebraicEquations(TemporaryComputationDataArray& tempArray
 
 		//gives factor 7.5 for 12 threads with taskSplit nThreads*16, 100 bodies-revolute joint chain
 		Index taskSplit = GetTaskSplit(nItemsNodesObjectsNoUF, nThreads);
-		exuThreading::ParallelFor(nItemsNodesObjectsNoUF, [this, &algebraicEquations, &velocityLevel, &tempArray, 
-			&nItemsNodes, &nItemsObjectsNoUF, &nItemsNodesObjectsNoUF](NGSsizeType j) 
+		ExuThreading::ParallelFor(nItemsNodesObjectsNoUF, [this, &algebraicEquations, &velocityLevel, &tempArray, 
+			&nItemsNodes, &nItemsObjectsNoUF, &nItemsNodesObjectsNoUF](ParallelSizeType j) 
 		{
-			Index threadID = exuThreading::TaskManager::GetThreadId();
+			Index threadID = ExuThreading::TaskManager::GetThreadId();
 			TemporaryComputationData& temp = tempArray[threadID];
 
 			if ((Index)j < nItemsNodes)
@@ -2315,9 +2364,9 @@ Real CSystem::PostNewtonStep(TemporaryComputationDataArray& tempArray, Real& rec
 	int nItems = cSystemData.listDiscontinuousIteration.NumberOfItems();
 	if (nItems != 0) //save time here!
 	{
-		Index nThreads = exuThreading::TaskManager::GetNumThreads();
+		Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 		bool doMultiThreading = false;
-		exuThreading::TotalCosts costs = 0; //costs < 1000 does no multithreading, ParallelFor turns into regular for loop [with small overhead]
+		ExuThreading::TotalCosts costs = 0; //costs < 1000 does no multithreading, ParallelFor turns into regular for loop [with small overhead]
 
 		if (nThreads > 1)
 		{
@@ -2338,10 +2387,10 @@ Real CSystem::PostNewtonStep(TemporaryComputationDataArray& tempArray, Real& rec
 		}
 
 		Index taskSplit = GetTaskSplit(nItems, nThreads);
-		exuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](NGSsizeType j)
+		ExuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](ParallelSizeType j)
 		{
 			Index i = cSystemData.listDiscontinuousIteration[(Index)j];
-			Index threadID = exuThreading::TaskManager::GetThreadId();
+			Index threadID = ExuThreading::TaskManager::GetThreadId();
 			PostNewtonFlags::Type postNewtonFlags;
 
 			TemporaryComputationData& temp = tempArray[threadID];
@@ -2394,6 +2443,19 @@ Real CSystem::PostNewtonStep(TemporaryComputationDataArray& tempArray, Real& rec
 			}
 		}
 
+	}
+
+	//only for markers with HasPostNewton
+	for (Index markerIndex : cSystemData.listOfMarkersPostNewton)
+	{
+		CMarker* marker = cSystemData.GetCMarkers()[markerIndex];
+
+		MarkerDataStructure& markerDataStructure = tempArray[0].markerDataStructure;
+		markerDataStructure.SetNumberOfMarkerData(1);
+		markerDataStructure.SetTime(cSystemData.GetCData().currentState.GetTime());
+		marker->ComputeMarkerData(cSystemData, false, markerDataStructure.GetMarkerData(0));
+
+		marker->PostNewtonStep(cSystemData, markerDataStructure.GetMarkerData(0)); //update data coordinates
 	}
 
 	//this part is anyway done in parallel:
@@ -3275,7 +3337,7 @@ void CSystem::ComputeODE2ProjectedReactionForces(TemporaryComputationDataArray& 
 	int nItemsObjectsNoUF = cSystemData.listObjectProjectedReactionForcesODE2NoUF.NumberOfItems();
 	int nItemsNodesObjectsNoUF = nItemsObjectsNoUF + cSystemData.nodesODE2WithAE.NumberOfItems();
 
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 	bool doParallel = (nThreads > 1) && (nItemsNodesObjectsNoUF >= solverData.multithreadedLLimitResiduals);
 
 	//+++++++++++++++++++++++++++++++++++++++
@@ -3293,10 +3355,10 @@ void CSystem::ComputeODE2ProjectedReactionForces(TemporaryComputationDataArray& 
 
 		//gives factor 7.5 for 12 threads with taskSplit nThreads*16, 100 bodies-revolute joint chain
 		Index taskSplit = GetTaskSplit(nItemsNodesObjectsNoUF, nThreads);
-		exuThreading::ParallelFor(nItemsNodesObjectsNoUF, [this, &reactionForces, &ode2ReactionForces, &tempArray, &nItemsNodesObjectsNoUF, &nItemsObjectsNoUF](NGSsizeType j) //&temp,&systemODE2Rhs,&cSystemData
+		ExuThreading::ParallelFor(nItemsNodesObjectsNoUF, [this, &reactionForces, &ode2ReactionForces, &tempArray, &nItemsNodesObjectsNoUF, &nItemsObjectsNoUF](ParallelSizeType j) //&temp,&systemODE2Rhs,&cSystemData
 		{
 			JacobianType::Type filledJacobians;
-			Index threadID = exuThreading::TaskManager::GetThreadId();
+			Index threadID = ExuThreading::TaskManager::GetThreadId();
 			TemporaryComputationData& temp = tempArray[threadID];
 
 			//OBJECTS WITH AE
@@ -3376,7 +3438,7 @@ void CSystem::ComputeODE2ProjectedReactionForces(TemporaryComputationDataArray& 
 		{
 			for (const EXUmath::IndexValue& item : tempArray[i].sparseVector.GetSparseIndexValues())
 			{
-				ode2ReactionForces[item.GetIndex()] += item.GetValue(); //minus: LHS->RHS
+				ode2ReactionForces[item.GetIndex()] += item.GetValue(); 
 			}
 		}
 		//STOPGLOBALTIMER(TSreactionForces1);
@@ -3629,26 +3691,28 @@ void CSystem::ComputeConstraintJacobianTimesVector(TemporaryComputationData& tem
 
 }
 
+extern Index globalTimeOutVisualizationContainer;
 
 //! this function is used to copy the current state to the visualization state and to send a signal that the PostProcessData has been updated
 	//! graphicsData.visualizationStateUpdate is updated in case that visualizationStateUpdateAvailable=true
 void CSystem::UpdatePostProcessData(bool recordImage, bool visualizationStateUpdateAvailable)
 {
-	Index timeOut = 1000;		 //max iterations to wait, before frame is redrawn and saved
 	Index timerMilliseconds = 2; //this is a hard-coded value, as visualizationSettings are not available here ...
 
 	Index i = 0;
+	Index inc = globalTimeOutVisualizationContainer <= 5000 ? 2 : 50;
 
 	//wait with new update until last image recording has been finished
 	//this loop does not get caught except for we do recording of images
-	while (i++ < timeOut && (postProcessData.recordImageCounter == postProcessData.updateCounter))
+	while (i < globalTimeOutVisualizationContainer && (postProcessData.recordImageCounter == postProcessData.updateCounter))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(timerMilliseconds));
+		i += 2;
 	}
 
 	if (postProcessData.recordImageCounter == postProcessData.updateCounter)
 	{
-		PyWarning("CSystem::UpdatePostProcessData:: timeout for record image; try to decrease scene complexity");
+		PyWarning("CSystem::UpdatePostProcessData:: timeout for record image; increase exportImages.saveImageTimeOut");
 	}
 
 	//use semaphores, because the postProcessData.state is also accessed from the visualization thread

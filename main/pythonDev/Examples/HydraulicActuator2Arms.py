@@ -261,8 +261,8 @@ SC.visualizationSettings.openGL.lineWidth = 2
 SC.visualizationSettings.openGL.shadow = 0.5
 SC.visualizationSettings.window.renderWindowSize = [1600,1200]
 
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 
 #use %timeit to measure time!
 mbs.SolveDynamic(simulationSettings, showHints=False)
@@ -273,7 +273,7 @@ if True: #use this to reload the solution and use SolutionViewer
     
     mbs.SolutionViewer() #can also be entered in IPython ...
 
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.Stop() #safely close rendering window!
 
 
 mbs.PlotSensor(sensorNumbers=[sForce,sForce2], components=[exudyn.plot.componentNorm]*2, labels=['connector force arm1','connector force arm1'], yLabel='force (N)', closeAll=True)

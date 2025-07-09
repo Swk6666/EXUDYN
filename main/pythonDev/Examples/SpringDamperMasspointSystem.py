@@ -20,7 +20,7 @@ import exudyn.graphics as graphics #only import if it does not conflict
 
 import numpy as np
 
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Modelling of MBS starts here
@@ -316,9 +316,9 @@ for i in range( len(stepSizeList) ):
     #print(mbs)
     
     
-    exu.StartRenderer()
+    SC.renderer.Start()
     mbs.SolveDynamic(simulationSettings, solverType =  exudyn.DynamicSolverType.ODE23)
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 

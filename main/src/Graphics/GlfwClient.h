@@ -16,6 +16,7 @@
 
 #include "Utilities/ReleaseAssert.h"
 #include "Utilities/BasicDefinitions.h"
+#include "Utilities/AdvancedStuff.h"
 #include "Main/rendererPythonInterface.h"
 
 #include <ostream>
@@ -44,7 +45,7 @@
 //currently done in preprocessor flags; check that openvr_api.dll is included in exudynCPP.pyd directory
 //#define __EXUDYN_USE_OPENVR //done with preprocessor flags in VisualStudio or in setup.py
 //#if !defined(__EXUDYN__APPLE__) && !defined(__EXUDYN__LINUX__ARM__) //would not work with APPLE
-
+class Raytracer;
 
 enum class RendererMode {
 	_None, Move, Rotate, ZoomView, Select
@@ -108,8 +109,9 @@ private:
     static Real lastGraphicsUpdate;		//!< time of last graphics update
     static Real lastTryCloseWindow;		//!< time of last trial to close window (for security closing)
     static Real lastEventUpdate;		//!< time of last event polling
-    static Real rendererStartTime;      //!< time then renderer was started; used to check if quit requires security question
-	static bool callBackSignal;			//!< for single threaded applications, react if callback is sent=> update graphics immediately
+    static Real rendererStartTime;      //!< time when renderer was started; used to check if quit requires security question
+	static bool callBackRefreshSignal;			//!< for single threaded applications, react if callback is sent=> update graphics immediately
+	static Index rendererTasksCount;		//!< this counts is increased as soon as DoRendererTasks() has finished, and is reset on startup; can be used to check if first frame has been drawn
 
 	static GLFWwindow* window;
 	static RenderState* state;		//!< this represents the current OpenGL parameters
@@ -160,6 +162,7 @@ private:
     static Vector sensorTraceValues; //temporary storage for current sensor data
     //+++++++++++++++++++++++++++++++++++++++++
 
+	static Raytracer raytracer;
 public:
 	GlfwRenderer();
 	~GlfwRenderer() 
@@ -175,12 +178,17 @@ public:
 	//! stop the renderer engine and its thread; @todo StopRenderer currently also stops also main thread (python)
 	static void StopRenderer();
 
-    //! return renderState object
+    //! return copy of renderState object
     static RenderState GetRenderState() { return *state; }
+
+	//! get index
+	static Index GetRendererTasksCount() { return rendererTasksCount; }
 
     //! return renderState object
     static VisualizationSettings* GetVisualizationSettings() { return visSettings; }
     //static const VisualizationSettings& GetVisualizationSettings() const { return *visSettings; }
+
+	static VisualizationSystemContainerBase* GetVisualizationSystemContainer() { return basicVisualizationSystemContainer; }
 
 	//! reset some state machines, e.g., left mouse click, item select, etc.
 	static void ResetStateMachine();
@@ -270,25 +278,25 @@ public:
 	static bool GetItemInformation(Index itemID, STDstring& itemTypeName, STDstring& itemName);// , STDstring& itemInfo);
 
 	//! print delayed via safe communication with main thread
-	static void PrintDelayed(const STDstring& str, bool lineFeed = true) 
+	static void PrintDelayed(const STDstring& str, bool lineFeed = true, bool flush = false) 
 	{
 		if (useMultiThreadedRendering)
 		{
 			if (lineFeed)
 			{
 				//PyQueueExecutableString("print('" + str + "')\n");
-				outputBuffer.WriteVisualization(str+'\n'); //shall be faster by putting into outputBuffer, rather than executing python command
+				outputBuffer.WriteVisualization(str+'\n'); 
 			}
 			else
 			{
-				//PyQueueExecutableString("print('" + str + "', end='')\n");
-				outputBuffer.WriteVisualization(str + '\n'); //shall be faster by putting into outputBuffer, rather than executing python command
+				outputBuffer.WriteVisualization(str); 
 			}
 		}
 		else
 		{
 			pout << str;
 			if (lineFeed) { pout << "\n"; }
+			if (flush) { outputBuffer.overflowFlush(0, true, false); }
 		}
 	};
 
@@ -330,8 +338,20 @@ public:
 		glfwGetFramebufferSize(window, &width, &height);
 	}
 
+	//! unified function to get screen ratio and zoom
+	static void GetScreenRatioAndZoom(int screenWidth, int screenHeight, float& screenRatio, float& zoom);
+
 	//! Render 3D scence function called from Render(), containing 3D model without additional text, etc.; projection is supplied
-	static void Render3Dobjects(int screenWidth, int screenHeight, float& screenRatio, float& zoom);
+	static void Render3Dobjects(int screenWidth, int screenHeight, const float& screenRatio, const float& zoom);
+
+	//! draw sphere or simple representation for sphere
+	static void DrawSphere(const GLSphere& item, bool highlight, Index highlightID, const Float4& otherColor2, const Float4& highlightColor2);
+
+	static const ResizableArray<GraphicsData*>* GetGraphicsDataList() { return graphicsDataList; }
+
+	static const RenderState* GetRenderStatePtr() { return state; }
+
+	static GLFWwindow* GetGlfwWindow() { return window; }
 
 private: //to be called internally only!
 	static void error_callback(int error, const char* description)
@@ -360,14 +380,14 @@ private: //to be called internally only!
 	static void ProcessJoystick();
 
 	//! if callback function like mousemove is called, immediately refresh graphics independently of graphicsUpdateInterval
-	static void SetCallBackSignal(bool flag = true) { callBackSignal = flag; }
-	static bool GetCallBackSignal() { return callBackSignal; }
+	static void SetCallBackRefreshSignal(bool flag = true) { callBackRefreshSignal = flag; }
+	static bool GetCallBackRefreshSignal() { return callBackRefreshSignal; }
 	
 	//! zoom in to mouse position, used to render that area lateron (replacement for gluPickMatrix(...)
 	static void SetViewOnMouseCursor(GLdouble x, GLdouble y, GLdouble deltax, GLdouble deltay, GLint viewport[4]);
 	
 	//! function to evaluate selection of items
-	static void MouseSelectOpenGL(GLFWwindow* window, Index mouseX, Index mouseY, Index& itemID);
+	static void MouseSelectOpenGL(GLFWwindow* window, Index mouseX, Index mouseY, Index& itemID, float& zDepth);
 
 	//! function to evaluate selection of items, return true, if item selected
 	static bool MouseSelect(GLFWwindow* window, Index mouseX, Index mouseY, Index& itemID);
@@ -392,10 +412,10 @@ private: //to be called internally only!
 	static void AddGradientBackground(float zoom, float ratio);
 	
 	//! load GL_PROJECTION and set according to zoom, perspective, etc.; one function for render and mouse select
-	static void SetProjection(int width, int height, float ratio, float& zoom);
+	static void SetProjection(int width, int height, float ratio, float zoom);
 
 	//! set model view rotation and translation, unified for Render and mouse select
-	static void SetModelRotationTranslation(); 
+	static void SetModelRotationTranslation(bool inverse=false); 
 																								   
 	//! check if frame shall be grabed and saved to file using visualization options
 	static void SaveImage();
@@ -472,6 +492,139 @@ private: //to be called internally only!
 	static void DeleteFonts();
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//! CPU based raytracing (under construction) => move into separate class!
+public:	
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//! transform vertex 'in' with modelViewMatrix
+	static void TransformVertex(const Float3& in, const Matrix4DF& modelViewMatrix, Float3& out)
+	{
+		//state->modelRotation.GetDataPointer()
+		const float* modelview = modelViewMatrix.GetDataPointer();
+		float x = in[0];
+		float y = in[1];
+		float z = in[2];
+		out[0] = modelview[0] * x + modelview[4] * y + modelview[8] * z + modelview[12];
+		out[1] = modelview[1] * x + modelview[5] * y + modelview[9] * z + modelview[13];
+		out[2] = modelview[2] * x + modelview[6] * y + modelview[10] * z + modelview[14];
+	}
+	//! transform vertex 'in' with modelViewMatrix to only Z-coordinate
+	static float TransformVertexZ(const Float3& in, const Matrix4DF& modelViewMatrix)
+	{
+		//state->modelRotation.GetDataPointer()
+		const float* modelview = modelViewMatrix.GetDataPointer();
+		return modelview[2] * in[0] + modelview[6] * in[1] + modelview[10] * in[2] + modelview[14];
+	}
+
+
+	static void ComputeSortedTriangleDepthIndices(const ResizableArray<GLTriangle>& triangles, ResizableArray<Index>& trigIndices)
+	{
+		Matrix4DF modelView = state->modelRotation;
+		Index nt = triangles.NumberOfItems();
+		ResizableArray<float> depths(nt);
+		trigIndices.SetMaxNumberOfItems(nt);
+		trigIndices.SetNumberOfItems(0);
+		Index cnt = 0;
+		for (const GLTriangle& trig : triangles)
+		{
+			float depth = 0;
+			for (Index i = 0; i < 3; i++) 
+			{
+				depth += TransformVertexZ(trig.points[i], modelView);
+			}
+			depth *= 1.f / 3.f;
+			trigIndices.Append(cnt++);
+			depths.Append(depth);
+		}
+		EXUstd::QuickSortIndexed(trigIndices, depths, false);
+		//pout << "indices=" << trigIndices << ", depths=" << depths << "\n" << std::flush;
+	}
+	//! template function for drawing triangles and triangle outlines
+	template<bool highlight, bool transparent, bool edgeMode>
+	static void DrawTriangles(const ResizableArray<GLTriangle>& triangles,
+		const Float4& highlightColor,
+		const Float4& otherColor,
+		bool selectionMode,
+		Index& lastItemID,
+		Index highlightID,
+		bool useClipping)
+	{
+		if (edgeMode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		const bool sortTriangles = visSettings->openGL.depthSorting;
+		ResizableArray<Index> trigIndices;
+		if (sortTriangles)
+		{
+			ComputeSortedTriangleDepthIndices(triangles, trigIndices);
+		}
+		//alternative approach, also influencing non-transparent triangles:
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glDepthMask(GL_FALSE); // prevent writing to depth buffer
+		//****
+		//for (const GLTriangle& trig : triangles)
+		for (Index k=0; k < triangles.NumberOfItems(); k++)
+		{
+			//pout << "trigIndices[k]=" << trigIndices[k] << ", k=" << k << "\n" << std::flush;
+			const GLTriangle& trig = sortTriangles ? triangles[trigIndices[k]] : triangles[k];
+
+			if (selectionMode && trig.itemID != lastItemID) {
+				glLoadName(trig.itemID);
+				lastItemID = trig.itemID;
+			}
+
+			bool showFace = (visSettings->openGL.showFaces && !trig.isFiniteElement) ||
+				(visSettings->openGL.showMeshFaces && trig.isFiniteElement);
+			bool showEdge = (visSettings->openGL.showFaceEdges && !trig.isFiniteElement) ||
+				(visSettings->openGL.showMeshEdges && trig.isFiniteElement);
+
+			if (!(edgeMode ? showEdge : showFace)) continue;
+
+			if (useClipping && IsClipped(trig.points[0]) && IsClipped(trig.points[1]) && IsClipped(trig.points[2])) {
+				continue;
+			}
+
+			if constexpr (edgeMode) {
+				if constexpr (!highlight) {
+					Float4 edgeColor = visSettings->openGL.faceEdgesColor;
+					glColor4f(edgeColor[0], edgeColor[1], edgeColor[2], edgeColor[3]);
+				}
+				else {
+					glColor4fv((trig.itemID != highlightID ? otherColor : highlightColor).GetDataPointer());
+				}
+			}
+
+			glBegin(GL_TRIANGLES);
+			for (Index i = 0; i < 3; i++) {
+				if constexpr (highlight && !edgeMode) {
+					glColor4fv((trig.itemID != highlightID ? otherColor : highlightColor).GetDataPointer());
+				}
+				else if constexpr (!highlight && !transparent && !edgeMode) {
+					glColor4fv(trig.colors[i].GetDataPointer());
+				}
+				else if constexpr (transparent) {
+					Float4 col = trig.colors[i];
+					if (col[3] > visSettings->openGL.faceTransparencyGlobal) { col[3] = visSettings->openGL.faceTransparencyGlobal; }
+					glColor4fv(col.GetDataPointer());
+				}
+				// check if depth computation is correct:
+				//float z = TransformVertexZ(trig.points[i], state->modelRotation);
+				//Float4 col(z/5+0.5); col[3] = 1;
+				//glColor4fv(col.GetDataPointer());
+
+				glNormal3fv(trig.normals[i].GetDataPointer());
+				glVertex3fv(trig.points[i].GetDataPointer());
+			}
+			glEnd();
+		}
+		//alternative approach, also influencing non-transparent triangles:
+		//glDepthMask(GL_TRUE); // restore depth writing
+		//****
+		if (edgeMode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
 
 };
 

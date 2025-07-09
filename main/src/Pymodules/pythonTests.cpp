@@ -49,18 +49,18 @@ namespace py = pybind11;
 //using namespace pybind11::literals; //brings in the '_a' literals; e.g. for short arguments definition
 
 #include "Linalg/BasicLinalg.h"
-#include "Linalg/KinematicsBasics.h"
-
-#include "Pymodules/PybindTests.h"
+//#include "Linalg/KinematicsBasics.h"
+//
+//#include "Pymodules/PybindTests.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //test functions, will be eliminated from time to time
-#include "Main/OutputVariable.h"
-
-#include "Linalg/BasicLinalg.h"
-#include <initializer_list>
-#include <vector>
+//#include "Main/OutputVariable.h"
+//
+//#include "Linalg/BasicLinalg.h"
+//#include <initializer_list>
+//#include <vector>
 
 
 
@@ -76,8 +76,6 @@ namespace py = pybind11;
 
 //#include "Utilities/Parallel.h" //ParallelFor
 
-
-void f() {};
 
 void PyTest()
 {
@@ -367,8 +365,8 @@ void PyTest()
 	//		//8 threads: 4.69micros (computeEigenvectors=true)
 	//		//8 threads: 3.79micros (computeEigenvectors=false)
 	//		Index taskmanagerNumthreads = ngstd::EnterTaskManager(); //this is needed in order that any ParallelFor is executed in parallel during solving
-	//		NGSsizeType nItems = (NGSsizeType)n;
-	//		ngstd::ParallelFor(nItems, [&A, &nItems](NGSsizeType j)
+	//		ParallelSizeType nItems = (ParallelSizeType)n;
+	//		ngstd::ParallelFor(nItems, [&A, &nItems](ParallelSizeType j)
 	//		{
 	//			Eigen::ComplexEigenSolver<EigMatrix66c> ces;
 	//			ces.compute(A, false); //27microsecs !
@@ -474,7 +472,7 @@ void PyTest()
 		for (Index k = 0; k < runs; k++)
 		{
 			//for (Index i = 0; i < n; i++)
-			ngstd::ParallelFor((NGSsizeType)n, [&result, &v1, &v2](NGSsizeType i)
+			ngstd::ParallelFor((ParallelSizeType)n, [&result, &v1, &v2](ParallelSizeType i)
 			{
 				result.GetUnsafe((Index)i) = v1.GetUnsafe((Index)i) + v2.GetUnsafe((Index)i);
 			}, nThreads);
@@ -495,7 +493,7 @@ void PyTest()
 			PReal* resultp = (PReal*)result.GetDataPointer();
 
 			//for (Index i = 0; i < (4 * nShift); i += 4)
-			ngstd::ParallelFor((NGSsizeType)(nShift), [&resultp, &v1p, &v2p](NGSsizeType j)
+			ngstd::ParallelFor((ParallelSizeType)(nShift), [&resultp, &v1p, &v2p](ParallelSizeType j)
 			{
 				Index i = (Index)j * 4; // *4
 				//resultp[i] = v1p[i] + v2p[i];
@@ -594,41 +592,41 @@ void PyTest()
 }
 
 
-py::object GetVector()
-{
-	Vector v({ 42.1234567890123456,43.,44. }); //double precision maintained in NumPy array in python
-	return py::array_t<Real>(v.NumberOfItems(), v.GetDataPointer()); //copy array (could also be referenced!)
-}
-
+//py::object GetVector()
+//{
+//	Vector v({ 42.1234567890123456,43.,44. }); //double precision maintained in NumPy array in python
+//	return py::array_t<Real>(v.NumberOfItems(), v.GetDataPointer()); //copy array (could also be referenced!)
+//}
+//
 //py::object GetMatrix()
-py::array_t<Real> GetMatrix()
-{
-	ResizableMatrix m(2, 3, { 12.5,13,14,  15,16,17 }); //double precision maintained in NumPy array in python
+//py::array_t<Real> GetMatrix()
+//{
+//	ResizableMatrix m(2, 3, { 12.5,13,14,  15,16,17 }); //double precision maintained in NumPy array in python
+//
+//	return py::array_t<Real>(std::vector<std::ptrdiff_t>{(int)m.NumberOfRows(), (int)m.NumberOfColumns()}, m.GetDataPointer()); //copy array (could also be referenced!)
+//}
 
-	return py::array_t<Real>(std::vector<std::ptrdiff_t>{(int)m.NumberOfRows(), (int)m.NumberOfColumns()}, m.GetDataPointer()); //copy array (could also be referenced!)
-}
-
-void SeeMatrix(py::array_t<Real> pyArray)
-{
-	pout << "ndim=" << pyArray.ndim() << "\n";
-	pout << "size=" << pyArray.size() << "\n";
-	if (pyArray.ndim() == 2)
-	{
-		auto mat = pyArray.unchecked<2>();
-		Index nrows = (Index)mat.shape(0);
-		Index ncols = (Index)mat.shape(1);
-
-		Matrix m(nrows, ncols);
-		for (Index i = 0; i < nrows; i++)
-		{
-			for (Index j = 0; j < ncols; j++)
-			{
-				m(i, j) = mat(i, j);
-			}
-		}
-		pout << "Matrix m=" << m << "\n";
-	}
-}
+//void SeeMatrix(py::array_t<Real> pyArray)
+//{
+//	pout << "ndim=" << pyArray.ndim() << "\n";
+//	pout << "size=" << pyArray.size() << "\n";
+//	if (pyArray.ndim() == 2)
+//	{
+//		auto mat = pyArray.unchecked<2>();
+//		Index nrows = (Index)mat.shape(0);
+//		Index ncols = (Index)mat.shape(1);
+//
+//		Matrix m(nrows, ncols);
+//		for (Index i = 0; i < nrows; i++)
+//		{
+//			for (Index j = 0; j < ncols; j++)
+//			{
+//				m(i, j) = mat(i, j);
+//			}
+//		}
+//		pout << "Matrix m=" << m << "\n";
+//	}
+//}
 
 
 //void PythonCreateSys10()
@@ -685,12 +683,12 @@ void SeeMatrix(py::array_t<Real> pyArray)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void PythonAlive()
-{
-	pout << "pout:Exudyn is alive\n";
-
-	EXUmath::MatrixTests(); //perform matrix inverse tests
-}
+//void PythonAlive()
+//{
+//	pout << "pout:Exudyn is alive\n";
+//
+//	EXUmath::MatrixTests(); //perform matrix inverse tests
+//}
 
 #ifdef _MYDEBUG //only in debug mode!
 void CreateTestSystem(Index systemNumber, Index arg0, Index arg1)

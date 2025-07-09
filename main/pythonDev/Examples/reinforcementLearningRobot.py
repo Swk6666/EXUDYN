@@ -368,10 +368,10 @@ if False:
     #simulationSettings.timeIntegration.discontinuous.iterationTolerance = 1e-5
     
     
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
     
     simulationSettings.timeIntegration.numberOfSteps = int(tEnd/stepSize)
     simulationSettings.timeIntegration.endTime = tEnd
@@ -386,8 +386,8 @@ if False:
     else:
         mbs.SolveDynamic(simulationSettings)
     
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
     if True:
         mbs.PlotSensor(ddr.sPlatformVel, components=[0,1],closeAll=True)
@@ -728,7 +728,7 @@ if __name__ == '__main__': #this is only executed when file is direct called in 
         model = GetModel(env, modelType=modelType)
         env.useRenderer = True
         # env.render()
-        # exu.StartRenderer()
+        # SC.renderer.Start()
 
         ts = -time.time()
         model.learn(total_timesteps=200000) 

@@ -309,10 +309,10 @@ if case == '3Dmechanism' or performTest:
     SC.visualizationSettings.nodes.showBasis = True
     SC.visualizationSettings.nodes.basisSize = 0.5
     if useGraphics:
-        exu.StartRenderer()
-        if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+        SC.renderer.Start()
+        if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
     
-        mbs.WaitForUserToContinue() #press space to continue
+        SC.renderer.DoIdleTasks() #press space to continue
 
     # mbs.SolveDynamic(simulationSettings, solverType = exu.DynamicSolverType.ExplicitMidpoint)
     mbs.SolveDynamic(simulationSettings)
@@ -323,8 +323,8 @@ if case == '3Dmechanism' or performTest:
         mbs.SolutionViewer() #can also be entered in IPython ...
     
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     
     
     if len(sMBS) == len(sKT):
@@ -458,10 +458,10 @@ if case == 'invertedPendulum' or performTest:
     SC.visualizationSettings.nodes.basisSize = 0.5
     if useGraphics:
 
-        exu.StartRenderer()
-        if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+        SC.renderer.Start()
+        if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
     
-        mbs.WaitForUserToContinue() #press space to continue
+        SC.renderer.DoIdleTasks() #press space to continue
 
     # mbs.SolveDynamic(simulationSettings, solverType = exu.DynamicSolverType.ExplicitMidpoint)
     mbs.SolveDynamic(simulationSettings)
@@ -472,8 +472,8 @@ if case == 'invertedPendulum' or performTest:
         mbs.SolutionViewer() #can also be entered in IPython ...
     
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     else:
         #check results for test suite:
         u = 0.
@@ -616,10 +616,10 @@ if case == 'treeStructure' or performTest:
     SC.visualizationSettings.nodes.basisSize = 0.5
     if useGraphics:
 
-        exu.StartRenderer()
-        if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+        SC.renderer.Start()
+        if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
     
-        mbs.WaitForUserToContinue() #press space to continue
+        SC.renderer.DoIdleTasks() #press space to continue
 
     # mbs.SolveDynamic(simulationSettings, solverType = exu.DynamicSolverType.ExplicitMidpoint)
     mbs.SolveDynamic(simulationSettings)
@@ -630,8 +630,8 @@ if case == 'treeStructure' or performTest:
         mbs.SolutionViewer() #can also be entered in IPython ...
     
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     else:
         #check results for test suite:
         u = 0.

@@ -153,10 +153,10 @@ SC.visualizationSettings.general.autoFitScene = False #use loaded render state
 if useGraphics:
     simulationSettings.displayComputationTime = True
     simulationSettings.displayStatistics = True
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys[ 'renderState' ])
-    #mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys[ 'renderState' ])
+    #SC.renderer.DoIdleTasks()
 else:
     simulationSettings.solutionSettings.writeSolutionToFile = False
 
@@ -183,7 +183,7 @@ exudynTestGlobals.testResult = result
 
 #%%+++++++++++++++++++++++++++++
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 

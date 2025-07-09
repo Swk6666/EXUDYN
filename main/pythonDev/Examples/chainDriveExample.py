@@ -99,7 +99,7 @@ rSprocketPitch = lLink/(2*sin(phiTooth/2))  #radius to center of holes in gear, 
 rSprocketInner = rSprocketPitch - rRoller
 wSprocket = wLink*0.95
 addSecondWheel = True
-contactStiffness = 1e4
+contactStiffness = 1e4*5
 contactDamping = 1e1
 
 exu.Print('Chain geometry:')
@@ -109,10 +109,10 @@ exu.Print('  rPitch =',rSprocketPitch)
 exu.Print('  rInner =',rSprocketPitch)
 
 tEnd = 10     #end time of simulation
-stepSize = 1e-5
+stepSize = 1e-4
 g = 9.81
 
-gGround = graphics.CheckerBoard(point = [0,0,-wSprocket*5], size = 1)
+gGround = graphics.CheckerBoard(point = [0,-rSprocketInner*1.5,-wSprocket*2], size = 0.5)
 nGround = mbs.AddNode(NodePointGround())
 mCoordinateGround = mbs.AddMarker(MarkerNodeCoordinate(nodeNumber=nGround, coordinate=0))
 
@@ -189,8 +189,15 @@ if addSecondWheel:
                                     )
     # nn = mbs.GetObject(sprocket)['nodeNumber']
     mSprocket2 = mbs.AddMarker(MarkerBodyRigid(bodyNumber=sprocket2))
-    mbs.AddObject(RevoluteJoint2D(markerNumbers=[mGround2, mSprocket2],
-                                    visualization=VRevoluteJoint2D(drawSize=rRoller)) )
+    mbs.AddObject(SphericalJoint(markerNumbers=[mGround2, mSprocket2], 
+                                 constrainedAxes=[1,0,0],
+                                 visualization=VSphericalJoint(jointRadius=0.25*rRoller)) )
+    
+    mbs.AddObject(LinearSpringDamper(markerNumbers=[mGround2, mSprocket2],
+                                     stiffness = 1000, damping=100,
+                                     axisMarker0=[0,1,0], force = 10,
+                                     visualization=VLinearSpringDamper(drawSize=0.01),
+                                     ))
     
     dTSD = 0.01
     mbs.AddObject(TorsionalSpringDamper(markerNumbers = [mGround, mSprocket2], damping = dTSD))
@@ -281,6 +288,7 @@ nGenericData = mbs.AddNode(NodeGenericData(initialCoordinates=[-1,0,0]*nSprocket
 mbs.AddObject(ObjectContactCurveCircles(markerNumbers=[mSprocket]+mLinksList, nodeNumber=nGenericData,
                                         circlesRadii=[rRoller]*len(mLinksList), segmentsData=exu.MatrixContainer(segmentsData), 
                                         contactStiffness=contactStiffness, contactDamping=contactDamping))
+
 if addSecondWheel:
     nGenericData2 = mbs.AddNode(NodeGenericData(initialCoordinates=[-1,0,0]*nSprocket,
                                                numberOfDataCoordinates=3*nSprocket))
@@ -313,15 +321,16 @@ SC.visualizationSettings.openGL.multiSampling=4
 #SC.visualizationSettings.openGL.facesTransparent=True
 SC.visualizationSettings.openGL.shadow=0.3
 SC.visualizationSettings.loads.show = False
+SC.visualizationSettings.connectors.contactPointsDefaultSize = 0.001
+SC.visualizationSettings.connectors.showContact = True
 
-exu.StartRenderer()              #start graphics visualization
-mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+SC.renderer.Start()              #start graphics visualization
+SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
-#start solver:
 mbs.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-exu.StopRenderer()               #safely close rendering window!
+SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+SC.renderer.Stop()               #safely close rendering window!
 
 #plot results:
 if False:
@@ -331,5 +340,5 @@ if False:
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# mbs.SolutionViewer()
+mbs.SolutionViewer()
 

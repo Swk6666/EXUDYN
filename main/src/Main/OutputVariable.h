@@ -67,8 +67,9 @@ namespace Marker { //==>put into pybindings file in future!
 
 		JacobianDerivativeNonZero = 1 << 17,//!< flag which informs that there is a derivative of the marker jacobian, being non-zero (e.g. for rotations)
 		JacobianDerivativeAvailable = 1 << 18,//!< flag which informs that derivative of the marker jacobian is implemented
+		HasPostNewton = 1 << 19,			//!< flag which informs that PostNewton function has to be called
 
-		EndOfEnumList = 1 << 19				//!< KEEP THIS AS THE (2^i) MAXIMUM OF THE ENUM LIST!!!
+		EndOfEnumList = 1 << 20				//!< KEEP THIS AS THE (2^i) MAXIMUM OF THE ENUM LIST!!!
 		//available Types are, e.g.
 		//Node: 2+4+16, 2+4+8, 2+16
 		//Body: 1+4+16, 1+4+8, 1+16, 1+4+128, ...
@@ -96,7 +97,8 @@ namespace Marker { //==>put into pybindings file in future!
 		if (var & MultiNodal) { t += "MultiNodal"; }
 		if (var & ReducedCoordinates) { t += "ReducedCoordinates"; }
 		if (var & ODE1) { t += "ODE1"; } //'Body' already added via (var & Body)
-		//JacobianDerivativeNonZero and JacobianDerivativeAvailable not included here!
+
+		//JacobianDerivativeNonZero, JacobianDerivativeAvailable, HasPostNewton not included here!
 		if (t.length() == 0) { CHECKandTHROWstring("Marker::GetTypeString(...) called for invalid type!"); }
 
 		return t;

@@ -17,7 +17,7 @@ SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
 
-exu.Print("\n\n++++++++++++++++++++++++++\nStart EXUDYN version "+exu.GetVersionString()+"\n")
+exu.Print("\n\n++++++++++++++++++++++++++\nStart EXUDYN version "+exu.config.Version()+"\n")
 
 #background
 rect = [-2,-2,2,2] #xmin,ymin,xmax,ymax
@@ -102,7 +102,7 @@ simulationSettings.staticSolver.newton.maxIterations = 20 #50 for bending into c
 #simulationSettings.displayComputationTime = True
 
     
-exu.StartRenderer()
+SC.renderer.Start()
 
 simulationSettings.staticSolver.numberOfLoadSteps = 100
 simulationSettings.staticSolver.adaptiveStep = True
@@ -166,8 +166,8 @@ print('omega analytical =',omega)
 #mbs.SolveStatic(simulationSettings)
 
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 
 

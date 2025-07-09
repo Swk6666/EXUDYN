@@ -249,19 +249,19 @@ simulationSettings.displayComputationTime = False
 
 #useGraphics = True
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'lastRenderState' in vars():
-        SC.SetRenderState(lastRenderState) #load last model view
+        SC.renderer.SetState(lastRenderState) #load last model view
 
-    #mbs.WaitForUserToContinue() #press space to continue
+    #SC.renderer.DoIdleTasks() #press space to continue
 
 
 mbs.SolveDynamic(simulationSettings)
     
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
-    lastRenderState = SC.GetRenderState() #store model view for next simulation
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
+    lastRenderState = SC.renderer.GetState() #store model view for next simulation
 
 accumulatedError += mbs.GetNodeOutput(nMid,exu.OutputVariableType.Position)[0] #take x-coordinate of position
 

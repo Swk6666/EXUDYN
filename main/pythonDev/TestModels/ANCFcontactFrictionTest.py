@@ -187,8 +187,8 @@ simulationSettings.solutionSettings.solutionInformation = "ANCF cable with rigid
 
 # useGraphics=False
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 solveDynamic = True
 if solveDynamic: 
@@ -227,6 +227,6 @@ exudynTestGlobals.testResult = u
 exu.Print("test result=",exudynTestGlobals.testResult)
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 

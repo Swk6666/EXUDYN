@@ -392,7 +392,7 @@ SC.visualizationSettings.loads.show = False
 SC.visualizationSettings.openGL.multiSampling=4
     
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 simulationSettings = exu.SimulationSettings() #takes currently set values or default values
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/stepSize)
@@ -448,10 +448,10 @@ SC.visualizationSettings.openGL.shadow = 0.4
 # SC.visualizationSettings.contact.showSearchTreeCells = 1
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
     
 # pTCP = mbs.GetSensorValues(sTCP)
 # print('pTCP=',pTCP)
@@ -464,7 +464,7 @@ mbs.SolveDynamic(simulationSettings,
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False
-    exu.StopRenderer()
+    SC.renderer.Stop()
 
 if True:
 #%%++++++++++

@@ -93,7 +93,7 @@ print(mbs)
 
 useGraphics = True
 if useGraphics: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 simulationSettings = exu.SimulationSettings()
 simulationSettings.timeIntegration.numberOfSteps = 100*200
@@ -131,8 +131,8 @@ print('static tip displacement (y)=', u[1])
 staticError = u[1]-(-0.44056224799446486)
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() 
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() 
 
 
 

@@ -23,7 +23,7 @@ from exudyn.graphicsDataUtilities import *
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-print("version=", exu.GetVersionString())
+print("version=", exu.config.Version())
 
 #nBodiesList = [10,20,50,100,200,500,1000,2000,5000,10000]
 nBodiesList = [20,40,100,400,1000,5000]
@@ -89,8 +89,8 @@ for nBodies in nBodiesList:
     SC.visualizationSettings.nodes.showBasis = True
     SC.visualizationSettings.nodes.basisSize = 0.015
 
-    #exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    #SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
 
     threadsList = [1,2,3,4,6,8,10,12]#,14,16]#,20,24]
     #threadsList = [1,4,10]#,14,16]#,20,24]
@@ -130,8 +130,8 @@ for nBodies in nBodiesList:
                  'newton increment CPU time':tNewtonIncrementList,
                  }]
 
-    #SC.WaitForRenderEngineStopFlag()
-    #exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    #SC.renderer.Stop() #safely close rendering window!
 
 print("results=",results)
 

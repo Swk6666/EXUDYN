@@ -29,7 +29,7 @@ except:
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-exu.Print('EXUDYN version='+exu.GetVersionString())
+exu.Print('EXUDYN version='+exu.config.Version())
 
 L=0.5
 mass = 1.6          #mass in kg
@@ -114,14 +114,14 @@ simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1
 simulationSettings.displayStatistics = True
 simulationSettings.timeIntegration.verboseMode = 1
 
-#exu.StartRenderer()              #start graphics visualization
-#mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+#SC.renderer.Start()              #start graphics visualization
+#SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
 #start solver:q
 mbs.SolveDynamic(simulationSettings)
 
-#SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-#exu.StopRenderer()               #safely close rendering window!
+#SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+#SC.renderer.Stop()               #safely close rendering window!
 
 #evaluate final (=current) output values
 # u = mbs.GetNodeOutput(n1, exu.OutputVariableType.Position)

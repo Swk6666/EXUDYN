@@ -49,8 +49,6 @@ initialRotationCar = RotationMatrixZ(0)
 v0 = 10 #initial car velocity in y-direction
 rSteering = -200*0
 
-#v0 = [0,0,0]                                   #initial translational velocity
-#print("v0Car=",v0)
 
 #%%++++++++++++++++++++++++++++++
 #ground parameters
@@ -241,7 +239,6 @@ for iWheel in range(nWheels):
 
     #drive:
     if iWheel < 2: #only on back wheels
-        #print('wheel ', iWheel, ' has TSD')
         #torsional spring damper acts around Z-axis -> requires rotation marker to rotate from x to z axis
         #damping here represents a P-control on andular velocity using the offset
         oTSD = mbs0.AddObject(TorsionalSpringDamper(markerNumbers=[mCarAxle, mWheel],
@@ -507,9 +504,9 @@ if doSimulatorCoupling:
 
     if useGraphics:
         if False: #for testing only
-            exu.StartRenderer()
+            SC.renderer.Start()
             if 'renderState' in exu.sys:
-                SC.SetRenderState(exu.sys['renderState'])
+                SC.renderer.SetState(exu.sys['renderState'])
 
 
 
@@ -538,17 +535,16 @@ if doSimulatorCoupling:
                     mbs0.systemData.SetTime(t, exu.ConfigurationType.Visualization) #for visualization
                     mbs0.systemData.SetTime(t, exu.ConfigurationType.Current) #for visualization
                     if i%200==0 or t==tEnd: 
-                        mbs0.SendRedrawSignal()
+                        SC.renderer.SendRedrawSignal()
                     stop = mbs1.GetRenderEngineStopFlag()
                     if stop: break
         
-                    #print('t=',t)
                 explicitSolver.FinalizeSolver(mbs1, simulationSettings)
-                print('time spent=',time.time()-start)
+                exu.Print('time spent=',time.time()-start)
                 
                 if useGraphics:
-                    SC.WaitForRenderEngineStopFlag()
-                    exu.StopRenderer() #safely close rendering window!
+                    SC.renderer.DoIdleTasks()
+                    SC.renderer.Stop() #safely close rendering window!
                 
             sys.exit()
     
@@ -582,10 +578,10 @@ carContact = np.zeros(6)
 def PreStepUserFunction(mbs, t):
     global mbs0, mbs1, explicitSolver, stepSize, simulationSettings1,\
         nCarMbs0, carMbs1ODE2index, lastWritten, contactForces, carContact, stepCnt
-    #print('*t=',t)    
+    #exu.Print('*t=',t)    
     # if t < stepSize*2:
-    #     print('mbs0:\n',mbs0)
-    #     print('mbs1:\n',mbs1)
+    #     exu.Print('mbs0:\n',mbs0)
+    #     exu.Print('mbs1:\n',mbs1)
 
     #+++++++++++++++++++++++++++++++++
     #retrieve state of car:
@@ -605,12 +601,10 @@ def PreStepUserFunction(mbs, t):
     if abs(t-lastWritten) >= 0.01-1e-7:
         explicitSolver.output.writeToSolutionFile = True
         lastWritten = t
-        # print('car vel=',np.round(v,2))
-        # print('carContact:',np.round(carContact,2))
         stepCnt+=1
         if stepCnt == 10:
             stepCnt = 0
-            print('car vel=',np.round(v[:3],3))
+            exu.Print('car vel=',np.round(v[:3],3))
             
     
     # # #solve one explicit step:
@@ -637,9 +631,9 @@ mbs0.SetPreStepUserFunction(PreStepUserFunction)
 #++++++++++++++++++++++++++++++++++++++
 #start implicit solver which calls explicit solver in every preStepUserFunction
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
+        SC.renderer.SetState(exu.sys['renderState'])
     #mbs0.WaitForUserToContinue()
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/stepSize)
@@ -656,7 +650,6 @@ else:
 
     for i in range(int(tEnd/stepSize)+1):
         t = i * stepSize #end time
-        #print(t)
         explicitSolver.output.verboseMode = i%100==0
         # implicitSolver.output.verboseMode = i%100==0
 
@@ -668,28 +661,26 @@ else:
                           solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
                           updateInitialValues=True)
 
-        #if i%200==0 or t==tEnd: mbs0.SendRedrawSignal()
         stop = mbs1.GetRenderEngineStopFlag()
         if stop: break
 
-        #print('t=',t)
 
     #finalize solver and adjust solver parameters for solution viewer
     simulationSettings1.solutionSettings.writeSolutionToFile = True
     simulationSettings1.solutionSettings.writeFileFooter = False
     explicitSolver.FinalizeSolver(mbs1, simulationSettings)
     
-    print('time spent=',time.time()-start)
+    exu.Print('time spent=',time.time()-start)
 
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 if True:
     #in order to see updates of displayed time, we need to make mbs1 to the master
-    SC.DetachFromRenderEngine() #detach from current renderer
+    SC.renderer.Detach() #detach from current renderer
     SC2 = exu.SystemContainer()
     SC2.visualizationSettings = SC.visualizationSettings
     SC2.AppendSystem(mbs1)

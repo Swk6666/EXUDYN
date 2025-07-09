@@ -59,7 +59,7 @@ void CObjectContactFrictionCircleCable2D::ComputeGap(const MarkerDataStructure& 
 
 		//compute shortest distance:
 		//referenceCoordinatePerSegment is the relative position [0..1] of the shortest projected point at the line segment
-		Real distance = HGeometry::ShortestDistanceEndPointsRelativePosition(p0, p1, circleCenter, referenceCoordinatePerSegment[i], contactVector);
+		Real distance = EGeometry::ShortestDistanceEndPointsRelativePosition(p0, p1, circleCenter, referenceCoordinatePerSegment[i], contactVector);
 		if (distance != 0.) { contactVector *= 1. / distance; } //computes normal vector
 
 		gapPerSegment[i] = distance - r;// -offset;

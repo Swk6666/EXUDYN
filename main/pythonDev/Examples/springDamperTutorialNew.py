@@ -21,7 +21,7 @@ import numpy as np #for postprocessing
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 L=0.5
 mass = 1.6          #mass in kg
@@ -65,22 +65,22 @@ h = 0.001    #step size; leads to 1000 steps
 simulationSettings = exu.SimulationSettings()
 simulationSettings.solutionSettings.solutionWritePeriod = 5e-3  #output interval general
 simulationSettings.solutionSettings.sensorsWritePeriod = 5e-3  #output interval of sensors
-simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h) #must be integer
+simulationSettings.timeIntegration.numberOfSteps = tEnd/h
 simulationSettings.timeIntegration.endTime = tEnd
 
 #add some drawing parameters for this example
 SC.visualizationSettings.nodes.drawNodesAsPoint=False
 SC.visualizationSettings.nodes.defaultSize=0.1
 
-exu.StartRenderer()              #start graphics visualization
-mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+SC.renderer.Start()              #start graphics visualization
+SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
 #start solver:
 mbs.SolveDynamic(simulationSettings, 
                  solverType=exu.DynamicSolverType.TrapezoidalIndex2)
 
-SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-exu.StopRenderer()               #safely close rendering window!
+SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+SC.renderer.Stop()               #safely close rendering window!
 
 #evaluate final (=current) output values
 u = mbs.GetNodeOutput(0, exu.OutputVariableType.Position) #Node 0 is first node

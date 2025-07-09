@@ -525,8 +525,8 @@ if False:
     SC.visualizationSettings.contact.showBoundingBoxes = True
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 #simulationSettings.staticSolver.newton.absoluteTolerance = 1e-10
 simulationSettings.staticSolver.adaptiveStep = False
@@ -582,8 +582,8 @@ if useGraphics and False:
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 #%%++++++++++++++++++++++++++++++++++++++++

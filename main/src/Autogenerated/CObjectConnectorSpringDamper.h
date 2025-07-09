@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-02-02  20:40:00 (last modified)
+* @date         2025-05-08  11:59:26 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -93,8 +93,14 @@ public: // AUTO:
         return (parameters.springForceUserFunction!=0);
     }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }

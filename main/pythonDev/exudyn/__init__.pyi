@@ -47,59 +47,22 @@ Shape2D = Shape[T1, T2]
 import exudyn
 from exudyn import (ObjectIndex, NodeIndex, MarkerIndex, LoadIndex, SensorIndex)
 
-from exudyn.graphicsDataUtilities import color4red, color4default
 
 
 
 
 
-@overload
-def GetVersionString(addDetails=False) -> str: ...
 @overload
 def Help() -> None: ...
 @overload
 def RequireVersion(requiredVersionString: str) -> None: ...
 @overload
-def StartRenderer(verbose=0) -> bool: ...
-@overload
-def IsRendererActive() -> bool: ...
-@overload
-def DoRendererIdleTasks(waitSeconds=0) -> None: ...
-@overload
-def SolveStatic(mbs: MainSystem, simulationSettings: SimulationSettings=exudyn.SimulationSettings(), updateInitialValues=False, storeSolver=True) -> bool: ...
-@overload
-def SolveDynamic(mbs: MainSystem, simulationSettings: SimulationSettings=exudyn.SimulationSettings(), solverType: DynamicSolverType=exudyn.DynamicSolverType.GeneralizedAlpha, updateInitialValues=False, storeSolver=True) -> bool: ...
-@overload
-def ComputeODE2Eigenvalues(mbs: MainSystem, simulationSettings: SimulationSettings=exudyn.SimulationSettings(), useSparseSolver=False, numberOfEigenvalues=-1, setInitialValues=True, convert2Frequencies=False) -> bool: ...
-@overload
-def SetOutputPrecision(numberOfDigits: int) -> None: ...
-@overload
-def SetLinalgOutputFormatPython(flagPythonFormat: bool) -> None: ...
-@overload
-def SetWriteToConsole(flag: bool) -> None: ...
-@overload
 def SetWriteToFile(filename: str, flagWriteToFile=True, flagAppend=False, flagFlushAlways=False) -> None: ...
 @overload
-def SetPrintDelayMilliSeconds(delayMilliSeconds: int) -> None: ...
-@overload
-def Print(*args: Any) -> None: ...
-@overload
-def SuppressWarnings(flag: bool) -> None: ...
-@overload
-def InfoStat(writeOutput=True) -> List[int]: ...
-@overload
-def Go() -> None: ...
-@overload
-def Demo1(showAll: bool) -> [MainSystem, SystemContainer]: ...
-@overload
-def Demo2(showAll: bool) -> [MainSystem, SystemContainer]: ...
+def Print() -> None: ...
 @overload
 def InvalidIndex() -> int: ...
 __version__:str
-experimental:Experimental
-special:Special
-special.solver:SpecialSolver
-special.solver.timeout:float
 variables:dict
 sys:dict
 
@@ -265,6 +228,21 @@ class MatrixContainer:
     def SetWithSparseMatrixCSR(self, numberOfRowsInit: int, numberOfColumnsInit: int, pyArrayCSR: Any, useDenseMatrix: bool=False, factor: float=1.) -> None: ...
 
 
+class GraphicsMaterialList:
+    @overload
+    def Reset(self) -> None: ...
+    @overload
+    def Append(self, material: Any) -> int: ...
+    @overload
+    def New(self) -> VSettingsMaterial: ...
+    @overload
+    def Set(self, indexOrName: int, material: Any) -> None: ...
+    @overload
+    def Get(self, indexOrName: int) -> None: ...
+    @overload
+    def GetDict(self, indexOrName: int) -> None: ...
+
+
 class Vector3DList:
     @overload
     def Append(self, pyArray: [float,float,float]) -> None: ...
@@ -415,7 +393,7 @@ class TimeIntegrationSettings:
     endTime: float
     initialStepSize: float
     minimumStepSize: float
-    numberOfSteps: int
+    numberOfSteps: float
     realtimeFactor: float
     realtimeWaitMicroseconds: int
     relativeTolerance: float
@@ -467,6 +445,7 @@ class Parallel:
     numberOfThreads: int
     taskSplitMinItems: int
     taskSplitTasksPerThread: int
+    useLoadBalancing: bool
 
 
 class SimulationSettings:
@@ -520,6 +499,7 @@ class VSettingsGeneral:
 
 
 class VSettingsContour:
+    alphaTransparency: float
     automaticRange: bool
     colorBarPrecision: int
     colorBarTiling: int
@@ -608,7 +588,7 @@ class VSettingsLoads:
     showNumbers: bool
 
 
-class VSettingsSensorTraces:
+class VSettingsTraces:
     lineWidth: float
     listOfPositionSensors: ArrayIndex
     listOfTriadSensors: ArrayIndex
@@ -621,6 +601,7 @@ class VSettingsSensorTraces:
     showPositionTrace: bool
     showTriads: bool
     showVectors: bool
+    timeSpan: float
     traceColors: ArrayFloat
     triadSize: float
     triadsShowEvery: int
@@ -629,7 +610,7 @@ class VSettingsSensorTraces:
 
 
 class VSettingsSensors:
-    traces: VSettingsSensorTraces
+    traces: VSettingsTraces
     defaultColor: Tuple[float,float,float,float]
     defaultSize: float
     drawSimplified: bool
@@ -641,6 +622,7 @@ class VSettingsContact:
     colorBoundingBoxes: Tuple[float,float,float,float]
     colorSearchTree: Tuple[float,float,float,float]
     colorSpheres: Tuple[float,float,float,float]
+    colorTori: Tuple[float,float,float,float]
     colorTriangles: Tuple[float,float,float,float]
     contactForcesFactor: float
     contactPointsDefaultSize: float
@@ -650,7 +632,9 @@ class VSettingsContact:
     showSearchTree: bool
     showSearchTreeCells: bool
     showSpheres: bool
+    showTori: bool
     showTriangles: bool
+    tilingCurves: int
     tilingSpheres: int
 
 
@@ -677,9 +661,52 @@ class VSettingsDialogs:
     openTreeView: bool
 
 
+class VSettingsMaterial:
+    alpha: float
+    baseColor: Tuple[float,float,float]
+    emission: Tuple[float,float,float]
+    ior: float
+    name: str
+    reflectivity: float
+    shininess: float
+    specular: Tuple[float,float,float]
+
+
+class VSettingsRaytracer:
+    material0: VSettingsMaterial
+    material1: VSettingsMaterial
+    material2: VSettingsMaterial
+    material3: VSettingsMaterial
+    material4: VSettingsMaterial
+    material5: VSettingsMaterial
+    material6: VSettingsMaterial
+    material7: VSettingsMaterial
+    material8: VSettingsMaterial
+    material9: VSettingsMaterial
+    ambientLightColor: Tuple[float,float,float,float]
+    backgroundColorReflections: Tuple[float,float,float,float]
+    enable: bool
+    globalFogColor: Tuple[float,float,float,float]
+    globalFogDensity: float
+    imageSizeFactor: int
+    keepWindowActive: bool
+    lightRadius: float
+    lightRadiusVariations: int
+    maxReflectionDepth: int
+    maxTransparencyDepth: int
+    numberOfThreads: int
+    searchTreeFactor: int
+    tilesPerThread: int
+    verbose: bool
+    zBiasLines: float
+    zOffsetCamera: float
+
+
 class VSettingsOpenGL:
+    clippingPlaneColor: Tuple[float,float,float,float]
     clippingPlaneDistance: float
     clippingPlaneNormal: Tuple[float,float,float]
+    depthSorting: bool
     drawFaceNormals: bool
     drawNormalsLength: float
     drawVertexNormals: bool
@@ -688,6 +715,7 @@ class VSettingsOpenGL:
     enableLighting: bool
     faceEdgesColor: Tuple[float,float,float,float]
     facesTransparent: bool
+    faceTransparencyGlobal: float
     initialCenterPoint: Tuple[float,float,float]
     initialMaxSceneSize: float
     initialModelRotation: ArrayLike
@@ -709,6 +737,7 @@ class VSettingsOpenGL:
     lightModelAmbient: Tuple[float,float,float,float]
     lightModelLocalViewer: bool
     lightModelTwoSide: bool
+    lightPositionsInCameraFrame: bool
     lineSmooth: bool
     lineWidth: float
     materialAmbientAndDiffuse: Tuple[float,float,float,float]
@@ -766,6 +795,7 @@ class VSettingsInteractive:
     pauseWithSpacebar: bool
     selectionHighlights: bool
     selectionLeftMouse: bool
+    selectionLeftMouseItemTypes: int
     selectionRightMouse: bool
     selectionRightMouseGraphicsData: bool
     trackMarker: int
@@ -789,6 +819,7 @@ class VisualizationSettings:
     markers: VSettingsMarkers
     nodes: VSettingsNodes
     openGL: VSettingsOpenGL
+    raytracer: VSettingsRaytracer
     sensors: VSettingsSensors
     window: VSettingsWindow
 
@@ -810,6 +841,7 @@ class CSolverTimer:
     postNewton: float
     python: float
     reactionForces: float
+    realtimeIdleCPU: float
     @overload
     def Reset(useSolverTimer) -> None: ...
     @overload
@@ -1254,6 +1286,10 @@ class GeneralContact:
     ancfCableUseExactMethod:bool
     ancfCableNumberOfContactSegments:int
     ancfCableMeasuringSegments:int
+    parallelTaskSplit:int
+    parallelTaskSplitBoundingBoxes:int
+    parallelTaskSplitThreshold:int
+    parallelTaskSplitBoundingBoxesThreshold:int
     @overload
     def SetFrictionPairings(self, frictionPairings: ArrayLike) -> None: ...
     @overload
@@ -1389,8 +1425,6 @@ class MainSystem:
     @overload
     def GetSystemContainer(self) -> SystemContainer: ...
     @overload
-    def WaitForUserToContinue(self, printMessage=True) -> None: ...
-    @overload
     def SendRedrawSignal(self) -> None: ...
     @overload
     def GetRenderEngineStopFlag(self) -> bool: ...
@@ -1441,6 +1475,8 @@ class MainSystem:
     @overload
     def AddNode(self, pyObject: Any) -> NodeIndex: ...
     @overload
+    def DeleteNode(self, nodeNumber, suppressWarnings=False) -> None: ...
+    @overload
     def GetNodeNumber(self, nodeName: str) -> NodeIndex: ...
     @overload
     def GetNode(self, nodeNumber: NodeIndex) -> dict: ...
@@ -1463,6 +1499,8 @@ class MainSystem:
     @overload
     def AddObject(self, pyObject: Any) -> ObjectIndex: ...
     @overload
+    def DeleteObject(self, objectNumber: ObjectIndex, deleteDependentItems: bool=True, suppressWarnings: bool=False) -> None: ...
+    @overload
     def GetObjectNumber(self, objectName: str) -> ObjectIndex: ...
     @overload
     def GetObject(self, objectNumber: ObjectIndex, addGraphicsData: bool=False) -> dict: ...
@@ -1483,6 +1521,8 @@ class MainSystem:
     @overload
     def AddMarker(self, pyObject: Any) -> MarkerIndex: ...
     @overload
+    def DeleteMarker(self, markerNumber: MarkerIndex, suppressWarnings: bool=False) -> None: ...
+    @overload
     def GetMarkerNumber(self, markerName: str) -> MarkerIndex: ...
     @overload
     def GetMarker(self, markerNumber: MarkerIndex) -> dict: ...
@@ -1499,6 +1539,8 @@ class MainSystem:
     @overload
     def AddLoad(self, pyObject: Any) -> LoadIndex: ...
     @overload
+    def DeleteLoad(self, loadNumber: LoadIndex, deleteDependentMarkers: bool=True, suppressWarnings: bool=False) -> None: ...
+    @overload
     def GetLoadNumber(self, loadName: str) -> LoadIndex: ...
     @overload
     def GetLoad(self, loadNumber: LoadIndex) -> dict: ...
@@ -1514,6 +1556,8 @@ class MainSystem:
     def SetLoadParameter(self, loadNumber: LoadIndex, parameterName: str, value: Any) -> None: ...
     @overload
     def AddSensor(self, pyObject: Any) -> SensorIndex: ...
+    @overload
+    def DeleteSensor(self, sensorNumber, suppressWarnings=False) -> None: ...
     @overload
     def GetSensorNumber(self, sensorName: str) -> SensorIndex: ...
     @overload
@@ -1571,10 +1615,25 @@ class MainSystem:
     def CreateDistanceConstraint(self, name='', bodyNumbers=[None, None], localPosition0=[0.,0.,0.], localPosition1=[0.,0.,0.], distance=None, bodyOrNodeList=[None, None], bodyList=[None, None], show=True, drawSize=-1., color=exudyn.graphics.color.default) -> ObjectIndex: ...
 
     @overload
-    def CreateRollingDisc(self, name='', bodyNumbers=[None, None], axisPosition=[], axisVector=[1,0,0], discRadius=0., planePosition=[0,0,0], planeNormal=[0,0,1], constrainedAxes=[1,1,1], show=True, discWidth=0.1, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+    def CreateCoordinateConstraint(self, name='', bodyNumbers=[None, None], coordinates=[None, None], offset=0., factorValue1=1., velocityLevel=False, offsetUserFunction=0, offsetUserFunction_t=0, show=True, drawSize=-1., color=exudyn.graphics.color.default) -> ObjectIndex: ...
 
     @overload
-    def CreateRollingDiscPenalty(self, name='', bodyNumbers=[None, None], axisPosition=[], axisVector=[1,0,0], discRadius=0., planePosition=[0,0,0], planeNormal=[0,0,1], contactStiffness=0., contactDamping=0., dryFriction=[0,0], dryFrictionAngle=0., dryFrictionProportionalZone=0., viscousFriction=[0,0], rollingFrictionViscous=0., useLinearProportionalZone=False, #activeConnector=True, show=True, discWidth=0.1, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+    def CreateRollingDisc(self, name='', bodyNumbers=[None, None], axisPosition=[], axisVector=[1,0,0], discRadius=0., planePosition=[0,0,0], planeNormal=[0,0,1], constrainedAxes=[1,1,1], activeConnector=True, show=True, discWidth=0.1, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+
+    @overload
+    def CreateRollingDiscPenalty(self, name='', bodyNumbers=[None, None], axisPosition=[], axisVector=[1,0,0], discRadius=0., planePosition=[0,0,0], planeNormal=[0,0,1], contactStiffness=0., contactDamping=0., dryFriction=[0,0], dryFrictionAngle=0., dryFrictionProportionalZone=0., viscousFriction=[0,0], rollingFrictionViscous=0., useLinearProportionalZone=False, activeConnector=True, show=True, discWidth=0.1, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+
+    @overload
+    def CreateSphereSphereContact(self, name='', bodyNumbers=[None, None], localPosition0=[0.,0.,0.], localPosition1=[0.,0.,0.], spheresRadii=[-1,-1], isHollowSphere1=False, dynamicFriction=0., frictionProportionalZone=1e-3, contactStiffness=0., contactDamping=0., contactStiffnessExponent=1, constantPullOffForce=0, contactPlasticityRatio=0, adhesionCoefficient=0, adhesionExponent=1, restitutionCoefficient=1, minimumImpactVelocity=0, impactModel=0, dataInitialCoordinates=[0,0,0,0], activeConnector=True, bodyOrNodeList=[None, None], show=False, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+
+    @overload
+    def CreateSphereQuadContact(self, name='', bodyNumbers=[None, None], localPosition0=[0.,0.,0.], radiusSphere=0, quadPoints=exudyn.Vector3DList([[0,0,0],[1,0,0],[1,1,0],[0,1,0]]), includeEdges=15, dynamicFriction=0., frictionProportionalZone=1e-3, contactStiffness=0., contactDamping=0., contactStiffnessExponent=1, restitutionCoefficient=1, minimumImpactVelocity=0, impactModel=0, dataInitialCoordinates=[0,0,0,0], activeConnector=True, bodyOrNodeList=[None, None], localPosition1=[0.,0.,0.], show=False, color=exudyn.graphics.color.default) -> dict containing oContact0 and oContact1 with ObjectIndex of each contact object: ...
+
+    @overload
+    def CreateSphereTriangleContact(self, name='', bodyNumbers=[None, None], localPosition0=[0.,0.,0.], radiusSphere=0, trianglePoints=exudyn.Vector3DList([[0,0,0],[1,0,0],[0,1,0]]), includeEdges=7, dynamicFriction=0., frictionProportionalZone=1e-3, contactStiffness=0., contactDamping=0., contactStiffnessExponent=1, restitutionCoefficient=1, minimumImpactVelocity=0, impactModel=0, dataInitialCoordinates=[0,0,0,0], activeConnector=True, bodyOrNodeList=[None, None], localPosition1=[0.,0.,0.], show=False, color=exudyn.graphics.color.default) -> ObjectIndex: ...
+
+    @overload
+    def CreateKinematicTree(self, name='', listOfTreeLinks=[], referenceCoordinates=None, initialCoordinates=None, initialCoordinates_t=None, gravity=[0.,0.,0.], baseOffset=[0.,0.,0.], linkForces=None, linkTorques=None, jointForceVector=None, jointPositionOffsetVector=None, jointVelocityOffsetVector=None, forceUserFunction=0, jointRadius=0.05, jointWidth=0.12, colors=exudyn.graphics.color.default, colorsJoints=exudyn.graphics.color.default, baseGraphicsDataList=None, linkRoundness=0.2, show=True) -> ObjectIndex: ...
 
     @overload
     def CreateForce(self, name='', bodyNumber=None, loadVector=[0.,0.,0.], localPosition=[0.,0.,0.], bodyFixed=False, loadVectorUserFunction=0, show=True) -> LoadIndex: ...
@@ -1610,6 +1669,38 @@ class MainSystem:
     def DrawSystemGraph(self, showLoads=True, showSensors=True, useItemNames=False, useItemTypes=False, addItemTypeNames=True, multiLine=True, fontSizeFactor=1., layoutDistanceFactor=3., layoutIterations=100, showLegend=True, tightLayout=True) -> [Any, Any, Any]: ...
 
 
+class Renderer:
+    @overload
+    def Start(self, verbose=0) -> bool: ...
+    @overload
+    def Stop(self) -> None: ...
+    @overload
+    def IsActive(self) -> bool: ...
+    @overload
+    def Attach(self) -> bool: ...
+    @overload
+    def Detach(self) -> bool: ...
+    @overload
+    def DoIdleTasks(self, waitSeconds: float=-1., printPauseMessage: bool=True) -> bool: ...
+    @overload
+    def ZoomAll(self) -> None: ...
+    @overload
+    def RedrawAndSaveImage(self) -> None: ...
+    @overload
+    def SendRedrawSignal(self) -> None: ...
+    @overload
+    def GetRenderCount(self) -> bool: ...
+    @overload
+    def GetState(self) -> dict: ...
+    @overload
+    def SetState(self, renderState: dict, waitForRendererFullStartup: bool=True) -> None: ...
+    @overload
+    def GetMouseCoordinates(self, useOpenGLcoordinates: bool=False) -> [float,float]: ...
+    @overload
+    def GetItemSelection(self, resetSelection: bool=True) -> [int,int,int,float]: ...
+    materials:GraphicsMaterialList
+
+
 class SystemContainer:
     @overload
     def Reset(self) -> None: ...
@@ -1626,22 +1717,6 @@ class SystemContainer:
     def GetDictionary(self) -> dict: ...
     @overload
     def SetDictionary(self, systemDict: dict) -> None: ...
-    @overload
-    def GetRenderState(self) -> dict: ...
-    @overload
-    def SetRenderState(self, renderState: dict) -> None: ...
-    @overload
-    def RedrawAndSaveImage(self) -> None: ...
-    @overload
-    def WaitForRenderEngineStopFlag(self) -> bool: ...
-    @overload
-    def RenderEngineZoomAll(self) -> None: ...
-    @overload
-    def AttachToRenderEngine(self) -> bool: ...
-    @overload
-    def DetachFromRenderEngine(self) -> bool: ...
-    @overload
-    def SendRedrawSignal(self) -> None: ...
-    @overload
-    def GetCurrentMouseCoordinates(self, useOpenGLcoordinates: bool=False) -> [float,float]: ...
+    renderer:Renderer
+    visualizationSettings:VisualizationSettings
 

@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2023-05-02  16:50:45 (last modified)
+* @date         2025-05-08  11:59:27 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -107,8 +107,14 @@ public: // AUTO:
     //! AUTO: Read access to parameters
     virtual const CObjectConnectorHydraulicActuatorSimpleParameters& GetParameters() const { return parameters; }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }
@@ -141,6 +147,12 @@ public: // AUTO:
     virtual Index GetNodeNumber(Index localIndex) const override
     {
         return parameters.nodeNumbers[localIndex];
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumbers[localIndex]=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object

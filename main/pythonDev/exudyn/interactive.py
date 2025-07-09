@@ -112,6 +112,7 @@ class InteractiveDialog:
         
         #store init arguments
         self.mbs = mbs
+        self.SC = mbs.GetSystemContainer()
         self.simulationFunction = simulationFunction
         self.simulationSettings = simulationSettings
         self.title = title
@@ -148,13 +149,12 @@ class InteractiveDialog:
             systemScaling = self.tkWindow.call('tk', 'scaling') #obtains current scaling?
         except:
             pass
-        #print('systemScaling=',systemScaling)
         systemScaling = 1
 
         if (self.doTimeIntegration 
             and self.simulationSettings.solutionSettings.writeInitialValues == True 
             and mbs.systemData.AEsize() != 0):
-            print('WARNING: InteractiveDialog:\nyou should set simulationSettings.solutionSettings.writeInitialValues = False in order to avoid erroneous constraint outputs during time integration periods.\n')
+            exudyn.Print('WARNING: InteractiveDialog:\nyou should set simulationSettings.solutionSettings.writeInitialValues = False in order to avoid erroneous constraint outputs during time integration periods.\n')
 
         #change global font size
         if True:
@@ -387,8 +387,8 @@ class InteractiveDialog:
     def ContinuousRunFunction(self, event=None):
         if not self.simulationStopped:
             self.ProcessWidgetStates()
-            exudyn.DoRendererIdleTasks() #for MacOS, but also to open visualization dialog, etc.
-            #print(".")
+            self.SC.renderer.DoIdleTasks(0) #for MacOS, but also to open visualization dialog, etc.
+
             if self.mbs.GetRenderEngineStopFlag() and self.checkRenderStop:
                 self.OnQuit()
             else:
@@ -714,11 +714,11 @@ def AnimateModes(systemContainer, mainSystem, nodeNumber, period = 0.04, stepsPe
         SC.visualizationSettings.openGL.showMeshEdges = (mbs.sys['modeShapeMesh'] & 2) == 2
         
 
-        mbs.SendRedrawSignal()
+        SC.renderer.SendRedrawSignal()
         if not SC.visualizationSettings.general.useMultiThreadedRendering:
-            exudyn.DoRendererIdleTasks()
+            SC.renderer.DoIdleTasks(0)
         if mbs.sys['modeShapeSaveImages'] == 0:
-            SC.RedrawAndSaveImage() #create images for animation
+            SC.renderer.RedrawAndSaveImage() #create images for animation
         else:
             SC.visualizationSettings.exportImages.saveImageFileCounter = 0 #for next mode ...
 
@@ -729,16 +729,16 @@ def AnimateModes(systemContainer, mainSystem, nodeNumber, period = 0.04, stepsPe
            if mbs.sys['modeShapeRunModus'] > 1: #one cylce or static once
                dialog.StartSimulation()
         
-    if not exudyn.IsRendererActive():
-        exudyn.StartRenderer()
-        if 'renderState' in exudyn.sys: SC.SetRenderState(exudyn.sys['renderState']) #load last model view
+    if not SC.renderer.IsActive():
+        SC.renderer.Start()
+        if 'renderState' in exudyn.sys: SC.renderer.SetState(exudyn.sys['renderState']) #load last model view
 
     simulationSettings = exudyn.SimulationSettings() #not used, but needed in dialog
      #   self.mbs.sys['solver'].InitializeSolver(self.mbs, self.simulationSettings)
     simulationSettings.solutionSettings.solutionInformation = 'Mode X'
 
     if not SC.visualizationSettings.general.useMultiThreadedRendering:
-        exudyn.DoRendererIdleTasks() #do an update once
+        SC.renderer.DoIdleTasks(0) #do an update once
 
     titleDialog = 'Animate mode shapes'
     if title != '': 
@@ -756,8 +756,7 @@ def AnimateModes(systemContainer, mainSystem, nodeNumber, period = 0.04, stepsPe
                       useSysVariables=True, #use mbs.sys, not to bloat the mbs.variables of the user
                       )
     
-    #SC.WaitForRenderEngineStopFlag() #not needed, Render window closes when dialog is quit
-    exudyn.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 
 #++++++++++++++++++++++++++++++++++++++++++++
@@ -808,19 +807,19 @@ def SolutionViewer(mainSystem, solution=None, rowIncrement = 1, timeout=0.04, ru
 
     nRows = solution['nRows']
     if nRows == 0:
-        print('ERROR in SolutionViewer: solution file is empty')
+        exudyn.Print('ERROR in SolutionViewer: solution file is empty')
         return
     if (runMode != 0 and runMode != 1 and runMode != 2):
-        print('ERROR in SolutionViewer: illegal run mode:', runMode)
+        exudyn.Print('ERROR in SolutionViewer: illegal run mode:', runMode)
         return
     if (rowIncrement < 1) or (rowIncrement > nRows):
-        print('ERROR in SolutionViewer: rowIncrement must be at least 1 and must not be larger than the number of rows in the solution file')
+        exudyn.Print('ERROR in SolutionViewer: rowIncrement must be at least 1 and must not be larger than the number of rows in the solution file')
     oldUpdateInterval = SC.visualizationSettings.general.graphicsUpdateInterval
     SC.visualizationSettings.general.graphicsUpdateInterval = 0.5*min(timeout, 2e-3) #avoid too small values to run multithreading properly
     mbs.SetRenderEngineStopFlag(False) #not to stop right at the beginning
 
     SetSolutionState(mainSystem, solution, 0, exudyn.ConfigurationType.Visualization)
-    exudyn.DoRendererIdleTasks(timeout)
+    SC.renderer.DoIdleTasks(timeout)
 
     nSteps = int(nRows)              #only make these steps available in slider!
     maxNSteps = max(500,min(nSteps,1200))     #do not allow more steps, because dialog may be too large ...
@@ -869,8 +868,8 @@ def SolutionViewer(mainSystem, solution=None, rowIncrement = 1, timeout=0.04, ru
         # mbs.systemData.SetTime(t, exudyn.ConfigurationType.Visualization)
         SetSolutionState(mainSystem, mbs.sys['solutionViewerSolution'], i, exudyn.ConfigurationType.Visualization)
         
-        mbs.SendRedrawSignal()
-        exudyn.DoRendererIdleTasks() #as there is no simulation, we must do this for singlethreaded renderer to draw graphicsDataUserFunctions
+        SC.renderer.SendRedrawSignal()
+        SC.renderer.DoIdleTasks(0) #as there is no simulation, we must do this for singlethreaded renderer to draw graphicsDataUserFunctions
 
         dialog.period = mbs.sys['solutionViewerPeriod']
 
@@ -881,8 +880,8 @@ def SolutionViewer(mainSystem, solution=None, rowIncrement = 1, timeout=0.04, ru
             dialog.variableList[0][0].set(mbs.sys['solutionViewerStep'])
 
         if mbs.sys['solutionViewerSaveImages'] == 0:
-            #in single-threaded renderer, this causes 2x redraw, so we could save the above exudyn.DoRendererIdleTasks() then ...!
-            SC.RedrawAndSaveImage() #create images for animation
+            #in single-threaded renderer, this causes 2x redraw, so we could save the above SC.renderer.DoIdleTasks(0) then ...!
+            SC.renderer.RedrawAndSaveImage() #create images for animation
 
         if mbs.sys['solutionViewerStep']>mbs.sys['solutionViewerNSteps']-1.:
             #or (mbs.sys['solutionViewerRunModus'] and mbs.sys['solutionViewerStep']==mbs.sys['solutionViewerNSteps']-1.):
@@ -890,23 +889,23 @@ def SolutionViewer(mainSystem, solution=None, rowIncrement = 1, timeout=0.04, ru
             dialog.variableList[0][0].set(0)
 
             SetSolutionState(mainSystem, mbs.sys['solutionViewerSolution'], 0, exudyn.ConfigurationType.Visualization)
-            # mbs.SendRedrawSignal()
-            # exudyn.DoRendererIdleTasks() #as there is no simulation, we must do this for graphicsDataUserFunctions
+            # SC.renderer.SendRedrawSignal()
+            # SC.renderer.DoIdleTasks(0) #as there is no simulation, we must do this for graphicsDataUserFunctions
             if mbs.sys['solutionViewerRunModus'] == 1: #one cylce ==> stop
                 dialog.StartSimulation() #start/stop simulation
 
         
 
-    if not exudyn.IsRendererActive():
-        exudyn.StartRenderer()
-        if 'renderState' in exudyn.sys: SC.SetRenderState(exudyn.sys['renderState']) #load last model view
+    if not SC.renderer.IsActive():
+        SC.renderer.Start()
+        if 'renderState' in exudyn.sys: SC.renderer.SetState(exudyn.sys['renderState']) #load last model view
 
     simulationSettings = exudyn.SimulationSettings() #not used, but needed in dialog
      #   self.mbs.sys['solver'].InitializeSolver(self.mbs, self.simulationSettings)
     simulationSettings.solutionSettings.solutionInformation = ''
 
     if not SC.visualizationSettings.general.useMultiThreadedRendering:
-        exudyn.DoRendererIdleTasks() #do an update once
+        SC.renderer.DoIdleTasks(0) #do an update once
 
     dialogTitle='Solution Viewer'
     if title != '':
@@ -923,8 +922,8 @@ def SolutionViewer(mainSystem, solution=None, rowIncrement = 1, timeout=0.04, ru
                       )
 
 
-    #SC.WaitForRenderEngineStopFlag() #not needed, Render window closes when dialog is quit
-    exudyn.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks(0) #not needed, Render window closes when dialog is quit
+    SC.renderer.Stop() #safely close rendering window!
 
     SC.visualizationSettings.general.graphicsUpdateInterval = oldUpdateInterval #set values back to original
 
@@ -962,8 +961,6 @@ def ConvertImages2Video(workingDir='images',
     except:
         raise ImportError('ConvertImages2Video: ffmpeg not found! install using "pip install ffmpeg-python"')
     
-    print('fps=',inputFrameRate,', ofps=',outputFrameRate)
-    
     kwargs = {}
     if totalFrames is not None:
         kwargs['vframes'] = totalFrames
@@ -972,16 +969,20 @@ def ConvertImages2Video(workingDir='images',
         inputPattern = os.path.join(workingDir, inputPattern)
         outputFile = os.path.join(workingDir, outputFile)
 
-    (
-        ffmpeg
-        .input(filename=inputPattern, framerate=inputFrameRate, start_number=startNumber)
-        .output(filename=outputFile,
-                vcodec='libx264',
-                crf=compressionCRF,
-                vf='fps='+str(outputFrameRate)+',format=yuv420p',
-                **kwargs)
-        .run(overwrite_output=True)
-    )
+    try:
+        (
+            ffmpeg
+            .input(filename=inputPattern, framerate=inputFrameRate, start_number=startNumber)
+            .output(filename=outputFile,
+                    vcodec='libx264',
+                    crf=compressionCRF,
+                    vf='fps='+str(outputFrameRate)+',format=yuv420p',
+                    **kwargs)
+            .run(overwrite_output=True)
+        )
+    except:
+        exudyn.Print('ERROR in ConvertImages2Video:')
+        exudyn.Print('It seems that ffmpeg is not correctly installed; make sure that ffmpeg can be executed from the currently used console by executing "ffmpeg"\n')
 
 #**function: interactive dialog to convert generated images to videos using ffmpeg library; see also ConvertImages2Video() for meaning of values; requires ffmpeg-python to be installed
 def InteractiveImages2Video(closeAfterCreation=False,fontSize=11):

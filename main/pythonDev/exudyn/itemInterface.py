@@ -2427,11 +2427,12 @@ class VObjectContactSphereSphere:
     def __repr__(self):
         return str(dict(self))
 class ObjectContactSphereSphere:
-    def __init__(self, name = '', markerNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), spheresRadii = [-1.,-1.], dynamicFriction = 0., frictionProportionalZone = 1e-3, contactStiffness = 0., contactDamping = 0., contactStiffnessExponent = 1., constantPullOffForce = 0., contactPlasticityRatio = 0., adhesionCoefficient = 0., adhesionExponent = 1., restitutionCoefficient = 1., minimumImpactVelocity = 0., impactModel = 0, activeConnector = True, visualization = {'show': False, 'color': [0.7,0.7,0.7,1.]}):
+    def __init__(self, name = '', markerNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), spheresRadii = [-1.,-1.], isHollowSphere1 = False, dynamicFriction = 0., frictionProportionalZone = 1e-3, contactStiffness = 0., contactDamping = 0., contactStiffnessExponent = 1., constantPullOffForce = 0., contactPlasticityRatio = 0., adhesionCoefficient = 0., adhesionExponent = 1., restitutionCoefficient = 1., minimumImpactVelocity = 0., impactModel = 0, activeConnector = True, visualization = {'show': False, 'color': [0.7,0.7,0.7,1.]}):
         self.name = name
         self.markerNumbers = copy.copy(markerNumbers)
         self.nodeNumber = nodeNumber
         self.spheresRadii = np.array(spheresRadii)
+        self.isHollowSphere1 = isHollowSphere1
         self.dynamicFriction = CheckForValidUReal(dynamicFriction,"dynamicFriction","ObjectContactSphereSphere")
         self.frictionProportionalZone = CheckForValidUReal(frictionProportionalZone,"frictionProportionalZone","ObjectContactSphereSphere")
         self.contactStiffness = CheckForValidUReal(contactStiffness,"contactStiffness","ObjectContactSphereSphere")
@@ -2453,6 +2454,7 @@ class ObjectContactSphereSphere:
         yield 'markerNumbers', self.markerNumbers
         yield 'nodeNumber', self.nodeNumber
         yield 'spheresRadii', self.spheresRadii
+        yield 'isHollowSphere1', self.isHollowSphere1
         yield 'dynamicFriction', self.dynamicFriction
         yield 'frictionProportionalZone', self.frictionProportionalZone
         yield 'contactStiffness', self.contactStiffness
@@ -2462,6 +2464,112 @@ class ObjectContactSphereSphere:
         yield 'contactPlasticityRatio', self.contactPlasticityRatio
         yield 'adhesionCoefficient', self.adhesionCoefficient
         yield 'adhesionExponent', self.adhesionExponent
+        yield 'restitutionCoefficient', self.restitutionCoefficient
+        yield 'minimumImpactVelocity', self.minimumImpactVelocity
+        yield 'impactModel', self.impactModel
+        yield 'activeConnector', self.activeConnector
+        yield 'Vshow', dict(self.visualization)["show"]
+        yield 'Vcolor', dict(self.visualization)["color"]
+
+    def __repr__(self):
+        return str(dict(self))
+class VObjectContactSphereTorus:
+    def __init__(self, show = False, color = [0.7,0.7,0.7,1.]):
+        self.show = show
+        self.color = np.array(color)
+
+    def __iter__(self):
+        yield 'show', self.show
+        yield 'color', self.color
+
+    def __repr__(self):
+        return str(dict(self))
+class ObjectContactSphereTorus:
+    def __init__(self, name = '', markerNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), radiusSphere = 0., torusMajorRadius = 0., torusMinorRadius = 0., torusAxis = [0,0,0], dynamicFriction = 0., frictionProportionalZone = 1e-3, contactStiffness = 0., contactDamping = 0., contactStiffnessExponent = 1., restitutionCoefficient = 1., minimumImpactVelocity = 0., impactModel = 0, activeConnector = True, visualization = {'show': False, 'color': [0.7,0.7,0.7,1.]}):
+        self.name = name
+        self.markerNumbers = copy.copy(markerNumbers)
+        self.nodeNumber = nodeNumber
+        self.radiusSphere = CheckForValidPReal(radiusSphere,"radiusSphere","ObjectContactSphereTorus")
+        self.torusMajorRadius = CheckForValidPReal(torusMajorRadius,"torusMajorRadius","ObjectContactSphereTorus")
+        self.torusMinorRadius = CheckForValidPReal(torusMinorRadius,"torusMinorRadius","ObjectContactSphereTorus")
+        self.torusAxis = np.array(torusAxis)
+        self.dynamicFriction = CheckForValidUReal(dynamicFriction,"dynamicFriction","ObjectContactSphereTorus")
+        self.frictionProportionalZone = CheckForValidUReal(frictionProportionalZone,"frictionProportionalZone","ObjectContactSphereTorus")
+        self.contactStiffness = CheckForValidUReal(contactStiffness,"contactStiffness","ObjectContactSphereTorus")
+        self.contactDamping = CheckForValidUReal(contactDamping,"contactDamping","ObjectContactSphereTorus")
+        self.contactStiffnessExponent = CheckForValidPReal(contactStiffnessExponent,"contactStiffnessExponent","ObjectContactSphereTorus")
+        self.restitutionCoefficient = CheckForValidPReal(restitutionCoefficient,"restitutionCoefficient","ObjectContactSphereTorus")
+        self.minimumImpactVelocity = CheckForValidUReal(minimumImpactVelocity,"minimumImpactVelocity","ObjectContactSphereTorus")
+        self.impactModel = CheckForValidUInt(impactModel,"impactModel","ObjectContactSphereTorus")
+        self.activeConnector = activeConnector
+        self.visualization = CopyDictLevel1(visualization)
+
+    def __iter__(self):
+        yield 'objectType', 'ContactSphereTorus'
+        yield 'name', self.name
+        yield 'markerNumbers', self.markerNumbers
+        yield 'nodeNumber', self.nodeNumber
+        yield 'radiusSphere', self.radiusSphere
+        yield 'torusMajorRadius', self.torusMajorRadius
+        yield 'torusMinorRadius', self.torusMinorRadius
+        yield 'torusAxis', self.torusAxis
+        yield 'dynamicFriction', self.dynamicFriction
+        yield 'frictionProportionalZone', self.frictionProportionalZone
+        yield 'contactStiffness', self.contactStiffness
+        yield 'contactDamping', self.contactDamping
+        yield 'contactStiffnessExponent', self.contactStiffnessExponent
+        yield 'restitutionCoefficient', self.restitutionCoefficient
+        yield 'minimumImpactVelocity', self.minimumImpactVelocity
+        yield 'impactModel', self.impactModel
+        yield 'activeConnector', self.activeConnector
+        yield 'Vshow', dict(self.visualization)["show"]
+        yield 'Vcolor', dict(self.visualization)["color"]
+
+    def __repr__(self):
+        return str(dict(self))
+class VObjectContactSphereTriangle:
+    def __init__(self, show = False, color = [0.7,0.7,0.7,1.]):
+        self.show = show
+        self.color = np.array(color)
+
+    def __iter__(self):
+        yield 'show', self.show
+        yield 'color', self.color
+
+    def __repr__(self):
+        return str(dict(self))
+class ObjectContactSphereTriangle:
+    def __init__(self, name = '', markerNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), radiusSphere = 0., trianglePoints = None, includeEdges = 7, dynamicFriction = 0., frictionProportionalZone = 1e-3, contactStiffness = 0., contactDamping = 0., contactStiffnessExponent = 1., restitutionCoefficient = 1., minimumImpactVelocity = 0., impactModel = 0, activeConnector = True, visualization = {'show': False, 'color': [0.7,0.7,0.7,1.]}):
+        self.name = name
+        self.markerNumbers = copy.copy(markerNumbers)
+        self.nodeNumber = nodeNumber
+        self.radiusSphere = CheckForValidPReal(radiusSphere,"radiusSphere","ObjectContactSphereTriangle")
+        self.trianglePoints = trianglePoints
+        self.includeEdges = CheckForValidUInt(includeEdges,"includeEdges","ObjectContactSphereTriangle")
+        self.dynamicFriction = CheckForValidUReal(dynamicFriction,"dynamicFriction","ObjectContactSphereTriangle")
+        self.frictionProportionalZone = CheckForValidUReal(frictionProportionalZone,"frictionProportionalZone","ObjectContactSphereTriangle")
+        self.contactStiffness = CheckForValidUReal(contactStiffness,"contactStiffness","ObjectContactSphereTriangle")
+        self.contactDamping = CheckForValidUReal(contactDamping,"contactDamping","ObjectContactSphereTriangle")
+        self.contactStiffnessExponent = CheckForValidPReal(contactStiffnessExponent,"contactStiffnessExponent","ObjectContactSphereTriangle")
+        self.restitutionCoefficient = CheckForValidPReal(restitutionCoefficient,"restitutionCoefficient","ObjectContactSphereTriangle")
+        self.minimumImpactVelocity = CheckForValidUReal(minimumImpactVelocity,"minimumImpactVelocity","ObjectContactSphereTriangle")
+        self.impactModel = CheckForValidUInt(impactModel,"impactModel","ObjectContactSphereTriangle")
+        self.activeConnector = activeConnector
+        self.visualization = CopyDictLevel1(visualization)
+
+    def __iter__(self):
+        yield 'objectType', 'ContactSphereTriangle'
+        yield 'name', self.name
+        yield 'markerNumbers', self.markerNumbers
+        yield 'nodeNumber', self.nodeNumber
+        yield 'radiusSphere', self.radiusSphere
+        yield 'trianglePoints', self.trianglePoints
+        yield 'includeEdges', self.includeEdges
+        yield 'dynamicFriction', self.dynamicFriction
+        yield 'frictionProportionalZone', self.frictionProportionalZone
+        yield 'contactStiffness', self.contactStiffness
+        yield 'contactDamping', self.contactDamping
+        yield 'contactStiffnessExponent', self.contactStiffnessExponent
         yield 'restitutionCoefficient', self.restitutionCoefficient
         yield 'minimumImpactVelocity', self.minimumImpactVelocity
         yield 'impactModel', self.impactModel
@@ -2520,8 +2628,8 @@ class ObjectContactCurveCircles:
     def __repr__(self):
         return str(dict(self))
 #add typedef for short usage:
-CamFollower = ObjectContactCurveCircles
-VCamFollower = VObjectContactCurveCircles
+CamFollowerContactPlanar = ObjectContactCurveCircles
+VCamFollowerContactPlanar = VObjectContactCurveCircles
 
 class VObjectJointGeneric:
     def __init__(self, show = True, axesRadius = 0.1, axesLength = 0.4, color = [-1.,-1.,-1.,-1.]):
@@ -2909,55 +3017,6 @@ class ObjectJointALEMoving2D:
 ALEMovingJoint2D = ObjectJointALEMoving2D
 VALEMovingJoint2D = VObjectJointALEMoving2D
 
-class VObjectContactFrictionCircleCable2DOld:
-    def __init__(self, show = True, drawSize = -1., color = [-1.,-1.,-1.,-1.]):
-        self.show = show
-        self.drawSize = drawSize
-        self.color = np.array(color)
-
-    def __iter__(self):
-        yield 'show', self.show
-        yield 'drawSize', self.drawSize
-        yield 'color', self.color
-
-    def __repr__(self):
-        return str(dict(self))
-class ObjectContactFrictionCircleCable2DOld:
-    def __init__(self, name = '', markerNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), numberOfContactSegments = 3, contactStiffness = 0., contactDamping = 0., frictionVelocityPenalty = 0., frictionStiffness = 0., frictionCoefficient = 0., circleRadius = 0., offset = 0., activeConnector = True, visualization = {'show': True, 'drawSize': -1., 'color': [-1.,-1.,-1.,-1.]}):
-        self.name = name
-        self.markerNumbers = copy.copy(markerNumbers)
-        self.nodeNumber = nodeNumber
-        self.numberOfContactSegments = CheckForValidPInt(numberOfContactSegments,"numberOfContactSegments","ObjectContactFrictionCircleCable2DOld")
-        self.contactStiffness = CheckForValidUReal(contactStiffness,"contactStiffness","ObjectContactFrictionCircleCable2DOld")
-        self.contactDamping = CheckForValidUReal(contactDamping,"contactDamping","ObjectContactFrictionCircleCable2DOld")
-        self.frictionVelocityPenalty = CheckForValidUReal(frictionVelocityPenalty,"frictionVelocityPenalty","ObjectContactFrictionCircleCable2DOld")
-        self.frictionStiffness = CheckForValidUReal(frictionStiffness,"frictionStiffness","ObjectContactFrictionCircleCable2DOld")
-        self.frictionCoefficient = CheckForValidUReal(frictionCoefficient,"frictionCoefficient","ObjectContactFrictionCircleCable2DOld")
-        self.circleRadius = CheckForValidUReal(circleRadius,"circleRadius","ObjectContactFrictionCircleCable2DOld")
-        self.offset = offset
-        self.activeConnector = activeConnector
-        self.visualization = CopyDictLevel1(visualization)
-
-    def __iter__(self):
-        yield 'objectType', 'ContactFrictionCircleCable2DOld'
-        yield 'name', self.name
-        yield 'markerNumbers', self.markerNumbers
-        yield 'nodeNumber', self.nodeNumber
-        yield 'numberOfContactSegments', self.numberOfContactSegments
-        yield 'contactStiffness', self.contactStiffness
-        yield 'contactDamping', self.contactDamping
-        yield 'frictionVelocityPenalty', self.frictionVelocityPenalty
-        yield 'frictionStiffness', self.frictionStiffness
-        yield 'frictionCoefficient', self.frictionCoefficient
-        yield 'circleRadius', self.circleRadius
-        yield 'offset', self.offset
-        yield 'activeConnector', self.activeConnector
-        yield 'Vshow', dict(self.visualization)["show"]
-        yield 'VdrawSize', dict(self.visualization)["drawSize"]
-        yield 'Vcolor', dict(self.visualization)["color"]
-
-    def __repr__(self):
-        return str(dict(self))
 #+++++++++++++++++++++++++++++++
 #MARKER
 class VMarkerBodyMass:
@@ -3173,6 +3232,70 @@ class MarkerNodeRotationCoordinate:
         yield 'name', self.name
         yield 'nodeNumber', self.nodeNumber
         yield 'rotationCoordinate', self.rotationCoordinate
+        yield 'Vshow', dict(self.visualization)["show"]
+
+    def __repr__(self):
+        return str(dict(self))
+class VMarkerBodiesRelativeTranslationCoordinate:
+    def __init__(self, show = True):
+        self.show = show
+
+    def __iter__(self):
+        yield 'show', self.show
+
+    def __repr__(self):
+        return str(dict(self))
+class MarkerBodiesRelativeTranslationCoordinate:
+    def __init__(self, name = '', bodyNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], localPosition0 = [0.,0.,0.], localPosition1 = [0.,0.,0.], axis0 = [1.,0.,0.], offset = 0., visualization = {'show': True}):
+        self.name = name
+        self.bodyNumbers = copy.copy(bodyNumbers)
+        self.localPosition0 = np.array(localPosition0)
+        self.localPosition1 = np.array(localPosition1)
+        self.axis0 = np.array(axis0)
+        self.offset = offset
+        self.visualization = CopyDictLevel1(visualization)
+
+    def __iter__(self):
+        yield 'markerType', 'BodiesRelativeTranslationCoordinate'
+        yield 'name', self.name
+        yield 'bodyNumbers', self.bodyNumbers
+        yield 'localPosition0', self.localPosition0
+        yield 'localPosition1', self.localPosition1
+        yield 'axis0', self.axis0
+        yield 'offset', self.offset
+        yield 'Vshow', dict(self.visualization)["show"]
+
+    def __repr__(self):
+        return str(dict(self))
+class VMarkerBodiesRelativeRotationCoordinate:
+    def __init__(self, show = True):
+        self.show = show
+
+    def __iter__(self):
+        yield 'show', self.show
+
+    def __repr__(self):
+        return str(dict(self))
+class MarkerBodiesRelativeRotationCoordinate:
+    def __init__(self, name = '', bodyNumbers = [ exudyn.InvalidIndex(), exudyn.InvalidIndex() ], nodeNumber = exudyn.InvalidIndex(), localPosition0 = [0.,0.,0.], localPosition1 = [0.,0.,0.], axis0 = [1.,0.,0.], offset = 0., visualization = {'show': True}):
+        self.name = name
+        self.bodyNumbers = copy.copy(bodyNumbers)
+        self.nodeNumber = nodeNumber
+        self.localPosition0 = np.array(localPosition0)
+        self.localPosition1 = np.array(localPosition1)
+        self.axis0 = np.array(axis0)
+        self.offset = offset
+        self.visualization = CopyDictLevel1(visualization)
+
+    def __iter__(self):
+        yield 'markerType', 'BodiesRelativeRotationCoordinate'
+        yield 'name', self.name
+        yield 'bodyNumbers', self.bodyNumbers
+        yield 'nodeNumber', self.nodeNumber
+        yield 'localPosition0', self.localPosition0
+        yield 'localPosition1', self.localPosition1
+        yield 'axis0', self.axis0
+        yield 'offset', self.offset
         yield 'Vshow', dict(self.visualization)["show"]
 
     def __repr__(self):

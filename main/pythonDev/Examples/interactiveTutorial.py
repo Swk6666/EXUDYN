@@ -27,7 +27,7 @@ mbs
 mbs.interactiveMode=True
 
 #start graphics visualization
-exu.StartRenderer()
+SC.renderer.Start()
 
 #better visible nodes:
 SC.visualizationSettings.nodes.drawNodesAsPoint=False
@@ -57,7 +57,7 @@ mbs.Assemble()
 mbs.SolveDynamic(exu.SimulationSettings())
 
 #stop rendering window
-exu.StopRenderer()
+SC.renderer.Stop()
 
 #visualize results:
 mbs.SolutionViewer()

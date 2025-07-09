@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2023-04-08  17:28:10 (last modified)
+* @date         2025-05-05  23:17:53 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -76,6 +76,12 @@ public: // AUTO:
     virtual Index GetNodeNumber() const override
     {
         return parameters.nodeNumber;
+    }
+
+    //! AUTO:  change bodyNumber
+    virtual void SetNodeNumber(Index nodeNumber) override
+    {
+        parameters.nodeNumber = nodeNumber;
     }
 
     //! AUTO:  access to coordinate index

@@ -4,7 +4,7 @@
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -162,7 +162,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -245,7 +245,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -316,7 +316,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -446,7 +446,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -537,7 +537,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -601,7 +601,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -634,7 +634,7 @@ public: // AUTO:
   Real endTime;                                   //!< AUTO: \f$t_{end}\f$: end time of time integration
   Real initialStepSize;                           //!< AUTO: \f$h_{init}\f$: if automaticStepSize=True, initial step size; if initialStepSize==0, max. stepSize, which is (endTime-startTime)/numberOfSteps, is used as initial guess; a good choice of initialStepSize may help the solver to start up faster.
   Real minimumStepSize;                           //!< AUTO: \f$h_{min}\f$: if automaticStepSize=True or adaptiveStep=True: lower limit of time step size, before integrator stops with adaptiveStep; lower limit of automaticStepSize control (continues but raises warning)
-  Index numberOfSteps;                            //!< AUTO: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$
+  Real numberOfSteps;                             //!< AUTO: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$; numberOfSteps can be a float-point type, but must be close to an integer (relative tolerance \f$100\cdot\varepsilon\f$) as it is silently rounded to int
   Real realtimeFactor;                            //!< AUTO: if simulateInRealtime=True, this factor is used to make the simulation slower than realtime (factor < 1) or faster than realtime (factor > 1)
   Index realtimeWaitMicroseconds;                 //!< AUTO: if simulateInRealtime=True, a loop runs which waits realtimeWaitMicroseconds until checking again if the realtime is reached; using larger values leads to less CPU usage but less accurate realtime accuracy; smaller values (< 1000) increase CPU usage but improve realtime accuracy
   Real relativeTolerance;                         //!< AUTO: \f$r_{tol}\f$: if automaticStepSize=True, relative tolerance for the error control; must fulfill \f$r_{tol} \ge 0\f$; see \refSection{sec:ExplicitSolver}
@@ -723,10 +723,10 @@ public: // AUTO:
   //! AUTO: Read (Copy) access to: \f$h_{min}\f$: if automaticStepSize=True or adaptiveStep=True: lower limit of time step size, before integrator stops with adaptiveStep; lower limit of automaticStepSize control (continues but raises warning)
   Real PyGetMinimumStepSize() const { return Real(minimumStepSize); }
 
-  //! AUTO: Set function (needed in pybind) for: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$
-  void PySetNumberOfSteps(const Index& numberOfStepsInit) { numberOfSteps = EXUstd::GetSafelyPInt(numberOfStepsInit,"numberOfSteps"); }
-  //! AUTO: Read (Copy) access to: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$
-  Index PyGetNumberOfSteps() const { return Index(numberOfSteps); }
+  //! AUTO: Set function (needed in pybind) for: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$; numberOfSteps can be a float-point type, but must be close to an integer (relative tolerance \f$100\cdot\varepsilon\f$) as it is silently rounded to int
+  void PySetNumberOfSteps(const Real& numberOfStepsInit) { numberOfSteps = EXUstd::GetSafelyPReal(numberOfStepsInit,"numberOfSteps"); }
+  //! AUTO: Read (Copy) access to: \f$n_{steps}\f$: number of steps in time integration; (maximum) stepSize \f$h\f$ is computed from \f$h = \frac{t_{end} - t_{start}}{n_{steps}}\f$; for automatic stepsize control, this stepSize is the maximum steps size, \f$h_{max} = h\f$; numberOfSteps can be a float-point type, but must be close to an integer (relative tolerance \f$100\cdot\varepsilon\f$) as it is silently rounded to int
+  Real PyGetNumberOfSteps() const { return Real(numberOfSteps); }
 
   //! AUTO: Set function (needed in pybind) for: if simulateInRealtime=True, this factor is used to make the simulation slower than realtime (factor < 1) or faster than realtime (factor > 1)
   void PySetRealtimeFactor(const Real& realtimeFactorInit) { realtimeFactor = EXUstd::GetSafelyPReal(realtimeFactorInit,"realtimeFactor"); }
@@ -822,7 +822,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -994,7 +994,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -1060,7 +1060,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -1085,6 +1085,7 @@ public: // AUTO:
   Index numberOfThreads;                          //!< AUTO: number of threads used for parallel computation (1 == scalar processing); do not use more threads than available threads (in most cases it is good to restrict to the number of cores); currently, only one solver can be started with multithreading; if you use several mbs in parallel (co-simulation), you should use serial computing
   Index taskSplitMinItems;                        //!< AUTO: number of items from which on the tasks are split into subtasks (which slightly increases threading performance; this may be critical for smaller number of objects, should be roughly between 50 and 5000; flag is copied into MainSystem internal flag at InitializeSolverData(...)
   Index taskSplitTasksPerThread;                  //!< AUTO: this is the number of subtasks that every thread receives; minimum is 1, the maximum should not be larger than 100; this factor is 1 as long as the taskSplitMinItems is not reached; flag is copied into MainSystem internal flag at InitializeSolverData(...)
+  bool useLoadBalancing;                          //!< AUTO: if True, parallel computation uses load balancing, which may give better performance in case of non-equilibrated loads; (mobile) Intel CPUs may perform better without load balancing; this flag is coupled to exudyn.special.solver.multiThreadingLoadBalancing (overwritten when solver starts with multithreading)
 
 
 public: // AUTO: 
@@ -1098,6 +1099,7 @@ public: // AUTO:
     numberOfThreads = 1;
     taskSplitMinItems = 50;
     taskSplitTasksPerThread = 16;
+    useLoadBalancing = true;
   };
 
   // AUTO: access functions
@@ -1147,6 +1149,7 @@ public: // AUTO:
     os << "  numberOfThreads = " << numberOfThreads << "\n";
     os << "  taskSplitMinItems = " << taskSplitMinItems << "\n";
     os << "  taskSplitTasksPerThread = " << taskSplitTasksPerThread << "\n";
+    os << "  useLoadBalancing = " << useLoadBalancing << "\n";
     os << "\n";
   }
 
@@ -1165,7 +1168,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:

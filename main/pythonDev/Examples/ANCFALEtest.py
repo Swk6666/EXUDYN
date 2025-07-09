@@ -160,8 +160,8 @@ simulationSettings.displayStatistics = True
 SC.visualizationSettings.loads.show = False
       
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #static step
@@ -187,7 +187,7 @@ mbs.systemData.SetODE2Coordinates_tt(coordinates = mbs.systemData.GetODE2Coordin
                                      configuration = exudyn.ConfigurationType.Initial)
 
 if useGraphics:
-    mbs.WaitForUserToContinue()
+    SC.renderer.DoIdleTasks()
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #finally: solve dynamic problem under self weight
@@ -205,8 +205,8 @@ success = mbs.SolveDynamic(simulationSettings,
                            )
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!        
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!        
 
     plt.close('all')
     if True:

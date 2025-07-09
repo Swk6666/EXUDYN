@@ -304,8 +304,8 @@ def main():
     SC.visualizationSettings.interactive.selectionRightMouse=False
 
 
-    exu.StartRenderer(True)
-    exu.SolveDynamic(mbs, simulationSettings)
+    SC.renderer.Start(True)
+    mbs.SolveDynamic(simulationSettings)
 
     return True
 

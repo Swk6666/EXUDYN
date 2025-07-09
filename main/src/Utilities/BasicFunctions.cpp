@@ -18,6 +18,7 @@
 
 #include "Utilities/BasicDefinitions.h" //includes stdoutput.h
 #include "Utilities/BasicFunctions.h"
+#include "Utilities/AdvancedStuff.h"
 
 //! namespace EXUstd = Exudyn standard functions
 namespace EXUstd {

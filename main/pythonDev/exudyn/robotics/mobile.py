@@ -131,7 +131,7 @@ def MobileRobot2MBS(mbs, mobileRobot, markerGround, flagGraphicsRollers=True, *a
             stlGrafics = graphics.FromSTLfileASCII(mobileRobot['platformStlFile'],color=[1,1,1,1])
             graphicsPlatformList += [stlGrafics]
         except:
-            print('stl not found, maybe wrong directory, use box instead')
+            exu.Print('stl not found, maybe wrong directory, use box instead')
             graphicsPlatformList += [graphics.Brick(centerPoint=[0,0,2.0],size=[lCar, wCar-1.1*wWheel, hCar], color=graphics.color.steelblue[0:3]+[0.2])]
 
     rb = mbs.CreateRigidBody(inertia=inertiaPlatform,
@@ -315,7 +315,7 @@ class MobileKinematics:
     def __init__(self, R, lx, ly, flagAdjusted = False, lcx=0, lcy=0, wheeltype=0): 
         if wheeltype ==0: cc = 1
         elif wheeltype == 1: cc = -1
-        else: print('wheeltype {} not implemented (yet)!'.format(wheeltype))
+        else: exu.Print('wheeltype {} not implemented (yet)!'.format(wheeltype))
         
         if not(flagAdjusted): 
             self.Jacobian = 1/R * np.array([[1, -cc, -lx - cc*ly], 
@@ -434,11 +434,11 @@ def Generatrix2Polynomial(param, GeneratrixFunction, tol=1e-14, nFit=101, nTest 
         #break for loop if tolerance reached
         if max(abs(err[i])) < tol:
             ibest = i
-            # print('tolerance reached for order '+ str(order[i]) + '.')
+            # exu.Print('tolerance reached for order '+ str(order[i]) + '.')
             break
     maxErr = np.max(np.abs(err),1)
     if np.min(maxErr) > tol:
-        print('Warning: err fitted polynomial = ' + str(np.min(maxErr))+  ' of Polynomial > tol = ' + str(tol))
+        exu.Print('Warning: err fitted polynomial = ' + str(np.min(maxErr))+  ' of Polynomial > tol = ' + str(tol))
         ibest = np.argmin(maxErr)
     param['aPoly'] = coefficients[ibest]
     param['aPoly0'] = coefficients[1] # use for starting point of Newton
@@ -522,7 +522,7 @@ def MecanumXYphi2WheelVelocities(xVel, yVel, angVel, R, Lx, Ly, wheeltype):
                             [-1,-1,+LxLy2]])    
         return mat @ [xVel, yVel, angVel]
     elif wheeltype == 2: # standard wheel
-        print('Warning! Standardwheel not implemented yet, this Function is only a Placeholder!')
+        exu.Print('Warning! Standardwheel not implemented yet, this Function is only a Placeholder!')
         LxLy2 = (Lx+Ly)/2
         mat = (1/R)*np.array([[-1,+1,+LxLy2],
                             [-1,-1,-LxLy2],
@@ -541,9 +541,9 @@ def MecanumWheelVelocity2XYphi(w, R, Lx, Ly, wheeltype):
         LxLy2 = (Lx-Ly)/2
         c = -1
     elif wheeltype == 2: 
-        print('ToDo: Implement Standard wheels')
+        exu.Print('ToDo: Implement Standard wheels')
     else: 
-        print('Warning: Only Wheeltypes 0 (O-Configuration) and 1 (X-Configuration) are considered!') 
+        exu.Print('Warning: Only Wheeltypes 0 (O-Configuration) and 1 (X-Configuration) are considered!') 
         return []
     mat = R/(4) * np.array([[1, 1, 1, 1], 
                             [-c, c, c, -c], 

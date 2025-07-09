@@ -67,6 +67,11 @@ void CNodePointGround::GetOutputVariable(OutputVariableType variableType, Config
 		}
 		break;
 	}
+	case OutputVariableType::AngularVelocity: value.SetVector({ 0,0,0 });; break;
+	case OutputVariableType::AngularVelocityLocal: value.SetVector({ 0,0,0 });; break;
+	case OutputVariableType::RotationMatrix: {
+		Matrix3D m(EXUmath::unitMatrix3D); value.SetVector(9, m.GetDataPointer()); break; }
+	case OutputVariableType::Rotation: { value.SetVector({ 0,0,0 }); break; }
 	default:
 		SysError("CNodePointGround::GetOutputVariable failed"); //error should not occur, because types are checked!
 	}

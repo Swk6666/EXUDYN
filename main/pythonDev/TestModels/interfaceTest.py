@@ -21,7 +21,7 @@ SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
 #time.sleep(3)
-print('Exudyn version=',exu.GetVersionString(True))
+exu.Print('Exudyn version=',exu.config.Version(True))
 
 
 n0 = mbs.AddNode(NodePoint())
@@ -37,10 +37,10 @@ for i in range(n):
 
 ts += time.time()
 total += ts
-print('time spent for',n,'nodes: ', ts)
+exu.Print('time spent for',n,'nodes: ', ts)
 
 # time.sleep(5)
-# print('reset mbs')
+# exu.Print('reset mbs')
 # mbs.Reset()
 # time.sleep(5)
 
@@ -55,7 +55,7 @@ for i in range(n):
 
 ts += time.time()
 total += ts
-print('time spent for',n,'objects: ', ts)
+exu.Print('time spent for',n,'objects: ', ts)
 
 ts = -time.time()
 marker=MarkerBodyPosition(bodyNumber=0)
@@ -64,7 +64,7 @@ for i in range(n):
 
 ts += time.time()
 total += ts
-print('time spent for',n,'markers: ', ts)
+exu.Print('time spent for',n,'markers: ', ts)
 
 
 mGround = mbs.AddMarker(MarkerBodyPosition(bodyNumber=0))
@@ -75,17 +75,15 @@ for i in range(n):
 
 ts += time.time()
 total += ts
-print('time spent for',n,'loads: ', ts)
-print('total time : ', total)
-
-#print(mbs)
+exu.Print('time spent for',n,'loads: ', ts)
+exu.Print('total time : ', total)
 
 ts = -time.time()
 for i in range(n):
     mbs.GetObject(i)
 ts += time.time()
 total += ts
-print('time spent for',n,' GetObject: ', ts)
+exu.Print('time spent for',n,' GetObject: ', ts)
 
 
 # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

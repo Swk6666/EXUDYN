@@ -39,6 +39,14 @@ extern PySpecial pySpecial;			//! special features; affects exudyn globally; tre
 
 extern void PyWriteToSysDictionary(const STDstring& key, py::object item);
 
+//external renderer functions from PybindModule.cpp:
+extern Index PyGetRendererUpdateCount();
+extern void PyDoRendererIdleTasks(Real waitSeconds, bool deprecationWarning);
+extern bool PyStartOpenGLRenderer(Index verbose, bool deprecationWarning);
+extern void PyStopOpenGLRenderer(bool deprecationWarning);
+extern bool PyIsRendererActive(bool deprecationWarning);
+
+
 //! function for getting all data and state; for pickling
 py::dict MainSystemContainer::GetDictionary() const
 {
@@ -90,6 +98,27 @@ void MainSystemContainer::SetDictionary(const py::dict& d)
 
 }
 
+bool MainSystemContainer::WaitForRenderEngineStopFlag() 
+{ 
+	renderer.DeprecationWarning("WaitForRenderEngineStopFlag", "DoIdleTasks");
+	return visualizationSystems.DoIdleTasks();
+}
+
+//! DEPRECATED
+//! send renderer zoom all request
+void MainSystemContainer::PyZoomAll() 
+{ 
+	renderer.DeprecationWarning("ZoomAll", "ZoomAll");
+	visualizationSystems.zoomAllRequest = true;
+}
+
+//! DEPRECATED
+//! redraw current view and save image
+void MainSystemContainer::RedrawAndSaveImage() 
+{ 
+	renderer.DeprecationWarning("RedrawAndSaveImage", "RedrawAndSaveImage");
+	visualizationSystems.RedrawAndSaveImage();
+}
 
 
 //can be also used outside MainSystemContainer
@@ -126,6 +155,13 @@ py::dict MainSystemContainer::RenderState2PyDict(const RenderState& state)
 
 	d["mouseCoordinates"] = EPyUtils::SlimVector2NumPy(state.mouseCoordinates);
 	d["openGLcoordinates"] = EPyUtils::SlimVector2NumPy(state.openGLcoordinates);
+
+	//++++++++++++++++++++++++++++++++++++++++++++
+	//last mouse selection
+	d["mouseSelectionMbsNumber"] = state.mouseSelectionMbsNumber;
+	d["mouseSelectionItemType"] = state.mouseSelectionItemType;
+	d["mouseSelectionItemID"] = state.mouseSelectionItemID;
+	d["mouseSelectionZdepth"] = state.mouseSelectionZdepth;
 
 	//for space mouse (3D position + 3D rotation); read ONLY!
 	d["joystickPosition"] = EPyUtils::SlimVector2NumPy(state.joystickPosition);
@@ -172,70 +208,21 @@ py::dict MainSystemContainer::RenderState2PyDict(const RenderState& state)
 //! return current render state to a dictionary; can be used afterwards for initilization of modelview matrix
 py::dict MainSystemContainer::PyGetRenderState() const
 {
-	const RenderState& state = visualizationSystems.renderState;
-
-	return RenderState2PyDict(state);
+	renderer.DeprecationWarning("GetRenderState", "GetState");
+	return renderer.GetState();
 }
+
 //! set current render state with a dictionary
-void MainSystemContainer::PySetRenderState(py::dict renderState)
+void MainSystemContainer::PySetRenderState(py::dict renderState, bool waitForRendererFullStartup)
 {
-	try
-	{
-		RenderState& state = visualizationSystems.renderState;
-			
-		if (renderState.contains("centerPoint"))
-		{
-			EPyUtils::SetSlimVectorTemplateSafely<float, 3>(renderState["centerPoint"], state.centerPoint); //conversion to float works ...
-		}
-		if (renderState.contains("rotationCenterPoint"))
-		{
-			EPyUtils::SetSlimVectorTemplateSafely<float, 3>(renderState["rotationCenterPoint"], state.rotationCenterPoint);
-		}
-		if (renderState.contains("maxSceneSize")) { state.maxSceneSize = py::cast<float>(renderState["maxSceneSize"]); }
-		if (renderState.contains("zoom")) { state.zoom = py::cast<float>(renderState["zoom"]); }
+	renderer.DeprecationWarning("SetRenderState", "SetState");
+	renderer.SetState(renderState, waitForRendererFullStartup);
+}
 
-		if (renderState.contains("currentWindowSize"))
-		{
-			Vector2D windowSize;
-			EPyUtils::SetVector2DSafely(renderState["currentWindowSize"], windowSize); //no effect when changing; maybe changes in future
-			state.currentWindowSize[0] = (Index)windowSize[0];
-			state.currentWindowSize[1] = (Index)windowSize[1];
-		}
-		if (renderState.contains("modelRotation"))
-		{
-			//check if all parts of modelRotation (translation part) shall be modified?
-			Matrix4DF& A = state.modelRotation;
-			Matrix3D R; 
-			EPyUtils::SetNumpyMatrixSafely(renderState["modelRotation"], R);
-			//map rotation matrix to part of 16 components in A; other components untouched!
-			for (Index i = 0; i < 3; i++)
-			{
-				for (Index j = 0; j < 3; j++)
-				{
-					A(i, j) = (float)R(i, j);
-				}
-			}
-		}
-
-		//++++++++++++++++++++++++++++++++++++++++++++
-		//current projection matrix:
-		if (renderState.contains("projectionMatrix"))
-		{
-			Matrix4D m;
-			EPyUtils::SetNumpyMatrixSafely(renderState["projectionMatrix"], m);
-			state.projectionMatrix.CopyFrom(m);
-		}
-		//++++++++++++++++++++++++++++++++++++++++++++
-
-	}
-	catch (const EXUexception& ex)
-	{
-		SysError("EXUDYN raised internal error in SetRenderState(...):\n" + STDstring(ex.what()) + "\nCheck dictionary format.\n");
-	}
-	catch (...) //any other exception
-	{
-		SysError("Unexpected exception during SetRenderState(...)! Check dictionary format.\n");
-	}
+//! this function links the VisualizationSystemContainer to a render engine, such that the changes in the graphics structure drawn upon updates, etc.
+bool MainSystemContainer::AttachToRenderEngine()
+{
+	return renderer.Attach();
 }
 
 //! this function links the VisualizationSystem to renderer; returns true if renderer exists/running
@@ -252,6 +239,12 @@ bool MainSystemContainer::AttachToRenderEngineInternal(bool warnNoRenderer)
 	return false;
 }
 
+//! this function releases the VisualizationSystemContainer from the render engine;
+bool MainSystemContainer::DetachFromRenderEngine()
+{
+	return renderer.Detach();
+}
+
 //! this function releases the VisualizationSystem from the render engine;
 bool MainSystemContainer::DetachFromRenderEngineInternal(bool warnNoRenderer)
 {
@@ -263,14 +256,8 @@ bool MainSystemContainer::DetachFromRenderEngineInternal(bool warnNoRenderer)
 
 py::list MainSystemContainer::PyGetCurrentMouseCoordinates(bool useOpenGLcoordinates) const
 {
-	if (!useOpenGLcoordinates) 
-	{ 
-		return py::cast((std::array<Real, 2>)(visualizationSystems.renderState.mouseCoordinates)); 
-	}
-	else 
-	{ 
-		return py::cast((std::array<Real, 2>)(visualizationSystems.renderState.openGLcoordinates));
-	}
+	renderer.DeprecationWarning("GetCurrentMouseCoordinates","GetMouseCoordinates");
+	return renderer.GetMouseCoordinates(useOpenGLcoordinates);
 }
 //*********************************************************************
 //object factory functions
@@ -345,14 +332,468 @@ MainSystem& MainSystemContainer::GetMainSystem(Index systemNumber)
 	}
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//VISUALIZATION
+
 //! send redraw to all MainSystems
+//! DEPRECATED
 void MainSystemContainer::SendRedrawSignal()
 {
-	for (auto item : mainSystems)
+	renderer.DeprecationWarning("SendRedrawSignal", "SendRedrawSignal");
+	renderer.SendRedrawSignal();
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//MainRenderer
+
+//! start render engine
+bool MainRenderer::Start(Index verbose)
+{
+	return PyStartOpenGLRenderer(verbose, false); //false=no deprecation warning
+}
+
+//! stop render engine
+void MainRenderer::Stop()
+{
+	PyStopOpenGLRenderer(false);
+}
+
+//! check if render engine is activated
+bool MainRenderer::IsActive()
+{
+	return PyIsRendererActive(false);
+}
+
+//! attach render engine to SystemContainer (automatically done for current (=newest) SystemContainer)
+bool MainRenderer::Attach()
+{
+	return mainSystemContainer->AttachToRenderEngineInternal(true);
+}
+
+//! detach render engine from SystemContainer, to be able to attach a new one
+bool MainRenderer::Detach()
+{
+	return mainSystemContainer->DetachFromRenderEngineInternal(true);
+}
+
+
+//! generic function to wait for continue, stop or just process tasks
+//! if -1, it waits for continue/stop; otherwise wait milliseconds (0=no wait)
+bool MainRenderer::DoIdleTasks(Real waitSeconds, bool printPauseMessage)
+{
+	return mainSystemContainer->GetVisualizationSystemContainer().DoIdleTasks(waitSeconds, printPauseMessage);
+}; 
+
+//! send zoom all request for next scene redraw:
+void MainRenderer::ZoomAll() 
+{ 
+	mainSystemContainer->GetVisualizationSystemContainer().zoomAllRequest = true; 
+}
+
+//! redraw current view and save image
+void MainRenderer::RedrawAndSaveImage() 
+{ 
+	mainSystemContainer->GetVisualizationSystemContainer().RedrawAndSaveImage(); 
+}
+
+
+//! send redraw signal for renderer (e.g. if no simulaiton runs, but graphicsData has changed)
+void MainRenderer::SendRedrawSignal()
+{
+	for (auto item : mainSystemContainer->GetMainSystems())
 	{
 		//not necessary, because anyway checked in UpdateGraphicsData ...:
 		//if (item->GetCSystem().IsSystemConsistent()) //otherwise, redraw is impossible ...
 		item->GetCSystem().GetPostProcessData()->SendRedrawSignal();
 	}
 }
+
+//! retrieve number of redraws, can be used to see whether renderer is fully started and first image drawn (zoom all)
+Index MainRenderer::GetRedrawCount() const
+{
+	return PyGetRendererUpdateCount();
+}
+
+//! get render state dictionary
+py::dict MainRenderer::GetState() const
+{
+	return mainSystemContainer->RenderState2PyDict(mainSystemContainer->GetVisualizationSystemContainer().renderState);
+}
+
+//! set render state dictionary
+void MainRenderer::SetState(py::dict renderState, bool waitForRendererFullStartup)
+{
+	RenderState& state = mainSystemContainer->GetVisualizationSystemContainer().renderState;
+	try
+	{
+		if (waitForRendererFullStartup)
+		{
+			//to wait for image to have finished
+			Index waitCnt = 0;
+			while (!PyGetRendererUpdateCount() && waitCnt++ < 100) //this is equivalent to timeout of 2 seconds
+			{
+				PyDoRendererIdleTasks(0.02, false); //shortly wait to complete rendering
+			}
+		}
+
+
+		if (renderState.contains("centerPoint"))
+		{
+			EPyUtils::SetSlimVectorTemplateSafely<float, 3>(renderState["centerPoint"], state.centerPoint); //conversion to float works ...
+		}
+		if (renderState.contains("rotationCenterPoint"))
+		{
+			EPyUtils::SetSlimVectorTemplateSafely<float, 3>(renderState["rotationCenterPoint"], state.rotationCenterPoint);
+		}
+		if (renderState.contains("maxSceneSize")) { state.maxSceneSize = py::cast<float>(renderState["maxSceneSize"]); }
+		if (renderState.contains("zoom")) { state.zoom = py::cast<float>(renderState["zoom"]); }
+
+		if (renderState.contains("currentWindowSize"))
+		{
+			Vector2D windowSize;
+			EPyUtils::SetVector2DSafely(renderState["currentWindowSize"], windowSize); //no effect when changing; maybe changes in future
+			state.currentWindowSize[0] = (Index)windowSize[0];
+			state.currentWindowSize[1] = (Index)windowSize[1];
+		}
+		if (renderState.contains("modelRotation"))
+		{
+			//check if all parts of modelRotation (translation part) shall be modified?
+			Matrix4DF& A = state.modelRotation;
+			Matrix3D R;
+			EPyUtils::SetNumpyMatrixSafely(renderState["modelRotation"], R);
+			//map rotation matrix to part of 16 components in A; other components untouched!
+			for (Index i = 0; i < 3; i++)
+			{
+				for (Index j = 0; j < 3; j++)
+				{
+					A(i, j) = (float)R(i, j);
+				}
+			}
+		}
+
+		//++++++++++++++++++++++++++++++++++++++++++++
+		//current projection matrix:
+		if (renderState.contains("projectionMatrix"))
+		{
+			Matrix4D m;
+			EPyUtils::SetNumpyMatrixSafely(renderState["projectionMatrix"], m);
+			state.projectionMatrix.CopyFrom(m);
+		}
+		//++++++++++++++++++++++++++++++++++++++++++++
+
+		if (renderState.contains("mouseSelectionMbsNumber"))
+		{
+			state.mouseSelectionMbsNumber = py::cast<Index>(renderState["mouseSelectionMbsNumber"]);
+		}
+		if (renderState.contains("mouseSelectionItemType"))
+		{
+			state.mouseSelectionItemType = py::cast<ItemType>(renderState["mouseSelectionItemType"]);
+		}
+		if (renderState.contains("mouseSelectionItemID"))
+		{
+			state.mouseSelectionItemID = py::cast<Index>(renderState["mouseSelectionItemID"]);
+		}
+		if (renderState.contains("mouseSelectionZdepth"))
+		{
+			state.mouseSelectionZdepth = py::cast<float>(renderState["mouseSelectionZdepth"]);
+		}
+
+	}
+	catch (const EXUexception& ex)
+	{
+		SysError("EXUDYN raised internal error in SetRenderState(...):\n" + STDstring(ex.what()) + "\nCheck dictionary format.\n");
+	}
+	catch (...) //any other exception
+	{
+		SysError("Unexpected exception during SetRenderState(...)! Check dictionary format.\n");
+	}
+}
+
+//! get OpenGL coordinates as list, faster than using render state
+py::list MainRenderer::GetMouseCoordinates(bool useOpenGLcoordinates) const
+{
+	if (!useOpenGLcoordinates)
+	{
+		return py::cast((std::array<Real, 2>)(mainSystemContainer->GetVisualizationSystemContainer().renderState.mouseCoordinates));
+	}
+	else
+	{
+		return py::cast((std::array<Real, 2>)(mainSystemContainer->GetVisualizationSystemContainer().renderState.openGLcoordinates));
+	}
+}
+
+//! get infor about item selection and reset selection if flag is set true
+py::list MainRenderer::GetItemSelection(bool resetSelection)
+{
+	RenderState& state = mainSystemContainer->GetVisualizationSystemContainer().renderState;
+	auto itemSelection = py::list();
+	itemSelection.append(state.mouseSelectionMbsNumber);
+	itemSelection.append(state.mouseSelectionItemType);
+	itemSelection.append(state.mouseSelectionItemID);
+	itemSelection.append(state.mouseSelectionZdepth);
+
+	if (resetSelection) 
+	{
+		state.mouseSelectionMbsNumber = 0;
+		state.mouseSelectionItemType = ItemType::_None;
+		state.mouseSelectionItemID = 0;
+		state.mouseSelectionZdepth = 0.f;
+	}
+
+	return itemSelection;
+}
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//MainGraphicsMaterialList
+Index MainGraphicsMaterialList::IndexOrName2Index(py::object indexOrName) const
+{
+	const std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+	Index i = -1;
+	if (EPyUtils::IsPyTypeInteger(indexOrName))
+	{
+		i = py::cast<int>(indexOrName);
+	}
+	else if (EPyUtils::IsPyTypeString(indexOrName))
+	{
+		STDstring name = py::cast<py::str>(indexOrName);
+		for (Index k = 0; k < data.size(); k++)
+		{
+			if (name == data[k].name)
+			{
+				i = k;
+				break;
+			}
+		}
+		CHECKandTHROW(i != -1, "GraphicsMaterialList: indexOrName: name not found");
+	}
+	else
+	{
+		CHECKandTHROWstring("GraphicsMaterialList: indexOrName: indexOrName must be either of string or of int type");
+	}
+	return i;
+
+}
+
+void MainGraphicsMaterialList::SetMaterial(Index i, const VSettingsMaterial& material)
+{
+	std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+	if (i > (Index)data.size() - 1) { data.resize(i + 1); }
+	data[i] = material;
+	//all changes in materials are directly mapped to visualizationSettings
+	if (i < minNumberOfMaterials) { CopyToVisSettings(); }
+}
+
+void MainGraphicsMaterialList::PySetMaterial(py::object indexOrName, py::object material)
+{
+	Index i = IndexOrName2Index(indexOrName);
+	CHECKandTHROW(i >= 0, "GraphicsMaterialList.SetMaterial: index out of range");
+	std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+
+	if (i > (Index)data.size() - 1) { data.resize(i + 1); }
+
+	if (py::isinstance<py::dict>(material))
+	{
+		data[i] = VSettingsMaterial(); //data automatically enlarged!
+		py::dict matDict = py::cast<py::dict> (material);
+		if (matDict.contains("name")) { data[i].name = py::cast<std::string>(matDict["name"]); }
+		if (matDict.contains("baseColor")) { data[i].baseColor = py::cast<std::array<float, 3>>(matDict["baseColor"]); }
+		if (matDict.contains("specular")) { data[i].specular = py::cast<std::array<float, 3>>(matDict["specular"]); }
+		if (matDict.contains("shininess")) { data[i].shininess = py::cast<float>(matDict["shininess"]); }
+		if (matDict.contains("reflectivity")) { data[i].reflectivity = py::cast<float>(matDict["reflectivity"]); }
+		if (matDict.contains("alpha")) { data[i].alpha = py::cast<float>(matDict["alpha"]); }
+		if (matDict.contains("ior")) { data[i].ior = py::cast<float>(matDict["ior"]); }
+		if (matDict.contains("emission")) { data[i].emission = py::cast<std::array<float, 3>>(matDict["emission"]); }
+	}
+	else if (py::isinstance<VSettingsMaterial>(material))
+	{
+		data[i] = py::cast<VSettingsMaterial>(material);
+	}
+	else
+	{
+		PyError("GraphicsMaterialList.SetMaterial: expected VSettingsMaterial or dict with material data, but received" + EXUstd::ToString(material));
+	}
+	if (i < minNumberOfMaterials) { CopyToVisSettings(); }
+}
+
+const VSettingsMaterial& MainGraphicsMaterialList::GetMaterial(py::object indexOrName) const
+{
+	const std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+	Index i = IndexOrName2Index(indexOrName);
+	CHECKandTHROW(EXUstd::IndexIsInRange(i, 0, NumberOfItems()), "GraphicsMaterialList.GetMaterial: index out of range");
+	return data[i];
+}
+
+py::dict MainGraphicsMaterialList::PyGetMaterialDict(py::object indexOrName) const
+{
+	const VSettingsMaterial& mat = GetMaterial(indexOrName);
+	py::dict matDict;
+	matDict["name"] = mat.name;
+	matDict["baseColor"] = mat.baseColor;
+	matDict["specular"] = mat.specular;
+	matDict["shininess"] = mat.shininess;
+	matDict["reflectivity"] = mat.reflectivity;
+	matDict["alpha"] = mat.alpha;
+	matDict["ior"] = mat.ior;
+	matDict["emission"] = mat.emission;
+
+	return matDict;
+}
+
+Index MainGraphicsMaterialList::PyAppend(py::object material)
+{
+	Index i = (Index)mainSystemContainer->GetVisualizationSystemContainer().materials.size();
+	mainSystemContainer->GetVisualizationSystemContainer().materials.push_back(VSettingsMaterial());
+	PySetMaterial(py::int_(i), material);
+	return i;
+}
+
+void MainGraphicsMaterialList::Reset()
+{
+	std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+
+	//data.SetNumberOfItems(minNumberOfMaterials);
+	data.resize(minNumberOfMaterials);
+
+	data[0].name = "default";							//Exudyn's openGL default shiny material
+	data[0].baseColor = Float3({ 0.4f,0.4f,0.9f });		//steelblue; used if triangle color has -1 in R-component
+	data[0].specular = Float3({ 0.6f, 0.6f, 0.6f });
+	data[0].shininess = 32.0f;
+	data[0].reflectivity = 0.f;							//reflectivity (extra computations)
+	data[0].emission = Float3({ 0.0f, 0.0f, 0.0f });	//not self-luminous
+	data[0].ior = 1.f;									//only relevant for transparency
+	data[0].alpha = 1.f;								//alpha-transparency
+
+	data[1].name = "matt";
+	data[1].baseColor = Float3({ 0.f,1.f,0.f });	  //green
+	data[1].specular = Float3({ 0.3f, 0.3f, 0.3f });  // Strong white highlights
+	data[1].shininess = 5.0f;
+	data[1].reflectivity = 0.f;
+	data[1].emission = Float3({ 0.0f, 0.0f, 0.0f }); 
+	data[1].ior = 1.f;
+	data[1].alpha = 1.f;
+
+	data[2].name = "steel";	//slighly reflective
+	data[2].baseColor = Float3({ 0.6f,0.6f,0.6f });	  //grey
+	data[2].specular = Float3({ 0.3f, 0.33f, 0.4f });
+	data[2].shininess = 25.0f;
+	data[2].reflectivity = 0.1f;
+	data[2].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[2].ior = 1.f;
+	data[2].alpha = 1.f;
+
+	
+	data[3].name = "plastic";	//slighly reflective
+	data[3].baseColor = Float3({ 1.f,0.f,0.f });		//red
+	data[3].specular = Float3({ 0.4f, 0.45f, 0.45f });
+	data[3].shininess = 20.0f;
+	data[3].reflectivity = 0.1f;
+	data[3].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[3].ior = 1.f;
+	data[3].alpha = 1.f;
+
+	data[4].name = "chrome"; //metal/chromium (shiny and reflective):
+	data[4].baseColor = Float3({ 0.75f,0.75f,0.75f });	//light grey
+	data[4].specular = Float3({ 0.6f, 0.62f, 0.67f });
+	data[4].shininess = 60.0f;
+	data[4].reflectivity = 0.25f;
+	data[4].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[4].ior = 1.f;
+	data[4].alpha = 1.f;
+
+	data[5].name = "shiny";	//highly reflective and shiny
+	data[5].baseColor = Float3({ 1.f,0.5f,0.f });		//orange
+	data[5].specular = Float3({ 0.7f, 0.65f, 0.7f });
+	data[5].shininess = 100.0f;
+	data[5].reflectivity = 0.50f;
+	data[5].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[5].ior = 1.f;
+	data[5].alpha = 1.f;
+
+	data[6].name = "transparent"; //for user, to adjust via visualization settings
+	data[6].baseColor = Float3({ 0.75f,0.75f,0.75f });	//light grey
+	data[6].specular = Float3({ 0.4f, 0.4f, 0.45f });
+	data[6].shininess = 20.0f;
+	data[6].reflectivity = 0.f;
+	data[6].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[6].ior = 1.05f;
+	data[6].alpha = 0.3f;
+
+	data[7].name = "glass";
+	data[7].baseColor = Float3({ 0.8f,0.8f,0.8f });		//light grey
+	data[7].specular = Float3({ 0.6f, 0.68f, 0.63f });
+	data[7].shininess = 50.0f;
+	data[7].reflectivity = 0.6f;
+	data[7].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[7].ior = 1.5f;
+	data[7].alpha = 0.15f;
+
+	data[8].name = "mirror";
+	data[8].baseColor = Float3({ 0.8f,0.8f,0.8f });		//light grey
+	data[8].specular = Float3({ 0.4f, 0.4f, 0.4f });
+	data[8].shininess = 50.0f;
+	data[8].reflectivity = 0.8f;
+	data[8].emission = Float3({ 0.0f, 0.0f, 0.0f });
+	data[8].ior = 1.f;
+	data[8].alpha = 1.f;
+
+	data[9].name = "emission";
+	data[9].baseColor = Float3({ 0.85f,0.85f,0.7f });	//light yellow
+	data[9].specular = Float3({ 0.6f, 0.6f, 0.6f });
+	data[9].shininess = 20.0f;
+	data[9].reflectivity = 0.f;
+	data[9].emission = Float3({ 0.8f, 0.8f, 0.7f });
+	data[9].ior = 1.f;
+	data[9].alpha = 1.f;
+
+	CopyToVisSettings();
+}
+
+
+
+
+
+void MainGraphicsMaterialList::CopyToVisSettings() const
+{
+	const std::vector<VSettingsMaterial>& data = mainSystemContainer->GetVisualizationSystemContainer().materials;
+
+	VSettingsRaytracer& raytracer = mainSystemContainer->GetVisualizationSystemContainer().settings.raytracer;
+	raytracer.material0 = data[0];
+	raytracer.material1 = data[1];
+	raytracer.material2 = data[2];
+	raytracer.material3 = data[3];
+	raytracer.material4 = data[4];
+	raytracer.material5 = data[5];
+	raytracer.material6 = data[6];
+	raytracer.material7 = data[7];
+	raytracer.material8 = data[8];
+	raytracer.material9 = data[9];
+}
+
+Index MainGraphicsMaterialList::NumberOfItems() const 
+{ 
+	return (Index)mainSystemContainer->GetVisualizationSystemContainer().materials.size();
+}
+
+////! append material
+//void MainGraphicsMaterialList::Append(const VSettingsMaterial& material) 
+//{ 
+//	mainSystemContainer->GetVisualizationSystemContainer().materials.Append(material); 
+//  CopyToVisSettings();
+//}
+
+void MainGraphicsMaterialList::Print(std::ostream& os) const
+{
+	Index cnt = 0;
+	for (auto item : mainSystemContainer->GetVisualizationSystemContainer().materials)
+	{
+		os << "Material " << cnt++ << ":  \n" << item << "\n";
+	}
+	os << "\n";
+}
+
+
 

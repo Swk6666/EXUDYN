@@ -82,7 +82,7 @@ mbs.AddLoad({'loadType': 'ForceVector',  'markerNumber': nBodies-1,  'loadVector
 print(mbs)
 
 mbs.Assemble()
-exu.StartRenderer()
+SC.renderer.Start()
 
 simulationSettings = exu.SimulationSettings()
 
@@ -120,6 +120,6 @@ else:
 
     mbs.SolveStatic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 

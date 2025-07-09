@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2023-01-11  19:34:04 (last modified)
+* @date         2025-06-30  09:37:44 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -30,7 +30,7 @@ public: // AUTO:
     ArrayIndex markerNumbers;                     //!< AUTO: marker m0: position-marker of mass point or rigid body; marker m1: updated marker to ANCF Cable2D element, where the sliding joint currently is attached to; must be initialized with an appropriate (global) marker number according to the starting position of the sliding object; this marker changes with time (PostNewtonStep)
     ArrayIndex slidingMarkerNumbers;              //!< AUTO: a list of sn (global) marker numbers which are are used to update marker1
     Vector slidingMarkerOffsets;                  //!< AUTO: this list contains the offsets of every sliding object (given by slidingMarkerNumbers) w.r.t. to the initial position (0): marker0: offset=0, marker1: offset=Length(cable0), marker2: offset=Length(cable0)+Length(cable1), ...
-    Real slidingOffset;                           //!< AUTO: sliding offset list [SI:m]: a list of sn scalar offsets, which represent the (reference arc) length of all previous sliding cable elements
+    Real slidingOffset;                           //!< AUTO: sliding offset [SI:m]: a scalar offset, which represents the (reference arc) length of all previous sliding cable elements
     ArrayIndex nodeNumbers;                       //!< AUTO: node number of NodeGenericData (GD) with one data coordinate and of NodeGenericODE2 (ALE) with one \hac{ODE2} coordinate
     bool usePenaltyFormulation;                   //!< AUTO: flag, which determines, if the connector is formulated with penalty, but still using algebraic equations (IsPenaltyConnector() still false)
     Real penaltyStiffness;                        //!< AUTO: penalty stiffness [SI:N/m] used if usePenaltyFormulation=True
@@ -84,8 +84,14 @@ public: // AUTO:
     //! AUTO: Read access to parameters
     virtual const CObjectJointALEMoving2DParameters& GetParameters() const { return parameters; }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }
@@ -95,6 +101,12 @@ public: // AUTO:
     {
         CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);
         return parameters.nodeNumbers[localIndex];
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumbers[localIndex]=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object

@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2022-12-13  19:36:36 (last modified)
+* @date         2025-05-06  23:48:36 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -119,6 +119,12 @@ public: // AUTO:
         return parameters.nodeNumber;
     }
 
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumber=nodeNumber;
+    }
+
     //! AUTO:  number of nodes; needed for every object
     virtual Index GetNumberOfNodes() const override
     {
@@ -149,7 +155,11 @@ public: // AUTO:
             (Index)OutputVariableType::Position +
             (Index)OutputVariableType::Displacement +
             (Index)OutputVariableType::Velocity +
-            (Index)OutputVariableType::Acceleration );
+            (Index)OutputVariableType::Acceleration +
+            (Index)OutputVariableType::RotationMatrix +
+            (Index)OutputVariableType::Rotation +
+            (Index)OutputVariableType::AngularVelocity +
+            (Index)OutputVariableType::AngularVelocityLocal );
     }
 
 };

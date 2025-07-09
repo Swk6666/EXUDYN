@@ -71,7 +71,7 @@ def RK_SolveEulersEOMWithProposedApproach(ODE2RHS, v0, w0, tEnd, numberOfSteps, 
         def ComputeStep(ODE2RHS, v0, w0, h):
             return ComputeStepWithRK4(ODE2RHS, v0, w0, h)    
     else:
-        print('wished solver is not available!!')
+        exudyn.Print('requested solver is not available!!')
         
     # compute time step size
     h = tEnd/numberOfSteps
@@ -136,9 +136,9 @@ def LieGroupExplicitRKInitialize(mainSys):
         d = mainSys.GetObject(i)
         if d['objectType'] == 'ConnectorCoordinate':
             if d['factorValue1'] != 1.: 
-                print('ConnectorCoordinate.factorValue1 must be 1., otherwise connector constraint cannot be resolved!')
+                exudyn.Print('ConnectorCoordinate.factorValue1 must be 1., otherwise connector constraint cannot be resolved!')
             elif d['offset'] != 0.: 
-                print('ConnectorCoordinate.offset must be 0., otherwise connector constraint cannot be resolved!')
+                exudyn.Print('ConnectorCoordinate.offset must be 0., otherwise connector constraint cannot be resolved!')
             elif d['activeConnector'] == True: #constrain only if connector is active!
                 markers = d['markerNumbers']
                 coords=[]
@@ -154,7 +154,7 @@ def LieGroupExplicitRKInitialize(mainSys):
                     constrainedCoordinatesList += [coords] #these global coordinates need to be fixed to each other
                 else:
                     constrainedToGroundCoordinatesList += [coords[0]] #this global coordinate needs to be fixed
-#    print("constrained coordinates =",constrainedToGroundCoordinatesList)
+
     mainSys.sys['lieGroupODE2indices'] = lieGroupODE2indices
     mainSys.sys['lieGroupReferenceRotations'] = lieGroupReferenceRotations
     
@@ -168,8 +168,6 @@ def ExplicitRKComputeSystemAcceleration(mainSolver, mainSys, nODE2):
     Fode2 = res[0:nODE2]
     mainSolver.ComputeMassMatrix(mainSys)
     M = mainSolver.GetSystemMassMatrix()
-#    print("Fode2=",Fode2)
-#    print("M=",np.diag(M))
     
     #adjust mass and force for constrained coordinates:
     #cCoords[0] is the relevant coordinate
@@ -236,7 +234,7 @@ def LieGroupUpdateStageSystemCoordinates(mainSys, u0, v0, nODE2, Kprev, kprev, f
         K = Kprev[i1:i2]
         k = kprev[i1:i2]
         u[i1:i2] = elg.CompositionRuleForRotationVectors(vec0, factK*K) - vecRef
-        #print("k=",k, ",factK=", factK, ",omega0=", omega0)
+
         v[i1:i2] = omega0+factK*k #could be omitted
         cnt += 1
 
@@ -254,7 +252,6 @@ def UserFunctionNewtonLieGroupRK4(mainSolver, mainSys, sims):
     h = mainSolver.it.currentStepSize
     tend = mainSys.systemData.GetTime() #end of step time
     t0 = mainSys.systemData.GetTime(exu.ConfigurationType.StartOfStep) #start of step time
-    #print("tstart0=", t0)
 
     nODE2 = mainSolver.GetODE2size()
     #nAE = mainSolver.GetAEsize()

@@ -172,13 +172,13 @@ if True:
     
     # constrainedCoordinates=[]
     
-    exu.SetWriteToConsole(False)
+    exu.config.printToConsole = False
     compeig=mbs.ComputeODE2Eigenvalues(simulationSettings, useSparseSolver=True, 
                                 numberOfEigenvalues= nRigidModes+nModes, 
                                 constrainedCoordinates=constrainedCoordinates,
                                 convert2Frequencies= False)
 
-    exu.SetWriteToConsole(True)
+    exu.config.printToConsole = True
     #print('eigvalues=',np.sqrt(compeig[0][nRigidModes:]))
     print('# '+str(nElements)+' element(s):',list(np.sqrt(compeig[0][nRigidModes:]).round(6)))
 
@@ -207,26 +207,26 @@ if True:
     
 if True: #show modes:
     if useGraphics:
-        exu.StartRenderer()
+        SC.renderer.Start()
     for i in range(nModes):
         iMode = nRigidModes+i
         mbs.systemData.SetODE2Coordinates(5*compeig[1][:,iMode], exudyn.ConfigurationType.Visualization)
         mbs.systemData.SetTime(np.sqrt(compeig[0][iMode]), exudyn.ConfigurationType.Visualization)
-        mbs.SendRedrawSignal()
+        SC.renderer.SendRedrawSignal()
     
-        mbs.WaitForUserToContinue()    
+        SC.renderer.DoIdleTasks()    
 
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
 
 if False: #solve dynamic (but without forces, nothing happens ...)
-    exu.StartRenderer()
+    SC.renderer.Start()
     
     mbs.SolveDynamic(simulationSettings)
     
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 # exudynTestGlobals.testError = uLast[1] - (-2.2115028353806547) 

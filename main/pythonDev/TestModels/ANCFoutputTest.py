@@ -132,16 +132,16 @@ SC.visualizationSettings.contour.outputVariable = exu.OutputVariableType.StrainL
 #SC.visualizationSettings.bodies.beams.crossSectionTiling = 8
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 success = mbs.SolveDynamic(simulationSettings, 
                            exudyn.DynamicSolverType.TrapezoidalIndex2)
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!        
+    SC.renderer.DoIdleTasks()
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!        
 
 
 #%%++++++++++++++++++
@@ -181,16 +181,16 @@ if useGraphics:
         plt.plot(dataVelDiff2[:,0], dataVelDiff2[:,2], 'm-', label='diff vel')
         plt.legend()
 
-        print('angVel  = ', dataAngVel[-1,3])
-        print('rotDiff = ', dataRotDiff[-1,1])
+        exu.Print('angVel  = ', dataAngVel[-1,3])
+        exu.Print('rotDiff = ', dataRotDiff[-1,1])
 
-        print('angAcc     = ', dataAngAcc[-1,3])
-        print('angVelDiff = ', dataAngVelDiff[-1,1])
+        exu.Print('angAcc     = ', dataAngAcc[-1,3])
+        exu.Print('angVelDiff = ', dataAngVelDiff[-1,1])
 
-        print('Vel     = ', dataVel[-1,2])
-        print('rotDiff = ', dataPosDiff[-1,2])
+        exu.Print('Vel     = ', dataVel[-1,2])
+        exu.Print('rotDiff = ', dataPosDiff[-1,2])
 
-        print('Acc     = ', dataAcc[-1,2])
-        print('velDiff = ', dataVelDiff[-1,2])
+        exu.Print('Acc     = ', dataAcc[-1,2])
+        exu.Print('velDiff = ', dataVelDiff[-1,2])
 
 

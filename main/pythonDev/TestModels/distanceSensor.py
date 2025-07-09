@@ -224,10 +224,10 @@ if False: #show bounding boxes
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
 
 
 mbs.SolveDynamic(simulationSettings, 
@@ -236,8 +236,8 @@ mbs.SolveDynamic(simulationSettings,
                  )
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 x=mbs.GetNodeOutput(ancf[0][-1], variableType=exu.OutputVariableType.Position)
 exu.Print('pLast=',list(x),'\n')

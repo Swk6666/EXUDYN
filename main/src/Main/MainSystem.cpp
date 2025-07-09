@@ -365,6 +365,14 @@ bool MainSystem::UnlinkVisualizationSystem()
 	return true;
 }
 
+//! interrupt further computation until user input --> 'pause' function
+void MainSystem::WaitForUserToContinue(bool printMessage, bool deprecationWarning)
+{ 
+	if (deprecationWarning) { PyWarning("MainSystem.WaitForUserToContinue(): function is deprecated; for SystemContainer SC use set SC.renderer.DoIdleTasks() instead"); }
+
+	GetCSystem().GetPostProcessData()->WaitForUserToContinue(printMessage);
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  NODE
@@ -430,6 +438,123 @@ NodeIndex MainSystem::AddMainNodePyClass(const py::object& pyObject)
 	//}
 }
 
+//! Consistently deleta a MainNode from Python
+void MainSystem::PyDeleteNode(const py::object& nodeNumber, bool suppressWarnings)
+{
+	Index deleteItemNumber = EPyUtils::GetNodeIndexSafely(nodeNumber);
+	SystemHasChanged();
+	DeleteNode(deleteItemNumber, suppressWarnings);
+	InteractiveModeActions();
+}
+
+//! Consistently deleta a MainNode from Python
+void MainSystem::DeleteNode(Index deleteItemNumber, bool suppressWarnings)
+{
+	if (EXUstd::IndexIsInRange(deleteItemNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
+	{
+		//delete Node pointers:
+		delete GetCSystem().GetSystemData().GetCNodes()[deleteItemNumber];
+		delete GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationNodes()[deleteItemNumber];
+		delete GetMainSystemData().GetMainNodes()[deleteItemNumber];
+
+		//remove item from list
+		GetCSystem().GetSystemData().GetCNodes().Remove(deleteItemNumber);
+		GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationNodes().Remove(deleteItemNumber);
+		GetMainSystemData().GetMainNodes().Remove(deleteItemNumber);
+
+		//adapt standard names
+		STDstring nodeStr = "node";
+
+		for (Index i = deleteItemNumber; i < GetMainSystemData().GetMainNodes().NumberOfItems(); i++)
+		{
+			MainNode* node = GetMainSystemData().GetMainNodes()[i];
+			if (node->GetName() == nodeStr + EXUstd::ToString(i + 1))
+			{
+				node->GetName() = nodeStr + EXUstd::ToString(i);
+			}
+		}
+
+		//change indices in objects:
+		Index cntObjects = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCObjects())
+		{
+			for (Index i = 0; i < item->GetNumberOfNodes(); i++)
+			{
+				if (item->GetNodeNumber(i) == deleteItemNumber)
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteNode: WARNING: Object with ID " +
+							EXUstd::ToString(cntObjects) +
+							" references to deleted node " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetNodeNumber(i, EXUstd::InvalidIndex);
+				}
+				else if (item->GetNodeNumber(i) > deleteItemNumber)
+				{
+					item->SetNodeNumber(i, item->GetNodeNumber(i) - 1);
+				}
+			}
+			cntObjects++;
+		}
+
+		//change indices in markers:
+		Index cntMarkers = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCMarkers())
+		{
+			if (EXUstd::IsOfType(item->GetType(), Marker::Node)) //might also be Marker::Body
+			{
+				if (item->GetNodeNumber() == deleteItemNumber) //also works for InvalidIndex
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteNode: WARNING: Marker with ID " +
+							EXUstd::ToString(cntMarkers) +
+							" references to deleted node " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetNodeNumber(EXUstd::InvalidIndex);
+				}
+				else if (item->GetNodeNumber() > deleteItemNumber)
+				{
+					item->SetNodeNumber(item->GetNodeNumber() - 1);
+				}
+			}
+			cntMarkers++;
+		}
+
+		//change indices in sensors:
+		Index cntSensors = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCSensors())
+		{
+			//pout << "sensor" << cntSensors << ": type = " << GetSensorTypeString(item->GetType()) << "\n";
+			if (EXUstd::IsOfType(item->GetType(), SensorType::Node) )
+			{
+				if (item->GetNodeNumber() == deleteItemNumber)
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteNode: WARNING: Sensor with ID " +
+							EXUstd::ToString(cntSensors) +
+							" references to deleted node " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetNodeNumber(EXUstd::InvalidIndex);
+				}
+				else if (item->GetNodeNumber() > deleteItemNumber)
+				{
+					item->SetNodeNumber(item->GetNodeNumber() - 1);
+				}
+			}
+			cntSensors++;
+		}
+
+	}
+	else
+	{
+		PyError(STDstring("MainSystem::DeleteNode: access to invalid node number ") + EXUstd::ToString(deleteItemNumber));
+	}
+}
+
+
 //! get node's dictionary by name; does not throw a error message
 NodeIndex MainSystem::PyGetNodeNumber(STDstring nodeName)
 {
@@ -449,13 +574,13 @@ NodeIndex MainSystem::PyGetNodeNumber(STDstring nodeName)
 py::dict MainSystem::PyGetNode(const py::object& itemIndex)
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()) )
 	{
 		return mainSystemData.GetMainNodes().GetItem(nodeNumber)->GetDictionary();
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNode: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+		PyError(STDstring("MainSystem::GetNode: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 		py::dict d;
 		return d;
 	}
@@ -468,7 +593,7 @@ py::dict MainSystem::PyGetNode(const py::object& itemIndex)
 //	if (ind != EXUstd::InvalidIndex) { return PyGetNode(ind); }
 //	else
 //	{
-//		PyError(STDstring("MainSystem::GetNode: invalid access to node '") + nodeName + "'");
+//		PyError(STDstring("MainSystem::GetNode: access to invalid node '") + nodeName + "'");
 //		return py::dict();
 //	}
 //}
@@ -477,7 +602,7 @@ py::dict MainSystem::PyGetNode(const py::object& itemIndex)
 void MainSystem::PyModifyNode(const py::object& itemIndex, py::dict nodeDict)
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		SystemHasChanged();
 		mainSystemData.GetMainNodes().GetItem(nodeNumber)->SetWithDictionary(nodeDict);
@@ -485,7 +610,7 @@ void MainSystem::PyModifyNode(const py::object& itemIndex, py::dict nodeDict)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::ModifyNode: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+		PyError(STDstring("MainSystem::ModifyNode: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 	}
 }
 
@@ -493,13 +618,13 @@ void MainSystem::PyModifyNode(const py::object& itemIndex, py::dict nodeDict)
 //void MainSystem::PyModifyNode(STDstring nodeName, py::dict d)
 //{
 //	Index nodeNumber = PyGetNodeNumber(nodeName);
-//	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+//  if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 //	{
 //		return mainSystemData.GetMainNodes().GetItem(nodeNumber)->SetWithDictionary(d);
 //	}
 //	else
 //	{
-//		PyError(STDstring("ModifyNodeDictionary: invalid access to node '") + nodeName + "'");
+//		PyError(STDstring("ModifyNodeDictionary: access to invalid node '") + nodeName + "'");
 //	}
 //}
 
@@ -532,7 +657,7 @@ py::object MainSystem::PyGetNodeOutputVariable(const py::object& itemIndex, Outp
 {
 
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistentNorReference("GetNodeOutput", configuration, nodeNumber, ItemType::Node);
 		GetMainSystemData().RaiseIfNotOutputVariableTypeForReferenceConfiguration("GetNodeOutput", variableType, configuration, nodeNumber, ItemType::Node);
@@ -541,7 +666,7 @@ py::object MainSystem::PyGetNodeOutputVariable(const py::object& itemIndex, Outp
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNodeOutputVariable: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+		PyError(STDstring("MainSystem::GetNodeOutputVariable: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -551,7 +676,7 @@ py::object MainSystem::PyGetNodeOutputVariable(const py::object& itemIndex, Outp
 Index MainSystem::PyGetNodeODE2Index(const py::object& itemIndex) const
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		if (EXUstd::IsOfType(mainSystemData.GetMainNodes().GetItem(nodeNumber)->GetCNode()->GetNodeGroup(), CNodeGroup::ODE2variables)) //CNodeRigidBodyEP also has AEvariables
 		{
@@ -559,13 +684,13 @@ Index MainSystem::PyGetNodeODE2Index(const py::object& itemIndex) const
 		}
 		else
 		{
-			PyError(STDstring("MainSystem::GetNodeODE2Index: invalid access to node number ") + EXUstd::ToString(nodeNumber) + ": not an ODE2 node");
+			PyError(STDstring("MainSystem::GetNodeODE2Index: access to invalid node number ") + EXUstd::ToString(nodeNumber) + ": not an ODE2 node");
 			return EXUstd::InvalidIndex;
 		}
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNodeODE2Index: invalid access to node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
+		PyError(STDstring("MainSystem::GetNodeODE2Index: access to invalid node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
 		return EXUstd::InvalidIndex;
 	}
 }
@@ -574,7 +699,7 @@ Index MainSystem::PyGetNodeODE2Index(const py::object& itemIndex) const
 Index MainSystem::PyGetNodeODE1Index(const py::object& itemIndex) const
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		if (EXUstd::IsOfType(mainSystemData.GetMainNodes().GetItem(nodeNumber)->GetCNode()->GetNodeGroup(), CNodeGroup::ODE1variables)) //CNodeRigidBodyEP also has AEvariables
 		{
@@ -582,13 +707,13 @@ Index MainSystem::PyGetNodeODE1Index(const py::object& itemIndex) const
 		}
 		else
 		{
-			PyError(STDstring("MainSystem::GetNodeODE1Index: invalid access to node number ") + EXUstd::ToString(nodeNumber) + ": not an ODE1 node");
+			PyError(STDstring("MainSystem::GetNodeODE1Index: access to invalid node number ") + EXUstd::ToString(nodeNumber) + ": not an ODE1 node");
 			return EXUstd::InvalidIndex;
 		}
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNodeODE1Index: invalid access to node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
+		PyError(STDstring("MainSystem::GetNodeODE1Index: access to invalid node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
 		return EXUstd::InvalidIndex;
 	}
 }
@@ -597,7 +722,7 @@ Index MainSystem::PyGetNodeODE1Index(const py::object& itemIndex) const
 Index MainSystem::PyGetNodeAEIndex(const py::object& itemIndex) const
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		if (EXUstd::IsOfType(mainSystemData.GetMainNodes().GetItem(nodeNumber)->GetCNode()->GetNodeGroup(), CNodeGroup::AEvariables)) //CNodeRigidBodyEP also has AEvariables
 		{
@@ -605,13 +730,13 @@ Index MainSystem::PyGetNodeAEIndex(const py::object& itemIndex) const
 		}
 		else
 		{
-			PyError(STDstring("MainSystem::GetNodeAEIndex: invalid access to node number ") + EXUstd::ToString(nodeNumber) + ": not an AE node");
+			PyError(STDstring("MainSystem::GetNodeAEIndex: access to invalid node number ") + EXUstd::ToString(nodeNumber) + ": not an AE node");
 			return EXUstd::InvalidIndex;
 		}
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNodeAEIndex: invalid access to node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
+		PyError(STDstring("MainSystem::GetNodeAEIndex: access to invalid node number ") + EXUstd::ToString(nodeNumber) + " (index does not exist)");
 		return EXUstd::InvalidIndex;
 	}
 }
@@ -621,13 +746,13 @@ Index MainSystem::PyGetNodeAEIndex(const py::object& itemIndex) const
 ////! call pybind object function, possibly with arguments; empty function, to be overwritten in specialized class
 //py::object MainSystem::PyCallNodeFunction(Index nodeNumber, STDstring functionName, py::dict args)
 //{
-//	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+//	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 //	{
 //		return mainSystemData.GetMainNodes().GetItem(nodeNumber)->CallFunction(functionName, args);
 //	}
 //	else
 //	{
-//		PyError(STDstring("MainSystem::ModifyObject: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+//		PyError(STDstring("MainSystem::ModifyObject: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 //		return py::int_(EXUstd::InvalidIndex);
 //		//return py::object();
 //	}
@@ -639,13 +764,13 @@ Index MainSystem::PyGetNodeAEIndex(const py::object& itemIndex) const
 py::object MainSystem::PyGetNodeParameter(const py::object& itemIndex, const STDstring& parameterName) const
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		return mainSystemData.GetMainNodes().GetItem(nodeNumber)->GetParameter(parameterName);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetNodeParameter: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+		PyError(STDstring("MainSystem::GetNodeParameter: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -655,13 +780,13 @@ py::object MainSystem::PyGetNodeParameter(const py::object& itemIndex, const STD
 void MainSystem::PySetNodeParameter(const py::object& itemIndex, const STDstring& parameterName, const py::object& value)
 {
 	Index nodeNumber = EPyUtils::GetNodeIndexSafely(itemIndex);
-	if (nodeNumber < mainSystemData.GetMainNodes().NumberOfItems())
+	if (EXUstd::IndexIsInRange(nodeNumber, 0, mainSystemData.GetMainNodes().NumberOfItems()))
 	{
 		mainSystemData.GetMainNodes().GetItem(nodeNumber)->SetParameter(parameterName, value);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::SetNodeParameter: invalid access to node number ") + EXUstd::ToString(nodeNumber));
+		PyError(STDstring("MainSystem::SetNodeParameter: access to invalid node number ") + EXUstd::ToString(nodeNumber));
 	}
 }
 
@@ -714,6 +839,130 @@ ObjectIndex MainSystem::AddMainObjectPyClass(const py::object& pyObject)
 	return itemIndex;
 }
 
+//! Consistently deleta a MainObject from Python
+void MainSystem::PyDeleteObject(const py::object& objectNumber, bool deleteDependentItems, bool suppressWarnings)
+{
+	Index deleteItemNumber = EPyUtils::GetObjectIndexSafely(objectNumber);
+	if (EXUstd::IndexIsInRange(deleteItemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
+	{
+		SystemHasChanged();
+		//if deleteDependentItems
+		//collect nodes
+		ArrayIndex dependentNodes;
+		ArrayIndex dependentMarkers;
+		if (deleteDependentItems) //use if here, as it may cause problems in some cases
+		{
+			for (Index i=0; i < GetCSystem().GetSystemData().GetCObjects()[deleteItemNumber]->GetNumberOfNodes(); i++)
+			{
+				dependentNodes.Append(GetCSystem().GetSystemData().GetCObjects()[deleteItemNumber]->GetNodeNumber(i));
+			}
+
+			//collect markers in case of constraints
+			if (EXUstd::IsOfType(GetMainSystemData().GetMainObjects()[deleteItemNumber]->GetCObject()->GetType(), CObjectType::Connector))
+			{
+				CObjectConnector* connector = ((CObjectConnector*)GetCSystem().GetSystemData().GetCObjects()[deleteItemNumber]);
+				dependentMarkers = connector->GetMarkerNumbers();
+			}
+		}
+
+		//delete object pointers:
+		delete GetCSystem().GetSystemData().GetCObjects()[deleteItemNumber];
+		delete GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationObjects()[deleteItemNumber];
+		delete GetMainSystemData().GetMainObjects()[deleteItemNumber];
+
+		//remove item from list
+		GetCSystem().GetSystemData().GetCObjects().Remove(deleteItemNumber);
+		GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationObjects().Remove(deleteItemNumber);
+		GetMainSystemData().GetMainObjects().Remove(deleteItemNumber);
+
+
+		//adapt standard names
+		STDstring objectStr = "object";
+
+		for (Index i=deleteItemNumber; i < GetMainSystemData().GetMainObjects().NumberOfItems(); i++)
+		{
+			MainObject* object = GetMainSystemData().GetMainObjects()[i];
+			if (object->GetName() == objectStr + EXUstd::ToString(i+1))
+			{
+				//pout << "RENAME:" << object->GetName() << " into " << objectStr + EXUstd::ToString(i) << "\n";
+				object->GetName() = objectStr + EXUstd::ToString(i);
+			}
+		}
+
+		//change indices in markers:
+		Index cntMarkers = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCMarkers())
+		{
+			if (EXUstd::IsOfType(item->GetType(), Marker::Object)) //might also be Marker::Body
+			{
+				for (Index iLocal = 0; iLocal < item->GetNumberOfObjects(); iLocal++)
+				{
+					if (item->GetObjectNumber(iLocal) == deleteItemNumber)
+					{
+						if (!suppressWarnings) {
+							PyWarning("DeleteObject: WARNING: Marker with ID " +
+								EXUstd::ToString(cntMarkers) +
+								" references to deleted object " +
+								EXUstd::ToString(deleteItemNumber));
+						}
+						item->SetObjectNumber(EXUstd::InvalidIndex, iLocal);
+					}
+					else if (item->GetObjectNumber() > deleteItemNumber)
+					{
+						item->SetObjectNumber(item->GetObjectNumber() - 1, iLocal);
+					}
+				}
+			}
+			cntMarkers++;
+		}
+
+		//change indices in sensors:
+		Index cntSensors = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCSensors())
+		{
+			if (item->HasObjectNumber())
+			{
+				if (item->GetObjectNumber() == deleteItemNumber)
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteObject: WARNING: Sensor with ID " +
+							EXUstd::ToString(cntSensors) +
+							" references to deleted object " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetObjectNumber(EXUstd::InvalidIndex);
+				}
+				else if (item->GetObjectNumber() > deleteItemNumber)
+				{
+					item->SetObjectNumber(item->GetObjectNumber() - 1);
+				}
+			}
+			cntSensors++;
+		}
+
+		if (deleteDependentItems)
+		{
+			//inplace sort; we need to erase items with highest index first
+			EXUstd::QuickSort(dependentMarkers);
+			EXUstd::QuickSort(dependentNodes);
+			for (auto item : EXUstd::Reverse(dependentMarkers))
+			{
+				DeleteMarker(item, suppressWarnings);
+			}
+			for (auto item : EXUstd::Reverse(dependentNodes))
+			{
+				DeleteNode(item, suppressWarnings);
+			}
+		}
+		InteractiveModeActions();
+	}
+	else
+	{
+		PyError(STDstring("MainSystem::DeleteObject: access to invalid object number ") + EXUstd::ToString(deleteItemNumber));
+	}
+}
+
+
 //! get object's dictionary by name; does not throw a error message
 ObjectIndex MainSystem::PyGetObjectNumber(STDstring itemName)
 {
@@ -732,13 +981,13 @@ ObjectIndex MainSystem::PyGetObjectNumber(STDstring itemName)
 py::dict MainSystem::PyGetObject(const py::object& itemIndex, bool addGraphicsData)
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber,0,mainSystemData.GetMainObjects().NumberOfItems()) )
 	{
 		return mainSystemData.GetMainObjects().GetItem(itemNumber)->GetDictionary(addGraphicsData);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetObject: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetObject: access to invalid object number ") + EXUstd::ToString(itemNumber));
 		py::dict d;
 		return d;
 	}
@@ -751,7 +1000,7 @@ py::dict MainSystem::PyGetObject(const py::object& itemIndex, bool addGraphicsDa
 //	if (ind != EXUstd::InvalidIndex) { return PyGetObject(ind); }
 //	else
 //	{
-//		PyError(STDstring("MainSystem::GetObject: invalid access to object '") + itemName + "'");
+//		PyError(STDstring("MainSystem::GetObject: access to invalid object '") + itemName + "'");
 //		return py::dict();
 //	}
 //}
@@ -760,7 +1009,7 @@ py::dict MainSystem::PyGetObject(const py::object& itemIndex, bool addGraphicsDa
 void MainSystem::PyModifyObject(const py::object& itemIndex, py::dict d)
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 	{
 		SystemHasChanged();
 		mainSystemData.GetMainObjects().GetItem(itemNumber)->SetWithDictionary(d);
@@ -768,7 +1017,7 @@ void MainSystem::PyModifyObject(const py::object& itemIndex, py::dict d)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::ModifyObject: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::ModifyObject: access to invalid object number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -806,7 +1055,7 @@ py::dict MainSystem::PyGetObjectDefaults(STDstring typeName)
 //	}
 //	else
 //	{
-//		PyError(STDstring("MainSystem::ModifyObject: invalid access to object number ") + EXUstd::ToString(itemNumber));
+//		PyError(STDstring("MainSystem::ModifyObject: access to invalid object number ") + EXUstd::ToString(itemNumber));
 //		return py::int_(EXUstd::InvalidIndex);
 //		//return py::object();
 //	}
@@ -816,7 +1065,7 @@ py::dict MainSystem::PyGetObjectDefaults(STDstring typeName)
 py::object MainSystem::PyGetObjectOutputVariable(const py::object& itemIndex, OutputVariableType variableType, ConfigurationType configuration) const
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistentOrIllegalConfiguration("GetObjectOutput", configuration, itemNumber, ItemType::Object);
 		GetMainSystemData().RaiseIfNotOutputVariableTypeForReferenceConfiguration("GetObjectOutput", variableType, configuration, itemNumber, ItemType::Object);
@@ -838,7 +1087,7 @@ py::object MainSystem::PyGetObjectOutputVariable(const py::object& itemIndex, Ou
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetObjectOutputVariable: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetObjectOutputVariable: access to invalid object number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -852,7 +1101,7 @@ py::object MainSystem::PyGetObjectOutputVariableBody(const py::object& itemIndex
 {
 
 		Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-		if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+		if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 		{
 			GetMainSystemData().RaiseIfNotConsistentNorReference("GetObjectOutputBody", configuration, itemNumber, ItemType::Object);
 			GetMainSystemData().RaiseIfNotOutputVariableTypeForReferenceConfiguration("GetObjectOutputBody", variableType, configuration, itemNumber, ItemType::Object);
@@ -873,7 +1122,7 @@ py::object MainSystem::PyGetObjectOutputVariableBody(const py::object& itemIndex
 		}
 		else
 		{
-			PyError(STDstring("MainSystem::GetObjectOutputVariableBody: invalid access to object number ") + EXUstd::ToString(itemNumber));
+			PyError(STDstring("MainSystem::GetObjectOutputVariableBody: access to invalid object number ") + EXUstd::ToString(itemNumber));
 			return py::int_(EXUstd::InvalidIndex);
 			//return py::object();
 		}
@@ -884,7 +1133,7 @@ py::object MainSystem::PyGetObjectOutputVariableSuperElement(const py::object& i
 	Index meshNodeNumber, ConfigurationType configuration) const
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistentNorReference("GetObjectOutputSuperElement", configuration, itemNumber, ItemType::Object);
 		GetMainSystemData().RaiseIfNotOutputVariableTypeForReferenceConfiguration("GetObjectOutputVariableSuperElement", variableType, configuration, itemNumber, ItemType::Object);
@@ -892,7 +1141,7 @@ py::object MainSystem::PyGetObjectOutputVariableSuperElement(const py::object& i
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::PyGetObjectOutputVariableSuperElement: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::PyGetObjectOutputVariableSuperElement: access to invalid object number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 	}
 }
@@ -901,13 +1150,13 @@ py::object MainSystem::PyGetObjectOutputVariableSuperElement(const py::object& i
 py::object MainSystem::PyGetObjectParameter(const py::object& itemIndex, const STDstring& parameterName) const
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 	{
 		return mainSystemData.GetMainObjects().GetItem(itemNumber)->GetParameter(parameterName);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetObjectParameter: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetObjectParameter: access to invalid object number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -917,13 +1166,13 @@ py::object MainSystem::PyGetObjectParameter(const py::object& itemIndex, const S
 void MainSystem::PySetObjectParameter(const py::object& itemIndex, const STDstring& parameterName, const py::object& value)
 {
 	Index itemNumber = EPyUtils::GetObjectIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainObjects().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainObjects().NumberOfItems()))
 	{
 		mainSystemData.GetMainObjects().GetItem(itemNumber)->SetParameter(parameterName, value);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::SetObjectParameter: invalid access to object number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::SetObjectParameter: access to invalid object number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -975,6 +1224,132 @@ MarkerIndex MainSystem::AddMainMarkerPyClass(const py::object& pyObject)
 	return itemIndex;
 }
 
+//! Consistently delete a MainMarker from Python
+void MainSystem::PyDeleteMarker(const py::object& markerNumber, bool suppressWarnings)
+{
+	Index deleteItemNumber = EPyUtils::GetMarkerIndexSafely(markerNumber);
+	SystemHasChanged();
+	DeleteMarker(deleteItemNumber, suppressWarnings);
+	InteractiveModeActions();
+}
+
+//! Consistently delete a MainMarker from Python
+void MainSystem::DeleteMarker(Index deleteItemNumber, bool suppressWarnings)
+{
+	if (EXUstd::IndexIsInRange(deleteItemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()))
+	{
+		//delete object pointers:
+		delete GetCSystem().GetSystemData().GetCMarkers()[deleteItemNumber];
+		delete GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationMarkers()[deleteItemNumber];
+		delete GetMainSystemData().GetMainMarkers()[deleteItemNumber];
+
+		//remove item from list
+		GetCSystem().GetSystemData().GetCMarkers().Remove(deleteItemNumber);
+		GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationMarkers().Remove(deleteItemNumber);
+		GetMainSystemData().GetMainMarkers().Remove(deleteItemNumber);
+
+		//adapt standard names
+		STDstring markerStr = "marker";
+		for (Index i = deleteItemNumber; i < GetMainSystemData().GetMainMarkers().NumberOfItems(); i++)
+		{
+			MainMarker* marker = GetMainSystemData().GetMainMarkers()[i];
+			if (marker->GetName() == markerStr + EXUstd::ToString(i + 1))
+			{
+				//pout << "RENAME:" << marker->GetName() << " into " << markerStr + EXUstd::ToString(i) << "\n";
+				marker->GetName() = markerStr + EXUstd::ToString(i);
+			}
+		}
+
+		//change indices in connectors:
+		Index cntObjects = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCObjects())
+		{
+			if (EXUstd::IsOfType(item->GetType(), CObjectType::Connector))
+			{
+				CObjectConnector* connector = (CObjectConnector*)item;
+				const ArrayIndex& markerNumbers = connector->GetMarkerNumbers();
+				for (Index i=0; i < markerNumbers.NumberOfItems(); i++)
+				{
+					Index marker = markerNumbers[i];
+					if (marker == deleteItemNumber)
+					{
+						if (!suppressWarnings) {
+							PyWarning("DeleteMarker: WARNING: Object with ID " +
+								EXUstd::ToString(cntObjects) +
+								" references to deleted Marker " +
+								EXUstd::ToString(deleteItemNumber));
+						}
+						connector->GetMarkerNumbers()[i] = EXUstd::InvalidIndex;
+					}
+					else if (marker > deleteItemNumber)
+					{
+						//pout << "  object " << cntObjects << ": change marker number " << marker << " to " << marker - 1 << "\n";
+						connector->GetMarkerNumbers()[i] = marker - 1;
+					}
+				}
+			}
+			cntObjects++;
+		}
+
+		//change indices in loads:
+		Index cntLoads = 0;
+		for (CLoad* item : GetCSystem().GetSystemData().GetCLoads())
+		{
+			if (item->GetMarkerNumber() == deleteItemNumber)
+			{
+				if (!suppressWarnings) {
+					PyWarning("DeleteMarker: WARNING: Load with ID " +
+						EXUstd::ToString(deleteItemNumber) +
+						" references to deleted Marker " +
+						EXUstd::ToString(deleteItemNumber));
+				}
+				//pout << "Load " << cntLoads << ": deleted marker " << item->GetMarkerNumber() << " is invalid\n";
+				item->SetMarkerNumber(EXUstd::InvalidIndex);
+			}
+			else if (item->GetMarkerNumber() > deleteItemNumber)
+			{
+				//pout << "  load " << cntLoads << ": change marker number " << item->GetMarkerNumber() << " to " << item->GetMarkerNumber() - 1 << "\n";
+				item->SetMarkerNumber(item->GetMarkerNumber()-1);
+			}
+			cntLoads++;
+		}
+
+
+		//change marker indices in sensors:
+		Index cntSensors = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCSensors())
+		{
+			//pout << "sensor" << cntSensors << ": type = " << GetSensorTypeString(item->GetType()) << "\n";
+			if (EXUstd::IsOfType(item->GetType(), SensorType::Marker))
+			{
+				if (item->GetMarkerNumber() == deleteItemNumber)
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteObject: WARNING: Sensor with ID " +
+							EXUstd::ToString(cntSensors) +
+							" references to deleted marker " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetMarkerNumber(EXUstd::InvalidIndex);
+				}
+				else if (item->GetMarkerNumber() > deleteItemNumber)
+				{
+					//pout << "  sensor" << cntSensors << ": change marker " << item->GetMarkerNumber() << " to " << item->GetMarkerNumber() - 1 << "\n";
+					item->SetMarkerNumber(item->GetMarkerNumber() - 1);
+				}
+			}
+			cntSensors++;
+		}
+		//possibly object numbers also in other data structures (visualization, etc.?)
+
+	}
+	else
+	{
+		PyError(STDstring("MainSystem::DeleteMarker: access to invalid marker number ") + EXUstd::ToString(deleteItemNumber));
+	}
+}
+
+
 //! get object's dictionary by name; does not throw a error message
 MarkerIndex MainSystem::PyGetMarkerNumber(STDstring itemName)
 {
@@ -993,13 +1368,13 @@ MarkerIndex MainSystem::PyGetMarkerNumber(STDstring itemName)
 py::dict MainSystem::PyGetMarker(const py::object& itemIndex)
 {
 	Index itemNumber = EPyUtils::GetMarkerIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainMarkers().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()) )
 	{
 		return mainSystemData.GetMainMarkers().GetItem(itemNumber)->GetDictionary();
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetMarker: invalid access to marker number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetMarker: access to invalid marker number ") + EXUstd::ToString(itemNumber));
 		py::dict d;
 		return d;
 	}
@@ -1012,7 +1387,7 @@ py::dict MainSystem::PyGetMarker(const py::object& itemIndex)
 //	if (ind != EXUstd::InvalidIndex) { return PyGetMarker(ind); }
 //	else
 //	{
-//		PyError(STDstring("MainSystem::GetMarker: invalid access to object '") + itemName + "'");
+//		PyError(STDstring("MainSystem::GetMarker: access to invalid object '") + itemName + "'");
 //		return py::dict();
 //	}
 //}
@@ -1021,7 +1396,7 @@ py::dict MainSystem::PyGetMarker(const py::object& itemIndex)
 void MainSystem::PyModifyMarker(const py::object& itemIndex, py::dict d)
 {
 	Index itemNumber = EPyUtils::GetMarkerIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainMarkers().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()))
 	{
 		SystemHasChanged();
 		mainSystemData.GetMainMarkers().GetItem(itemNumber)->SetWithDictionary(d);
@@ -1029,7 +1404,7 @@ void MainSystem::PyModifyMarker(const py::object& itemIndex, py::dict d)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::ModifyMarker: invalid access to marker number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::ModifyMarker: access to invalid marker number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -1062,13 +1437,13 @@ py::dict MainSystem::PyGetMarkerDefaults(STDstring typeName)
 py::object MainSystem::PyGetMarkerParameter(const py::object& itemIndex, const STDstring& parameterName) const
 {
 	Index itemNumber = EPyUtils::GetMarkerIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainMarkers().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()))
 	{
 		return mainSystemData.GetMainMarkers().GetItem(itemNumber)->GetParameter(parameterName);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetMarkerParameter: invalid access to marker number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetMarkerParameter: access to invalid marker number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -1078,13 +1453,13 @@ py::object MainSystem::PyGetMarkerParameter(const py::object& itemIndex, const S
 void MainSystem::PySetMarkerParameter(const py::object& itemIndex, const STDstring& parameterName, const py::object& value)
 {
 	Index itemNumber = EPyUtils::GetMarkerIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainMarkers().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()))
 	{
 		mainSystemData.GetMainMarkers().GetItem(itemNumber)->SetParameter(parameterName, value);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::SetMarkerParameter: invalid access to marker number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::SetMarkerParameter: access to invalid marker number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -1092,7 +1467,7 @@ void MainSystem::PySetMarkerParameter(const py::object& itemIndex, const STDstri
 py::object MainSystem::PyGetMarkerOutputVariable(const py::object& itemIndex, OutputVariableType variableType, ConfigurationType configuration) const
 {
 	Index itemNumber = EPyUtils::GetMarkerIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainMarkers().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainMarkers().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistentNorReference("GetMarkerOutput", configuration, itemNumber, ItemType::Marker);
 		GetMainSystemData().RaiseIfNotOutputVariableTypeForReferenceConfiguration("GetObjectOutputVariableSuperElement", variableType, configuration, itemNumber, ItemType::Marker);
@@ -1102,7 +1477,7 @@ py::object MainSystem::PyGetMarkerOutputVariable(const py::object& itemIndex, Ou
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetMarkerOutput: invalid access to marker number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetMarkerOutput: access to invalid marker number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 	}
 }
@@ -1155,6 +1530,86 @@ LoadIndex MainSystem::AddMainLoadPyClass(const py::object& pyObject)
 	return itemIndex;
 }
 
+//! Consistently delete a MainLoad from Python
+void MainSystem::PyDeleteLoad(const py::object& loadNumber, bool deleteDependentMarkers, bool suppressWarnings)
+{
+	Index deleteItemNumber = EPyUtils::GetLoadIndexSafely(loadNumber);
+	SystemHasChanged();
+	DeleteLoad(deleteItemNumber, deleteDependentMarkers, suppressWarnings);
+	InteractiveModeActions();
+}
+
+//! Consistently delete a MainLoad from Python
+void MainSystem::DeleteLoad(Index deleteItemNumber, bool deleteDependentMarkers, bool suppressWarnings)
+{
+	if (EXUstd::IndexIsInRange(deleteItemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()))
+	{
+		//save marker from load
+		Index dependentMarkerNumber = GetCSystem().GetSystemData().GetCLoads()[deleteItemNumber]->GetMarkerNumber();
+
+		//delete object pointers:
+		delete GetCSystem().GetSystemData().GetCLoads()[deleteItemNumber];
+		delete GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationLoads()[deleteItemNumber];
+		delete GetMainSystemData().GetMainLoads()[deleteItemNumber];
+
+		//remove item from list
+		GetCSystem().GetSystemData().GetCLoads().Remove(deleteItemNumber);
+		GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationLoads().Remove(deleteItemNumber);
+		GetMainSystemData().GetMainLoads().Remove(deleteItemNumber);
+
+		//adapt standard names
+		STDstring loadStr = "load";
+		for (Index i = deleteItemNumber; i < GetMainSystemData().GetMainLoads().NumberOfItems(); i++)
+		{
+			MainLoad* load = GetMainSystemData().GetMainLoads()[i];
+			if (load->GetName() == loadStr + EXUstd::ToString(i + 1))
+			{
+				//pout << "RENAME:" << load->GetName() << " into " << loadStr + EXUstd::ToString(i) << "\n";
+				load->GetName() = loadStr + EXUstd::ToString(i);
+			}
+		}
+
+		//change marker indices in sensors:
+		Index cntSensors = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCSensors())
+		{
+			if (EXUstd::IsOfType(item->GetType(), SensorType::Load))
+			{
+				if (item->GetLoadNumber() == deleteItemNumber)
+				{
+					if (!suppressWarnings) {
+						PyWarning("DeleteSensor: WARNING: Sensor with ID " +
+							EXUstd::ToString(cntSensors) +
+							" references to deleted load " +
+							EXUstd::ToString(deleteItemNumber));
+					}
+					item->SetLoadNumber(EXUstd::InvalidIndex);
+				}
+				else if (item->GetLoadNumber() > deleteItemNumber)
+				{
+					//pout << "  sensor" << cntSensors << ": change load " << item->GetLoadNumber() << " to " << item->GetLoadNumber() - 1 << "\n";
+					item->SetLoadNumber(item->GetLoadNumber() - 1);
+				}
+			}
+			cntSensors++;
+		}
+
+		if (deleteDependentMarkers)
+		{
+			DeleteMarker(dependentMarkerNumber);
+		}
+
+	}
+	else
+	{
+		PyError(STDstring("MainSystem::DeleteLoad: access to invalid load number ") + EXUstd::ToString(deleteItemNumber));
+	}
+}
+
+
+
+
+
 //! get object's dictionary by name; does not throw a error message
 LoadIndex MainSystem::PyGetLoadNumber(STDstring itemName)
 {
@@ -1173,13 +1628,13 @@ LoadIndex MainSystem::PyGetLoadNumber(STDstring itemName)
 py::dict MainSystem::PyGetLoad(const py::object& itemIndex)
 {
 	Index itemNumber = EPyUtils::GetLoadIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainLoads().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()) )
 	{
 		return mainSystemData.GetMainLoads().GetItem(itemNumber)->GetDictionary();
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetLoad: invalid access to load number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetLoad: access to invalid load number ") + EXUstd::ToString(itemNumber));
 		py::dict d;
 		return d;
 	}
@@ -1192,7 +1647,7 @@ py::dict MainSystem::PyGetLoad(const py::object& itemIndex)
 //	if (ind != EXUstd::InvalidIndex) { return PyGetLoad(ind); }
 //	else
 //	{
-//		PyError(STDstring("MainSystem::GetLoad: invalid access to object '") + itemName + "'");
+//		PyError(STDstring("MainSystem::GetLoad: access to invalid object '") + itemName + "'");
 //		return py::dict();
 //	}
 //}
@@ -1201,7 +1656,7 @@ py::dict MainSystem::PyGetLoad(const py::object& itemIndex)
 void MainSystem::PyModifyLoad(const py::object& itemIndex, py::dict d)
 {
 	Index itemNumber = EPyUtils::GetLoadIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainLoads().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()))
 	{
 		SystemHasChanged();
 		mainSystemData.GetMainLoads().GetItem(itemNumber)->SetWithDictionary(d);
@@ -1209,7 +1664,7 @@ void MainSystem::PyModifyLoad(const py::object& itemIndex, py::dict d)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::ModifyLoad: invalid access to load number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::ModifyLoad: access to invalid load number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -1243,7 +1698,7 @@ py::object MainSystem::PyGetLoadValues(const py::object& itemIndex) const
 {
 
 	Index itemNumber = EPyUtils::GetLoadIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainLoads().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistent("GetLoadValues", itemNumber, ItemType::Load);
 		Real t = GetCSystem().GetSystemData().GetCData().GetCurrent().GetTime(); //only current time available
@@ -1251,7 +1706,7 @@ py::object MainSystem::PyGetLoadValues(const py::object& itemIndex) const
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetLoadValues: invalid access to load number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetLoadValues: access to invalid load number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 	}
 }
@@ -1260,13 +1715,13 @@ py::object MainSystem::PyGetLoadValues(const py::object& itemIndex) const
 py::object MainSystem::PyGetLoadParameter(const py::object& itemIndex, const STDstring& parameterName) const
 {
 	Index itemNumber = EPyUtils::GetLoadIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainLoads().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()))
 	{
 		return mainSystemData.GetMainLoads().GetItem(itemNumber)->GetParameter(parameterName);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetLoadParameter: invalid access to load number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetLoadParameter: access to invalid load number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -1276,13 +1731,13 @@ py::object MainSystem::PyGetLoadParameter(const py::object& itemIndex, const STD
 void MainSystem::PySetLoadParameter(const py::object& itemIndex, const STDstring& parameterName, const py::object& value)
 {
 	Index itemNumber = EPyUtils::GetLoadIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainLoads().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainLoads().NumberOfItems()))
 	{
 		mainSystemData.GetMainLoads().GetItem(itemNumber)->SetParameter(parameterName, value);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::SetLoadParameter: invalid access to load number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::SetLoadParameter: access to invalid load number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -1334,6 +1789,80 @@ SensorIndex MainSystem::AddMainSensorPyClass(const py::object& pyObject)
 	return itemIndex;
 }
 
+//! Consistently delete a MainSensor from Python
+void MainSystem::PyDeleteSensor(const py::object& sensorNumber, bool suppressWarnings)
+{
+	Index deleteItemNumber = EPyUtils::GetSensorIndexSafely(sensorNumber);
+	SystemHasChanged();
+	DeleteSensor(deleteItemNumber, suppressWarnings);
+	InteractiveModeActions();
+}
+
+//! Consistently delete a MainSensor from Python
+void MainSystem::DeleteSensor(Index deleteItemNumber, bool suppressWarnings)
+{
+	if (EXUstd::IndexIsInRange(deleteItemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
+	{
+		//delete object pointers:
+		delete GetCSystem().GetSystemData().GetCSensors()[deleteItemNumber];
+		delete GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationSensors()[deleteItemNumber];
+		delete GetMainSystemData().GetMainSensors()[deleteItemNumber];
+
+		//remove item from list
+		GetCSystem().GetSystemData().GetCSensors().Remove(deleteItemNumber);
+		GetVisualizationSystem().GetVisualizationSystemData().GetVisualizationSensors().Remove(deleteItemNumber);
+		GetMainSystemData().GetMainSensors().Remove(deleteItemNumber);
+
+		//adapt standard names
+		STDstring sensorStr = "sensor";
+		for (Index i = deleteItemNumber; i < GetMainSystemData().GetMainSensors().NumberOfItems(); i++)
+		{
+			MainSensor* sensor = GetMainSystemData().GetMainSensors()[i];
+			if (sensor->GetName() == sensorStr + EXUstd::ToString(i + 1))
+			{
+				//pout << "RENAME:" << sensor->GetName() << " into " << sensorStr + EXUstd::ToString(i) << "\n";
+				sensor->GetName() = sensorStr + EXUstd::ToString(i);
+			}
+		}
+
+		//change marker indices in sensors:
+		Index cntSensors = 0;
+		for (auto* item : GetCSystem().GetSystemData().GetCSensors())
+		{
+			if (EXUstd::IsOfType(item->GetType(), SensorType::UserFunction))
+			{
+				for (Index i = 0; i < item->GetNumberOfSensors(); i++)
+				{
+					if (item->GetSensorNumber(i) == deleteItemNumber)
+					{
+						if (!suppressWarnings) {
+							PyWarning("DeleteSensor: WARNING: Sensor with ID " +
+								EXUstd::ToString(cntSensors) + " [" + EXUstd::ToString(i) + "]" +
+								" references to deleted sensor " +
+								EXUstd::ToString(deleteItemNumber));
+						}
+						item->SetSensorNumber(i, EXUstd::InvalidIndex);
+					}
+					else if (item->GetSensorNumber(i) > deleteItemNumber)
+					{
+						pout << "  sensor" << cntSensors << ": change sensor " << item->GetSensorNumber(i) << " [" << EXUstd::ToString(i) <<  "]" << " to " << item->GetSensorNumber(i) - 1 << "\n";
+						item->SetSensorNumber(i, item->GetSensorNumber(i) - 1);
+					}
+				}
+			}
+			cntSensors++;
+		}
+
+	}
+	else
+	{
+		PyError(STDstring("MainSystem::DeleteSensor: access to invalid sensor number ") + EXUstd::ToString(deleteItemNumber));
+	}
+}
+
+
+
+
 //! get object's dictionary by name; does not throw a error message
 SensorIndex MainSystem::PyGetSensorNumber(STDstring itemName)
 {
@@ -1352,13 +1881,13 @@ SensorIndex MainSystem::PyGetSensorNumber(STDstring itemName)
 py::dict MainSystem::PyGetSensor(const py::object& itemIndex)
 {
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()) )
 	{
 		return mainSystemData.GetMainSensors().GetItem(itemNumber)->GetDictionary();
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetSensor: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetSensor: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 		py::dict d;
 		return d;
 	}
@@ -1371,7 +1900,7 @@ py::dict MainSystem::PyGetSensor(const py::object& itemIndex)
 //	if (ind != EXUstd::InvalidIndex) { return PyGetSensor(ind); }
 //	else
 //	{
-//		PyError(STDstring("MainSystem::GetSensor: invalid access to object '") + itemName + "'");
+//		PyError(STDstring("MainSystem::GetSensor: access to invalid object '") + itemName + "'");
 //		return py::dict();
 //	}
 //}
@@ -1380,7 +1909,7 @@ py::dict MainSystem::PyGetSensor(const py::object& itemIndex)
 void MainSystem::PyModifySensor(const py::object& itemIndex, py::dict d)
 {
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
 	{
 		SystemHasChanged();
 		mainSystemData.GetMainSensors().GetItem(itemNumber)->SetWithDictionary(d);
@@ -1388,7 +1917,7 @@ void MainSystem::PyModifySensor(const py::object& itemIndex, py::dict d)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::ModifySensor: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::ModifySensor: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 	}
 }
 
@@ -1422,14 +1951,14 @@ py::object MainSystem::PyGetSensorValues(const py::object& itemIndex, Configurat
 {
 
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
 	{
 		GetMainSystemData().RaiseIfNotConsistentNorReference("GetSensorValues", configuration, itemNumber, ItemType::Sensor);
 		return mainSystemData.GetMainSensors().GetItem(itemNumber)->GetSensorValues(GetCSystem().GetSystemData(), configuration);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetSensorValues: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetSensorValues: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 	}
 }
@@ -1439,7 +1968,7 @@ py::array_t<Real> MainSystem::PyGetSensorStoredData(const py::object& itemIndex)
 {
 
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
 	{
 		if (!mainSystemData.GetMainSensors().GetItem(itemNumber)->GetCSensor()->GetStoreInternalFlag())
 		{
@@ -1450,7 +1979,7 @@ py::array_t<Real> MainSystem::PyGetSensorStoredData(const py::object& itemIndex)
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetSensorStoredData: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetSensorStoredData: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 	}
 }
@@ -1461,13 +1990,13 @@ py::array_t<Real> MainSystem::PyGetSensorStoredData(const py::object& itemIndex)
 py::object MainSystem::PyGetSensorParameter(const py::object& itemIndex, const STDstring& parameterName) const
 {
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
 	{
 		return mainSystemData.GetMainSensors().GetItem(itemNumber)->GetParameter(parameterName);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::GetSensorParameter: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::GetSensorParameter: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 		return py::int_(EXUstd::InvalidIndex);
 		//return py::object();
 	}
@@ -1477,13 +2006,13 @@ py::object MainSystem::PyGetSensorParameter(const py::object& itemIndex, const S
 void MainSystem::PySetSensorParameter(const py::object& itemIndex, const STDstring& parameterName, const py::object& value)
 {
 	Index itemNumber = EPyUtils::GetSensorIndexSafely(itemIndex);
-	if (itemNumber < mainSystemData.GetMainSensors().NumberOfItems())
+	if (EXUstd::IndexIsInRange(itemNumber, 0, mainSystemData.GetMainSensors().NumberOfItems()))
 	{
 		mainSystemData.GetMainSensors().GetItem(itemNumber)->SetParameter(parameterName, value);
 	}
 	else
 	{
-		PyError(STDstring("MainSystem::SetSensorParameter: invalid access to sensor number ") + EXUstd::ToString(itemNumber));
+		PyError(STDstring("MainSystem::SetSensorParameter: access to invalid sensor number ") + EXUstd::ToString(itemNumber));
 	}
 }
 

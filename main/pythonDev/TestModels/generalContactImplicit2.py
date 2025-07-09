@@ -113,9 +113,9 @@ gContact.AddSphereWithMarker(mNode, radius=r, contactStiffness=k, contactDamping
 
 N = m*gFact
 F = mu*N
-print('contact force N =',N)
-print('friction force F=',F)
-print('acceleration    =',F/m)
+exu.Print('contact force N =',N)
+exu.Print('friction force F=',F)
+exu.Print('acceleration    =',F/m)
 
 evalNodes += [nMass] 
 
@@ -197,10 +197,10 @@ SC.visualizationSettings.openGL.light0position = [-3,3,10,0]
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    # mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    # SC.renderer.DoIdleTasks()
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
 simulationSettings.timeIntegration.endTime = tEnd
@@ -224,7 +224,7 @@ exudynTestGlobals.testResult = uSum
 
     
 if useGraphics:
-    # SC.WaitForRenderEngineStopFlag()
+    # SC.renderer.DoIdleTasks()
 
     if True:
         SC.visualizationSettings.general.autoFitScene = False
@@ -232,7 +232,7 @@ if useGraphics:
         
         mbs.SolutionViewer(timeout=0.01)
 
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 if useGraphics:
     mbs.PlotSensor([], closeAll=True)

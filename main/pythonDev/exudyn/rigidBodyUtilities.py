@@ -16,6 +16,7 @@
 import numpy as np #LoadSolutionFile
 import exudyn.itemInterface as eii
 import exudyn as exu 
+import exudyn.graphics as graphics
 from exudyn.basicUtilities import NormL2
 from exudyn.advancedUtilities import ExpectedType, RaiseTypeError, IsValidBool, IsValidRealInt, IsVector, IsSquareMatrix, IsValidObjectIndex
 from math import sin, cos #, sqrt, atan2
@@ -46,7 +47,7 @@ def ComputeOrthonormalBasisVectors(vector0):
         n1 -= h * v;
         n1 = (1/np.linalg.norm(n1))*n1;
         n2 = np.cross(v,n1)
-    #print("basis=", v,n1,n2)
+
     return [v, n1, n2]
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -72,7 +73,7 @@ def GramSchmidt(vector0, vector1):
     v1 -= h * v0;
     v1 = (1/np.linalg.norm(v1))*v1;
     n2 = np.cross(v0,v1)
-    #print("basis=", v,n1,n2)
+
     return [v0, v1, n2]
 
 
@@ -136,14 +137,14 @@ def ComputeSkewMatrix(v):
                 mLoc = np.array([[0,-z,y],[z,0,-x],[-y,x,0]])
                 sm[off:off+3,3*j:3*j+3] = mLoc[:,:]
     else: 
-        print("ERROR: wrong dimension in ComputeSkewMatrix(...)")
+        exu.Print("ERROR: wrong dimension in ComputeSkewMatrix(...)")
     return sm
 
 #tests for ComputeSkewMatrix
 #x = np.array([1,2,3,4,5,6])
-#print(ComputeSkewMatrix(x))
+#exu.Print(ComputeSkewMatrix(x))
 #x = np.array([[1,2],[3,4],[5,6],[1,2],[3,4],[5,6]])
-#print(ComputeSkewMatrix(x))
+#exu.Print(ComputeSkewMatrix(x))
 
 
 # OLD / duplicate with less functionality!
@@ -466,7 +467,7 @@ def AngularVelocity2RotXYZ_t(angularVelocity, rotation):
     #phi = rotation[2] #not needed
     cTheta = np.cos(theta)
     if cTheta == 0:
-        print('AngularVelocity2RotXYZ_t: not possible for rotation[1] == pi/2, 3*pi/2, ...')
+        exu.Print('AngularVelocity2RotXYZ_t: not possible for rotation[1] == pi/2, 3*pi/2, ...')
 
     GInv = (1/cTheta)*np.array([[np.cos(theta), np.sin(psi)*np.sin(theta),-np.cos(psi)*np.sin(theta)],
                                 [0            , np.cos(psi)*np.cos(theta)   , np.sin(psi)*np.cos(theta)],
@@ -570,6 +571,13 @@ def RotationMatrixZ(angleRad):
                       [np.sin(angleRad), np.cos(angleRad), 0],
                       [0,        0,        1] ]);
 
+#**function: compute 2D rotation matrix
+#**input: angle around out-of-plane axis in radiant
+#**output: 2x2 rotation matrix as np.array
+def RotationMatrix2D(angleRad):
+    return np.array([ [np.cos(angleRad),-np.sin(angleRad)],
+                      [np.sin(angleRad), np.cos(angleRad)] ]);
+
     
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #functions for homogeneous transformations (HT)
@@ -650,10 +658,10 @@ def InverseHT(T):
 ################################################################################
 #Test (compared with Robotcs, Vision and Control book of P. Corke:
 #T=HTtranslate([1,0,0]) @ HTrotateX(np.pi/2) @ HTtranslate([0,1,0])
-#print("T=",T.round(8))
+#exu.Print("T=",T.round(8))
 #
 #R = RotationMatrixZ(0.1) @ RotationMatrixY(0.2) @ RotationMatrixZ(0.3) 
-#print("R=",R.round(4))
+#exu.Print("R=",R.round(4))
 
 ################################################################################
 
@@ -810,6 +818,38 @@ def Inertia6D2InertiaTensor(inertia6D):
                      [J[5],J[1],J[3]],
                      [J[4],J[3],J[2]]])
 
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#**class: helper class for CreateKinematicTree, representing a link on a joint within a kinematic tree
+#**example:
+# link3 = TreeLink(linkInertia = InertiaCuboid(2800, [0.25,0.08,0.08]).Translated([0.125,0,0]),
+#                  jointType = =exu.JointType.RevoluteZ,
+#                  parent = 1,
+#                  graphicsData = graphics.Brick(centerPoint=[0.125,0,0], size=[0.25,0.08,0.08],
+#                                                color=graphics.color.blue),
+#                  )
+class TreeLink:
+    #**classFunction: initialize inertia
+    #**input:
+    #  linkInertia: RigidBodyInertia class, containing mass, inertia, and COM
+    #  jointHT: transformation from previous link to this link's joint
+    #  parent: index to parent link; if parent link is ground, use -1; if all parents in a serial kinematic tree are None, parent indices are computed automatically
+    #  PDcontrol: tuple of PD control parameters
+    #  graphicsData: graphicsDataList link; None automatically adds a suitable graphical object from next joint to this joint; use empty list [] to add no graphics for link
+    def __init__(self, linkInertia, 
+                 jointType=exu.JointType.RevoluteZ,
+                 jointHT=HT0(),
+                 parent=None, 
+                 PDcontrol=None, 
+                 graphicsDataList=None):
+        self.jointType = jointType
+        self.linkInertia = linkInertia
+        self.jointHT = jointHT
+        self.parent = parent
+        self.PDcontrol = PDcontrol
+        self.graphicsDataList = graphicsDataList
+
+
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #**class: helper class for rigid body inertia (see also derived classes Inertia...).
 #Provides a structure to define mass, inertia and center of mass (COM) of a rigid body.
@@ -835,6 +875,12 @@ class RigidBodyInertia:
             raise ValueError('RigidBodyInertia: inertiaTensor must have shape (3,3), but received '+str(inertiaTensor.shape))
         if np.array(com).shape != (3,): #shape is a tuple
             raise ValueError('RigidBodyInertia: com must have 3 components, but received '+str(np.array(inertiaTensor).shape))
+
+        #default values for graphics
+        self._nTilesGraphics = 16       #for spheres; for cylinders factor is multiplied by 2
+        self._roundnessGraphics = 0.    #for InertiaCuboid, make it round
+
+        self.data = {'type':'RigidBodyInertia'} #special data, like radius, etc. (used for drawing)
         
         #further checks if inertia tensor makes sense...
         Ix = inertiaTensor[0,0]
@@ -915,15 +961,21 @@ class RigidBodyInertia:
         except:
             raise ValueError("ERROR in RigidBodyInertia.Translated(vec): vec must be a vector with 3 components")
         inertiaCOM += self.mass*np.dot(Skew(newCOM).transpose(),Skew(newCOM))
-        return RigidBodyInertia(mass=self.mass, 
-                                inertiaTensor=inertiaCOM,
-                                com=newCOM)
+        rbi = RigidBodyInertia(mass=self.mass, 
+                               inertiaTensor=inertiaCOM,
+                               com=newCOM)
+        rbi.data.update(self.data)
+        if 'HT' in self.data:
+            rbi.data['HT'] = self.data['HT'] @ HTtranslate(vec)
+        else:
+            rbi.data['HT'] = HTtranslate(vec)
+        return rbi
 
     #**classFunction: returns a RigidBodyInertia rotated by 3x3 rotation matrix rot, such that for a given J, the new inertia tensor reads Jnew = rot*J*rot.T
     #**notes: only allowed if COM=0 !
     def Rotated(self, rot):
         if NormL2(self.com) != 0:
-            print("ERROR: RigidBodyInertia.Rotated only allowed in case of com=0")
+            exu.Print("ERROR: RigidBodyInertia.Rotated only allowed in case of com=0")
             return 0
         try:
             inertia = np.dot(np.array(rot),np.dot(self.inertiaTensor,rot.transpose()))
@@ -944,15 +996,85 @@ class RigidBodyInertia:
         newCOM = A @ self.com + v
 
         inertiaCOM += self.mass*np.dot(Skew(newCOM).transpose(),Skew(newCOM))
-        return RigidBodyInertia(mass=self.mass, 
+        rbi = RigidBodyInertia(mass=self.mass, 
                                 inertiaTensor=inertiaCOM,
                                 com=newCOM)
-
+        rbi.data.update(self.data)
+        if 'HT' in self.data:
+            rbi.data['HT'] = self.data['HT'] @ HT
+        else:
+            rbi.data['HT'] = HT
+        return rbi
+    
     #**classFunction: get vector with 6 inertia components (Jxx, Jyy, Jzz, Jyz, Jxz, Jxy) w.r.t. to reference point (not necessarily the COM), as needed in ObjectRigidBody
     def GetInertia6D(self):
         return InertiaTensor2Inertia6D(self.inertiaTensor)
         # J = self.inertiaTensor
         # return [J[0][0], J[1][1], J[2][2],  J[1][2], J[0][2], J[0][1]]
+
+    #**classFunction: which returns str of type ('InertiaCylinder', 'InertiaCuboid', ...)
+    def GetTypeName(self):
+        return self.__class__.__name__
+
+    #**classFunction: returns dictionary with further data of inertia, like cylinder radius, etc.
+    def GetSpecialData(self):
+        return self.data
+
+
+    #**classFunction: get graphicsData object from inertia; this simplifies the rigid body creation process and allows to check for consistency; currently does not include HT-rotations!
+    def GetGraphics(self, color, nTiles=None, roundness=None):
+    
+        color0 = color
+        if color[0] == -1:
+            color0 = graphics.color.defaultBody #default body color; otherwise not visible
+        
+        nTiles = self._nTilesGraphics if nTiles is None else nTiles
+        roundness = self._roundnessGraphics if roundness is None else roundness
+
+        com = self.COM()
+        typeName = self.data['type']
+        #++++++++++++++++++++++++++++++++++++++++++++++
+        if typeName == 'InertiaCylinder':
+            length=self.data['length']
+            outerRadius=self.data['outerRadius']
+            innerRadius=self.data['innerRadius']
+            axis=self.data['axis']
+            axisVector = np.array([0,0,0])
+            axisVector[axis] = 1
+            gData = graphics.Cylinder(pAxis=-0.5*length*axisVector+com,
+                                      vAxis=length*axisVector,
+                                      radius=outerRadius,
+                                      color=color0,
+                                      nTiles=nTiles*2,
+                                      radiusInner=innerRadius if innerRadius>0 else None
+                                      )
+        elif typeName == 'InertiaCuboid':
+            sideLengths=self.data['sideLengths']
+            gData = graphics.Brick(centerPoint=com, size=sideLengths, color=color0,
+                                   roundness=roundness)
+    
+        elif typeName == 'InertiaRodX':
+            length=self.data['length']
+            gData = graphics.Brick(centerPoint=com, size=[length, length*0.01, length*0.01], 
+                                   color=color0, roundness=roundness)
+    
+        elif typeName == 'InertiaMassPoint':
+            mass=self.data['mass']
+            #V=4./3.*np.pi*r**3 => m/rho = V => r
+            r = (mass/2000*0.75/np.pi)**(1/3) #approximation for radius with rho=2000
+            gData = graphics.Sphere(point=com, radius=r, nTiles=nTiles, color=color0) #size is not known
+    
+        elif typeName == 'InertiaSphere':
+            radius=self.data['radius']
+            gData = graphics.Sphere(point=com, radius=radius, nTiles=nTiles, color=color0) #size is not known
+    
+        elif typeName == 'InertiaSphere' or typeName == 'InertiaHollowSphere':
+            radius=self.data['radius']
+            gData = graphics.Sphere(point=com, radius=radius, nTiles=nTiles, color=color0) #size is not known
+
+        else:
+            return None #signals that no graphics data could be extracted
+        return gData
 
 
     def __str__(self):
@@ -978,6 +1100,7 @@ class InertiaCuboid(RigidBodyInertia):
         RigidBodyInertia.__init__(self, mass=newMass,
                                   inertiaTensor=newMass/12.*np.diag([(L2**2 + L3**2),(L1**2 + L3**2),(L1**2 + L2**2)]),
                                   com=np.zeros(3))
+        self.data = {'type':'InertiaCuboid', 'density':density, 'sideLengths':sideLengths}
 
 #**class: create RigidBodyInertia with moment of inertia and mass of a rod with mass m and length L in local 1-direction (x-direction); inertia w.r.t. center of mass, com=[0,0,0]
 class InertiaRodX(RigidBodyInertia):
@@ -986,23 +1109,34 @@ class InertiaRodX(RigidBodyInertia):
         RigidBodyInertia.__init__(self, mass=mass,
                                   inertiaTensor=mass/12.*np.diag([0.,length**2,length**2]),
                                   com=np.zeros(3))
+        self.data = {'type':'InertiaRodX', 'mass':mass, 'length':length}
         
-#**class: create RigidBodyInertia with moment of inertia and mass of mass point with 'mass'; inertia w.r.t. center of mass, com=[0,0,0]
+#**class: create RigidBodyInertia with moment of inertia and mass of mass point with given 'mass'; inertia w.r.t. center of mass, com=[0,0,0]; note that the inertia tensor gives zero and cannot be directly used in rigid bodies, however, it can be used to be added to another inertia tensor (e.g. to add unbalance)
 class InertiaMassPoint(RigidBodyInertia):
     #**classFunction: initialize inertia with mass of point
     def __init__(self, mass):
         RigidBodyInertia.__init__(self, mass=mass,
                                   inertiaTensor=np.zeros([3,3]),
                                   com=np.zeros(3))
+        self.data = {'type':'InertiaMassPoint', 'mass':mass}
 
 #**class: create RigidBodyInertia with moment of inertia and mass of sphere with mass and radius; inertia w.r.t. center of mass, com=[0,0,0]
 class InertiaSphere(RigidBodyInertia):
     #**classFunction: initialize inertia with mass and radius of sphere
-    def __init__(self, mass, radius):
+    def __init__(self, mass=None, radius=None, density=None):
+        volume = 4./3. * np.pi * radius**3
+        if density is None and mass is not None:
+            density = mass / volume if volume!=0 else 0 #to ignore cases where someone likes to use radius=0
+        elif density is not None and mass is None:
+            mass = density * volume
+        else:
+            raise ValueError('InertiaSphere: invalid args provided: either mass is a float number, then density has to be None, or density is a float number, then mass has to be None!')
+
         J = 2.*mass/5.*radius**2
         RigidBodyInertia.__init__(self, mass=mass,
                                   inertiaTensor=np.diag([J,J,J]),
                                   com=np.zeros(3))
+        self.data = {'type':'InertiaSphere', 'mass':mass, 'radius':radius, 'density':density, 'volume':volume}
         
 #**class: create RigidBodyInertia with moment of inertia and mass of hollow sphere with mass (concentrated at circumference) and radius; inertia w.r.t. center of mass, com=0
 class InertiaHollowSphere(RigidBodyInertia):
@@ -1012,6 +1146,7 @@ class InertiaHollowSphere(RigidBodyInertia):
         RigidBodyInertia.__init__(self, mass=mass,
                                   inertiaTensor=np.diag([J,J,J]),
                                   com=np.zeros(3))
+        self.data = {'type':'InertiaHollowSphere', 'mass':mass, 'radius':radius}
 
 #**class: create RigidBodyInertia with moment of inertia and mass of cylinder with density, length and outerRadius; axis defines the orientation of the cylinder axis (0=x-axis, 1=y-axis, 2=z-axis); for hollow cylinder use innerRadius != 0; inertia w.r.t. center of mass, com=[0,0,0]
 class InertiaCylinder(RigidBodyInertia):
@@ -1035,6 +1170,10 @@ class InertiaCylinder(RigidBodyInertia):
                                       com=np.zeros(3))
         else:
             raise ValueError("InertiaCylinder: axis must be 0, 1 or 2!")
+
+        self.data = {'type':'InertiaCylinder', 
+                     'density':density, 'length':length, 'axis':axis, 
+                     'outerRadius':outerRadius, 'innerRadius':innerRadius}
         
 
 #**function: convert string into exudyn.NodeType; call e.g. with 'NodeType.RotationEulerParameters' or 'RotationEulerParameters'
@@ -1230,6 +1369,8 @@ def AddRigidBody(mainSys, inertia,
 def AddRevoluteJoint(mbs, body0, body1, point, axis, useGlobalFrame=True, 
                      showJoint=True, axisRadius=0.1, axisLength=0.4):
 
+    exu.Print('WARNING: AddRevoluteJoint is deprecated; use mbs.CreateRevoluteJoint instead!')
+    
     #perform some checks:
     if not IsValidObjectIndex(body0):
         RaiseTypeError(where='AddRevoluteJoint', argumentName='body0', received = body0, expectedType = ExpectedType.ObjectIndex)
@@ -1278,7 +1419,6 @@ def AddRevoluteJoint(mbs, body0, body1, point, axis, useGlobalFrame=True,
     AJ[:,0]=-B[:,2]
     AJ[:,1]= B[:,1]
     AJ[:,2]= B[:,0] #axis ==> rotation axis z for revolute joint ... 
-    #print(AJ)
     
     #compute joint position and axis in body0 / 1 coordinates:
     pJ0 = A0.T @ (np.array(pJoint) - p0)
@@ -1311,6 +1451,8 @@ def AddRevoluteJoint(mbs, body0, body1, point, axis, useGlobalFrame=True,
 #**notes: DEPRECATED and will be removed; use MainSystem.CreatePrismaticJoint(...) instead!
 def AddPrismaticJoint(mbs, body0, body1, point, axis, useGlobalFrame=True, 
                      showJoint=True, axisRadius=0.1, axisLength=0.4):
+
+    exu.Print('WARNING: AddPrismaticJoint is deprecated; use mbs.CreateRevoluteJoint instead!')
         
     if not IsValidObjectIndex(body0):
         RaiseTypeError(where='AddPrismaticJoint', argumentName='body0', received = body0, expectedType = ExpectedType.ObjectIndex)

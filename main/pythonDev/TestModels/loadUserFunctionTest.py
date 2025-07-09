@@ -105,13 +105,13 @@ for case in cases:
     simulationSettings.timeIntegration.newton.useModifiedNewton = True
     
     if useGraphics:
-        exu.StartRenderer()
-        mbs.WaitForUserToContinue()
+        SC.renderer.Start()
+        SC.renderer.DoIdleTasks()
     
     mbs.SolveDynamic(simulationSettings, solverType=exu.DynamicSolverType.RK44)
     
     if useGraphics:
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.Stop() #safely close rendering window!
     
     result += NormL2(mbs.GetSensorValues(sMass))
 

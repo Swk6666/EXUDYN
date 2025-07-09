@@ -82,6 +82,11 @@ void CObjectMassPoint::GetOutputVariableBody(OutputVariableType variableType, co
 	case OutputVariableType::Displacement:	value.CopyFrom(GetPosition(localPosition, configuration) - GetPosition(localPosition, ConfigurationType::Reference)); break;
 	case OutputVariableType::Velocity: value.CopyFrom(GetVelocity(localPosition, configuration)); break;
 	case OutputVariableType::Acceleration: value.CopyFrom(GetAcceleration(localPosition, configuration)); break;
+	case OutputVariableType::AngularVelocity: value.SetVector({ 0,0,0 });; break;
+	case OutputVariableType::AngularVelocityLocal: value.SetVector({ 0,0,0 });; break;
+	case OutputVariableType::RotationMatrix: {
+		Matrix3D m(EXUmath::unitMatrix3D); value.SetVector(9, m.GetDataPointer()); break;}
+	case OutputVariableType::Rotation: { value.SetVector({0,0,0}); break; }
 	default:
 		SysError("CObjectMassPoint::GetOutputVariableBody failed"); //error should not occur, because types are checked!
 	}

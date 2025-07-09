@@ -14,6 +14,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 import numpy as np
+import exudyn
 import exudyn.graphicsDataUtilities as gdu
 import exudyn.graphics as graphics
 import exudyn.robotics as rob
@@ -597,7 +598,7 @@ def LinkDict2Robot(robotLinkDict, robotClass=None):
 #**author: Martin Sereinig
 #**notes: DEPRECATED; function uses modDHKK in robotLinkDict for creation, transforms inertia parameters; should only be used for testing!
 def LinkDictModDHKK2Robot(robotLinkDict, robotClass=None):
-    print('WARNING: LinkDictModDHKK2Robot: untested')
+    exudyn.Print('WARNING: LinkDictModDHKK2Robot: untested')
     dhMode = robotLinkDict['dhMode']
     
     if robotClass == None:

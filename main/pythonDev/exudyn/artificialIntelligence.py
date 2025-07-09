@@ -30,10 +30,8 @@ useOldGym = tuple(map(int, stable_baselines3.__version__.split('.'))) <= tuple(m
 if useOldGym:
     #old version #will be removed in future versions!
     from gym import logger, spaces, Env
-    #print('exudyn.artificialIntelligence: imported gym')
 else:
     from gymnasium import logger, spaces, Env
-    #print('exudyn.artificialIntelligence: imported gymnasium')
 
 
 #**class: interface class to set up Exudyn model which can be used as model in open AI gym;
@@ -147,7 +145,7 @@ class OpenAIGymInterfaceEnv(Env):
             if useRenderer and sleepTime!=0:
                 time.sleep(sleepTime)        
         if showTimeSpent:
-            print('time spent=',ts+time.time())
+            exu.Print('time spent=',ts+time.time())
 
         self.close()
         self.useRenderer = storeRenderer #restore
@@ -195,8 +193,6 @@ class OpenAIGymInterfaceEnv(Env):
         self.simulationSettings.timeIntegration.startTime = currentTime
         self.simulationSettings.timeIntegration.endTime = currentTime+self.stepUpdateTime
 
-        # exu.SolveDynamic(self.mbs, self.simulationSettings, solverType=exu.DynamicSolverType.TrapezoidalIndex2,
-        #                  updateInitialValues=True) #use final value as new initial values
         self.dynamicSolver.InitializeSolverInitialConditions(self.mbs, self.simulationSettings)
         self.dynamicSolver.SolveSteps(self.mbs, self.simulationSettings)
         currentState = self.mbs.systemData.GetSystemState() #get current values
@@ -296,13 +292,13 @@ class OpenAIGymInterfaceEnv(Env):
     #**classFunction: openAI gym interface function to render the system
     def render(self, mode="human"):
         if self.rendererRunning==None and self.useRenderer:
-            exu.StartRenderer()
+            SC.renderer.Start()
             self.rendererRunning = True
 
     #**classFunction: openAI gym interface function to close system after learning or simulation
     def close(self):
         self.dynamicSolver.FinalizeSolver(self.mbs, self.simulationSettings)
         if self.rendererRunning==True:
-            # SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
+            # SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
 

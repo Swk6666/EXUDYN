@@ -2,13 +2,13 @@
 \onlyRST{
 +  **University of Innsbruck**, Department of Mechatronics, Innsbruck, Austria
 
-If you like using Exudyn, please add a *star* on github and follow us on 
-`Twitter @RExudyn <https://twitter.com/RExudyn>`_ !
+.. |pic7| image:: docs/theDoc/figures/ExudynLOGO1.9.jpg
+   :width: 300
 
 **Update on Exudyn V1.9.0**: newer examples use ``exudyn.graphics`` instead of ``GraphicsData`` functions. FEM now uses internally in mass and stiffness matrices the scipy sparse csr matrices.
 
-+  **Exudyn** is *free, open source* and with plenty of *documentation* and *examples*
-+  **pre-built** for Python 3.8 - 3.12 under **Windows**\ , **Linux** and **MacOS** available ( **NEW**\ : now with manylinux2014 compatibility and PEP518 build); build wheels yourself, see `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ )
++  **Exudyn** is *free, open source* and with plenty of *documentation*, *examples*, and *test models*
++  **pre-built** for Python 3.9 - 3.13 under **Windows**\ , **Linux** and **MacOS** available ( older versions available for Python >= 3.6); build wheels yourself, see `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ )
 +  Exudyn can be linked to any other Python package, but we explicitly mention: `NGsolve <https://github.com/NGSolve/ngsolve>`_, `OpenAI <https://github.com/openai>`_, `OpenAI gym <https://github.com/openai/gym>`_, `Robotics Toolbox (Peter Corke) <https://github.com/petercorke/robotics-toolbox-python>`_, `Pybind11 <https://github.com/pybind/pybind11>`_
 
 .. |pic1| image:: docs/demo/screenshots/pistonEngine.gif
@@ -39,16 +39,22 @@ Due to limitations for complex formulas, images and references in .rst files, so
 
 For license, see LICENSE.txt in the root github folder on github!
 
-In addition to the tutorial in the documentation, many ( **250+** ) examples can be downloaded on github under main/pythonDev/Examples and main/pythonDev/TestModels . They are also on ReadTheDocs.
+If you like using Exudyn, please add a *star* on github and follow us on 
+`Twitter @RExudyn <https://twitter.com/RExudyn>`_ !
+
+In addition to the tutorials in the documentation, many ( **250+** ) examples can be downloaded on github under main/pythonDev/Examples and main/pythonDev/TestModels . They are also on ReadTheDocs.
 
 Note that **ChatGPT** and other large language models know Exudyn quite well. They are able to build parts of your code or even full models, see `https://doi.org/10.1007/s11044-023-09962-0 <https://doi.org/10.1007/s11044-023-09962-0>`_
 
-Tutorial videos (\ **new Feb 2024**\ )can be found in the `youtube channel of Exudyn <https://www.youtube.com/playlist?list=PLZduTa9mdcmOh5KVUqatD9GzVg_jtl6fx>`_ !
+Tutorial videos can be found in the `YouTube channel of Exudyn <https://www.youtube.com/playlist?list=PLZduTa9mdcmOh5KVUqatD9GzVg_jtl6fx>`_ !
 
 **NOTE**: **NumPy** switched to version 2.x which causes problems with packages that are not adapted to NumPy 2.x. 
-The current version of Exudyn is already compatible with NumPy 2.x AND 1.x, however, some external packages (SciPy, robotics tools, etc.) cause problems.
+The current version of Exudyn is already compatible with NumPy 2.x AND 1.x, however, some external packages (SciPy, robotics tools, etc.) may cause problems, therefore you could still use Numpy 1.26 (not available for Python >= 3.13).
+
+**NOTE**: We finally like to emphasize that this is an open source library; we receive no specific money and most developements are done during free (=night) time; some models are simplifications that work for our needs, but may not be appropriate in your case; some models are under development (usually stated in theDoc) or may have bugs, therefore do not fully rely on all elements of the library!
 
 Enjoy the Python library for multibody dynamics modeling, simulation, creating large scale systems, parameterized systems, component mode synthesis, optimization, ...
+
 }
 %`PDF <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/publications/GerstmayrIMSD2022.pdf>`_
 
@@ -64,7 +70,7 @@ as well as a larger part containing the \codeName module description and interfa
 %
 How to cite:
 \bi
-  \item[] Johannes Gerstmayr. Exudyn -- a C++-based Python package for flexible multibody systems. Multibody System Dynamics, Vol.~60, pp.~533-561, 2024. \url{https://doi.org/10.1007/s11044-023-09937-1} \cite{Exudyn2023}
+  \item[] Johannes Gerstmayr. Exudyn -- a C++-based Python package for flexible multibody systems. Multibody System Dynamics, Vol.~60, pp.~533-561, 2024.\\ \url{https://doi.org/10.1007/s11044-023-09937-1} \cite{Exudyn2023}
 %J. Gerstmayr, Exudyn - A C++ based Python package for flexible multibody systems, \\ Proceedings of The 6th Joint International Conference on Multibody System Dynamics and the 10th Asian Conference on Multibody System Dynamics 2020, New Delhi, India, 2022. \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/docs/publications/GerstmayrIMSD2022.pdf}{PDF} \cite{GerstmayrExudyn2022} %\vspace{6pt} \\
 %A paper on Exudyn has been presented at the `6th Joint International Conference on Multibody System Dynamics <http://imsdacmd2020.iitd.ac.in>`_ and submitted to the proceedings: J. Gerstmayr, Exudyn - A C++ based Python package for flexible multibody systems, Proceedings of The 6th Joint International Conference on Multibody System Dynamics and the 10th Asian Conference on Multibody System Dynamics 2020, New Delhi, India, 2022. 
 \ei
@@ -82,6 +88,8 @@ Tutorial videos can be found in the \exuUrl{https://www.youtube.com/playlist?lis
   \item \exuUrl{https://exudyn.readthedocs.io}{https://exudyn.readthedocs.io}
 \ei
 %
+\ignoreRST{\mybold{Note}: We like to emphasize that this is an open source library; we receive no specific money and most developements are done during free (=night) time; some models are simplifications that work for our needs, but may not be appropriate in your case; some models are under development (usually stated in theDoc) or may have bugs, therefore do not fully rely on all elements of the library!}
+
 For any comments, requests, issues, bug reports, send an email to: 
 \bi
   \item email: \texttt{reply.exudyn@gmail.com}
@@ -94,7 +102,7 @@ This section will show:
   \item What is \codeName ?
   \item Who is developing \codeName ?
   \item How to install \codeName 
-  \item How to link \codeName and Python
+  \item How to use \codeName in Python
   \item Goals of \codeName
   \item Run a simple example in Python
   \item FAQ -- Frequently asked questions
@@ -111,10 +119,10 @@ It seemed that the previous code HOTINT reached limits of further (efficient) de
 The multibody formulation is mainly based on redundant coordinates. This means that computational objects (rigid bodies, flexible bodies, ...) are added as independent bodies to the system. Hereafter, connectors (e.g., springs or constraints) are used to interconnect the bodies. The connectors are using Markers on the bodies as interfaces, in order to transfer forces and displacements.
 For details on the interaction of nodes, objects, markers and loads see \refSection{sec:overview:items}. For a non-redundant formulation, see \texttt{ObjectKinematicTree} -- this allows to create tree-structures with minimal coordinates in \codeName.
 
-There are several journal papers of the developers which were using \codeName (list may be incomplete):
+There are several journal papers of the developers which were using \codeName (list is incomplete -- see google scholar):
 \bi
   \item J.\ Gerstmayr. Exudyn -- a C++-based Python package for flexible multibody systems. Multibody System Dynamics (2023). \url{https://doi.org/10.1007/s11044-023-09937-1} \ignoreRST{ \cite{Exudyn2023} }
-  \item J.\ Gerstmayr, P.\ Manzl, M.\ Pieber. Multibody Models Generated from Natural Language, Preprint, Research Square, 2023. \url{https://doi.org/10.21203/rs.3.rs-3552291/v1} \ignoreRST{ \cite{ExudynNaturalLanguage2023preprint} }
+  \item J.\ Gerstmayr, P.\ Manzl, M.\ Pieber. Multibody Models Generated from Natural Language, Multibody System Dynamics (2024). \url{https://doi.org/10.1007/s11044-023-09962-0} \ignoreRST{ \cite{ExudynNaturalLanguage2024} }
   \item P.\ Manzl, O.\ Rogov, J.\ Gerstmayr, A.\ Mikkola, G.\ Orzechowski. Reliability Evaluation of Reinforcement Learning Methods for Mechanical Systems with Increasing Complexity.  Preprint, Research Square, 2023. \ignoreRST{\cite{ManzlRL2023}} \url{https://doi.org/10.21203/rs.3.rs-3066420/v1}
   \item S.\ Holzinger, M.\ Arnold, J.\ Gerstmayr. Evaluation and Implementation of Lie Group Integration Methods for Rigid Multibody Systems. Preprint, Research Square, 2023. \ignoreRST{\cite{HolzingerArnoldGerst2023}} \url{https://doi.org/10.21203/rs.3.rs-2715112/v1} 
   \item M.\ Sereinig, P.\ Manzl, and J.\ Gerstmayr. Task Dependent Comfort Zone, a Base Placement Strategy for Autonomous Mobile Manipulators using Manipulability Measures, Robotics and Autonomous Systems, submitted. \cite{Sereinig2023comfortZone}
@@ -129,32 +137,33 @@ There are several journal papers of the developers which were using \codeName (l
 
 \mysubsubsection{Developers of \codeName and thanks}
 \codeName is currently (\the\month-\the\year) developed at the University of Innsbruck.
-In the first phase most of the core code is written by Johannes Gerstmayr, implementing ideas that followed out of the project HOTINT \cite{GerstmayrEtAl2013}. 15 years of development led to a lot of lessons learned and after 20 years, a code must be re-designed.
+In general, most of the \codeName is written by Johannes Gerstmayr, implementing ideas that followed from the project HOTINT \cite{GerstmayrEtAl2013}, but also creating many new concepts and approaches. 15 years of development of HOTINT led to a lot of lessons learned and after 20 years, a code must be re-designed.
 
 Some important tests for the coupling between C++ and Python have been written by Stefan Holzinger. Stefan also helped to set up the previous upload to GitLab and to test parallelization features.
 For the interoperability between C++ and Python, we extensively use \mybold{Pybind11}\cite{pybind11}, originally written by Jakob Wenzel, see \texttt{https://github.com/pybind/pybind11}. Without Pybind11 we couldn't have made this project -- Thanks a lot!
 
 Important discussions with researchers from the community were important for the design and development of \codeName , where we like to mention Joachim Sch{\"o}berl from TU-Vienna who boosted the design of the code with great concepts. 
-%During a Comet-K2 cooperation project, several discussions with the TMECH/LCM group in Linz influenced the code development.
 
 The cooperation and funding within the EU H2020-MSCA-ITN project 'Joint Training on Numerical Modelling of Highly Flexible Structures for Industrial Applications' contributes to the development of the code.
 
 The following people have contributed to Python and C++ library implementations, testing, examples or theory:
 \bi
-  \item Joachim Sch{\"o}berl, TU Vienna (Providing specialized NGsolve \cite{Schoeberl1997,NGsolve2014,NGsolve2022} core library with \texttt{taskmanager} for \mybold{multi-threaded parallelization}; NGsolve mesh and FE-matrices import; highly efficient eigenvector computations)
+  \item Joachim Sch{\"o}berl, TU Vienna (Providing specialized NGsolve \cite{Schoeberl1997,NGsolve2014,NGsolve2022} core library with \texttt{taskmanager} for \mybold{multi-threaded parallelization}, which is now replaced by a simplified internal version but closely following the original implementation; NGsolve mesh and FE-matrices import; highly efficient eigenvector computations)
   \item Stefan Holzinger, University of Innsbruck (Lie group module and solvers in Python, Lie group node; helped with Lie group solvers, geometrically exact beam; testing)
-  \item Peter Manzl, University of Innsbruck (ConvexRoll Python and C++ implementation; revised artificialIntelligence, ParameterVariation, robotics and MPI parallelization; providing many figures for theDoc; pip install on linux, wsl with graphics)
+  \item Peter Manzl, University of Innsbruck (ConvexRoll Python and C++ implementation; revised artificialIntelligence, ParameterVariation, robotics and MPI parallelization; providing many figures for theDoc; pip install on linux, wsl with graphics; several other fixes; examples)
   \item Andreas Zw{\"o}lfer, Technical University Munich (theory and examples for FFRF, CMS formulation and ANCF 2D cable prototypes in MATLAB)
+  \item Michael Pieber, University of Innsbruck (helped in several Python libraries; ComputeODE2Eigenvalues with constraints, FEM and CMS testing; Abaqus import and test files; ANCFCable2D+ALE theory improvements and equations check; examples); \codeName graphical user interface
   \item Martin Sereinig, University of Innsbruck (special robotics functionality, mobile robots, manipulability measures, robot models)
-  \item Michael Pieber, University of Innsbruck (helped in several Python libraries; ComputeODE2Eigenvalues with constraints, FEM and CMS testing; Abaqus import and test files; ANCFCable2D+ALE theory improvements and equations check)
+  \item Sebastian Weyrer, University of Innsbruck (ObjectContactSphereSphere; FEM RigidBodyInertia; some fixes; examples)
   \item Grzegorz Orzechowski, Lappeenranta University of Technology (coupling with openAI gym and running machine learning algorithms)
+  \item Zhaowei Zhang, Chinese Academy of Sciences (ANCFThinPlate; found several issues and bugs)
   \item Aaron Bacher, University of Innsbruck (helped to integrated OpenVR, connection with Franka Emika Panda)
   \item Martin Arnold, Martin-Luther-University of Halle-Wittenberg (support for explicit and implicit Lie group solvers, especially to theory / jacobians and automatic step size)
   \item Konstantina Ntarladima, University of Innsbruck (ANCFCable2D+ALE theory improvements and equations check)
   \item Alexander Humer, Johannes Kepler University Linz (initial discussions on structure and C++ code)
   \item Qasim Khadim, University of Oulu (suggestion for improved model of HydraulicsActuatorSimple with effective bulk modulus)
   \item Michael Gerbl, University of Innsbruck (figures in the documentation, taken from lecture notes)
-  \item examples provided by: Manuel Schieferle, Martin Knapp, Lukas March, Dominik Sponring, David Wibmer, Simon Scheiber
+  \item further examples provided by: Manuel Schieferle, Martin Knapp, Lukas March, Dominik Sponring, David Wibmer, Simon Scheiber and other Master students
 \ei
 -- thanks a lot! --
 %
@@ -167,19 +176,20 @@ The following people have contributed to Python and C++ library implementations,
 \mysubsubsectionlabel{Requirements for \codeName ?}{sec:install:installinstructions:requirements}
 
 \codeName only works with Python. Thus, you need an appropriate Python installation.
-So far (2021-07), we tested
+So far (2025-07), we thoroughly tested
 \bi
+  \item Currently (2025-07), we support Python 3.9 - Python 3.13 \mybold{conda environments} on Windows, Linux and MacOS (please report configurations that do not work on GitHub/issues); the upgrades to newer Python versions will usually be done in line with new Python releases (every October).
+  \item \mybold{Anaconda 2025-06, 64bit, Python 3.12} with Spyder 6.0
   \item \mybold{Anaconda 2023-07, 64bit, Python 3.11} with Spyder 5.4
   \item \mybold{Anaconda 2021-11, 64bit, Python 3.9}\footnote{older Anaconda3 versions can be downloaded via the repository archive \texttt{https://repo.anaconda.com/archive/}}
-  \item Currently, we support Python 3.8 - Python 3.12 \mybold{conda environments} on Windows, Linux and MacOS (please report configurations that do not work on GitHub/issues).
   \item \mybold{Spyder 5.1.5} (with Python 3.9.7, 64bit) and \mybold{Spyder 4.1.3} (with Python 3.7.7, 64bit), which is included in the Anaconda installation\footnote{Note that it is important that Spyder, Python and \codeName  are \mybold{either} 32bit \mybold{or} 64bit and are compiled up to the same minor version, i.e., 3.7.x. There will be a strange .DLL error, if you mix up 32/64bit. It is possible to install both, Anaconda 32bit and Anaconda 64bit -- then you should follow the recommendations of paths as suggested by Anaconda installer.}; Spyder works with all virtual environments
 \ei
 Many alternative options exist:
 \bi
   %\item In case that you have an older CPU, which does not support AVX2, use: \codeName with Python 3.6.5, or compile without AVX flags for your machine.\footnote{e.g.\ Anaconda 32bit with Python3.6 can be downloaded via the repository archive \texttt{https://repo.anaconda.com/archive/} choosing \texttt{Anaconda3-5.2.0-Windows-x86.exe}.}
   %\item Spyder 3.2.8 with Python 3.6.5 32 bit (alternatively 64bit), which is included in the Anaconda installation\footnote{It is important that Spyder, Python and exudyn are \mybold{either} 32bit \mybold{or} 64bit}. 
-  \item Users report successful use of \codeName with \mybold{Visual Studio Code}. \mybold{Jupyter} has been tested with some examples; both environments should work with default settings.
-  \item Anaconda 2020-11 with \mybold{Python 3.8} and Spyder 4.1.5: no problems except some regular crashes of Spyder, TestSuite runs without problems since \codeName version 1.0.182.
+  \item Many users report successful use of \codeName with \mybold{Visual Studio Code}. \mybold{Jupyter} has been tested with some examples; both environments should work with default settings.
+  %\item Anaconda 2020-11 with \mybold{Python 3.8} and Spyder 4.1.5: no problems except some regular crashes of Spyder, TestSuite runs without problems since \codeName version 1.0.182.
   %\item Anaconda 2021-11 with \mybold{Python 3.9} and Spyder 5.1.5: Tested with current version (1.1.99), TestSuite runs without problems.
   \item Alternative option with more stable Spyder (as compared to Spyder 4.1.3): Anaconda, 64bit, Python 3.6.5)\footnote{Anaconda 64bit with Python3.6 can be downloaded via the repository archive \texttt{https://repo.anaconda.com/archive/} choosing \texttt{Anaconda3-5.2.0-Windows-x86\_64.exe} for 64bit.}
   %\item Spyder 3.2.8 with Python 3.6.5 32 bit (alternatively 64bit), which is included in the Anaconda installation\footnote{It is important that Spyder, Python and exudyn are \mybold{either} 32bit \mybold{or} 64bit. 
@@ -251,7 +261,7 @@ If the PyPi index is not updated, it may help to use
 %+++++++++++++++++++++++++++++++++++++
 \mysubsubsectionlabel{Install from specific Wheel (Ubuntu and Windows)}{sec:install:installinstructions:wheel}
 A way to install the Python package \codeName is to use the so-called 'wheels' (file ending \texttt{.whl}).
-NOTE that this approach usually is not required; just use the pip installer of the previous section!
+NOTE that this approach usually is not required; usually, just use the pip installer of the previous section!
 
 \noindent \mybold{Ubuntu}:\vspace{6pt}\\
 Wheels can be downloaded directly from \exuUrl{https://pypi.org/project/exudyn/\#files}{https://pypi.org/project/exudyn/\#files}, for many Python versions and architectures.
@@ -264,13 +274,14 @@ For Ubuntu 20.04 (which by default uses Python 3.8) this may read (version numbe
 \bi
   \item \texttt{Python 3.8, 64bit}: pip3 install dist$\backslash$exudyn-1.0.20-cp38-cp38-linux\_x86\_64.whl
 \ei
+We regularly upgrade to newer Ubuntu versions (like 24.04) and we did not observe any issues.
 NOTE that your installation may have environments with different Python versions, so install that \codeName version appropriately!
 If the wheel installation does not work on Ubuntu, it is highly recommended to build \codeName for your specific system as given in \refSection{sec:install:installinstructions:buildubuntu}.
 
 \noindent \mybold{Windows}:\vspace{6pt}\\
 First, open an Anaconda prompt:
 \bi
-  \item EITHER calling: START->Anaconda->... OR go to anaconda/Scripts folder and call activate.bat
+  \item EITHER calling the Anaconda prompt directly using: START->Anaconda->... OR go to anaconda/Scripts folder and call activate.bat
   \item You can check your Python version then, by running \texttt{python}\footnote{\texttt{python3} under Ubuntu 18.04}, the output reads like:
   \bi
     \item[] \texttt{Python 3.6.5 \textbar Anaconda, Inc.\textbar\ (default, Mar 29 2018, 13:32:41) \lbrack MSC v.1900 64 bit (AMD64)\rbrack\ on win32}
@@ -303,7 +314,7 @@ For Windows the installation commands may read (version number 1.0.20 may be dif
 
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\mysubsubsectionlabel{Build and install \codeName under Windows 10?}{sec:install:installinstructions:buildwindows}
+\mysubsubsectionlabel{Build and install \codeName under Windows 10}{sec:install:installinstructions:buildwindows}
 %\label{sec:build:windows}
 Note that there are a couple of pre-requisites, depending on your system and installed libraries. For Windows 10, the following steps proved to work:
 \bi
@@ -330,7 +341,7 @@ This will add a wheel in the \texttt{dist} folder.
 
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\mysubsubsectionlabel{Build and install \codeName under Mac OS X?}{sec:install:installinstructions:buildmacos}
+\mysubsubsectionlabel{Build and install \codeName under Mac OS X}{sec:install:installinstructions:buildmacos}
 %\label{sec:build:MacOS}
 Installation and building on Mac OS X is less frequently tested, but successful compilation including GLFW has been achieved.
 Requirements are an according Anaconda (or Miniconda) installation.
@@ -385,14 +396,14 @@ If there are other issues, we are happy to receive your detailed bug reports.
 
 \noindent Note that you need to run 
 \pythonstyle\begin{lstlisting}
-  exudyn.StartRenderer()
-  exudyn.DoRendererIdleTasks(-1)
+  SC.renderer.Start()
+  SC.renderer.DoIdleTasks()
 \end{lstlisting}
 in order to interact with the render window, as there is only a single-threaded version available for Mac OS.
 
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\mysubsubsectionlabel{Build and install \codeName under Ubuntu?}{sec:install:installinstructions:buildubuntu}
+\mysubsubsectionlabel{Build and install \codeName under Ubuntu}{sec:install:installinstructions:buildubuntu}
 %
 Having a new Ubuntu 18.04 standard installation (e.g. using a VM virtual box environment), the following steps need to be done (Python \mybold{3.6} is already installed on Ubuntu 18.04, otherwise use \texttt{sudo apt install python3})\footnote{see also the youtube video: \exuUrl{https://www.youtube.com/playlist?list=PLZduTa9mdcmOh5KVUqatD9GzVg\_jtl6fx}{https://www.youtube.com/playlist?list=PLZduTa9mdcmOh5KVUqatD9GzVg\_jtl6fx}}:
 
@@ -817,7 +828,7 @@ to explicitly load the version without AVX2.
 \item[$\ra$] You can also \mybold{highlight} object 7 by using the following code in the iPython console:
 \ei
 \pythonstyle\begin{lstlisting}
-  exu.StartRenderer()
+  SC.renderer.Start()
   HighlightItem(SC,mbs,7)
 \end{lstlisting}
 %
@@ -976,7 +987,7 @@ which draws the according object in red and others gray/transparent (but sometim
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \item Why can't I get the focus of the simulation window on startup (render window hidden)?
 \bi
-\item[$\ra$] Starting \codeName out of Spyder might not bring the simulation window to front, because of specific settings in Spyder(version 3.2.8), e.g., Tools$\ra$Preferences$\ra$Editor$\ra$Advanced settings: uncheck 'Maintain focus in the Editor after running cells or selections'; Alternatively, set \texttt{SC.visualizationSettings.window.alwaysOnTop=True} \mybold{before} starting the renderer with \texttt{exu.StartRenderer()}
+\item[$\ra$] Starting \codeName out of Spyder might not bring the simulation window to front, because of specific settings in Spyder(version 3.2.8), e.g., Tools$\ra$Preferences$\ra$Editor$\ra$Advanced settings: uncheck 'Maintain focus in the Editor after running cells or selections'; Alternatively, set \texttt{SC.visualizationSettings.window.alwaysOnTop=True} \mybold{before} starting the renderer with \texttt{SC.renderer.Start()}
 \ei
 %
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

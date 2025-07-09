@@ -265,6 +265,7 @@ cppFiles = [
             'src/Graphics/GlfwClientExtended.cpp',
             'src/Graphics/OpenVRinterface.cpp',
             'src/Graphics/PostProcessData.cpp',
+            'src/Graphics/Raytracing.cpp',
             'src/Graphics/VisualizationPrimitives.cpp',
             'src/Graphics/VisualizationSystem.cpp',
             'src/Graphics/VisualizationSystemContainer.cpp',
@@ -312,17 +313,12 @@ cppFiles = [
             'src/Tests/UnitTestBase.cpp',
             'src/Utilities/BasicFunctions.cpp',
             'src/Utilities/Threading.cpp',
-            'include/ngs-core-master/bitarray.cpp',
-            'include/ngs-core-master/exception.cpp',
-            'include/ngs-core-master/localheap.cpp',
-            'include/ngs-core-master/paje_interface.cpp',
-            'include/ngs-core-master/profiler.cpp',
-            'include/ngs-core-master/table.cpp',
-            'include/ngs-core-master/taskmanager.cpp',
     ]
 
 if not config["minimalCppFiles"]:
     cppFiles += [
+            'src/Objects/CMarkerBodiesRelativeRotationCoordinate.cpp',
+            'src/Objects/CMarkerBodiesRelativeTranslationCoordinate.cpp',
             'src/Objects/CMarkerBodyCable2DCoordinates.cpp',
             'src/Objects/CMarkerBodyCable2DShape.cpp',
             'src/Objects/CMarkerBodyMass.cpp',
@@ -376,8 +372,9 @@ if not config["minimalCppFiles"]:
             'src/Objects/CObjectContactCoordinate.cpp',
             'src/Objects/CObjectContactCurveCircles.cpp',
             'src/Objects/CObjectContactFrictionCircleCable2D.cpp',
-            'src/Objects/CObjectContactFrictionCircleCable2DOld.cpp',
             'src/Objects/CObjectContactSphereSphere.cpp',
+            'src/Objects/CObjectContactSphereTorus.cpp',
+            'src/Objects/CObjectContactSphereTriangle.cpp',
             'src/Objects/CObjectFFRF.cpp',
             'src/Objects/CObjectFFRFreducedOrder.cpp',
             'src/Objects/CObjectGenericODE1.cpp',
@@ -542,8 +539,8 @@ class BuildExt(build_ext):
         'unix': [
          #'-O3', #tests with GCC, Python3.8 do not show performance increase!!
          '-Wno-comment', #deactivate multiline comment warning /* ... * * ...*/
-         '-Wno-unknown-pragmas', #warning from ngs_core.hpp/taskmanager.hpp (NGsolve)
-         '-Wno-sign-compare', #warning from taskmanager.hpp (NGsolve)
+         #'-Wno-unknown-pragmas', #warning from ngs_core.hpp/taskmanager.hpp (NGsolve)
+         #'-Wno-sign-compare', #warning from taskmanager.hpp (NGsolve)
          '-Wno-array-bounds', #warnings in ConstSizeMatrix
  		 '-Wall',
          '-g0', #deactivate debug information (overrides default -g flags), decreases files size from 38MB to 2.6 MB in Python 3.6 version

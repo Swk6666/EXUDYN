@@ -160,8 +160,8 @@ SC.visualizationSettings.openGL.multiSampling = 4
 
 
 if useGraphics: 
-    exu.StartRenderer()
-    # mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    # SC.renderer.DoIdleTasks()
 
 simulationSettings.staticSolver.numberOfLoadSteps = 10
 simulationSettings.staticSolver.stabilizerODE2term = 1
@@ -173,7 +173,7 @@ mbs.systemData.SetODE2Coordinates(ode2, configuration=exu.ConfigurationType.Init
 #turn of constraint of jumper
 mbs.SetObjectParameter(fixJumper, parameterName='activeConnector', value=False)
 
-mbs.WaitForUserToContinue()
+SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings) #183 Newton iterations, 0.114 seconds
 
@@ -182,8 +182,8 @@ mbs.SolveDynamic(simulationSettings) #183 Newton iterations, 0.114 seconds
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 #%%    
 if True:

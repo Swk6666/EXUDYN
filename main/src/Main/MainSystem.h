@@ -152,7 +152,7 @@ public:
 	void SendRedrawSignal() { GetCSystem().GetPostProcessData()->SendRedrawSignal(); };
 
 	//! interrupt further computation until user input --> 'pause' function
-	void WaitForUserToContinue(bool printMessage = true) { GetCSystem().GetPostProcessData()->WaitForUserToContinue(printMessage); }
+	void WaitForUserToContinue(bool printMessage = true, bool deprecationWarning = false);
 
 	//! return the render engine stop flag (e.g. in order to interrupt animation or postprocessing)
 	bool GetRenderEngineStopFlag() const { return GetCSystem().GetPostProcessData()->stopSimulation; }
@@ -166,14 +166,6 @@ public:
 			GetCSystem().GetPostProcessData()->forceQuitSimulation = stopFlag; //this allows to proceed after a render engine has been stopped
 		}
 	}
-
-	////! this function waits for the stop flag in the render engine;
-	//bool WaitForRenderEngineStopFlag();
-
-	////! access to settings via pybind, not knowing visualization system:
-	//const VisualizationSettings& PyGetVisualizationSettings() const { return visualizationSystem.settings; }
-	//void PySetVisualizationSettings(const VisualizationSettings& visualizationSettings) { visualizationSystem.settings = visualizationSettings; }
-
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//   COMPUTATIONAL FUNCTIONS
@@ -218,6 +210,11 @@ public:
 	Index AddMainNode(const py::dict& d);
 	//! Add a MainNode with a python class
 	NodeIndex AddMainNodePyClass(const py::object& pyObject);
+	//! Consistently delete a MainNode from Python
+	void PyDeleteNode(const py::object& nodeNumber, bool suppressWarnings = false);
+	//! Consistently delete a MainNode from Python
+	void DeleteNode(Index deleteItemNumber, bool suppressWarnings = false);
+
 	//! get node's dictionary by name; does not throw a error message
 	NodeIndex PyGetNodeNumber(STDstring name);
 	//! hook to read node's dictionary
@@ -255,6 +252,8 @@ public:
 	Index AddMainObject(const py::dict& d);
 	//! Add a MainObject with a python class
 	ObjectIndex AddMainObjectPyClass(const py::object& pyObject);
+	//! Consistently delete a MainObject from Python
+	void PyDeleteObject(const py::object& objectNumber, bool deleteDependentItems = true, bool suppressWarnings = false);
 	//! get object's dictionary by name; does not throw a error message
 	ObjectIndex PyGetObjectNumber(STDstring itemName);
 	//! hook to read object's dictionary
@@ -289,6 +288,11 @@ public:
 	Index AddMainMarker(const py::dict& d);
 	//! Add a MainMarker with a python class
 	MarkerIndex AddMainMarkerPyClass(const py::object& pyObject);
+	//! Consistently delete a MainMarker from Python
+	void PyDeleteMarker(const py::object& markerNumber, bool suppressWarnings = false);
+	//! Consistently delete a MainMarker from Python
+	void DeleteMarker(Index deleteItemNumber, bool suppressWarnings = false);
+
 	//! get marker's dictionary by name; does not throw a error message
 	MarkerIndex PyGetMarkerNumber(STDstring itemName);
 	//! hook to read marker's dictionary
@@ -312,6 +316,10 @@ public:
 	//   LOAD
 	//! this is the hook to the object factory, handling all kinds of objects, nodes, ...
 	Index AddMainLoad(const py::dict& d);
+	//! Consistently delete a MainLoad from Python
+	void PyDeleteLoad(const py::object& loadNumber, bool deleteDependentMarkers = true, bool suppressWarnings = false);
+	//! Consistently delete a MainLoad from Python
+	void DeleteLoad(Index deleteItemNumber, bool deleteDependentMarkers = true, bool suppressWarnings = false);
 	//! Add a MainLoad with a python class
 	LoadIndex AddMainLoadPyClass(const py::object& pyObject);
 	//! get load's dictionary by name; does not throw a error message
@@ -339,6 +347,10 @@ public:
 	Index AddMainSensor(const py::dict& d);
 	//! Add a MainSensor with a python class
 	SensorIndex AddMainSensorPyClass(const py::object& pyObject);
+	//! Consistently delete a MainSensor from Python
+	void PyDeleteSensor(const py::object& sensorNumber, bool suppressWarnings = false);
+	//! Consistently delete a MainSensor from Python
+	void DeleteSensor(Index deleteItemNumber, bool suppressWarnings = false);
 	//! get sensor's dictionary by name; does not throw a error message
 	SensorIndex PyGetSensorNumber(STDstring itemName);
 	//! hook to read sensor's dictionary

@@ -27,7 +27,6 @@ except:
         pass
     exudynTestGlobals = ExudynTestGlobals()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-useGraphics = False
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
@@ -269,7 +268,7 @@ gList = [graphics.Sphere(point=[0,0,0], radius=0.5*r, color= graphics.color.yell
 omega0 = np.array([-0.05,-5,0.])
 pRef = [0.5*L-1.45*bb, 0.5*L-1.20*bb, 3*bh+0.5*r-2*m*gFact/k] #[0.5*L-1.45*bb, 0.5*L-1.40*bb, ..] goes to edge
 RBinertia = InertiaSphere(m, 0.5*r)
-dictStair = mbs.CreateRigidBody(
+dictStair = mbs.CreateRigidBody( #note that this node causes inaccuracies/repeatability issues in test suite!
               inertia=RBinertia, 
               nodeType=exu.NodeType.RotationRotationVector,
               referencePosition=pRef,
@@ -397,10 +396,10 @@ SC.visualizationSettings.openGL.light0position = [-3,3,10,0]
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
 simulationSettings.timeIntegration.endTime = tEnd
@@ -424,17 +423,17 @@ exudynTestGlobals.testResult = uSum
 
     
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
+    SC.renderer.DoIdleTasks()
 
     if True:
         SC.visualizationSettings.general.autoFitScene = False
         SC.visualizationSettings.general.graphicsUpdateInterval=0.02
         
         sol = LoadSolutionFile('solution/coordinatesSolution.txt', safeMode=True)#, maxRows=100)
-        print('start SolutionViewer')
+        exu.Print('start SolutionViewer')
         mbs.SolutionViewer(sol)
 
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 if useGraphics:
     

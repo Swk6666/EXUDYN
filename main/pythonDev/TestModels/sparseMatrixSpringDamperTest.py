@@ -75,7 +75,7 @@ mbs.Assemble()
 
 #useGraphics = True
 if useGraphics: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 simulationSettings = exu.SimulationSettings()
 #simulationSettings.displayStatistics = True
@@ -114,8 +114,8 @@ exudynTestGlobals.testError = 1e-2*(u[1]-(-6.779862983766792)) #72 x 6 bodies; C
 exudynTestGlobals.testResult = 1e-2*u[1]
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() 
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() 
 
 
 

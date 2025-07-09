@@ -17,15 +17,38 @@
 
 #include "Linalg/Geometry.h"
 
+//compute polynomials at x, segment length c and segment number; implemented for 0, 2 or 4 coefficients
+Real CObjectContactCurveCircles::ComputePolynomials(Real x, Real c, Index segNum, const ResizableMatrix& polyCoeffs) const
+{
+	Real val = 0;
+	if (polyCoeffs.NumberOfColumns() >= 2)
+	{
+		Real x2 = x * x;
+		Real x3 = x * x2;
+		Real c2 = c * c;
+		val += polyCoeffs(segNum, 0) * (x - 2 * x2 / c + x3 / c2);
+		val += polyCoeffs(segNum, 1) * (-x2/c + x3 / c2);
+		if (polyCoeffs.NumberOfColumns() > 2)
+		{
+			//compute quintic polynomials, such that they represent curvatures at both ends;
+			// NOTE: the first two polynomials already include curvatures, which need to be subtracted!
+			//polyvals[2] = polyCoeffs(segNum, 2) * ...
+			//polyvals[3] = -polyCoeffs(segNum, 3) * ...
+		}
+	}
+	return val;
+}
 
 //compute the properties which are needed for computation of LHS and needed for OutputVariables
 //NOTE: all computations done in local 2D frame!
 void CObjectContactCurveCircles::ComputeConnectorProperties(const MarkerDataStructure& markerData, Index itemIndex, LinkedDataVector& data, 
 	bool useDataStates, Vector2D& forceMarker0, Real& torqueMarker0,
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment,
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment_t,
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalX,
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalY) const
+	Vector& gapPerSegment, Vector& gapPerSegment_t, Vector& segmentsForceLocalX, Vector& segmentsForceLocalY
+	//ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment,
+	//ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment_t,
+	//ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalX,
+	//ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalY
+	) const
 {
 	Index nSegments = GetNumberOfSegments();
 	gapPerSegment.SetNumberOfItems(nSegments);
@@ -44,19 +67,22 @@ void CObjectContactCurveCircles::ComputeConnectorProperties(const MarkerDataStru
 	Matrix3D A0 = markerData.GetMarkerData(0).orientation; //all quantities are rotated into the A0 frame!
 	Matrix3D A0T = A0.GetTransposed();
 	Vector3D v0Local = A0T * v0;
-	Vector3D omega0 = A0 * omega0local;
+	//Vector3D omega0 = A0 * omega0local;
 	Vector2D v02D({ v0Local[0], v0Local[1] });
 	Real omegaZ = omega0local[2];
 
 	CHECKandTHROW(parameters.segmentsData.UseDenseMatrix(), "CObjectContactCurveCircles::ComputeConnectorProperties: segmentsData must be in dense matrix mode!");
 
 	const ResizableMatrix& segData = parameters.segmentsData.GetInternalDenseMatrix();
+	const ResizableMatrix& polyData = parameters.polynomialData.GetInternalDenseMatrix();
+
+	//bool hasPolyData = polyData.NumberOfColumns() != 0;
 
 	//pout << "****************************************\n";
 	//initialize segments:
 	for (Index jSeg = 0; jSeg < nSegments; jSeg++)
 	{
-		gapPerSegment[jSeg] = EXUstd::MAXREAL; //not needed in case that useDataStates=true, because gap not returned!
+		gapPerSegment[jSeg] = EXUstd::MAXREAL; 
 		gapPerSegment_t[jSeg] = EXUstd::MAXREAL;
 		segmentsForceLocalX[jSeg] = 0;
 		segmentsForceLocalY[jSeg] = 0;
@@ -65,6 +91,10 @@ void CObjectContactCurveCircles::ComputeConnectorProperties(const MarkerDataStru
 			data[jSeg * nDataVariablesPerSegment + dataIndexCircle] = -1; //use invalid circle number; store only circles with collision
 		}
 	}
+
+	Vector3D intPoints;
+	Vector3D intWeights;
+	EXUmath::SetLobattoIntegrationRule(3, intPoints, intWeights);
 
 	for (Index iCircle = 0; iCircle < GetNumberOfCircles(); iCircle++)
 	{
@@ -84,61 +114,118 @@ void CObjectContactCurveCircles::ComputeConnectorProperties(const MarkerDataStru
 				//referenceCoordinatePerSegment is the relative position [0..1] of the shortest projected point at the line segment
 				Real relPos;
 				Vector2D contactVector; //points from projected segment point (or segment end point) to circle point
-				Real distance = HGeometry::ShortestDistanceEndPointsRelativePosition(p0, p1, pc2D, relPos, contactVector);
+				Real distance = EGeometry::ShortestDistanceEndPointsRelativePosition(p0, p1, pc2D, relPos, contactVector);
+
+				//two problems:
+				// 1) needs to include overlapping areas as otherwise number of contact segments influences contact stiffness (jumps!)
+				// 2) improved distance field computation required
+				//if (hasPolyData) //assume only small deviation from line!
+				//{
+				//	Vector2D t = p1 - p0;
+				//	Real c = t.GetL2Norm();
+				//	Vector2D n({ -t[1],t[0]});
+				//	n.Normalize();
+				//	
+
+				//	Real y = ComputePolynomials(relPos * c, c, jSeg, polyData);
+				//	Vector2D pc = p0 + relPos * t - y*n;
+				//	contactVector = pc2D - pc;
+				//	distance = contactVector.GetL2Norm();
+				//}
 
 				Vector2D segPoint = pc2D - contactVector;
-				Vector2D n0 = contactVector;
-				if (distance != 0.) { n0 *= 1. / distance; } //computes normal vector
+				Vector2D n = contactVector;
+				if (distance != 0.) { n *= 1. / distance; } //computes normal vector
 				Real gap = distance - radius;
 
 				//circle center vel - segment vel, both computed in local frame:
 				Vector2D vRel = vc2D - (v02D + Vector2D({ -omegaZ * contactVector[1], omegaZ * contactVector[0] }));
-				Real gap_t = vRel * n0;
+				Real gap_t = vRel * n;
 
-				if (gap < gapPerSegment[jSeg]) //we only chose the segment with smallest gap!
+				//force without weighting:
+				Real fNormal0 = gap * parameters.contactStiffness + gap_t * parameters.contactDamping;
+				if (gap < gapPerSegment[jSeg]) //we chose the circle-segment pair with largest penetration!
 				{
 					gapPerSegment[jSeg] = gap;
 					gapPerSegment_t[jSeg] = gap_t;
-					if (!useDataStates && gap < 0)
+					if (!useDataStates && gap < 0 && fNormal0 < 0) //contact only activated if also fNormal < 0
 					{
 						data[jSeg * nDataVariablesPerSegment + dataIndexCircle] = iCircle;
 					}
 				}
 
-				if ((!useDataStates && gap < 0) ||
+				if ((!useDataStates && gap < 0 && fNormal0 < 0) ||
 					(useDataStates && data[jSeg * nDataVariablesPerSegment + dataIndexGap] < 0) ) //only follow decision of PostNewton step result!
 				{
-					Real fNormal = gap * parameters.contactStiffness + gap_t * parameters.contactDamping;
-
-					if (!useDataStates && (segmentsForceLocalX[jSeg] != 0 || segmentsForceLocalY[jSeg] != 0) )
+					Real fNormal;
+					if (parameters.contactModel == 1)
 					{
-						PyWarning(STDstring("CObjectContactCurveCircles::ComputeConnectorProperties: ") +
-							"it seems that two circles contact segment " + EXUstd::ToString(jSeg) + " (current circle="+ EXUstd::ToString(iCircle) + ") at the same time; you have to use segments small enought that ONLY one circle may have contact with a segment at any time!");
+						//weighted force; required to make contacts much smoother!
+						CSVector2D relPos;
+						EGeometry::LineCircleIntersectionPoints(p0, p1, pc2D, radius, relPos);
+						if (relPos.NumberOfItems() == 2)
+						{
+							//only in this case, we compute a force
+							Vector2D t = p1 - p0;
+							Real len = t.GetL2Norm(); //relPos: 0..1 represents 0..len
+
+							//here, we use a different normal, because otherwise the normal would change over integration, giving non-smooth contact forces!
+							n = Vector2D({ t[1],-t[0] });
+							n.Normalize();
+
+							//compute distances left, middle and right (according to Lobatto 3-point integration)
+							Vector3D values; //gaps at integration points
+							Vector2D vPC = pc2D - p0; //to determine location of pc2D projected on segment
+							//Real relPosPC = vPC * t / (len * len);
+							Real dist0 = fabs((pc2D - p0) * n); //distance of pc2D from infinite line
+
+							Real r2 = radius * radius;
+							values[0] = -sqrt(r2 - EXUstd::Square((pc2D - p0) * t)) + dist0;
+							values[1] = -sqrt(r2 - EXUstd::Square((pc2D - (p0 + (0.5 * (relPos[0] + relPos[1])) * t)) * t)) + dist0;
+							values[2] = -sqrt(r2 - EXUstd::Square((pc2D - p1) * t)) + dist0;
+
+							//if (hasPolyData) //problem: we need intersection points of polynomial with circle!
+							//{
+							//	values[0] -= ComputePolynomials(relPos[0] * len, len, jSeg, polyData);
+							//	values[1] -= ComputePolynomials(0.5*(relPos[0]+relPos[1]) * len, len, jSeg, polyData);
+							//	values[2] -= ComputePolynomials(relPos[1] * len, len, jSeg, polyData);
+							//}
+							Real lRelPos = len * (relPos[1] - relPos[0]);
+							//integral over penetration; relative to (max) gap
+							Real intPenetration = EXUmath::NumIntegrateValues(values, intPoints, intWeights, 0, lRelPos) / gap;
+
+							//pout << "dist0=" << dist0 << ",relPos=" << relPos << ", values=" << values << ", int=" << intPenetration * gap << ", gap=" << gap << "\n";
+
+							fNormal = fNormal0 * intPenetration;
+						}
 					}
-					//if (!useDataStates) {
-					//	pout << "force: segment=" + EXUstd::ToString(jSeg) + ", circle=" + EXUstd::ToString(iCircle) << ", dist=" << distance << ", r=" << radius << "\n";}
+					else
+					{
+						Real len = (p1 - p0).GetL2Norm(); //relPos: 0..1 represents 0..len
+						fNormal = fNormal0 * len;
+					}
+					if (fNormal)
+					{
+						if (!useDataStates && (segmentsForceLocalX[jSeg] != 0 || segmentsForceLocalY[jSeg] != 0) )
+						{
+							PyWarning(STDstring("CObjectContactCurveCircles::ComputeConnectorProperties: ") +
+								"it seems that two circles have contact with segment " + EXUstd::ToString(jSeg) + " (current circle="+ EXUstd::ToString(iCircle) + ") at the same time; you have to use segments small enought that ONLY one circle may have contact with a segment at any time!");
+						}
+						//if (!useDataStates) {
+						//	pout << "force: segment=" + EXUstd::ToString(jSeg) + ", circle=" + EXUstd::ToString(iCircle) << ", dist=" << distance << ", r=" << radius << "\n";}
 
-					segmentsForceLocalX[jSeg] += fNormal * n0[0];
-					segmentsForceLocalY[jSeg] += fNormal * n0[1];
+						segmentsForceLocalX[jSeg] += fNormal * n[0];
+						segmentsForceLocalY[jSeg] += fNormal * n[1];
 
-					forceMarker0 += (-fNormal) * n0;
+						forceMarker0 += (-fNormal) * n;
 
-					//add torque on marker 0 ...!
-					torqueMarker0 += segPoint.CrossProduct2D((-fNormal) * n0); //segPoint is given relative to Marker0!
+						//add torque on marker 0 ...!
+						torqueMarker0 += segPoint.CrossProduct2D((-fNormal) * n); //segPoint is given relative to Marker0!
+					}
 				}
 			}
 		}
 	}
-	//if (!useDataStates)
-	//{
-	//	pout << "segments=";
-	//	for (Index jSeg = 0; jSeg < nSegments; jSeg++)
-	//	{
-	//		pout << "  " << data[jSeg * nDataVariablesPerSegment + dataIndexCircle] << ":";
-	//		pout << EXUstd::Num2String(data[jSeg * nDataVariablesPerSegment + dataIndexGap],3) << "\n";
-	//	}
-	//	pout << "\n";
-	//}
 }
 
 
@@ -154,10 +241,6 @@ void CObjectContactCurveCircles::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 	const bool useDataStates = true;
 	Vector2D forceMarker0;
 	Real torqueMarker0;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> gapPerSegment;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> gapPerSegment_t;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> segmentsForceLocalX;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> segmentsForceLocalY;
 
 	ComputeConnectorProperties(markerData, objectNumber, data, useDataStates, forceMarker0, torqueMarker0,
 		gapPerSegment, gapPerSegment_t, segmentsForceLocalX, segmentsForceLocalY);
@@ -179,6 +262,7 @@ void CObjectContactCurveCircles::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 	{
 		Matrix3D A0 = markerData.GetMarkerData(0).orientation; //all quantities are rotated into the A0 frame!
 		Vector3D p0 = markerData.GetMarkerData(0).position;
+		//A0 should be A0*rotationMarker0
 
 		//marker 1+iCircle / J (positive):    (according to computation of relative position)
 		//now link ode2Lhs Vector to partial result using the two jacobians
@@ -197,7 +281,8 @@ void CObjectContactCurveCircles::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 				fVec3D = A0 * fVec3D;
 
 				LinkedDataVector ldv1(ode2Lhs, colOff + iCircle * colsPerCircleMarker, colsMarker);
-				EXUmath::MultMatrixTransposedVector(markerData.GetMarkerData(1).positionJacobian, fVec3D, ldv1);
+				//add forces, as there may be several forces per circle!
+				EXUmath::MultMatrixTransposedVectorAdd(markerData.GetMarkerData(1).positionJacobian, fVec3D, ldv1);
 
 
 				//if (frictionCoeff != 0)
@@ -240,7 +325,7 @@ void CObjectContactCurveCircles::GetOutputVariableConnector(OutputVariableType v
 	//case OutputVariableType::Displacement: value.CopyFrom(deltaP); break;
 	//case OutputVariableType::DisplacementLocal: value.CopyFrom(Vector1D({gap})); break;
 	//case OutputVariableType::Velocity: value.CopyFrom(deltaV); break;
-	//case OutputVariableType::Director3: value.CopyFrom(n0); break;
+	//case OutputVariableType::Director1: value.CopyFrom(n0); break;
 	//case OutputVariableType::Force: value.CopyFrom(fVec); break;
 	//case OutputVariableType::Torque: value.CopyFrom(((-parameters.spheresRadii[0] - 0.5 * gap) * n0).CrossProduct(fVec)); break;
 	//default:
@@ -265,10 +350,6 @@ Real CObjectContactCurveCircles::PostNewtonStep(const MarkerDataStructure& marke
 	const bool useDataStates = false;
 	Vector2D forceMarker0;
 	Real torqueMarker0;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> gapPerSegment;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> gapPerSegment_t;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> segmentsForceLocalX;
-	ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize> segmentsForceLocalY;
 
 	ComputeConnectorProperties(markerDataCurrent, itemIndex, data, useDataStates, forceMarker0, torqueMarker0,
 		gapPerSegment, gapPerSegment_t, segmentsForceLocalX, segmentsForceLocalY);
@@ -277,6 +358,7 @@ Real CObjectContactCurveCircles::PostNewtonStep(const MarkerDataStructure& marke
 	for (Index jSeg = 0; jSeg < GetNumberOfSegments(); jSeg++)
 	{
 		Real currentGap = gapPerSegment[jSeg];
+		Real currentGap_t = gapPerSegment_t[jSeg];
 		Index totalIndexGap = jSeg * nDataVariablesPerSegment + dataIndexGap;
 		Real lastGap = data[totalIndexGap];
 		//Real startofStepGap = dataStartofStepState[totalIndexGap];
@@ -285,7 +367,7 @@ Real CObjectContactCurveCircles::PostNewtonStep(const MarkerDataStructure& marke
 		//compute error for gap:
 		if ((currentGap > 0 && lastGap <= 0) || (currentGap <= 0 && lastGap > 0)) //action: state1=currentGapState, error = |currentGap*k|
 		{
-			discontinuousError = fabs(currentGap * parameters.contactStiffness);
+			discontinuousError = fabs(currentGap * parameters.contactStiffness + currentGap_t * parameters.contactDamping);
 
 			//in fact it is (0-startofStepState) which is the part of time to go in these steps!
 			//startofStepGap<=0 caused in case of inappropriate initialization => no step recommendation, but try to re-iterate

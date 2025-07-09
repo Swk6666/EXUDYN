@@ -59,6 +59,16 @@ namespace EPyUtils {
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	inline bool IsPyTypeString(const py::object& pyObject)
+	{
+		return py::isinstance<py::str>(pyObject);
+	}
+
+	inline bool IsPyTypeReal(const py::object& pyObject)
+	{
+		return py::isinstance<py::float_>(pyObject);
+	}
+
 	//! check if python type is any kind of integer; np.array uses int32_t, while standard lists use int_ types
 	inline bool IsPyTypeInteger(const py::object& pyObject)
 	{
@@ -70,6 +80,11 @@ namespace EPyUtils {
 			//py::isinstance<std::intptr_t>(pyObject) ||
 			//py::isinstance<std::int_fast32_t>(pyObject) ||
 			py::isinstance<py::int_>(pyObject);
+	}
+
+	inline bool IsPyTypeScalar(const py::object& pyObject)
+	{
+		return IsPyTypeReal(pyObject) || IsPyTypeInteger(pyObject);
 	}
 
 	//! return true if is list or numpy array
@@ -294,6 +309,42 @@ namespace EPyUtils {
 		}
 		return vectorNodeIndex;
 	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//! Expect Index or ArrayObjectIndex; otherwise throws error
+	inline ArrayIndex GetArrayObjectIndexSafely(const py::object& pyObject)
+	{
+		if (pyObject.is_none())
+		{
+			return ArrayIndex(); //empty list
+		}
+		else if (py::isinstance<py::list>(pyObject) || py::isinstance<py::array>(pyObject))
+		{
+			py::list pylist = py::cast<py::list>(pyObject); //hopefully also works for numpy arrays .. TEST!
+			ArrayIndex indexList; //initialize empty list
+			for (auto item : pylist)
+			{
+				indexList.Append(GetObjectIndexSafely(py::cast<py::object>(item))); //will crash, if e.g. function in list ...
+			}
+			return indexList;
+		}
+
+		//otherwise:
+		PyError(STDstring("Expected list of ObjectIndex, but received '" + EXUstd::ToString(pyObject) + "'; check potential mixing of different indices (ObjectIndex, NodeIndex, MarkerIndex, ...) or inconsistent arrays for nodeNumbers, markerNumbers, ...!"));
+		return ArrayIndex();
+	}
+
+	//! get pybind-convertible vector of ObjectIndex from ArrayIndex
+	inline std::vector<ObjectIndex> GetArrayObjectIndex(const ArrayIndex& arrayIndex)
+	{
+		std::vector<ObjectIndex> vectorObjectIndex;
+		for (auto item : arrayIndex)
+		{
+			vectorObjectIndex.push_back(ObjectIndex(item));
+		}
+		return vectorObjectIndex;
+	}
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//! Expect Index or ArrayMarkerIndex; otherwise throws error

@@ -120,10 +120,10 @@ useGraphics = True
 if useGraphics:
     simulationSettings.displayComputationTime = True
     simulationSettings.displayStatistics = True
-    exu.StartRenderer()
+    SC.renderer.Start()
     ## reload previous render configuration
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys[ 'renderState' ])
+        SC.renderer.SetState(exu.sys[ 'renderState' ])
 else:
     simulationSettings.solutionSettings.writeSolutionToFile = False
 

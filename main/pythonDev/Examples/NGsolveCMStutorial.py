@@ -95,12 +95,7 @@ if True: #needs netgen/ngsolve to be installed to compute mesh, see e.g.: https:
     mesh.Curve(1)
 
     if False: #set this to true, if you want to visualize the mesh inside netgen/ngsolve
-        # import netgen
-        import netgen.gui
-        ngs.Draw(mesh)
-        for i in range(10000000):
-            netgen.Redraw() #this makes the netgen window interactive
-            time.sleep(0.05)
+        import netgen.gui #this starts netgen gui; Press button "Visual" and activate "Auto-redraw after (sec)"; Then select "Mesh"
 
     #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
     #Use fem to import FEM model and create FFRFreducedOrder object
@@ -341,12 +336,11 @@ if True: #now import mesh as mechanical model to EXUDYN
         if useGraphics:
             SC.visualizationSettings.general.autoFitScene=False
 
-            exu.StartRenderer()
-            if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+            SC.renderer.Start()
+            if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
         
-            mbs.WaitForUserToContinue() #press space to continue
+            SC.renderer.DoIdleTasks() #press space to continue
 
-        #SC.RedrawAndSaveImage()
         if True:
             # mbs.SolveDynamic(solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
             #                   simulationSettings=simulationSettings)
@@ -359,8 +353,8 @@ if True: #now import mesh as mechanical model to EXUDYN
             print('max von-Mises stress=',mises)
         
         if useGraphics:
-            SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
+            SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
         
         if False:
             

@@ -10,7 +10,7 @@
 #
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# import exudyn
+import exudyn
 # import exudyn.basicUtilities as ebu
 import numpy as np #LoadSolutionFile
 # import copy as copy #to be able to copy e.g. lists
@@ -60,13 +60,13 @@ def CreateParticlesInBox(minPointBox, maxPointBox, minRadius, maxRadius=None,
     ovec = (dvec - spaceNeeded) / 2. + minP + 0.5*sizeSphere
     
     if verbose:
-        print('box size         =',dvec)
-        print('particles (x,y,z)=',nvec)
-        print('offsets          =',ovec)
-        print('spacing (x,y,z)  =',spacing)
-        print('shifting (x,y,z) =',maxShifting)
-        print('space needed     =',spaceNeeded)
-        print('total particles  =',totalParticles)
+        exudyn.Print('box size         =',dvec)
+        exudyn.Print('particles (x,y,z)=',nvec)
+        exudyn.Print('offsets          =',ovec)
+        exudyn.Print('spacing (x,y,z)  =',spacing)
+        exudyn.Print('shifting (x,y,z) =',maxShifting)
+        exudyn.Print('space needed     =',spaceNeeded)
+        exudyn.Print('total particles  =',totalParticles)
     
     # Generate particles with HCP (hexagonal close packing) arrangement
     count = 0
@@ -97,7 +97,7 @@ def CreateParticlesInBox(minPointBox, maxPointBox, minRadius, maxRadius=None,
                     minPointBox[1] + radius <= position[1] <= maxPointBox[1] - radius and
                     minPointBox[2] + radius <= position[2] <= maxPointBox[2] - radius):
                     
-                    print('WARNING: CreateParticlesInBox: particle not inside box: p=',position,', r=', radius)
+                    exudyn.Print('WARNING: CreateParticlesInBox: particle not inside box: p=',position,', r=', radius)
 
                 # Append the particle's position and radius as a tuple
                 listPR.append((np.array(position), radius))
@@ -108,7 +108,6 @@ def CreateParticlesInBox(minPointBox, maxPointBox, minRadius, maxRadius=None,
 
 if __name__ == '__main__':
 
-    # print(particles)    
     import exudyn as exu
     from exudyn.utilities import * #includes itemInterface and rigidBodyUtilities
     import exudyn.graphics as graphics #only import if it does not conflict
@@ -123,12 +122,10 @@ if __name__ == '__main__':
                                      minRadius = 0.4, maxRadius = 0.7,
                                      maxNumberOfParticles = 800,
                                      verbose=1)
-    print('n particles=', len(particles))
+    exudyn.Print('n particles=', len(particles))
 
     for (p, r) in particles:
-        #print(p)
         colorInd = int(p[2]/2)%16
-        #print(colorInd)
         mbs.CreateGround(referencePosition=p,
                          graphicsDataList=[graphics.Sphere(radius=r, 
                                                            color=graphics.colorList[colorInd],
@@ -138,7 +135,7 @@ if __name__ == '__main__':
 
     mbs.Assemble()
 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
-    exu.StopRenderer()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop()
     

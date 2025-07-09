@@ -22,8 +22,7 @@
 #include "Linalg/BasicLinalg.h"
 
 extern void PyTest();
-extern void PythonAlive();
-//extern void PythonGo(); moved into .cpp file
+//extern void PythonAlive();
 extern void CreateTestSystem(Index systemNumber, Index arg0, Index arg1);
 
 

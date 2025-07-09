@@ -314,7 +314,7 @@ SC.visualizationSettings.openGL.multiSampling=4
 tEnd = 1.25
 h = 0.001#*0.1*0.01
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 simulationSettings = exu.SimulationSettings() #takes currently set values or default values
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
@@ -340,10 +340,10 @@ SC.visualizationSettings.window.renderWindowSize=[1920,1200]
 useGraphics = False
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
     
 mbs.SolveDynamic(simulationSettings, 
                  solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
@@ -356,7 +356,7 @@ mbs.SolveDynamic(simulationSettings,
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False
-    exu.StopRenderer()
+    SC.renderer.Stop()
 
 if False:
     mbs.SolutionViewer()

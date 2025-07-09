@@ -95,7 +95,7 @@ def SwitchTripletOrder(vector):
 def ComputeTriangleNormal(p0,p1,p2):
     v0 = np.array(p1) - np.array(p0)
     v1 = np.array(p2) - np.array(p0)
-    # print(v0,v1)
+
     n = np.cross(v0,v1)
     ln = np.linalg.norm(n)
     if ln != 0.:
@@ -107,6 +107,74 @@ def ComputeTriangleNormal(p0,p1,p2):
 #**output: area as float
 def ComputeTriangleArea(p0,p1,p2):
     return 0.5*np.linalg.norm(np.cross(np.array(p1) - np.array(p0), np.array(p2) - np.array(p0)))
+
+
+#**function: Internal function: compute normals to 6-node triangular surface given by elementNodes
+#input: elementNodes given as np.array with 6 node vectors in rows; node ordering must follow Netgen order, see the local coordinates in the function
+#**output: returns np.array with 6 normals in rows
+def Compute6NodeTrigsNormals(elementNodes):
+    #unused; compute shape functions in local coordinates xi and eta
+    def ShapeFunctions(xi, eta):
+        N = np.zeros(6)
+        N[0] = (1 - xi - eta) * (2 * (1 - xi - eta) - 1)         # N1
+        N[1] = xi * (2 * xi - 1)                                 # N2
+        N[2] = eta * (2 * eta - 1)                               # N3
+        N[3] = 4 * xi * eta                                      # N4
+        N[4] = 4 * (1 - xi - eta) * eta                          # N5
+        N[5] = 4 * (1 - xi - eta) * xi                           # N6
+        return N
+
+    #compute derivatives of shape functions at xi and eta
+    def ShapeFunctionDerivatives(xi, eta):
+        """Compute the derivatives of the shape functions with respect to xi and eta."""
+        dN_dxi = np.array([
+            -3 + 4*xi + 4*eta,  # dN1/dxi
+             4*xi - 1,          # dN2/dxi
+             0,                 # dN3/dxi
+             4*eta,             # dN5/dxi
+            -4*eta,             # dN6/dxi
+             4 - 8*xi - 4*eta,  # dN4/dxi
+        ])
+        dN_deta = np.array([
+            -3 + 4*xi + 4*eta,  # dN1/deta
+             0,                 # dN2/deta
+             4*eta - 1,         # dN3/deta
+             4*xi,              # dN5/deta
+             4 - 4*xi - 8*eta,  # dN6/deta
+            -4*xi,              # dN4/deta
+        ])
+        return [dN_dxi, dN_deta]
+
+    # Local coordinates of the 6 nodes in the reference triangle
+    # this also represents the node ordering in Netgen!
+    localCoords = np.array([
+        [0.0, 0.0],  # Corner 1
+        [1.0, 0.0],  # Corner 2
+        [0.0, 1.0],  # Corner 3
+        [0.5, 0.5],  # Mid-edge 23
+        [0.0, 0.5],  # Mid-edge 31
+        [0.5, 0.0],  # Mid-edge 12
+    ])
+    
+    normals = np.zeros_like(elementNodes)
+    
+    # Compute the normal at each node
+    for i, (xi, eta) in enumerate(localCoords):
+        dN_dxi, dN_deta = ShapeFunctionDerivatives(xi, eta)
+        
+        # Compute the tangents
+        t_xi = np.sum(dN_dxi[:, None] * elementNodes, axis=0)
+        t_eta = np.sum(dN_deta[:, None] * elementNodes, axis=0)
+        
+        # Compute the normal as the cross product of the tangents
+        normal = np.cross(t_xi, t_eta)
+        norm = np.linalg.norm(normal)
+        normal = normal/norm if norm > 0 else normal
+
+        normals[i] = normal
+    
+    return normals
+
 
 #************************************************
 #**function: refine triangle mesh; every triangle is subdivided into 4 triangles
@@ -130,27 +198,20 @@ def RefineMesh(points, triangles):
     #     for i in trig:
     #         trigsPerPoint[i] += [ti]
 
-    #print(trigsPerPoint)
     pnew = [0,0,0] #a,b,c
     for (ti, trig) in enumerate(triangles):
-        # print('process trig', ti)
         for j in range(3):
             pointNew = 0.5*(np.array(points[trig[j]])+np.array(points[trig[j-1]]))
             found = -1
-            #search all points (SLOW):
-            # for (i, p) in enumerate(points2):
-            #     if np.linalg.norm(pointNew-p) <= 1e-12:
-            #         found = i
+
             #go through all triangles at one point, if new (refined) trig exists, it contains the new point:
             for (i, ti2) in enumerate(trigsPerPoint[trig[j]]):
-                # print('  i, ti2=', i, ti2)
                 for pointIndex in triangles2[ti2]:
                     if np.linalg.norm(pointNew-points2[pointIndex]) <= 1e-12:
                         found = pointIndex
 
             if found==-1:
                 pnew[j] = len(points2)
-                # print('add new point ', pnew[j])
                 points2 += [pointNew]
             else:
                 pnew[j] = found
@@ -163,7 +224,7 @@ def RefineMesh(points, triangles):
         for (ti, trig) in enumerate(triangles2[-4:]):
             for i in trig:
                 trigsPerPoint[i] += [toff+ti]
-    # print('trigs per point=',trigsPerPoint)
+
     return [points2, triangles2]
 
 #************************************************
@@ -184,16 +245,12 @@ def ShrinkMeshNormalToSurface(points, triangles, distance):
     
     for trig in triangles:
         n = ComputeTriangleNormal(points[trig[0]],points[trig[1]],points[trig[2]])
-        # print(n)
+
         for i in range(3):
             dn = -distance*n
-            # print('move',trig[i],'=',dn, ', disp=',disp[trig[i]])
             for j in range(3):
                 if abs(dn[j]) > abs(disp[trig[i]][j]):
                     disp[trig[i]][j] = dn[j]
-                    # print('==>disp',trig[i],'=',disp[trig[i]])
-
-    # print('disp=', disp)
 
     for i in range(len(points2)):
         points2[i] += disp[i]
@@ -225,7 +282,7 @@ def ShrinkMeshNormalToSurface(points, triangles, distance):
 # for i in range(len(points)-1):
 #     segments += [i,i+1]
 # tri = ComputeTriangularMesh(points, segments)
-# print(tri.simplices)
+# exudyn.Print(tri.simplices)
 def ComputeTriangularMesh(vertices, segments):
     from scipy.spatial import Delaunay
     from copy import deepcopy
@@ -244,10 +301,7 @@ def ComputeTriangularMesh(vertices, segments):
             alist.append(cnt)
             vertices2simplices[i] = alist    
         cnt += 1 #trig counter
-        
-    #print(trigs)
-    #print(vertices2simplices)
-    
+            
     #+++++++++++++++++++++++++++++++++
     #compute neighbors:
     trigNeighbors = 0*trigs #-1 means no neighbor trig!
@@ -268,8 +322,6 @@ def ComputeTriangularMesh(vertices, segments):
                             trigNeighbors[i,j] = trigIndex
                             trigNeighbors[trigIndex,k] = i
 
-    #print("neighbors=", trigNeighbors)                
-
     #+++++++++++++++++++++++++++++++++
     #compute inside triangles:
     trianglesInside = [-1]*len(trigs) #-1 is undefined, 0=outside, 1=inside
@@ -284,13 +336,11 @@ def ComputeTriangularMesh(vertices, segments):
                     trianglesInside[trigIndex] = 1
                 elif (seg[0] == t1) and (seg[1] == t0): #outside triangle
                     trianglesInside[trigIndex] = 0
-    #print(trianglesInside)
 
     #finally find remaining triangles (usually all triangles are on boundary, so nothing remains):
     undefinedTrigs = True
     while undefinedTrigs: #iterate as long as there are undefined triangles; usually only few iterations necessary
         undefinedTrigs = False
-        #print("iterate neighbors")
         for i in range(len(trigs)):
             if trianglesInside[i] == -1: #still undefined
                 found = False
@@ -307,7 +357,6 @@ def ComputeTriangularMesh(vertices, segments):
     for i in range(len(trigs)):
         if trianglesInside[i] == 1: 
             interiorTrigs += [list(trigs[i])]
-    #print("interiorTrigs=",interiorTrigs)
     
     tri.simplices = np.array(interiorTrigs)
     

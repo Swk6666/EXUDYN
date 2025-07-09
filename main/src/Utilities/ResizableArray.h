@@ -39,6 +39,7 @@
 #include <cstring>
 #include <array>
 #include <cstring>
+#include <utility> //for std::exchange
 
 typedef ResizableArray<Real> ArrayReal;
 typedef ResizableArray<float> ArrayFloat;

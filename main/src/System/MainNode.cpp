@@ -174,6 +174,13 @@ bool CMarker::GetOutputVariable(const CSystemData& cSystemData, OutputVariableTy
 OutputVariableType CMarker::GetOutputVariableTypes() const
 {
 	Index ovt = 0;
+	if (EXUstd::IsOfType(GetType(), (Marker::Type)(Marker::Body + Marker::Object + Marker::Coordinate + Marker::Position + Marker::Orientation)) )
+	{
+		//a MarkerBodiesRelativeRotationCoordinate or MarkerBodiesRelativeTranslationCoordinate
+		ovt = (Index)OutputVariableType::Coordinates + (Index)OutputVariableType::Coordinates_t;
+		return (OutputVariableType)ovt;
+	}
+
 	if (EXUstd::IsOfType(GetType(), Marker::Position))
 	{
 		ovt += (Index)OutputVariableType::Displacement + (Index)OutputVariableType::Position + (Index)OutputVariableType::Velocity;

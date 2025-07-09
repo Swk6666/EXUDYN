@@ -137,7 +137,7 @@ simulationSettings.solutionSettings.solutionInformation = "ANCF cable with impos
 
 solveDynamic = True
 if solveDynamic: 
-    exu.StartRenderer()
+    SC.renderer.Start()
     
     def UFchangeLoad(mbs, t):
         tt=t
@@ -155,15 +155,15 @@ if solveDynamic:
 
     mbs.SolveDynamic(simulationSettings)
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 else:
     simulationSettings.staticSolver.verboseMode = 1
     #simulationSettings.staticSolver.loadStepGeometric = True;
     #.staticSolver.loadStepGeometricRange = 1e2;
     
-    exu.StartRenderer()
+    SC.renderer.Start()
 
     #manual load stepping
     doLoadStepping = False
@@ -207,7 +207,7 @@ else:
         mbs.SolveStatic(simulationSettings)
 
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 

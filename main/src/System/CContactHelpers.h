@@ -119,7 +119,7 @@ namespace ContactHelper
 
 			ConstSizeVector<2> relPos;
 			
-			HGeometry::LineCircleIntersectionPoints(p0, p1, circlePos, r+halfHeight, relPos);
+			EGeometry::LineCircleIntersectionPoints(p0, p1, circlePos, r+halfHeight, relPos);
 			//pout << "p0=" << p0 << "p1=" << p1 << "circlePos=" << circlePos << "r=" << r + hANCF << "relPos=" << relPos << "\n";
 			//Real xNearest;
 			//Vector2D vv;

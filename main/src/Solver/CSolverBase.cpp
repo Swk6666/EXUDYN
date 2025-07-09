@@ -397,28 +397,26 @@ void CSolverBase::InitializeSolverData(CSystem& computationalSystem, const Simul
 	output.multiThreadingMode = 0; //no multithreading
 	output.numberOfThreadsUsed = 1;
 
-	if (exuThreading::TaskManager::IsRunning()) //should not happen; only if FinalizeSolver has not been called in last computation
+	if (ExuThreading::TaskManager::IsRunning()) //should not happen; only if FinalizeSolver has not been called in last computation
 	{
 		PyWarning("Initialize Solver: TaskManager already/still running from previous computation; this may indicate a recursive/parallel solver call with numberOfThreads>1; exiting task manager now");
-		exuThreading::ExitTaskManager(1); //arg must be larger than 1 to stop active workers
+		ExuThreading::ExitTaskManager(1); //arg must be larger than 1 to stop active workers
 	}
 
 	//Eigen::initParallel(); //with C++11 and eigen 3.3 optional
 	Index nThreads = simulationSettings.parallel.numberOfThreads;
-	//pout << "numThreads before init=" << exuThreading::TaskManager::GetNumThreads() << "\n";
+	//pout << "numThreads before init=" << ExuThreading::TaskManager::GetNumThreads() << "\n";
 	if (nThreads > 1)
 	{
 		//verboseMode not defined at this point ==> this part needs to move to initialization of solver!
 		//VerboseWrite(1, STDstring("TaskManager::SetNumThreads = ") + EXUstd::ToString(simulationSettings.parallel.numberOfThreads) + "\n");
-		exuThreading::TaskManager::SetNumThreads(simulationSettings.parallel.numberOfThreads);
+		ExuThreading::TaskManager::SetNumThreads(simulationSettings.parallel.numberOfThreads);
+		pySpecial.solver.multiThreadingLoadBalancing = simulationSettings.parallel.useLoadBalancing;
 
-		//for checking where time is lost
-		//TaskManager::SetPajeTrace(true);
-		//PajeTrace::SetMaxTracefileSize(100000000);
 
-		exuThreading::EnterTaskManager(); //this is needed in order that any ParallelFor is executed in parallel during solving
+		ExuThreading::EnterTaskManager(); //this is needed in order that any ParallelFor is executed in parallel during solving
 
-        output.numberOfThreadsUsed = exuThreading::TaskManager::GetNumThreads();
+        output.numberOfThreadsUsed = ExuThreading::TaskManager::GetNumThreads();
         
         if (output.numberOfThreadsUsed == 1) //this reflects that taskmanager is not running!
 		{
@@ -427,26 +425,20 @@ void CSolverBase::InitializeSolverData(CSystem& computationalSystem, const Simul
 		else
 		{
 			STDstring strThreading;
-#ifdef USE_MICROTHREADING
-			strThreading = " (tiny threading)";
-#endif 
-			VerboseWrite(1, STDstring("Start multi-threading with ") + 
+			strThreading = " (multithreading)";
+			if (ExuThreading::TaskManager::GetLoadBalancing()) { strThreading = " (multithreading & load balancing)"; }
+			VerboseWrite(1, STDstring("Start multi-threading with ") +
 				EXUstd::ToString(output.numberOfThreadsUsed) + " threads" + strThreading + "\n");
 
-#ifdef USE_MICROTHREADING
-			output.multiThreadingMode = 2; //mode 2 = microthreading
-#else
-			output.multiThreadingMode = 1; //mode 1 = NGsolve original
-#endif
-
+			output.multiThreadingMode = 1 + (Index)ExuThreading::TaskManager::GetLoadBalancing(); //signal that exudyn internal multithreading mode was used
 		}
 	}
 	else
 	{
 		//this is needed to set back number of threads to 0, which otherwise causes that CSystem functions are still using parallel mode if there was a parallel run before
-		exuThreading::TaskManager::SetNumThreads(1); //necessary in order that computation functions have reserved correct size of arrays
+		ExuThreading::TaskManager::SetNumThreads(1); //necessary in order that computation functions have reserved correct size of arrays
 	}
-	//pout << "numThreads after init=" << exuThreading::TaskManager::GetNumThreads() << "\n";
+	//pout << "numThreads after init=" << ExuThreading::TaskManager::GetNumThreads() << "\n";
 
 	data.tempCompData = TemporaryComputationData();		//totally reset; for safety for now!
 	data.tempCompDataArray.EraseData();		//totally reset; for safety for now!
@@ -464,10 +456,14 @@ void CSolverBase::InitializeSolverInitialConditions(CSystem& computationalSystem
 
 	if (!IsStaticSolver())
 	{
-		it.numberOfSteps = timeint.numberOfSteps;
+		if (fabs(timeint.numberOfSteps - std::round(timeint.numberOfSteps)) > EXUstd::EPSILONREAL*100.*timeint.numberOfSteps) //max relative deviation: 100*eps => this helps if number of steps is computed from complex formula
+		{
+			PyError("InitializeSolver: timeIntegration.numberOfSteps must be integer (or very close to it), but received " + EXUstd::ToString(timeint.numberOfSteps));
+		}
+		it.numberOfSteps = (Index)std::round(timeint.numberOfSteps);
 		if (it.numberOfSteps == 0)
 		{
-			PyWarning("SolverInitialConditions: TimeIntegration.numberOfSteps == 0: setting number of steps to 1", file.solverFile);
+			PyWarning("SolverInitialConditions: timeIntegration.numberOfSteps == 0: setting number of steps to 1", file.solverFile);
 			it.numberOfSteps = 1;
 		}
 
@@ -730,11 +726,11 @@ void CSolverBase::FinalizeSolver(CSystem& computationalSystem, const SimulationS
 void CSolverBase::StopThreadsAndCloseFiles()
 {
 	//Index nThreads = simulationSettings.parallel.numberOfThreads;
-	if (exuThreading::TaskManager::IsRunning())
+	if (ExuThreading::TaskManager::IsRunning())
 	{
 		VerboseWrite(1, "Stop multi-threading\n");
-        exuThreading::ExitTaskManager(1); // output.numberOfThreadsUsed);
-        exuThreading::TaskManager::SetNumThreads(1); //for next computation, if it is going to be serial
+        ExuThreading::ExitTaskManager(1); // output.numberOfThreadsUsed);
+        ExuThreading::TaskManager::SetNumThreads(1); //for next computation, if it is going to be serial
         output.numberOfThreadsUsed = 1;
         output.multiThreadingMode = 0;
     }
@@ -965,6 +961,7 @@ void CSolverBase::FinishStep(CSystem& computationalSystem, const SimulationSetti
 
 	if (simulationSettings.timeIntegration.simulateInRealtime)
 	{
+		STARTTIMER(timer.realtimeIdleCPU);
 		Real cpuTimeElapsed = simulationSettings.timeIntegration.realtimeFactor * (EXUstd::GetTimeInSeconds() - output.cpuStartTime);
 		Real simTimeElapsed = t - it.startTime;
 		Index waitMicroSeconds = simulationSettings.timeIntegration.realtimeWaitMicroseconds; //wait time until next computation
@@ -977,6 +974,7 @@ void CSolverBase::FinishStep(CSystem& computationalSystem, const SimulationSetti
 			}
 			cpuTimeElapsed = (EXUstd::GetTimeInSeconds() - output.cpuStartTime);
 		}
+		STOPTIMER(timer.realtimeIdleCPU);
 	}
 
 	if (printFile || printConsole)
@@ -1587,7 +1585,7 @@ void CSolverBase::ComputeNewtonResidualUserFunction(CSystem& computationalSystem
 
 Real CSolverBase::PostNewton(CSystem& computationalSystem, const SimulationSettings& simulationSettings)
 {
-    if (IsVerbose(2)) {Verbose(2, STDstring("  PostNewton step: run with ")+EXUstd::ToString(exuThreading::TaskManager::GetNumThreads())+" threads\n");}
+    if (IsVerbose(2)) {Verbose(2, STDstring("  PostNewton step: run with ")+EXUstd::ToString(ExuThreading::TaskManager::GetNumThreads())+" threads\n");}
 
     Real discontinuousError = 0;	
 	it.recommendedStepSize = -1;
@@ -1704,7 +1702,7 @@ void CSolverBase::WriteSolutionFileHeader(CSystem& computationalSystem, const Si
 				nODE2 << "," << nVel2 << "," << nAcc2 << "," << nODE1 << "," << nVel1 << "," << nAEexported << "," << nDataExported << "]\n"; //python convert line with v=eval(line.split('=')[1])
 
 			solFile << "#total columns exported  (excl. time) = " << totalCoordinates << "\n";
-			if (!isStatic) { solFile << "#number of time steps (planned) = " << timeint.numberOfSteps << "\n"; }
+			if (!isStatic) { solFile << "#number of time steps (planned) = " << (Index)std::round(timeint.numberOfSteps) << "\n"; }
 			else { solFile << "#number of load steps (planned) = " << staticSolver.numberOfLoadSteps << "\n"; }
 
 			//solFile << "#Exudyn version = " << EXUstd::exudynVersion << "\n";
@@ -1773,7 +1771,7 @@ void CSolverBase::WriteSolutionFileHeader(CSystem& computationalSystem, const Si
 			ExuFile::BinaryWrite(totalCoordinates, solFile, bfs);
 
 			Index numberOfSteps;
-			if (!isStatic) { numberOfSteps = timeint.numberOfSteps; }
+			if (!isStatic) { numberOfSteps = (Index)std::round(timeint.numberOfSteps); }
 			else { numberOfSteps = staticSolver.numberOfLoadSteps; }
 			ExuFile::BinaryWrite(numberOfSteps, solFile, bfs);
 

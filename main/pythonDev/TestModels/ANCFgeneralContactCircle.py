@@ -31,7 +31,7 @@ except:
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-exu.Print('exudyn version=',exu.GetVersionString())
+exu.Print('exudyn version=',exu.config.Version())
 
 # useGraphics=False
 #background
@@ -278,8 +278,8 @@ if False:
     SC.visualizationSettings.contact.showBoundingBoxes = True
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings) #183 Newton iterations, 0.114 seconds
 
@@ -289,13 +289,13 @@ if useGraphics and False:
     SC.visualizationSettings.general.graphicsUpdateInterval=0.02
     
     sol = LoadSolutionFile('solution/coordinatesSolution.txt', safeMode=True)#, maxRows=100)
-    print('start SolutionViewer')
+    exu.Print('start SolutionViewer')
     mbs.SolutionViewer(sol)
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     
     if len(sAngVel) != 0:
         

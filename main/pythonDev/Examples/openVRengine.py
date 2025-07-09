@@ -132,16 +132,19 @@ def CreateEngine(P):
     oGround=mbs.AddObject(ObjectGround(referencePosition= [0,0,zOffAdd], visualization=VObjectGround(graphicsData= [])))
     nGround=mbs.AddNode(NodePointGround(referenceCoordinates = [0,0,zOffAdd]))
 
-    gEngine = [graphics.Brick(centerPoint=[0,0,0], size=[P.MaxDimX()*2, P.MaxDimX(), eL*1.2], 
-                                          color=[0.6,0.6,0.6,0.1], addEdges=True, 
-                                          edgeColor = [0.8,0.8,0.8,0.3], addFaces=False)]
+    # gEngine = [graphics.Brick(centerPoint=[0,0,0], size=[P.MaxDimX()*2, P.MaxDimX(), eL*1.2], 
+    #                                       color=[0.6,0.6,0.6,0.1], addEdges=True, 
+    #                                       edgeColor = [0.8,0.8,0.8,0.3], addFaces=False)]
+
     gEngine = [] #no block
     dictEngine = mbs.CreateRigidBody(
                   inertia=InertiaCuboid(1000, sideLengths=[1, 1, 1]),  # dummy engine inertia
                   nodeType=nodeType,
                   referencePosition=[0, 0, zOffAdd],
                   graphicsDataList=gEngine,
-                  returnDict=True)
+                  returnDict=True,
+                  show=False)
+
     [nEngine, oEngine] = [dictEngine['nodeNumber'], dictEngine['bodyNumber']]
 
     mGround = mbs.AddMarker(MarkerBodyRigid(bodyNumber=oGround))
@@ -235,8 +238,11 @@ def CreateEngine(P):
 
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     #JOINTS:
-    [oJointCrank, mBody0Crank, mBody1Crank] = AddRevoluteJoint(mbs, oEngine, bCrank, point=[0,0,-0.5*eL], axis=[0,0,1], showJoint=showJoints, 
-                                                axisRadius=P.crankBearingRadius*1.2, axisLength=P.crankBearingWidth*0.8)
+    mbs.CreateRevoluteJoint(bodyNumbers=[oEngine, bCrank], position=[0,0,-0.5*eL], axis=[0,0,1], 
+                            axisRadius=P.crankBearingRadius*1.2, axisLength=P.crankBearingWidth*0.8)
+    # [oJointCrank, mBody0Crank, mBody1Crank] = AddRevolute*Joint(mbs, oEngine, bCrank, point=[0,0,-0.5*eL], axis=[0,0,1], showJoint=showJoints, 
+    #                                             axisRadius=P.crankBearingRadius*1.2, axisLength=P.crankBearingWidth*0.8)
+    
 
     for cnt, angleCrank in enumerate(P.crankAngles):
         anglePiston = P.pistonAngles[cnt]
@@ -247,17 +253,25 @@ def CreateEngine(P):
         zOff = -0.5*eL + cnt*P.pistonDistance
         #zOff = 0
 
-        [oJointCC, mBody0CC, mBody1CC] = AddRevoluteJoint(mbs, bCrank, bConrodList[cnt], 
-                                                          point=Ac@[P.crankArmLength,0,zOff + P.crankBearingWidth+P.crankArmWidth+0.5*P.conrodCrankCylLength], 
-                                                          axis=[0,0,1], showJoint=showJoints, 
-                                                          axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
+        mbs.CreateRevoluteJoint(bodyNumbers=[bCrank, bConrodList[cnt]], 
+                                position=Ac@[P.crankArmLength,0,zOff + P.crankBearingWidth+P.crankArmWidth+0.5*P.conrodCrankCylLength], 
+                                axis=[0,0,1], 
+                                axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
+        # [oJointCC, mBody0CC, mBody1CC] = AddRevoluteJoint(mbs, bCrank, bConrodList[cnt], 
+        #                                                   point=Ac@[P.crankArmLength,0,zOff + P.crankBearingWidth+P.crankArmWidth+0.5*P.conrodCrankCylLength], 
+        #                                                   axis=[0,0,1], showJoint=showJoints, 
+        #                                                   axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
 
         #pPiston = A@[P.crankArmLength+P.conrodLength,0,zOff + P.crankBearingWidth+P.crankArmWidth+0.5*P.conrodCrankCylLength]
         pPiston = Ap@[dp,0,zOff + P.crankBearingWidth+P.crankArmWidth+0.5*P.conrodCrankCylLength]
-        [oJointCP, mBody0CP, mBody1CP] = AddRevoluteJoint(mbs, bConrodList[cnt], bPistonList[cnt], 
-                                                          point=pPiston, 
-                                                          axis=[0,0,1], showJoint=showJoints, 
-                                                          axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
+        mbs.CreateRevoluteJoint(bodyNumbers=[bConrodList[cnt], bPistonList[cnt]], 
+                                position=pPiston,
+                                axis=[0,0,1], 
+                                axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
+        # [oJointCP, mBody0CP, mBody1CP] = AddRevoluteJoint(mbs, bConrodList[cnt], bPistonList[cnt], 
+        #                                                   point=pPiston, 
+        #                                                   axis=[0,0,1], showJoint=showJoints, 
+        #                                                   axisRadius=P.crankBearingRadius*1.3, axisLength=P.crankBearingWidth*0.8)
 
         # AddPrismaticJoint(mbs, oEngine, bPistonList[cnt], 
         #                                                 point=pPiston, 
@@ -319,8 +333,8 @@ for engine in engines:
     mbs = SC.AddSystem()
     
     [oEngine, oEngineJoint, sEngineForce, sEngineTorque, sCrankAngVel, oRotationConstraint, 
-     nCrank, bCrank] = CreateEngine(engine)
-    
+      nCrank, bCrank] = CreateEngine(engine)
+
     d = 2.4     #box size
     h = 0.5*d #box half size    
     w = d
@@ -416,13 +430,14 @@ for engine in engines:
     
         
     SC.visualizationSettings.general.autoFitScene = False #use loaded render state
-    exu.StartRenderer()
-    cws = SC.GetRenderState()['currentWindowSize']
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
+    cws = SC.renderer.GetState()['currentWindowSize']
     print('window size=', cws, '(check that this is according to needs of Head Mounted Display)')
     # if 'renderState' in exu.sys:
-    #     SC.SetRenderState(exu.sys[ 'renderState' ])
+    #     SC.renderer.SetState(exu.sys[ 'renderState' ])
     
     mbs.SolveDynamic(simulationSettings)
     
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
     

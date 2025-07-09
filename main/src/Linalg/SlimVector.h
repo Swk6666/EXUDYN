@@ -156,23 +156,23 @@ public:
     // BASIC FUNCTIONS
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    T* begin() { return &data[0]; }					//!< C++11 std::begin() for iterators.
-    T* end() { return &data[dataSize]; }				//!< C++11 std::end() for iterators.
-    const T* begin() const { return &data[0]; }		//!< C++11 std::begin() for iterators, const version needed for ==, +=, etc.
-    const T* end() const { return &data[dataSize]; } //!< C++11 std::end() for iterators, const version needed for ==, +=, etc.
-    Index NumberOfItems() const { return dataSize; }	//!< number of ('T') components in vector (for 'SlimVectorBase<T, 3> v;' NumberOfItems() returns 3).
-	bool IsValidIndex(Index index) const { return (index >= 0) && (index < NumberOfItems()); } 	//!< check if an index is in range of valid items
-	const T* GetDataPointer() const { return &data[0]; }         //!< return pointer to first data containing T numbers.
-	T* GetDataPointer() { return &data[0]; }         //!< return pointer to first data containing T numbers.
+	inline T* begin() { return &data[0]; }					//!< C++11 std::begin() for iterators.
+	inline T* end() { return &data[dataSize]; }				//!< C++11 std::end() for iterators.
+	inline const T* begin() const { return &data[0]; }		//!< C++11 std::begin() for iterators, const version needed for ==, +=, etc.
+	inline const T* end() const { return &data[dataSize]; } //!< C++11 std::end() for iterators, const version needed for ==, +=, etc.
+    inline Index NumberOfItems() const { return dataSize; }	//!< number of ('T') components in vector (for 'SlimVectorBase<T, 3> v;' NumberOfItems() returns 3).
+	inline bool IsValidIndex(Index index) const { return (index >= 0) && (index < NumberOfItems()); } 	//!< check if an index is in range of valid items
+	inline const T* GetDataPointer() const { return &data[0]; }         //!< return pointer to first data containing T numbers.
+	inline T* GetDataPointer() { return &data[0]; }         //!< return pointer to first data containing T numbers.
 
     //! set all Reals to given value.
-    void SetAll(T value)
+	inline void SetAll(T value)
     {
         for (auto &item : *this) { item = value; }
     }
 
 	//! set vector to data given by initializer list
-	void SetVector(std::initializer_list<T> listOfItems)
+	inline void SetVector(std::initializer_list<T> listOfItems)
 	{
 		CHECKandTHROW(dataSize == (Index)listOfItems.size(), "ERROR: SlimVectorBase::SetVector, initializer_list.size() must match template dataSize");
 
@@ -184,14 +184,14 @@ public:
 
 
 	//! for compatibility with Vector and ConstVector
-	void SetNumberOfItems(Index numberOfItems)
+	inline void SetNumberOfItems(Index numberOfItems)
 	{
 		CHECKandTHROW(numberOfItems == dataSize, "SlimVectorBase<T, >::SetNumberOfItems size mismatch");
 	}
 
 	//! copy from other vector and perform type conversion (e.g. for graphics)
 	template<class TVector>
-	void CopyFrom(const TVector& vector)
+	inline void CopyFrom(const TVector& vector)
 	{
 		CHECKandTHROW(vector.NumberOfItems() == dataSize, "SlimVectorBase<T, >::CopyFrom(TVector) size mismatch");
 		Index cnt = 0;
@@ -203,7 +203,7 @@ public:
     // OPERATORS
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //! reference (write) access-operator.
-    T& operator[](Index item)
+	inline T& operator[](Index item)
     {
 		CHECKandTHROW((item >= 0) && (item < dataSize), "ERROR: SlimVectorBase T& operator[]: index out of range");
 
@@ -211,7 +211,7 @@ public:
     };
 
     //! const (read) access-operator
-    const T& operator[](Index item) const
+	inline const T& operator[](Index item) const
     {
 		CHECKandTHROW((item >= 0) && (item < dataSize), "ERROR: SlimVector const T& operator[] const: index out of range");
 
@@ -219,13 +219,13 @@ public:
     };
 
 	//unsafe Referencing access-operator, ZERO-based, without CHECKS
-	T& GetUnsafe(Index item)
+	inline T& GetUnsafe(Index item)
 	{
 		return data[item];
 	};
 
 	//unsafe const Referencing access-operator, ZERO-based, without CHECKS
-	const T& GetUnsafe(Index item) const
+	inline const T& GetUnsafe(Index item) const
 	{
 		return data[item];
 	};
@@ -256,7 +256,7 @@ public:
 	//}
 
     //! comparison operator, component-wise compare; returns true, if all components are equal
-    bool operator== (const SlimVectorBase<T, dataSize>& v) const
+	inline bool operator== (const SlimVectorBase<T, dataSize>& v) const
     {
         Index cnt = 0;
         for (auto item : v)
@@ -267,7 +267,7 @@ public:
     }
 
 	//! comparison operator for scalar value; returns true, if all components are equal to value
-	bool operator==(T value) const
+	inline bool operator==(T value) const
 	{
 		for (auto item : (*this))
 		{
@@ -277,7 +277,7 @@ public:
 	}
 
     //! add vector v to *this vector (for each component); both vectors must have same size
-    SlimVectorBase<T,dataSize>& operator+= (const SlimVectorBase<T, dataSize>& v)
+	inline SlimVectorBase<T,dataSize>& operator+= (const SlimVectorBase<T, dataSize>& v)
     {
         Index cnt = 0;
         for (auto item : v) {
@@ -287,7 +287,7 @@ public:
     }
 
     //! substract vector v from *this vector (for each component); both vectors must have same size
-	SlimVectorBase<T, dataSize>& operator-= (const SlimVectorBase<T, dataSize>& v)
+	inline SlimVectorBase<T, dataSize>& operator-= (const SlimVectorBase<T, dataSize>& v)
     {
         Index cnt = 0;
         for (auto item : v) {
@@ -297,7 +297,7 @@ public:
     }
 
 	//! add vector v to *this vector (for each component); both vectors must have same size
-	SlimVectorBase<T, dataSize>& operator+= (const VectorBase<T>& v)
+	inline SlimVectorBase<T, dataSize>& operator+= (const VectorBase<T>& v)
 	{
 		CHECKandTHROW(v.NumberOfItems() == dataSize, "ERROR: SlimVectorBase operator+= with VectorBase size mismatch");
 		Index cnt = 0;
@@ -308,7 +308,7 @@ public:
 	}
 
 	//! substract vector v from *this vector (for each component); both vectors must have same size
-	SlimVectorBase<T, dataSize>& operator-= (const VectorBase<T>& v)
+	inline SlimVectorBase<T, dataSize>& operator-= (const VectorBase<T>& v)
 	{
 		CHECKandTHROW(v.NumberOfItems() == dataSize, "ERROR: SlimVectorBase operator-= with VectorBase size mismatch");
 		Index cnt = 0;
@@ -319,7 +319,7 @@ public:
 	}
 
 	//! scalar multiply vector *this with scalar (for each component)
-	SlimVectorBase<T, dataSize>& operator*= (T scalar)
+	inline SlimVectorBase<T, dataSize>& operator*= (T scalar)
     {
         for (auto &item : *this) {
             item *= scalar;
@@ -327,7 +327,7 @@ public:
         return *this;
     }
     //! scalar division of vector v through scalar (for each component)
-	SlimVectorBase<T, dataSize>& operator/= (T scalar)
+	inline SlimVectorBase<T, dataSize>& operator/= (T scalar)
     {
         for (auto &item : *this) {
             item /= scalar;
@@ -336,7 +336,7 @@ public:
     }
 
     //! add two vectors, result = v1+v2 (for each component)
-    friend SlimVectorBase<T, dataSize> operator+ (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
+	inline friend SlimVectorBase<T, dataSize> operator+ (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
     {
 		SlimVectorBase<T, dataSize> result;
         Index cnt = 0;
@@ -348,7 +348,7 @@ public:
     }
 
 	//! subtract two vectors, result = v1-v2 (for each component)
-	friend SlimVectorBase<T, dataSize> operator- (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
+	inline friend SlimVectorBase<T, dataSize> operator- (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
 	{
 		SlimVectorBase<T, dataSize> result;
 		Index cnt = 0;
@@ -360,7 +360,7 @@ public:
 	}
 
 	//! unary minus; result = -v1 (for each component)
-	friend SlimVectorBase<T, dataSize> operator- (const SlimVectorBase<T, dataSize>& v1)
+	inline friend SlimVectorBase<T, dataSize> operator- (const SlimVectorBase<T, dataSize>& v1)
 	{
 		SlimVectorBase<T, dataSize> result;
 		Index cnt = 0;
@@ -372,7 +372,7 @@ public:
 	}
 
 	//! scalar multiply, result = scalar * v (for each component)
-    friend SlimVectorBase<T, dataSize> operator* (const SlimVectorBase<T, dataSize>& v, T scalar)
+	inline friend SlimVectorBase<T, dataSize> operator* (const SlimVectorBase<T, dataSize>& v, T scalar)
     {
         SlimVectorBase<T, dataSize> result;
         Index cnt = 0;
@@ -383,7 +383,7 @@ public:
     }
 
     //! scalar multiply, result = v * scalar (for each component)
-    friend SlimVectorBase<T, dataSize> operator* (T scalar, const SlimVectorBase<T, dataSize>& v)
+	inline friend SlimVectorBase<T, dataSize> operator* (T scalar, const SlimVectorBase<T, dataSize>& v)
     {
         SlimVectorBase<T, dataSize> result;
         Index cnt = 0;
@@ -394,7 +394,7 @@ public:
     }
 
     //! scalar product, result = v1 * v2 (scalar result)
-    friend T operator* (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
+	inline friend T operator* (const SlimVectorBase<T, dataSize>& v1, const SlimVectorBase<T, dataSize>& v2)
     {
         T result = 0;
         Index cnt = 0;
@@ -405,13 +405,13 @@ public:
     }
 
 	//! conversion of SlimVector into std::vector (needed e.g. in pybind)
-	operator std::vector<T>() const
+	inline operator std::vector<T>() const
 	{
 		return std::vector<T>(begin(), end());
 	}
 
 	//! conversion of SlimVector into std::array (needed e.g. in pybind)
-	operator std::array<T, dataSize>() const
+	inline operator std::array<T, dataSize>() const
 	{
 		std::array<T, dataSize> v;
 		std::copy(begin(), end(), v.begin());
@@ -468,7 +468,7 @@ public:
 
 	//! multiply components of this vector with components of other vector
 	template<class Tvector>
-	void MultComponentWise(const Tvector& v)
+	inline void MultComponentWise(const Tvector& v)
 	{
 		CHECKandTHROW((v.NumberOfItems() == NumberOfItems()), "SlimVectorBase::MultComponentWise: incompatible size of vectors");
 		for (Index i = 0; i < NumberOfItems(); i++)
@@ -478,7 +478,7 @@ public:
 	}
 
     //! returns the sum of squared components (v[0]^2 + v[1]^2 + v[2]^2 ....)
-    T GetL2NormSquared() const
+	inline T GetL2NormSquared() const
     {
         T result = 0.;
         for (auto item : *this) { result += item * item; }
@@ -486,19 +486,30 @@ public:
     }
 
     //! returns the square norm of a vector
-    T GetL2Norm() const
+	inline T GetL2Norm() const
     {
         return sqrt(GetL2NormSquared());
     }
 
     //! normalizes the vector; divide each component by vector square norm
-    void Normalize()
+	inline void Normalize()
     {
         T norm = GetL2Norm();
 		CHECKandTHROW(norm != 0., "SlimVectorBase::Normalized() called with GetL2Norm() == 0.");
 		norm = (T)1 / norm; //if T=int, this would not work but anyway outcome would be int ...!
         for (auto &item : *this) { item *= norm; } //changed from "item /= norm" to be compatible with autodiff
     }
+
+	//! normalizes the vector, ignoring zero-length vectors; divide each component by vector square norm
+	inline void NormalizeSafe()
+	{
+		T norm = GetL2Norm();
+		if (norm != 0)
+		{
+			norm = (T)1. / norm; //if T=int, this would not work but anyway outcome would be int ...!
+			for (auto& item : *this) { item *= norm; } //changed from "item /= norm" to be compatible with autodiff
+		}
+	}
 
 	////! get sum of components
 	//T Sum() const
@@ -509,46 +520,46 @@ public:
 	//}
 
 	//! get sum of absolute values
-	T SumAbs() const
+	inline T SumAbs() const
 	{
 		T result = 0.;
 		for (auto item : *this) { result += fabs(item); }
 		return result;
 	}
 
-	T& X()
+	inline T& X()
     {
         static_assert(dataSize >= 1, "ERROR: SlimVectorBase dataSize < 1 for function T& X()");
         return data[0];
     }
-    T& Y()
+	inline T& Y()
     {
         static_assert(dataSize >= 2, "ERROR: SlimVectorBase dataSize < 2 for function T& Y()");
         return data[1];
     }
-    T& Z()
+	inline T& Z()
     {
         static_assert(dataSize >= 3, "ERROR: SlimVectorBase dataSize < 3 for function T& Z()");
         return data[2];
     }
 
-    T X() const
+	inline T X() const
     {
         static_assert(dataSize >= 1, "ERROR: SlimVectorBase dataSize < 1 for function T X() const");
         return data[0];
     }
-    T Y() const
+	inline T Y() const
     {
         static_assert(dataSize >= 2, "ERROR: SlimVectorBase dataSize < 2 for function T Y() const");
         return data[1];
     }
-    T Z() const
+	inline T Z() const
     {
         static_assert(dataSize >= 3, "ERROR: SlimVectorBase dataSize < 3 for function T Z() const");
         return data[2];
     }
 
-	SlimVectorBase<T, dataSize> CrossProduct(const SlimVectorBase& v) const
+	inline SlimVectorBase<T, dataSize> CrossProduct(const SlimVectorBase& v) const
 	{
 		static_assert((dataSize == 3), "SlimVectorBase::CrossProduct: only implemented for 3D case");
 
@@ -557,7 +568,7 @@ public:
 			data[0] * v.data[1] - data[1] * v.data[0] });
 	}
 
-	T CrossProduct2D(const SlimVectorBase& v) const
+	inline T CrossProduct2D(const SlimVectorBase& v) const
 	{
 		static_assert((dataSize == 2), "SlimVectorBase::CrossProduct2D: only implemented for 2D case");
 

@@ -328,10 +328,10 @@ SC.visualizationSettings.window.renderWindowSize = [1920,1080]
 SC.visualizationSettings.openGL.multiSampling = 4
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'lastRenderState' in vars():
-        SC.SetRenderState(lastRenderState) #load last model view
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(lastRenderState) #load last model view
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
@@ -349,10 +349,10 @@ exudynTestGlobals.testError = u - (0.8813172426357362 - 0.8813173353288565) #202
 exudynTestGlobals.testResult = u
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
-    lastRenderState = SC.GetRenderState() #store model view for next simulation
+    lastRenderState = SC.renderer.GetState() #store model view for next simulation
 
     mbs.PlotSensor(sensorNumbers=[sFlyWheelAngle], 
                components=[0], closeAll=True, offsets=-phiCrankData,

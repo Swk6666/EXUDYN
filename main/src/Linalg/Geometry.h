@@ -9,7 +9,7 @@
 #ifndef GEOMETRY__H
 #define GEOMETRY__H
 
-namespace HGeometry {
+namespace EGeometry {
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//+++ LINES                                                                                      +++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -244,20 +244,20 @@ namespace HGeometry {
 	//+++ TRIANGLES                                                                                  +++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//! compute normalized normal from array of triangle points (any 0-based array with [] operator), Vector3D version
-	template<class ArrayVector3D>
-	inline Vector3D ComputeTriangleNormalTemplate(const ArrayVector3D& trigPoints)
+	template<class TReal, class ArrayVector3D>
+	inline SlimVectorBase<TReal, 3> ComputeTriangleNormalTemplate(const ArrayVector3D& trigPoints)
 	{
-		Vector3D v1 = trigPoints[1] - trigPoints[0];
-		Vector3D v2 = trigPoints[2] - trigPoints[0];
-		Vector3D n = v1.CrossProduct(v2); //@todo: need to check correct outward normal direction in openGL
-		Real len = n.GetL2Norm();
-		if (len != 0.f) { n *= 1.f / len; }
+		SlimVectorBase<TReal, 3> v1 = trigPoints[1] - trigPoints[0];
+		SlimVectorBase<TReal, 3> v2 = trigPoints[2] - trigPoints[0];
+		SlimVectorBase<TReal, 3> n = v1.CrossProduct(v2); //@todo: need to check correct outward normal direction in openGL
+		TReal len = n.GetL2Norm();
+		if (len != (TReal)0.) { n *= (TReal)1. / len; }
 		return n;
 	}
 
 	inline Vector3D ComputeTriangleNormal(const std::array<Vector3D, 3>& trigPoints)
 	{
-		return ComputeTriangleNormalTemplate< std::array<Vector3D, 3> >(trigPoints);
+		return ComputeTriangleNormalTemplate<Real, std::array<Vector3D, 3> >(trigPoints);
 	}
 
 	//Minimal Distance of ppoint p to plane given by plane normal nPlane (any vector) and plane point pPlane
@@ -266,28 +266,41 @@ namespace HGeometry {
 		return fabs((pPlane - p) * nPlane) / nPlane.GetL2Norm();
 	}
 
-	//Minimal Distance of ppoint p to plane given by plane normal nPlane (normalized!) and plane point pPlane
-	inline Real DistanceToPlaneNormalized(const Vector3D& p, const Vector3D& nPlane, const Vector3D& pPlane)
+	//Minimal Distance of ppoint p to plane given by plane normal nPlane0 (normalized!) and plane point pPlane
+	inline Real DistanceToPlaneNormalized(const Vector3D& p, const Vector3D& nPlaneNormalized, const Vector3D& pPlane)
 	{
-		return fabs((pPlane - p) * nPlane);
+		return fabs((pPlane - p) * nPlaneNormalized);
+	}
+
+	//having a plane point and a normalized plane normal, project p into plane
+	inline void ProjectInPlane(const Vector3D& pPlane, const Vector3D& nPlaneNormalized, const Vector3D& p, Vector3D& pProjected)
+	{
+		pProjected = p - ((p - pPlane)* nPlaneNormalized);
 	}
 
 	//!Compute line-plane intersection of plane given by point and normal and line given by pLine and direction vLine
 	//!return true if success and false if fails (line and plane are parallel)
 	//!the resulting intersection point follows from pLine+relativeDistance*vLine
 	//!if vLine has length 1, the relativeDistance gives the distance from pLine
-	inline bool LinePlaneIntersection(const Vector3D& pPlane, const Vector3D& nPlane, const Vector3D& pLine, const Vector3D& vLine, Real& relativeDistance)
+	template<class TVector3D, class TReal>
+	bool LinePlaneIntersection(const TVector3D& pPlane, const TVector3D& nPlane, const TVector3D& pLine, 
+		const TVector3D& vLine, TReal& relativeDistance)
 	{
-		Real den = nPlane * vLine;
-		if (den == 0.) 
-		{ 
-			relativeDistance = 0.; 
-			return false; 
+		TReal den = nPlane * vLine;
+		if (den == 0.)
+		{
+			relativeDistance = 0.;
+			return false;
 		}
 
-		relativeDistance = ((pPlane - pLine)*nPlane)/den;
+		relativeDistance = ((pPlane - pLine) * nPlane) / den;
 		return true;
 	}
+
+	//inline bool LinePlaneIntersection(const Vector3D& pPlane, const Vector3D& nPlane, const Vector3D& pLine, const Vector3D& vLine, Real& relativeDistance)
+	//{
+	//	return LinePlaneIntersectionTemplate(pPlane, nPlane, pLine, vLine, relativeDistance);
+	//}
 
 	//compute local triangle coordinates
 	inline void LocalTriangleCoordinates(const Vector3D & e1, const Vector3D & e2,
@@ -385,17 +398,73 @@ namespace HGeometry {
 			if (!in1)
 			{
 				Real hv = MinDistToLinePoints(tp1, tp3, p, pp);
-				if (hv < res) res = hv;
+				if (hv < res) { res = hv; }
 			}
 			else if (!in2)
 			{
 				Real hv = MinDistToLinePoints(tp1, tp2, p, pp);
-				if (hv < res) res = hv;
+				if (hv < res) { res = hv; }
 			}
 			else if (!in3)
 			{
 				Real hv = MinDistToLinePoints(tp2, tp3, p, pp);
-				if (hv < res) res = hv;
+				if (hv < res) { res = hv; }
+			}
+		}
+		return res;
+	}
+
+	//! minimum distance between point p and triangle given by points (tp1, tp2, tp3); special version for edges double detection
+	//! inside=1, if projected point lies inside triangle, 
+	//! onEdge=1 if on edge (tp1-tp2), 2 if on edge (tp2-tp3), 4 if on edge (tp3-tp1) (binary flags used)
+	//! compute also projected point pp
+	inline Real MinDistTrigEdges(const Vector3D& tp1, const Vector3D& tp2, const Vector3D& tp3, const Vector3D& p,
+		Vector3D& pp, Index& inside, Index& onEdge)
+	{
+		Real lam1, lam2;
+		Real res;
+
+		LocalTriangleCoordinates(tp2 - tp1, tp3 - tp1, p - tp1, lam1, lam2);
+
+		const Real TOL = 1e-15; //add very small tolerance in order to avoid problems if point is directly at edge
+		bool in1 = lam1 >= -TOL;
+		bool in2 = lam2 >= -TOL;
+		bool in3 = lam1 + lam2 <= (1. + TOL);
+		onEdge = 0; //no edge
+
+		if (in1 && in2 && in3)
+		{
+			inside = 1;
+
+			//check if point is on the edge, avoiding that two contacts are counted; this slows down but avoids artifacts:
+			// this does not make sense for single triangle contacts
+			//if ((lam1 <= TOL) || (lam2 <= TOL) || (lam1 + lam2 >= (1. - TOL))) { inside = 2; }
+
+			pp = tp1 + lam1 * (tp2 - tp1) + lam2 * (tp3 - tp1);
+			res = (p - pp).GetL2Norm();
+		}
+		else
+		{
+			inside = 0;
+			res = (tp1 - p).GetL2Norm();
+			if (!in1)
+			{
+				onEdge = 4;
+				Real hv = MinDistToLinePoints(tp1, tp3, p, pp);
+				if (hv < res) { res = hv; }
+			}
+			else if (!in2)
+			{
+				onEdge = 1;
+				Real hv = MinDistToLinePoints(tp1, tp2, p, pp);
+				if (hv < res) { res = hv; }
+			}
+			else if (!in3)
+			{
+				onEdge = 2;
+
+				Real hv = MinDistToLinePoints(tp2, tp3, p, pp);
+				if (hv < res) { res = hv; }
 			}
 		}
 		return res;

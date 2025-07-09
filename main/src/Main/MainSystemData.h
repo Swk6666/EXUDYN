@@ -18,6 +18,7 @@
 #include <ostream>
 
 #include "Main/CSystem.h"
+#include "Utilities/AdvancedStuff.h"
 #include "Graphics/VisualizationSystemData.h"
 
 #include "System/MainMaterial.h"

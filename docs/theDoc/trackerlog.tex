@@ -9,15 +9,1111 @@ BUG numbers refer to the according issue numbers.
 
 \noindent General information on current version:
 \bi 
-  \item Exudyn version = 1.9.83.dev1, 
-  \item last change =  2025-04-01, 
-  \item Number of issues = 1983, 
-  \item Number of resolved issues = 1759 (83 in current version), 
+  \item Exudyn version = 1.10.0, 
+  \item last change =  2025-07-09, 
+  \item Number of issues = 2139, 
+  \item Number of resolved issues = 1912 (0 in current version), 
 \ei
 
 \mysubsection{Resolved issues and resolved bugs}
 \par \noindent The following list contains the issues which have been {\bf RESOLVED} in the according version:
 \bi \setlength\itemsep{-4pt} \scriptsize 
+  \item[] {\bf Version 1.10.0}:  resolved Issue 2123: {\bf Mechanisms}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add example for gear and toothed rack mounted on body, using relative translation/rotation marker}
+    \item {\bf notes: see Example involuteGearGraphics.py}
+    \item   date resolved: {\bf 2025-07-09 18:43},
+date raised: 2025-07-02 
+  \ei
+  \item[] {\bf Version 1.9.235}:  resolved Issue 1959: {\bf SphereSphereContact}
+(check)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check that position marker works without friction}
+    \item {\bf notes: not needed any more as mass points and point nodes include rotation matrix and angular velocity}
+    \item   date resolved: {\bf 2025-07-09 18:12},
+date raised: 2025-02-24 
+  \ei
+  \item[] {\bf Version 1.9.234}:  resolved Issue 2122: {\bf Mechanisms}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add example for two gears mounted on a body with revolute joints, using CoordinateSpringDamperExt}
+    \item {\bf notes: see Example involuteGearGraphics.py}
+    \item   date resolved: {\bf 2025-07-09 18:10},
+date raised: 2025-07-02 
+  \ei
+  \item[] {\bf Version 1.9.233}:  resolved Issue 2137: {\bf general open source}
+(docu)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add some warnings at beginning of docu regarding open source and potential errors}
+    \item   date resolved: {\bf 2025-07-09 18:07},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.232}:  resolved Issue 2138: {\bf RST, latex}
+(docu)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: fill issues with references in RST and latex files}
+    \item   date resolved: {\bf 2025-07-05 18:29},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.231}:  resolved Issue 2135: {\bf TestSuite}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: put all variables into static TestSuite class, to avoid unintentionally changing variables in the testsuite scope by models}
+    \item   date resolved: {\bf 2025-07-05 15:07},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.230}:  resolved Issue 2136: {\bf trackerlog}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: change to utf-8 format; this may cause problems when loading old (backup) files, which shall be manually changed to utf-8}
+    \item   date resolved: {\bf 2025-07-05 14:54},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.229}:  resolved Issue 2134: {\bf ContactSphereTriangle}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add test example using CreateSphereQuadContact with two contacting bodies to check momentum conservation}
+    \item   date resolved: {\bf 2025-07-05 12:10},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.228}:  resolved Issue 2133: {\bf ContactSphereTriangle}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: marker transformation missing for contact computation}
+    \item   date resolved: {\bf 2025-07-05 11:10},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.227}:  resolved Issue 2132: {\bf nodes}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: letter N for basis only shown in case that nodes.showNumbers=True}
+    \item   date resolved: {\bf 2025-07-05 10:46},
+date raised: 2025-07-05 
+  \ei
+  \item[] {\bf Version 1.9.226}:  resolved Issue 2129: {\bf MarkerBodiesRelativeRotationCoordinate}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: does not work without nodeNumber provided}
+    \item   date resolved: {\bf 2025-07-03 22:21},
+date raised: 2025-07-03 
+  \ei
+  \item[] {\bf Version 1.9.225}:  resolved Issue 2121: {\bf Involute gear}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to generate graphics for toothed rack}
+    \item   date resolved: {\bf 2025-07-03 18:33},
+date raised: 2025-07-02 
+  \ei
+  \item[] {\bf Version 1.9.224}:  resolved Issue 2128: {\bf SolidExtrusion}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add relative rotation and relative offset for second surface of extrusion; used e.g. for helical gears}
+    \item   date resolved: {\bf 2025-07-03 16:48},
+date raised: 2025-07-03 
+  \ei
+  \item[] {\bf Version 1.9.223}:  resolved Issue 2126: {\bf Involute gear}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to create involute gear graphics}
+    \item   date resolved: {\bf 2025-07-03 15:37},
+date raised: 2025-07-03 
+  \ei
+  \item[] {\bf Version 1.9.222}:  resolved Issue 2125: {\bf BallBearing}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to create ball bearing into machines; similar to issue 2031}
+    \item   date resolved: {\bf 2025-07-03 14:57},
+date raised: 2025-07-03 
+  \ei
+  \item[] {\bf Version 1.9.221}:  resolved Issue 2118: {\bf Involute gear}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to create involute gear profile}
+    \item   date resolved: {\bf 2025-07-03 12:57},
+date raised: 2025-07-02 
+  \ei
+  \item[] {\bf Version 1.9.220}:  resolved Issue 2031: {\bf BallBearing}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: put function into machines module; function shalll take two markers (for outer and inner ring), which represent the interface to other bodies; add simple test model}
+    \item   date resolved: {\bf 2025-07-03 09:20},
+date raised: 2025-05-18 
+  \ei
+  \item[] {\bf Version 1.9.219}:  resolved Issue 2124: {\bf BallBearing}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add graphics function to create rings of ball bearings}
+    \item   date resolved: {\bf 2025-07-03 09:19},
+date raised: 2025-07-03 
+  \ei
+  \item[] {\bf Version 1.9.218}:  resolved Issue 2119: {\bf Involute gear}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to generate graphics for involute gear}
+    \item   date resolved: {\bf 2025-07-02 09:40},
+date raised: 2025-07-02 
+  \ei
+  \item[] {\bf Version 1.9.217}:  resolved Issue 2117: {\bf MarkerRelative}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add offset to MarkerBodiesRelativeRotationCoordinate}
+    \item   date resolved: {\bf 2025-07-01 23:00},
+date raised: 2025-07-01 
+  \ei
+  \item[] {\bf Version 1.9.216}:  resolved Issue 2112: {\bf MarkerRelativeRotation}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Consider marker MarkerBodiesRelativeRotationCoordinate which measures scalar relative rotation, in particular rotation relative between two bodies; action is realized as torques on two bodies, using body-fixed coordinates of body0}
+    \item   date resolved: {\bf 2025-07-01 20:09},
+date raised: 2025-06-25 
+  \ei
+  \item[] {\bf Version 1.9.215}:  resolved Issue 2116: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add line color}
+    \item   date resolved: {\bf 2025-07-01 14:22},
+date raised: 2025-07-01 
+  \ei
+  \item[] {\bf Version 1.9.214}:  resolved Issue 2115: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: make raytracer compatible with facesTransparent, showFaces, showFaceEdges}
+    \item   date resolved: {\bf 2025-07-01 14:22},
+date raised: 2025-07-01 
+  \ei
+  \item[] {\bf Version 1.9.213}:  resolved Issue 2114: {\bf FEM}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function GetRigidBodyInertia to return RigidBodyInertia of nodal position-based FEM models}
+    \item   date resolved: {\bf 2025-06-30 14:30},
+date raised: 2025-06-30 (resolved by: S. Weyrer)
+  \ei
+  \item[] {\bf Version 1.9.212}:  resolved Issue 2111: {\bf MarkerRelativeTranslation}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Consider marker MarkerBodiesRelativeTranslationCoordinate which measures scalar relative translation, in particular relative displacement between two bodies; action is realized as forces on two bodies, using body-fixed coordinates of body0}
+    \item   date resolved: {\bf 2025-06-29 23:16},
+date raised: 2025-06-25 
+  \ei
+  \item[] {\bf Version 1.9.211}:  resolved Issue 1961: {\bf CreateSphereQuadContact}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add create function, which uses 2 CreateSphereTriangleContact elements; should be practical for simple robots, etc.}
+    \item   date resolved: {\bf 2025-06-29 12:01},
+date raised: 2025-02-24 
+  \ei
+  \item[] {\bf Version 1.9.210}:  resolved Issue 1958: {\bf CreateSphereSphereContact}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add Create function, including data node; similar to spring-damper; add checks that in case of friction, a rigid body marker is required}
+    \item   date resolved: {\bf 2025-06-29 11:06},
+date raised: 2025-02-24 
+  \ei
+  \item[] {\bf Version 1.9.209}:  resolved Issue 2113: {\bf ExportSTL}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: invertNormals and invertTriangles not used}
+    \item   date resolved: {\bf 2025-06-25 17:18},
+date raised: 2025-06-25 
+  \ei
+  \item[] {\bf Version 1.9.208}:  resolved Issue 2050: {\bf parallel}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check global counters in parallelized computations which cause huge cache issues}
+    \item {\bf notes: current issues seem to be related to fetch\_add (use task stealing?) and cache-polution between different PARALLEL\_FOR loops}
+    \item   date resolved: {\bf 2025-06-24 23:32},
+date raised: 2025-05-26 
+  \ei
+  \item[] {\bf Version 1.9.207}:  resolved Issue 2108: {\bf ContactSphereTriangle}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: test with explicit integration}
+    \item   date resolved: {\bf 2025-06-22 16:54},
+date raised: 2025-06-21 
+  \ei
+  \item[] {\bf Version 1.9.206}:  resolved Issue 2107: {\bf ContactSphereSphere}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: test with explicit integration}
+    \item   date resolved: {\bf 2025-06-22 16:54},
+date raised: 2025-06-21 
+  \ei
+  \item[] {\bf Version 1.9.205}:  resolved Issue 2105: {\bf Examples and TestModels}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove uncommitted test files from Examples and TestModels as they are included as examples in theDoc}
+    \item   date resolved: {\bf 2025-06-21 22:48},
+date raised: 2025-06-19 
+  \ei
+  \item[] {\bf Version 1.9.204}:  resolved Issue 2102: {\bf automatic code}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: avoid writing dates to systemstrutures files and others}
+    \item   date resolved: {\bf 2025-06-19 00:22},
+date raised: 2025-06-18 
+  \ei
+  \item[] {\bf Version 1.9.203}:  resolved Issue 2018: {\bf docu}
+(docu)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: when searching for keywords in examples, exclude matches (like MassMatrix) where the character before or after the keyword is a letter (a-zA-Z) to avoid wrong matches!}
+    \item   date resolved: {\bf 2025-06-18 22:22},
+date raised: 2025-05-15 
+  \ei
+  \item[] {\bf Version 1.9.202}:  resolved Issue 2104: {\bf FEMinterface}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add try except to automatic nodeSet creation in case that there are no boundaries computable}
+    \item   date resolved: {\bf 2025-06-18 18:17},
+date raised: 2025-06-18 
+  \ei
+  \item[] {\bf Version 1.9.201}:  resolved Issue 2103: {\bf Item selection}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: write currently selected item (+type, etc.) into renderer.state}
+    \item   date resolved: {\bf 2025-06-18 17:00},
+date raised: 2025-06-18 
+  \ei
+  \item[] {\bf Version 1.9.200}:  resolved Issue 2101: {\bf parallel}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add simulationSettings.parallel.useLoadBalancing to switch two multithreading modes}
+    \item   date resolved: {\bf 2025-06-18 12:00},
+date raised: 2025-06-18 
+  \ei
+  \item[] {\bf Version 1.9.199}:  resolved Issue 1695: {\bf taskmanager}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: extend microthreading for taskmanager-based load management; remove taskmanager from repo and create pure BSD license}
+    \item {\bf notes: in C++ ExuThreading being now the only mode; optionally use exu.special.solver.multiThreadingLoadBalancing to switch load balancing on/off}
+    \item   date resolved: {\bf 2025-06-18 10:00},
+date raised: 2023-11-19 
+  \ei
+  \item[] {\bf Version 1.9.198}:  resolved Issue 2100: {\bf Command window}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: does not show edit dialog}
+    \item   date resolved: {\bf 2025-06-16 14:52},
+date raised: 2025-06-16 
+  \ei
+  \item[] {\bf Version 1.9.197}:  resolved Issue 2099: {\bf contour}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add alpha channel visualizationSettings option for contour colors}
+    \item   date resolved: {\bf 2025-06-16 11:28},
+date raised: 2025-06-16 
+  \ei
+  \item[] {\bf Version 1.9.196}:  resolved Issue 2098: {\bf graphics.CheckerBoard}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add arg materialIndex for graphics material of both colors}
+    \item   date resolved: {\bf 2025-06-16 11:03},
+date raised: 2025-06-16 
+  \ei
+  \item[] {\bf Version 1.9.195}:  resolved Issue 2096: {\bf ContactSphereTriangle}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add test model sphereTriangleTest.py}
+    \item   date resolved: {\bf 2025-06-15 19:56},
+date raised: 2025-06-15 
+  \ei
+  \item[] {\bf Version 1.9.194}:  resolved Issue 2095: {\bf CreateKinematicTree}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add test model}
+    \item {\bf notes: add test model createKinematicTreeTest.py}
+    \item   date resolved: {\bf 2025-06-15 19:55},
+date raised: 2025-06-15 
+  \ei
+  \item[] {\bf Version 1.9.193}:  resolved Issue 1960: {\bf ObjectContactSphereTriangle}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add contact similar to GeneralContact and to ObjectContactSphereSphere, but being able to be computed implicitly; add option to exclude certain edges to be able to also correctly handle meshes}
+    \item   date resolved: {\bf 2025-06-15 11:50},
+date raised: 2025-02-24 
+  \ei
+  \item[] {\bf Version 1.9.192}: {\bf \color{warningRed}  resolved BUG 2094}: {\bf ContactSphereSphere}
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: ContactSphereSphere and ContactSphereTorus set frictionRegularizedRegion wrong in case of computeFromData}
+    \item {\bf notes: now leads to improved convergence}
+    \item   date resolved: {\bf 2025-06-15 09:37},
+date raised: 2025-06-15 
+  \ei
+  \item[] {\bf Version 1.9.191}:  resolved Issue 2092: {\bf FEMinterface}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: ComputePostProcessingModesNGsolve: extend for multi-material coefficient function, using materials dict; }
+    \item   date resolved: {\bf 2025-06-14 10:40},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.190}:  resolved Issue 2090: {\bf FEMinterface}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: extend ImportMeshFromNGsolve to include several materials given as dict of materials}
+    \item   date resolved: {\bf 2025-06-14 10:31},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.189}:  resolved Issue 2089: {\bf FEMinterface}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function to compute nodeSets from NGsolve boundary names: CreateNGsolveBoundaryNodeSets }
+    \item   date resolved: {\bf 2025-06-14 10:31},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.188}:  resolved Issue 2088: {\bf FEMinterface}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add internal function to get node numbers of NGsolve boundary condition: GetNodesOfNGsolveBoundary}
+    \item   date resolved: {\bf 2025-06-14 10:31},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.187}:  resolved Issue 2093: {\bf FEMinterface}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: adapt class KirchhoffMaterial for multi-domain materials}
+    \item   date resolved: {\bf 2025-06-14 10:30},
+date raised: 2025-06-14 
+  \ei
+  \item[] {\bf Version 1.9.186}:  resolved Issue 2091: {\bf FEMinterface}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove deprecated arg computeEigenmodes from ImportMeshFromNGsolve}
+    \item   date resolved: {\bf 2025-06-13 22:16},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.185}:  resolved Issue 2087: {\bf GetOtherMarker}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: return MarkerBodyRigid as body anyway must provide position and orientation}
+    \item   date resolved: {\bf 2025-06-13 22:13},
+date raised: 2025-06-13 
+  \ei
+  \item[] {\bf Version 1.9.184}:  resolved Issue 2067: {\bf CreateKinematicTree}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add Create function for KinematicTree, using list of TreeLink; add special class TreeLink to itemInterface}
+    \item   date resolved: {\bf 2025-06-10 08:52},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.183}:  resolved Issue 2083: {\bf SolidOfRevolution}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add check to graphics.SolidOfRevolution that order of list is correct (leads to correct inside-outside relations)}
+    \item   date resolved: {\bf 2025-06-10 01:02},
+date raised: 2025-06-09 
+  \ei
+  \item[] {\bf Version 1.9.182}:  resolved Issue 2086: {\bf RigidBodyInertia}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add GetGraphics for combined inertia and graphics generation}
+    \item   date resolved: {\bf 2025-06-09 12:31},
+date raised: 2025-06-09 
+  \ei
+  \item[] {\bf Version 1.9.181}:  resolved Issue 2056: {\bf graphics}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Renderer raises warning that some objects contain inconsistencies between computed triangle normals and vertex normals}
+    \item {\bf notes: mainly due to SolidOfRevolution}
+    \item   date resolved: {\bf 2025-06-09 01:14},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.180}:  resolved Issue 2085: {\bf SolidOfRevolution}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: switch triangle order in SolidOfRevolution to have consistent normals and triangles}
+    \item   date resolved: {\bf 2025-06-09 01:06},
+date raised: 2025-06-09 
+  \ei
+  \item[] {\bf Version 1.9.179}:  resolved Issue 2084: {\bf drawFaceNormals}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: openGL.drawFaceNormals shall draw the computed normal from the triangle points, thus showing the correct orientation of triangles}
+    \item   date resolved: {\bf 2025-06-09 00:48},
+date raised: 2025-06-09 
+  \ei
+  \item[] {\bf Version 1.9.178}:  resolved Issue 2082: {\bf shadow}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add lightPositionsInCameraFrame flag to shadow computation to consistently draw shadow and lights in openGL}
+    \item   date resolved: {\bf 2025-06-08 18:11},
+date raised: 2025-06-08 
+  \ei
+  \item[] {\bf Version 1.9.177}:  resolved Issue 2080: {\bf HDF5}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add test with all data types}
+    \item {\bf notes: added example testHDF5loadSave.py}
+    \item   date resolved: {\bf 2025-06-08 18:11},
+date raised: 2025-06-08 
+  \ei
+  \item[] {\bf Version 1.9.176}: {\bf \color{warningRed}  resolved BUG 2079}: {\bf LoadDictFromHDF5}
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: does not correctly convert np.array inside list}
+    \item   date resolved: {\bf 2025-06-08 18:11},
+date raised: 2025-06-07 
+  \ei
+  \item[] {\bf Version 1.9.175}:  resolved Issue 2081: {\bf GL\_LIGHT}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to switch between local and global lights, to be compatible with Raytracer}
+    \item {\bf notes: added option openGL.lightPositionsInCameraFrame to switch behavior; in raytracer, this setting is always True}
+    \item   date resolved: {\bf 2025-06-08 15:44},
+date raised: 2025-06-08 
+  \ei
+  \item[] {\bf Version 1.9.174}:  resolved Issue 2078: {\bf netgen}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to convert netgen / ngsolve mesh into points, triangles and normals including smooth geometries}
+    \item   date resolved: {\bf 2025-06-07 19:12},
+date raised: 2025-06-07 
+  \ei
+  \item[] {\bf Version 1.9.173}:  resolved Issue 2077: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: light radius receives circular variation normal to ray, giving an effient and good effect of spherical lights; use lightRadius and lightRadiusVariations}
+    \item   date resolved: {\bf 2025-06-05 21:03},
+date raised: 2025-06-05 
+  \ei
+  \item[] {\bf Version 1.9.172}:  resolved Issue 2076: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option for spherical lights with radius and random sampling}
+    \item {\bf notes: added lightRadius}
+    \item   date resolved: {\bf 2025-06-04 17:52},
+date raised: 2025-06-04 
+  \ei
+  \item[] {\bf Version 1.9.171}:  resolved Issue 2059: {\bf Raytracer}
+(docu)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add short docu part}
+    \item {\bf notes: example available in Examples/newtonsCradle.py}
+    \item   date resolved: {\bf 2025-06-04 10:58},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.170}:  resolved Issue 2074: {\bf invert triangles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add function to invert triangles and normals of graphicsData, e.g., for inverted sphere or brick}
+    \item {\bf notes: added graphics.InvertTriangles and ConsistentTriangleList}
+    \item   date resolved: {\bf 2025-06-04 01:37},
+date raised: 2025-06-02 
+  \ei
+  \item[] {\bf Version 1.9.169}:  resolved Issue 2061: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add materials interface via SystemContainer: renderer.SetMaterial(index, dict), dict=GetMaterial(index)}
+    \item {\bf notes: can do read [] access, Set(), New(), etc.}
+    \item   date resolved: {\bf 2025-06-03 16:06},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.168}:  resolved Issue 2063: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: make first 10 materials in renderer accessible via visualization systems dialog}
+    \item   date resolved: {\bf 2025-06-03 16:05},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.167}:  resolved Issue 2060: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: adjust minZ and line offset to scene dimension}
+    \item   date resolved: {\bf 2025-06-02 17:45},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.166}:  resolved Issue 2058: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add separate visualization options; keep lights}
+    \item   date resolved: {\bf 2025-06-02 17:45},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.165}:  resolved Issue 2070: {\bf Renderer timeout}
+(check)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check whether calling glfwWaitEventsTimeout, glfwPollEvents or glfwSwapBuffers fixes problems with redraw timeouts with Raytracing}
+    \item {\bf notes: can be done with option raytracer.keepWindowActive}
+    \item   date resolved: {\bf 2025-06-02 17:44},
+date raised: 2025-05-31 
+  \ei
+  \item[] {\bf Version 1.9.164}:  resolved Issue 2069: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add global fog and material fog}
+    \item {\bf notes: only global fog added}
+    \item   date resolved: {\bf 2025-06-02 17:44},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.163}:  resolved Issue 2068: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: activate cutting plane for raytracer; include in function IntersectRayWithTriangles, which shall first check for cutting plane and only takes then objects behind cutting plane (if hit); color is then taken from triangle behind cutting plane-without reflections and shadows}
+    \item   date resolved: {\bf 2025-06-02 17:44},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.162}:  resolved Issue 2073: {\bf font bitmaps}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Add smoothing at pixel level for base text fonts (at grey scale) to obtain smoother fonts}
+    \item   date resolved: {\bf 2025-06-01 22:53},
+date raised: 2025-06-01 
+  \ei
+  \item[] {\bf Version 1.9.161}:  resolved Issue 2072: {\bf renderer}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: exu.StartRenderer() and exu.StopRenderer() are changed into SC.renderer.Start() and SC.renderer.Stop(), having a SystemContainer SC}
+    \item {\bf notes: NOTE that this affects your existing models a lot!}
+    \item   date resolved: {\bf 2025-06-01 19:13},
+date raised: 2025-06-01 
+  \ei
+  \item[] {\bf Version 1.9.160}:  resolved Issue 2071: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: draw system message texts as overlay of render image}
+    \item   date resolved: {\bf 2025-06-01 18:00},
+date raised: 2025-06-01 
+  \ei
+  \item[] {\bf Version 1.9.159}:  resolved Issue 2036: {\bf renderer}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: put renderer-related functions into SystemContainer; preserve compatibility; consider substructure renderer in SC to collect rendering-related functionality}
+    \item   date resolved: {\bf 2025-06-01 02:36},
+date raised: 2025-05-21 
+  \ei
+  \item[] {\bf Version 1.9.158}:  resolved Issue 2037: {\bf renderer}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: homogenize WaitForUserToContinue, DoRendererIdleTasks, DoIdleOperations and WaitForRenderEngineStopFlag as they are widely identical; homogenize functionality; note that DoRendererIdleTasks() with default args has to be replaced by renderer.DoIdleTasks(0)}
+    \item {\bf notes: merged into SC.renderer.DoIdleTasks(); NOTE that this change affects your existing models a lot!}
+    \item   date resolved: {\bf 2025-06-01 02:35},
+date raised: 2025-05-21 
+  \ei
+  \item[] {\bf Version 1.9.157}:  resolved Issue 2062: {\bf renderer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add renderer substructure to SystemContainer (with backlink to MainSystemContainer)}
+    \item {\bf notes: all examples, test models, teaching models and exudyn submodules adapted; old functionality preserved so far with warnings}
+    \item   date resolved: {\bf 2025-06-01 02:34},
+date raised: 2025-05-28 (resolved by: CHANGE)
+  \ei
+  \item[] {\bf Version 1.9.156}:  resolved Issue 2045: {\bf visualization}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: use templated function to have only one single function for triangle drawing}
+    \item   date resolved: {\bf 2025-05-30 01:01},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.155}:  resolved Issue 2066: {\bf graphics}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option for special shape of graphics.Brick with rounded edges, offering a transition to an ellipsoid}
+    \item   date resolved: {\bf 2025-05-30 00:59},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.154}:  resolved Issue 2049: {\bf SetRenderState}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: seems to ignore autoFitScene = False and therefore does not reload zoom factor}
+    \item {\bf notes: SetRenderState is extended by a flag which by default waits until the renderer is fully started or redrawn; this can impede performance, which is why this should be set to False in such cases}
+    \item   date resolved: {\bf 2025-05-29 16:22},
+date raised: 2025-05-26 
+  \ei
+  \item[] {\bf Version 1.9.153}:  resolved Issue 2065: {\bf SimulationSettings}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: timeIntegration.numberOfSteps: change type to Real in order to accept steps as Python float; add warning in solver if numberOfSteps deviates significantely from integer number}
+    \item   date resolved: {\bf 2025-05-29 15:33},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.152}:  resolved Issue 2064: {\bf exudyn.config}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: move further options to config: SetWriteToConsole, flush always, etc.}
+    \item   date resolved: {\bf 2025-05-29 14:47},
+date raised: 2025-05-29 
+  \ei
+  \item[] {\bf Version 1.9.151}:  resolved Issue 2057: {\bf PrintDelayed}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: printing from visualiuation thread: buffer is never emptied; use idle tasks to do so}
+    \item   date resolved: {\bf 2025-05-28 01:12},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.150}:  resolved Issue 2055: {\bf exudyn.Print}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: replace print commands in exudyn modules by exudyn.Print(...) in order to have common handling of file writing, etc.}
+    \item   date resolved: {\bf 2025-05-28 00:08},
+date raised: 2025-05-28 
+  \ei
+  \item[] {\bf Version 1.9.149}: {\bf \color{warningRed}  resolved BUG 2054}: {\bf GeneticOptimization}
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: computationIndex and parameterFunctionData do not work except for first generation}
+    \item   date resolved: {\bf 2025-05-27 23:39},
+date raised: 2025-05-27 
+  \ei
+  \item[] {\bf Version 1.9.148}:  resolved Issue 2052: {\bf exudyn.Print}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: function shall accept kwargs end, flush and sep in order to be more compatible with original Python print}
+    \item   date resolved: {\bf 2025-05-27 22:39},
+date raised: 2025-05-27 
+  \ei
+  \item[] {\bf Version 1.9.147}:  resolved Issue 2053: {\bf FEM}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: ComputePostProcessingModes raises error for larger problems due to print command}
+    \item   date resolved: {\bf 2025-05-27 22:16},
+date raised: 2025-05-27 
+  \ei
+  \item[] {\bf Version 1.9.146}:  resolved Issue 2051: {\bf Raytracer}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: resolve parallelization issue by removing global hit count}
+    \item   date resolved: {\bf 2025-05-26 18:58},
+date raised: 2025-05-26 
+  \ei
+  \item[] {\bf Version 1.9.145}:  resolved Issue 2048: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add Raytracer as option; map options from openGL to Raytracer (lights, material, multiSampling, shadow, perspective, etc.)}
+    \item   date resolved: {\bf 2025-05-26 10:51},
+date raised: 2025-05-26 
+  \ei
+  \item[] {\bf Version 1.9.144}:  resolved Issue 2047: {\bf graphics.Quad}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add normals; also affects graphics.CheckerBoard; normals are not needed, but may be modified in transformations}
+    \item   date resolved: {\bf 2025-05-25 15:40},
+date raised: 2025-05-25 
+  \ei
+  \item[] {\bf Version 1.9.143}:  resolved Issue 2046: {\bf Raytracer}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add CPU-based software renderer / raytracer als option to render images for animations}
+    \item {\bf notes: note that this is experimental; image resolution shall be small (start with 400x300) as long render times may lead to problems}
+    \item   date resolved: {\bf 2025-05-25 12:32},
+date raised: 2025-05-25 
+  \ei
+  \item[] {\bf Version 1.9.142}:  resolved Issue 2044: {\bf visualization}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to sort transparent triangles to improve quality of transparent objects; use simple depth sort for triangle midpoints}
+    \item {\bf notes: added option openGL.depthSorting which sorts triangles by their depth for improved transparency view (but requires triangles to be small enough)}
+    \item   date resolved: {\bf 2025-05-22 16:35},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.141}:  resolved Issue 2043: {\bf pyi / stub files}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: revise section for exudyn stubs in order to enable completion of exudyn.config and other exudyn functions}
+    \item {\bf notes: seems that removing erroneous info like "special." was sufficient to work}
+    \item   date resolved: {\bf 2025-05-22 11:00},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.140}:  resolved Issue 2033: {\bf InertiaSphere}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: use density and radius to initialize as alternative option}
+    \item   date resolved: {\bf 2025-05-22 10:32},
+date raised: 2025-05-20 
+  \ei
+  \item[] {\bf Version 1.9.139}:  resolved Issue 2042: {\bf exudyn}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: move exudyn.SetLinalgOutputFormatPython(), exudyn.SetOutputPrecision(), exudyn.SetPrintDelayMilliSeconds(), exudyn.SuppressWarnings(), exudyn.InfoStat(), exudyn.GetVersionString() to according variables and functions in exudyn.config, see current docu}
+    \item   date resolved: {\bf 2025-05-22 09:30},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.138}:  resolved Issue 2041: {\bf exudyn.Solve}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove exudyn.SolveStatic exudyn.SolveDynamic and exudyn.ComputeODE2Eigenvalues from exudyn, being only available in MainSystem as mbs.SolveDynamic, etc.}
+    \item   date resolved: {\bf 2025-05-22 08:35},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.137}:  resolved Issue 2040: {\bf exudyn.Demo1()}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: and exudyn.Demo2() only available as exudyn.demos.Demo1() or .Demo2()}
+    \item   date resolved: {\bf 2025-05-22 07:56},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.136}:  resolved Issue 2039: {\bf exudyn.Go()}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove function Go() which is not intended to be used}
+    \item   date resolved: {\bf 2025-05-22 07:44},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.135}:  resolved Issue 2038: {\bf exudyn.SetOutputPrecision}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: moved to exudyn.config.outputPrecision}
+    \item   date resolved: {\bf 2025-05-22 07:21},
+date raised: 2025-05-22 
+  \ei
+  \item[] {\bf Version 1.9.134}:  resolved Issue 1630: {\bf exudyn module}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: consider settings instead of putting all variables globally into module}
+    \item   date resolved: {\bf 2025-05-22 07:20},
+date raised: 2023-06-23 
+  \ei
+  \item[] {\bf Version 1.9.133}:  resolved Issue 2035: {\bf exudyn.config}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: collect specific settings into config structure, see also issue 1630}
+    \item   date resolved: {\bf 2025-05-22 07:19},
+date raised: 2025-05-21 
+  \ei
+  \item[] {\bf Version 1.9.132}:  resolved Issue 2034: {\bf Sensors.traces}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add trace time span for past and future traces, to limit length of traces}
+    \item   date resolved: {\bf 2025-05-20 08:19},
+date raised: 2025-05-20 
+  \ei
+  \item[] {\bf Version 1.9.131}:  resolved Issue 2032: {\bf sensor traces}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: wrong description using visualizationSettings.sensorTraces in docu}
+    \item   date resolved: {\bf 2025-05-20 08:19},
+date raised: 2025-05-20 
+  \ei
+  \item[] {\bf Version 1.9.130}:  resolved Issue 2028: {\bf OutputVariables}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add outputvariables to ContactSphereTorus}
+    \item   date resolved: {\bf 2025-05-19 20:18},
+date raised: 2025-05-18 
+  \ei
+  \item[] {\bf Version 1.9.129}:  resolved Issue 2024: {\bf ObjectContactFrictionCircleCable2DOld}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove outdated object}
+    \item   date resolved: {\bf 2025-05-18 23:35},
+date raised: 2025-05-17 
+  \ei
+  \item[] {\bf Version 1.9.128}:  resolved Issue 2030: {\bf SolidOfRevolution}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add smoothingAngle for contour below which smoothing is applied}
+    \item   date resolved: {\bf 2025-05-18 15:35},
+date raised: 2025-05-18 
+  \ei
+  \item[] {\bf Version 1.9.127}:  resolved Issue 2029: {\bf graphics}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add start and end angle for minor radius of torus}
+    \item   date resolved: {\bf 2025-05-18 11:24},
+date raised: 2025-05-18 
+  \ei
+  \item[] {\bf Version 1.9.126}:  resolved Issue 2022: {\bf ContactTorusSphere}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add basic contact element; typically used for ball bearings; similar to ContactSphereSphere}
+    \item   date resolved: {\bf 2025-05-18 00:03},
+date raised: 2025-05-16 
+  \ei
+  \item[] {\bf Version 1.9.125}:  resolved Issue 2027: {\bf CreateRigidBody}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: if graphicsDataList is provided, node shall still be shown, but drawsize gets 0; this allows to easily show the node basis}
+    \item {\bf notes: also done for CreateMassPoint}
+    \item   date resolved: {\bf 2025-05-17 23:30},
+date raised: 2025-05-17 
+  \ei
+  \item[] {\bf Version 1.9.124}:  resolved Issue 2026: {\bf graphics Tube}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add function graphics.Tube which generates graphicsData for a tube along a line of points with axis vectors}
+    \item   date resolved: {\bf 2025-05-17 21:48},
+date raised: 2025-05-17 
+  \ei
+  \item[] {\bf Version 1.9.123}:  resolved Issue 2025: {\bf Torus}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add graphics function for torus}
+    \item {\bf notes: using graphics.Tube function}
+    \item   date resolved: {\bf 2025-05-17 21:48},
+date raised: 2025-05-17 
+  \ei
+  \item[] {\bf Version 1.9.122}:  resolved Issue 1922: {\bf ContactSphereSphere}
+(testint)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add test model with various contact models}
+    \item   date resolved: {\bf 2025-05-17 00:15},
+date raised: 2024-11-02 
+  \ei
+  \item[] {\bf Version 1.9.121}:  resolved Issue 2023: {\bf graphics.Cylinder}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to draw hollow cylinder}
+    \item   date resolved: {\bf 2025-05-17 00:05},
+date raised: 2025-05-17 
+  \ei
+  \item[] {\bf Version 1.9.120}:  resolved Issue 2021: {\bf ContactSphereSphere}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to include hollow sphere - sphere contact}
+    \item   date resolved: {\bf 2025-05-16 18:10},
+date raised: 2025-05-16 
+  \ei
+  \item[] {\bf Version 1.9.119}:  resolved Issue 2020: {\bf version files}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove different version files and use only a single file for .tex and .cpp}
+    \item   date resolved: {\bf 2025-05-15 21:25},
+date raised: 2025-05-15 
+  \ei
+  \item[] {\bf Version 1.9.118}:  resolved Issue 2019: {\bf Numpy2.0}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Since Numpy2.0 \_\_cpu\_features\_\_ are not available any more, therefore we need to find another way to automatically detect AVX2 features}
+    \item   date resolved: {\bf 2025-05-15 20:20},
+date raised: 2025-05-15 
+  \ei
+  \item[] {\bf Version 1.9.117}:  resolved Issue 2012: {\bf CObjectContactCurveCircles}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: complete CheckPreAssembleConsistency}
+    \item   date resolved: {\bf 2025-05-15 08:50},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.116}:  resolved Issue 2014: {\bf ContactCurveCircles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check damping mechanism and check negative contact forces}
+    \item   date resolved: {\bf 2025-05-13 15:12},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.115}:  resolved Issue 1926: {\bf ContactCurveCircles}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add simple test model}
+    \item   date resolved: {\bf 2025-05-11 22:53},
+date raised: 2024-11-04 
+  \ei
+  \item[] {\bf Version 1.9.114}:  resolved Issue 2013: {\bf ContactCurveCircles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add visualization for contact circles}
+    \item   date resolved: {\bf 2025-05-11 22:07},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.113}:  resolved Issue 2015: {\bf ContactSphereSphere}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: radius unused in visualization}
+    \item   date resolved: {\bf 2025-05-11 21:44},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.112}:  resolved Issue 2010: {\bf ContactCurveCircles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: change dynamic arrays to local temp arrays in CObject, similar to FFRF object}
+    \item   date resolved: {\bf 2025-05-11 15:36},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.111}:  resolved Issue 2009: {\bf ContactCurveCircles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: draw active contact segments}
+    \item   date resolved: {\bf 2025-05-11 12:02},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.110}:  resolved Issue 2008: {\bf ContactCurveCircles}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: draw contact segments}
+    \item   date resolved: {\bf 2025-05-11 12:02},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.109}: {\bf \color{warningRed}  resolved BUG 2011}: {\bf ContactCurveCircles}
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: force computation not correct regarding simultaneous contact with several segments}
+    \item   date resolved: {\bf 2025-05-11 12:01},
+date raised: 2025-05-11 
+  \ei
+  \item[] {\bf Version 1.9.108}:  resolved Issue 1925: {\bf ContactCurveCircles}
+(example)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add example of chain drive}
+    \item   date resolved: {\bf 2025-05-11 12:01},
+date raised: 2024-11-04 
+  \ei
+  \item[] {\bf Version 1.9.107}:  resolved Issue 1952: {\bf CreateTorsionalSpringDamper}
+(testing)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add test example}
+    \item {\bf notes: included in createFunctionsTest}
+    \item   date resolved: {\bf 2025-05-10 23:23},
+date raised: 2025-02-05 
+  \ei
+  \item[] {\bf Version 1.9.106}:  resolved Issue 2005: {\bf realtime}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: measure realtime reserve in special timers}
+    \item   date resolved: {\bf 2025-05-10 23:18},
+date raised: 2025-05-10 
+  \ei
+  \item[] {\bf Version 1.9.105}:  resolved Issue 2001: {\bf Create functions}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add automatism to create geometry from inertia objects by default (cylinder, sphere, brick, ...); using default colors}
+    \item   date resolved: {\bf 2025-05-10 23:07},
+date raised: 2025-05-08 
+  \ei
+  \item[] {\bf Version 1.9.104}:  resolved Issue 2006: {\bf RigidBodyInertia}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add self.data dictionary which stores data of special inertia classes, such as radius of cylinder, etc.; this allows to obtain geometry information}
+    \item   date resolved: {\bf 2025-05-10 20:39},
+date raised: 2025-05-10 
+  \ei
+  \item[] {\bf Version 1.9.103}:  resolved Issue 1971: {\bf Create functions}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add general test model}
+    \item   date resolved: {\bf 2025-05-10 19:56},
+date raised: 2025-03-05 
+  \ei
+  \item[] {\bf Version 1.9.102}:  resolved Issue 1987: {\bf CreateCoordinateConstraint}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to constrain coordinate of object via its nodes; add option to constrain single coordinates or even a list of coordinates}
+    \item   date resolved: {\bf 2025-05-10 19:37},
+date raised: 2025-04-08 
+  \ei
+  \item[] {\bf Version 1.9.101}:  resolved Issue 0657: {\bf Delete item}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add functionality to delete items, adding specific features to re-index nodes in objects/markers, etc. if a node, object or marker is deleted; add MaxItemNumber() function to systemData which returns unique name for items even after deletion}
+    \item {\bf notes: resolved by reordering dependent items; no maxItem used}
+    \item   date resolved: {\bf 2025-05-10 01:31},
+date raised: 2021-05-01 
+  \ei
+  \item[] {\bf Version 1.9.100}:  resolved Issue 2004: {\bf GetJointArgs}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add a utility function, which takes an existing marker and rotationMarker and another body to compute a new marker and rotationMarker for the other body; can be directly used as joint arguments like in revolute, prismatic or generic joints}
+    \item   date resolved: {\bf 2025-05-09 23:59},
+date raised: 2025-05-09 
+  \ei
+  \item[] {\bf Version 1.9.99}:  resolved Issue 2003: {\bf GetOtherMarker}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add a utility function, which the computes a new marker from the reference position of an existing marker and another body; for easier setup of markers}
+    \item   date resolved: {\bf 2025-05-09 15:34},
+date raised: 2025-05-09 
+  \ei
+  \item[] {\bf Version 1.9.98}:  resolved Issue 1999: {\bf delete}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to delete dependent markers when deleting loads}
+    \item   date resolved: {\bf 2025-05-09 08:08},
+date raised: 2025-05-08 
+  \ei
+  \item[] {\bf Version 1.9.97}:  resolved Issue 1998: {\bf delete}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add option to delete dependent markers in connectors/joints when deleting objects}
+    \item   date resolved: {\bf 2025-05-09 08:08},
+date raised: 2025-05-07 
+  \ei
+  \item[] {\bf Version 1.9.96}:  resolved Issue 2000: {\bf delete}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: consistently delete loads and sensors}
+    \item   date resolved: {\bf 2025-05-08 20:57},
+date raised: 2025-05-08 
+  \ei
+  \item[] {\bf Version 1.9.95}:  resolved Issue 2002: {\bf BasicTraits.h}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: remove and add new AdvancedStuff.h and put there sort, atomics operations, iterators, etc. which are not needed everywhere}
+    \item   date resolved: {\bf 2025-05-08 20:39},
+date raised: 2025-05-08 
+  \ei
+  \item[] {\bf Version 1.9.94}:  resolved Issue 1997: {\bf delete}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: consistently delete nodes and markers in MainSystem}
+    \item   date resolved: {\bf 2025-05-08 13:35},
+date raised: 2025-05-06 
+  \ei
+  \item[] {\bf Version 1.9.93}:  resolved Issue 1985: {\bf CreateFunctions}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check pyi files and workflows to enable code completion and navigation in Spyder with Create functions}
+    \item {\bf notes: shall be resolved with issue 1996, as it natively derives from C++ class}
+    \item   date resolved: {\bf 2025-05-06 22:20},
+date raised: 2025-04-02 
+  \ei
+  \item[] {\bf Version 1.9.92}:  resolved Issue 1986: {\bf ObjectMassPoint}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: add outputvariables rotation matrix and angular velocity (also to NodePoint) in order to allow spherical joint to be attached.}
+    \item   date resolved: {\bf 2025-05-06 22:12},
+date raised: 2025-04-08 
+  \ei
+  \item[] {\bf Version 1.9.91}: {\bf \color{warningRed}  resolved BUG 1995}: {\bf Sensor}
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: case SensorType::KinematicTree missing in GetTypeDependentIndex}
+    \item   date resolved: {\bf 2025-05-06 17:13},
+date raised: 2025-05-06 
+  \ei
+  \item[] {\bf Version 1.9.90}:  resolved Issue 1994: {\bf pybind11}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: local files using pybind11 2.6, not suitable for Numpy >= 2.0}
+    \item   date resolved: {\bf 2025-05-06 16:44},
+date raised: 2025-05-06 
+  \ei
+  \item[] {\bf Version 1.9.89}:  resolved Issue 1993: {\bf MSVC}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: compilation/execution of Exudyn in MSVC and python differ considerably}
+    \item   date resolved: {\bf 2025-05-06 16:00},
+date raised: 2025-05-06 
+  \ei
+  \item[] {\bf Version 1.9.88}:  resolved Issue 1992: {\bf CSystem}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: systemIsConsistent used instead of systemIsInteger in CheckSystemIntegrity}
+    \item   date resolved: {\bf 2025-05-06 12:07},
+date raised: 2025-05-06 
+  \ei
+  \item[] {\bf Version 1.9.87}:  resolved Issue 1991: {\bf MainSystem}
+(fix)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Node, Object, Marker, ... functions have wrong internal range check (not including invalid index)}
+    \item   date resolved: {\bf 2025-05-05 22:43},
+date raised: 2025-05-05 
+  \ei
+  \item[] {\bf Version 1.9.86}:  resolved Issue 1990: {\bf delete object}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: first step to fulfill issue 657; reorder markers and sensors and assign invalid object number if object is used; add assemble check function for invalid indices}
+    \item   date resolved: {\bf 2025-05-05 22:18},
+date raised: 2025-05-05 
+  \ei
+  \item[] {\bf Version 1.9.85}:  resolved Issue 1984: {\bf FEM}
+(extension)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: Load/Save of FEM and FFRF data: default value NPY switched to NPZ due to Numpy2.x conflicts; for compatibility set mode to NPY}
+    \item {\bf notes: all load/save functions should work with npy, npz, pkl and hdf5}
+    \item   date resolved: {\bf 2025-04-01 19:21},
+date raised: 2025-04-01 
+  \ei
+  \item[] {\bf Version 1.9.84}:  resolved Issue 1983: {\bf FEM}
+(change)
+\vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: adjust Load/Save functions to by-default support hdf5 or pkl as npy does not work with numpy 2.0}
+    \item {\bf notes: changed ObjectFFRFreducedOrderInterface and FEM class to by default use numpy NPZ format}
+    \item   date resolved: {\bf 2025-04-01 16:44},
+date raised: 2025-04-01 
+  \ei
   \item[] {\bf Version 1.9.83}:  resolved Issue 1982: {\bf SolutionViewer}
 (extension)
 \vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
@@ -378,9 +1474,9 @@ date raised: 2024-11-02
   \item[] {\bf Version 1.9.33}:  resolved Issue 1919: {\bf ContactSphereSphere}
 (extension)
 \vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
-    \item {description: extend for nonlinear contact model}
+    \item {description: extend for nonlinear contact models; in particular restitution coefficient and adhesive elasto-plastic contact model}
     \item   date resolved: {\bf 2024-11-04 23:32},
-date raised: 2024-11-02 
+date raised: 2024-11-02 (resolved by: S. Weyrer)
   \ei
   \item[] {\bf Version 1.9.32}:  resolved Issue 1918: {\bf ContactSphereSphere}
 (extension)
@@ -2534,7 +3630,7 @@ date raised: 2023-06-03
 (extension)
 \vspace{-6pt}   \begin{itemize} \setlength\itemsep{-1pt}
     \item {description: Add security question on quit/escape if computation Renderer runs longer than 15 minutes}
-    \item {\bf notes: added message in render window to click twice on exit window icon (X) after 15 seconds; key Q and escape get tkinter message box}
+    \item {\bf notes: added message in render window to click twice on exit window icon (X) after 15 minutes; key Q and escape get tkinter message box}
     \item   date resolved: {\bf 2023-06-03 16:00},
 date raised: 2023-01-01 
   \ei
@@ -9940,6 +11036,11 @@ date raised: 2020-07-20
 \ei
 \mysubsection{Known open bugs}
 \bi \footnotesize 
+  \item open {\bf BUG 2127}:  {\bf ContactSphereTorus}
+  \begin{itemize} \setlength\itemsep{-1pt}
+    \item {description: check torques on both bodies, as there seems to be momentum conservation issues in ball bearings}
+    \item date raised: 2025-07-03 
+  \ei
   \item open {\bf BUG 1889}:  {\bf symbolic}
   \begin{itemize} \setlength\itemsep{-1pt}
     \item {description: GetLoad and similar functions do not work with symbolic user functions and raise TypeError: Object of type 'exudyn.exudynCPP.symbolic.UserFunction' is not an instance of 'function'; see also issue with mbs.GetDictionary()}

@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2022-06-05  19:15:52 (last modified)
+* @date         2025-06-29  16:16:44 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -75,9 +75,21 @@ public: // AUTO:
     virtual const CMarkerKinematicTreeRigidParameters& GetParameters() const { return parameters; }
 
     //! AUTO:  general access to object number
-    virtual Index GetObjectNumber() const override
+    virtual Index GetObjectNumber(Index localIndex = 0) const override
     {
         return parameters.objectNumber;
+    }
+
+    //! AUTO:  change bodyNumber
+    virtual void SetObjectNumber(Index objectNumber, Index localIndex = 0) override
+    {
+        parameters.objectNumber = objectNumber;
+    }
+
+    //! AUTO:  general access to object number
+    virtual Index GetNumberOfObjects() const override
+    {
+        return 1;
     }
 
     //! AUTO:  return marker type (for node treatment in computation)

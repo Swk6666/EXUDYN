@@ -134,7 +134,7 @@ simulationSettings.solutionSettings.solutionInformation = "ANCF test halfcircle"
 
 solveDynamic = False
 if solveDynamic: 
-    exu.StartRenderer()
+    SC.renderer.Start()
     simulationSettings.timeIntegration.newton.numericalDifferentiation.relativeEpsilon = 1e-9*0.25
     
     def UFchangeLoad(mbs, t):
@@ -146,8 +146,8 @@ if solveDynamic:
     mbs.SolveDynamic(simulationSettings)
     #v = mbs.CallObjectFunction(1,'GetAngularVelocity',{'localPosition':[L/2,0,0],'configuration':'Current'})
     #print('angular vel='+str(v))
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 else:
     simulationSettings.staticSolver.newton.numericalDifferentiation.relativeEpsilon = 1e-9*0.25
@@ -156,7 +156,7 @@ else:
 #    simulationSettings.staticSolver.newton.absoluteTolerance = 1e-10
     simulationSettings.staticSolver.newton.maxIterations = 50 #for bending into circle
     
-    exu.StartRenderer()
+    SC.renderer.Start()
 
     doLoadStepping = False
     if doLoadStepping:
@@ -205,7 +205,7 @@ else:
         mbs.SolveStatic(simulationSettings)
 
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 

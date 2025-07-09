@@ -13,6 +13,8 @@
 
 #include "Utilities/ReleaseAssert.h"
 #include "Utilities/BasicDefinitions.h"
+#include "Utilities/AdvancedStuff.h"
+
 #include "Utilities/SlimArray.h"
 //#include <string>
 #include "Utilities/SlimArray.h"
@@ -200,6 +202,8 @@ void GlfwRenderer::SetGLLights()
 	glPushMatrix();
 	glLoadIdentity();
 
+	//apply inverse model rotation to allow global lights
+	if (!visSettings->openGL.lightPositionsInCameraFrame) { SetModelRotationTranslation(); }
 
 	//+++++++++++++++++++++++++++++++++++
 	//light; see https://www.glprogramming.com/red/chapter05.html#name4
@@ -570,7 +574,7 @@ void GlfwRenderer::CreateFontTextures()
     {
         for (GLuint iChar = 0; iChar < bitmapFont.nCharacters; iChar++)
         {
-            GLubyte* textureRGB = bitmapFont.GetRGBFontCharacter(iChar, (bool)(1-j));
+            GLubyte* textureRGB = bitmapFont.GetRGBAFontCharacter(iChar, (bool)(1-j));
 
             glBindTexture(MY_GL_TEXTURE_2D, textureNumberRGBbitmap[iChar+ bitmapFont.nCharacters*j]);
             /* actually generate the texture */

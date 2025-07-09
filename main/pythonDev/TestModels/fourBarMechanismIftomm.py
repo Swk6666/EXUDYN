@@ -191,17 +191,17 @@ if True: #record animation frames:
 SC.visualizationSettings.general.autoFitScene = False #use loaded render state
 #useGraphics = True
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys[ 'renderState' ])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys[ 'renderState' ])
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
     ##++++++++++++++++++++++++++++++++++++++++++++++q+++++++
     #plot results

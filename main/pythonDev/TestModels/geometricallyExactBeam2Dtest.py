@@ -146,8 +146,8 @@ SC.visualizationSettings.nodes.defaultSize = 0.005
 
 ## start graphics and solver   
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 uTotal = np.zeros(3)
 
@@ -168,8 +168,8 @@ uTotal = 0.5*uTotal
 
 ## stop graphics and print solution
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 exu.Print('solution of geometricallyExactBeam2Dtest=',uTotal[1]) #use y-coordinate
 

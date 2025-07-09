@@ -56,12 +56,7 @@ if True: #needs netgen/ngsolve to be installed to compute mesh, see e.g.: https:
 
     #set True to see mesh in netgen tool:
     if False: #set this to true, if you want to visualize the mesh inside netgen/ngsolve
-        # import netgen
-        import netgen.gui
-        ngs.Draw(mesh)
-        for i in range(10000000):
-            netgen.Redraw() #this makes the netgen window interactive
-            time.sleep(0.05)
+        import netgen.gui #this starts netgen gui; Press button "Visual" and activate "Auto-redraw after (sec)"; Then select "Mesh"
 
 
     # sys.exit()
@@ -230,10 +225,10 @@ if True: #now import mesh as mechanical model to EXUDYN
 
     SC.visualizationSettings.general.autoFitScene=False
 
-    exu.StartRenderer()
-    if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+    SC.renderer.Start()
+    if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
 
-    mbs.WaitForUserToContinue() #press space to continue
+    SC.renderer.DoIdleTasks() #press space to continue
 
     mbs.SolveDynamic(simulationSettings=simulationSettings)
     
@@ -241,8 +236,8 @@ if True: #now import mesh as mechanical model to EXUDYN
         mises = CMSObjectComputeNorm(mbs, 0, exu.OutputVariableType.StressLocal, 'Mises')
         print('max von-Mises stress=',mises)
     
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     
     # mbs.PlotSensor(sensorNumbers=[sensBushingVel], components=[1])
 

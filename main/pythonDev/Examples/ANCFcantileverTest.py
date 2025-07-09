@@ -103,10 +103,10 @@ doDynamicSimulation = True #switch between static and dynamic simulation
 
 if doDynamicSimulation:
     ## do dynamic simulation
-    exu.StartRenderer()
+    SC.renderer.Start()
     mbs.SolveDynamic(simulationSettings)
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     ## 
 else:
     ## perform static simulation with manual load stepping

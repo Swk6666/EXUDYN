@@ -310,8 +310,8 @@ if useGraphics:
         SC.visualizationSettings.exportImages.saveImageFileName = "animation/frame"
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
@@ -323,8 +323,8 @@ exudynTestGlobals.testResult = p0[0]
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 ##++++++++++++++++++++++++++++++++++++++++++++++q+++++++
 #plot results

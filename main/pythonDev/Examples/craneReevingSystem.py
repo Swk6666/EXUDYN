@@ -398,10 +398,10 @@ SC.visualizationSettings.window.renderWindowSize=[1920,1200]
 ## start renderer and dynamic simulation
 useGraphics = True
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys[ 'renderState' ])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys[ 'renderState' ])
+    SC.renderer.DoIdleTasks()
 
 
 mbs.SolveDynamic(simulationSettings, 
@@ -409,8 +409,8 @@ mbs.SolveDynamic(simulationSettings,
                  )
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 ## optionally start solution viewer at end of simulation

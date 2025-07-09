@@ -99,15 +99,10 @@ if showCase == 'revolute':
     
     mesh1 = ngs.Mesh( geo1.GenerateMesh(maxh=meshH, curvaturesafety=curvaturesafety))
     mesh1.Curve(1)
-    
-    
-    if False: #set this to true, if you want to visualize the mesh inside netgen/ngsolve
-        import netgen.gui
-        ngs.Draw(mesh1)
-        for i in range(10000000):
-            netgen.Redraw() #this makes the netgen window interactive
-            time.sleep(0.05)
-    
+
+    if True:
+        import netgen.gui #this starts netgen gui; Press button "Visual" and activate "Auto-redraw after (sec)"; Then select "Mesh"
+        
     #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
     #import body with fem (this could be simplified in future ...)
     #body0
@@ -163,13 +158,8 @@ if showCase == 'spheric':
     mesh1 = ngs.Mesh( geo1.GenerateMesh(maxh=meshH, curvaturesafety=curvaturesafety))
     mesh1.Curve(1)
     
-    
-    if False: #set this to true, if you want to visualize the mesh inside netgen/ngsolve
-        import netgen.gui
-        ngs.Draw(mesh1)
-        for i in range(10000000):
-            netgen.Redraw() #this makes the netgen window interactive
-            time.sleep(0.05)
+    if True:
+        import netgen.gui #this starts netgen gui; Press button "Visual" and activate "Auto-redraw after (sec)"; Then select "Mesh"
     
     #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
     #import body with fem (this could be simplified in future ...)

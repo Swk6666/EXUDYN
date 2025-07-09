@@ -44,13 +44,11 @@ g = 9.81 #gravity constant
 def ClearWorkspace():
     #if __name__ == "__main__":  #this won't work as the function is not running in __main__, but in exudyn.basicUtilities
     gl = globals().copy()
-    #print(globals())
 
     for var in gl:
         if var[0] == '_': continue
         if 'func' in str(globals()[var]): continue
         if 'module' in str(globals()[var]): continue
-        #print('delete var=', var)
         del globals()[var]
 
     import inspect
@@ -60,19 +58,18 @@ def ClearWorkspace():
         if var[0] == '_': continue
         if 'func' in str(fglobals[var]): continue
         if 'module' in str(fglobals[var]): continue
-        #print('delete caller file var=', var)
+
         del fglobals[var]
 
 
     import sys
     if 'exudyn' in sys.modules:
         import exudyn #previously, it may have been loaded under another name (e.g., exu)
-        # print('cleanup exudyn')
+
         sysCopy = exudyn.sys.copy()
         for (key,value) in sysCopy.items():
             if (#key != 'currentRendererSystemContainer' and
                 key != 'renderState'):
-                # print('key=', key)
                 del exudyn.sys[key]
         variablesCopy = exudyn.variables.copy()
         for (key,value) in variablesCopy.items():

@@ -30,7 +30,7 @@ except:
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-exu.Print('EXUDYN version='+exu.GetVersionString())
+exu.Print('EXUDYN version='+exu.config.Version())
 
 tEnd = 1     #end time of simulation
 steps = 100

@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-02-02  20:39:58 (last modified)
+* @date         2025-05-06  23:48:36 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -140,6 +140,12 @@ public: // AUTO:
     {
         CHECKandTHROW(0, __EXUDYN_invalid_local_node0);
         return 0;
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        CHECKandTHROW(0, __EXUDYN_invalid_local_node0);
     }
 
     //! AUTO:  number of nodes; needed for every object

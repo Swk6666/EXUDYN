@@ -155,9 +155,6 @@ class CartPoleEnv(Env):
         self.simulationSettings.timeIntegration.startTime = currentTime
         self.simulationSettings.timeIntegration.endTime = currentTime+self.stepUpdateTime
 
-        # exu.SolveDynamic(self.mbs, self.simulationSettings, solverType=exu.DynamicSolverType.TrapezoidalIndex2,
-        #                  updateInitialValues=True) #use final value as new initial values
-
         self.dynamicSolver.InitializeSolverInitialConditions(self.mbs, self.simulationSettings)
         self.dynamicSolver.SolveSteps(self.mbs, self.simulationSettings)
         currentState = self.mbs.systemData.GetSystemState() #get current values
@@ -270,14 +267,14 @@ class CartPoleEnv(Env):
 
     def render(self, mode="human"):
         if self.rendererRunning==None and self.useRenderer:
-            exu.StartRenderer()
+            SC.renderer.Start()
             self.rendererRunning = True
 
     def close(self):
         self.dynamicSolver.FinalizeSolver(self.mbs, self.simulationSettings)
         if self.rendererRunning==True:
-            # SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
+            # SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
 
 
 

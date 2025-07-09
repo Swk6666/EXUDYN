@@ -237,7 +237,6 @@ if useGears: #show that also transmission / gear ratio works; test for limit sto
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#print(mbs)
 mbs.Assemble()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -265,14 +264,14 @@ SC.visualizationSettings.window.renderWindowSize=[1200,1024]
 SC.visualizationSettings.general.autoFitScene = False #otherwise, renderState not accepted for zoom
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 sol = mbs.systemData.GetODE2Coordinates()
 exudynTestGlobals.testResult = np.sum(abs(sol))

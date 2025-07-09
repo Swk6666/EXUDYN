@@ -6,7 +6,7 @@
 #           shows reading and writing mbs with dictionaries and export by HDF5 files
 #
 # Author:   Johannes Gerstmayr
-# Date:     2019-11-15
+# Date:     2024-10-13
 #
 # Copyright:This file is part of Exudyn. Exudyn is free software. You can redistribute it and/or modify it under the terms of the Exudyn license. See 'LICENSE.txt' for more details.
 #
@@ -17,6 +17,19 @@ from exudyn.utilities import * #includes itemInterface and rigidBodyUtilities
 import exudyn.graphics as graphics #only import if it does not conflict
 from math import sin, cos
 import copy 
+
+useGraphics = True #without test
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#you can erase the following lines and all exudynTestGlobals related operations if this is not intended to be used as TestModel:
+try: #only if called from test suite
+    from modelUnitTests import exudynTestGlobals #for globally storing test results
+    useGraphics = exudynTestGlobals.useGraphics
+except:
+    class ExudynTestGlobals:
+        pass
+    exudynTestGlobals = ExudynTestGlobals()
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
@@ -93,19 +106,27 @@ mbs2.SetDictionary(mbsDict)
 
 #+++++++++++++++++++++++
 
-from exudyn.advancedUtilities import SaveDictToHDF5, LoadDictFromHDF5
-#use HDF5 load / save may not work for all cases, as some types are not implemented
-#save MUST be done before solving, as solver structures and settings cannot be saved!
-mbsDict = mbs.GetDictionary()
-mbsDict['variables'] = {} 
-mbsDict['systemVariables'] = {}
-SaveDictToHDF5('solution/mbs.h5', mbsDict) #problems with Python functions as sub-dicts
-mbsCopy2 = LoadDictFromHDF5('solution/mbs.h5', globals())
-# print('loaded_data:\n', mbsCopy2)
-
-SC = exu.SystemContainer()
-mbs2 = SC.AddSystem()
-mbs2.SetDictionary(mbsCopy)
+hasH5py = False
+try:
+    import h5py
+    hasH5py = True
+except ImportError:
+    exu.Print('h5py not available; skipping HDF5 test')
+    
+if hasH5py:
+    from exudyn.advancedUtilities import SaveDictToHDF5, LoadDictFromHDF5
+    #use HDF5 load / save may not work for all cases, as some types are not implemented
+    #save MUST be done before solving, as solver structures and settings cannot be saved!
+    mbsDict = mbs.GetDictionary()
+    mbsDict['variables'] = {} 
+    mbsDict['systemVariables'] = {}
+    SaveDictToHDF5('solution/mbs.h5', mbsDict) #problems with Python functions as sub-dicts
+    mbsCopy2 = LoadDictFromHDF5('solution/mbs.h5', globals())
+    # print('loaded_data:\n', mbsCopy2)
+    
+    SC = exu.SystemContainer()
+    mbs2 = SC.AddSystem()
+    mbs2.SetDictionary(mbsCopy)
 
 #%%+++++++++++++++++++++++++++++++++++
 #ALTERNATIVE: work with copy of mbs:
@@ -121,15 +142,16 @@ mbs2.Assemble()
 
 simulationSettings = exu.SimulationSettings() #takes currently set values or default values
 
-tEnd = 5
+tEnd = 1
 h = 1e-3
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
 simulationSettings.timeIntegration.endTime = tEnd
 simulationSettings.timeIntegration.verboseMode = 1
-simulationSettings.timeIntegration.simulateInRealtime = True
+# simulationSettings.timeIntegration.simulateInRealtime = True
 
 simulationSettings.timeIntegration.newton.useModifiedNewton = True
 simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.6 #0.6 works well 
+# simulationSettings.displayComputationTime = True
 
 simulationSettings.solutionSettings.solutionInformation = "rigid body tests"
 SC.visualizationSettings.nodes.defaultSize = 0.05
@@ -137,10 +159,22 @@ SC.visualizationSettings.openGL.multiSampling = 4
 SC.visualizationSettings.openGL.lineWidth = 2
 SC.visualizationSettings.window.renderWindowSize = [2000,1600]
 
-exu.StartRenderer()
-mbs2.WaitForUserToContinue()
+if useGraphics:
+    SC.renderer.Start()
+    mbs2.WaitForUserToContinue()
 
 mbs2.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+if useGraphics:
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++
+uTotal = 0.1 * sum(mbs2.GetSensorValues(sPos)) #sPos is still the correct index
+exu.Print('uTotal=',uTotal)
+
+exudynTestGlobals.testResult = uTotal
+#+++++++++++++++++++++++++++++++++++++++++++++
+
+

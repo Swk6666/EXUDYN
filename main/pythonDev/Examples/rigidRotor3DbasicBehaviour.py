@@ -23,7 +23,7 @@ import numpy as np
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 L=1                     #rotor axis length
 isSymmetric = True
@@ -201,8 +201,8 @@ simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1
 SC.visualizationSettings.window.renderWindowSize = [1600,1080]
 SC.visualizationSettings.general.textSize = 22
 
-exu.StartRenderer()              #start graphics visualization
-mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+SC.renderer.Start()              #start graphics visualization
+SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
 #simulate some time to get steady-state solution:
 mbs.SolveDynamic(simulationSettings)
@@ -215,7 +215,7 @@ simulationSettings.timeIntegration.endTime = 2.5
 #create animations (causes slow simulation):
 createAnimation=True
 if createAnimation:
-    mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+    SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
     simulationSettings.solutionSettings.recordImagesInterval = 0.01
     if mode == 1:
         simulationSettings.timeIntegration.endTime = 1
@@ -229,8 +229,8 @@ if createAnimation:
     mbs.systemData.SetSystemState(state, configuration=exu.ConfigurationType.Initial)
     mbs.SolveDynamic(simulationSettings)
 
-#SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-exu.StopRenderer()               #safely close rendering window!
+#SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+SC.renderer.Stop()               #safely close rendering window!
 
 #evaluate final (=current) output values
 u = mbs.GetNodeOutput(n1, exu.OutputVariableType.AngularVelocity)

@@ -183,13 +183,13 @@ simulationSettings.solutionSettings.solutionInformation = 'Hydraulics user funct
 SC.visualizationSettings.openGL.multiSampling = 4
 SC.visualizationSettings.openGL.lineWidth = 2
 
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings, showHints=False)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 print('hydraulics user function:')
 print('pressures=', mbs.GetSensorValues(sPressures))

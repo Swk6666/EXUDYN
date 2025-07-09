@@ -4,7 +4,7 @@
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -42,6 +42,7 @@ public: // AUTO:
   Real postNewton;                                //!< AUTO: discontinuous iteration / PostNewtonStep
   Real python;                                    //!< AUTO: time spent for Python functions
   Real reactionForces;                            //!< AUTO: CqT * lambda
+  Real realtimeIdleCPU;                           //!< AUTO: time waited for next frame to compute and draw if simulateInRealtime is True
   Real total;                                     //!< AUTO: total time measured between start and end of computation (static/dynamics)
   Real totalJacobian;                             //!< AUTO: time for all jacobian computations
   bool useTimer;                                  //!< AUTO: flag to decide, whether the timer is used (true) or not
@@ -69,6 +70,7 @@ public: // AUTO:
     postNewton = 0.;
     python = 0.;
     reactionForces = 0.;
+    realtimeIdleCPU = 0.;
     total = 0.;
     totalJacobian = 0.;
     useTimer = true;
@@ -116,6 +118,7 @@ public: // AUTO:
     os << "  postNewton = " << postNewton << "\n";
     os << "  python = " << python << "\n";
     os << "  reactionForces = " << reactionForces << "\n";
+    os << "  realtimeIdleCPU = " << realtimeIdleCPU << "\n";
     os << "  total = " << total << "\n";
     os << "  totalJacobian = " << totalJacobian << "\n";
     os << "  useTimer = " << useTimer << "\n";
@@ -139,7 +142,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -263,7 +266,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -377,7 +380,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -473,7 +476,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -502,7 +505,7 @@ public: // AUTO:
   Real lastSensorsWritten;                        //!< AUTO: simulation time when last sensors have been written
   Real lastSolutionWritten;                       //!< AUTO: simulation time when last solution has been written
   Index lastVerboseStepIndex;                     //!< AUTO: step index when last time written to console (or file)
-  Index multiThreadingMode;                       //!< AUTO: multithreading mode that has been used: 0=None (serial), 1=NGsolve taskmanager, 2=MicroThreading (Exudyn)
+  Index multiThreadingMode;                       //!< AUTO: multithreading mode that has been used: 0=None (serial), 1=multithreading, 2=multithreading with load balancing; (modes new since 2025-06, V1.9.198)
   Index numberOfThreadsUsed;                      //!< AUTO: number of threads that have been used in simulation
   Index stepInformation;                          //!< AUTO: this is a copy of the solvers stepInformation used for console output
   Index verboseMode;                              //!< AUTO: this is a copy of the solvers verboseMode used for console output
@@ -585,7 +588,7 @@ public: // AUTO:
 *
 * @author       AUTO: Gerstmayr Johannes
 * @date         AUTO: 2019-07-01 (generated)
-* @date         AUTO: 2025-02-28 (last modfied)
+* @date         AUTO: 2025-06-18 (last modfied)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:

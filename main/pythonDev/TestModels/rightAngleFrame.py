@@ -310,8 +310,8 @@ if True:
     SC.visualizationSettings.openGL.lineWidth=2
 
     if useGraphics:
-        exu.StartRenderer()
-        mbs.WaitForUserToContinue()
+        SC.renderer.Start()
+        SC.renderer.DoIdleTasks()
 
 
     # else:
@@ -321,8 +321,8 @@ if True:
 
     #%%+++++++++++++++++++++++++++++++++++    
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     
     ##evaluate final (=current) output values
     uTip = mbs.GetNodeOutput(n1, exu.OutputVariableType.Displacement)

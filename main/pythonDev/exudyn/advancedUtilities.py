@@ -57,10 +57,10 @@ def FindObjectIndex(i, globalVariables):
     for varname in globalVariables:
         if type(globalVariables[varname]) == exudyn.ObjectIndex:
             if int(globalVariables[varname]) == int(i):
-                print("variable '"+varname+"' links to object "+str(i) )
+                exudyn.Print("variable '"+varname+"' links to object "+str(i) )
                 found = True
     if not found:
-        print("no according variable found")
+        exudyn.Print("no according variable found")
 
 #**function: simple function to find node index i within the local or global scope of variables
 #**input: i, the integer node number and  globalVariables=globals()
@@ -73,10 +73,10 @@ def FindNodeIndex(i, globalVariables):
     for varname in globalVariables:
         if type(globalVariables[varname]) == exudyn.NodeIndex:
             if int(globalVariables[varname]) == int(i):
-                print("variable '"+varname+"' links to node "+str(i) )
+                exudyn.Print("variable '"+varname+"' links to node "+str(i) )
                 found = True
     if not found:
-        print("no according variable found")
+        exudyn.Print("no according variable found")
 
 #**function: checks, if data is of type list or np.array; used in functions to check input data
 #**input:
@@ -141,7 +141,7 @@ def RaiseTypeError(where='', argumentName='', received = None, expectedType = No
             
     receivedStr = ', <argument can not be converted to string>'
     try:
-        receivedStr  = ', but received "' + str(received) + '"'
+        receivedStr  = ', but received "' + str(received) + '", type=' + str(type(received))
     except:
         pass
     errStr += receivedStr
@@ -170,6 +170,14 @@ def IsValidRealInt(x):
     if (isinstance(x, float) 
         or isinstance(x, int)
         or isinstance(x, np.double)
+        or isinstance(x, np.integer)
+        ):
+        return True
+    return False
+
+#**function: return True, if x is int, np.integer or similar types that can be automatically casted to pybind11
+def IsValidInt(x):
+    if (isinstance(x, int)
         or isinstance(x, np.integer)
         ):
         return True
@@ -379,10 +387,10 @@ def IndexFromValue(data, value, tolerance=1e-7, assumeConstantSampleRate=False, 
         if index < 0:
             index = 0
             if rangeWarning:
-                print('Warning: IndexFromValue: index returned smaller than 0; using 0 instead')
+                exudyn.Print('Warning: IndexFromValue: index returned smaller than 0; using 0 instead')
         elif index >= len(data):
             if rangeWarning:
-                print('Warning: IndexFromValue: index returned larger than array length-1; using array max length-1 instead')
+                exudyn.Print('Warning: IndexFromValue: index returned larger than array length-1; using array max length-1 instead')
             index = len(data)-1
             
     else:
@@ -438,7 +446,7 @@ def SaveDictToHDF5(fileName, dataDict):
     try:
         import h5py
         from scipy.sparse import csr_matrix
-    except:
+    except ImportError:
         raise ImportError('SaveDictToHDF5 only works if scipy and h5py are installed')        
     
     def IsExudynUserFunction(fDict):
@@ -453,7 +461,6 @@ def SaveDictToHDF5(fileName, dataDict):
     
     def HandleSaveDict(hdf5group, key, item):
         if (IsExudynUserFunction(item)):
-            #print('SaveHDF5:dict key=',key,'is user function:',item)
             newItem = {'functionName':item['function'].__name__,
                        'functionVarNames':str(item['function'].__code__.co_varnames),
                        'type':item['type']}
@@ -500,15 +507,15 @@ def SaveDictToHDF5(fileName, dataDict):
                         subgroup[subKey].attrs['datatype'] = 'str'
                     elif isinstance(subItem, dict):
                         # Handle dictionaries inside lists
-                        # dict_group = subgroup.create_group(subKey)
-                        # dict_group.attrs['datatype'] = 'dict'
-                        # RecursivelySaveDictToHDF5(dict_group, subItem)
                         HandleSaveDict(subgroup, subKey, subItem)
                     elif isinstance(subItem, list):
                         # Handle nested lists recursively
                         nested_group = subgroup.create_group(subKey)
                         nested_group.attrs['datatype'] = 'list'
                         RecursivelySaveDictToHDF5(nested_group, {f"item_{i}": subItem[i] for i in range(len(subItem))})
+                    elif isinstance(subItem, np.ndarray):
+                        subgroup.create_dataset(subKey, data=subItem)
+                        subgroup[subKey].attrs['datatype'] = 'ndarray'
                     else:
                         raise ValueError(f"SaveDictToHDF5: unsupported type in list: {item} / {subItem}")
                         #RecursivelySaveDictToHDF5(subgroup.create_group(subKey), {'item': subItem})
@@ -549,7 +556,7 @@ def LoadDictFromHDF5(fileName, callerGlobals=None):
         from scipy.sparse import csr_matrix
     except:
         raise ImportError('LoadDictFromHDF5 only works if scipy and h5py are installed')        
-    import inspect #for determining globals() of caller
+
     NoneCast = lambda x: None #returns none
     
     regularTypes = [bool, int, float] + list(specialExudynTypes)
@@ -565,7 +572,6 @@ def LoadDictFromHDF5(fileName, callerGlobals=None):
         result = {}
         for key, item in hdf5group.items():
             datatype = item.attrs.get('datatype', None)  # Get the 'datatype' attribute
-            #print('key:',key)
 
             if isinstance(item, h5py.Group):
                 if datatype == 'csr_matrix':
@@ -588,7 +594,12 @@ def LoadDictFromHDF5(fileName, callerGlobals=None):
                                 listItems.append(ConvertDictToScipySparse(sparseDict))
                             elif subDatatype == 'list':
                                 # Recursively handle a list inside a list
-                                listItems.append(RecursivelyLoadDictFromHDF5(item[subKey]))
+                                # listItems.append(RecursivelyLoadDictFromHDF5(item[subKey]))
+                                subListDict = RecursivelyLoadDictFromHDF5(item[subKey]) #stored as dict with 'item_*' keys
+                                subList = []
+                                for i in range(len(subListDict)):
+                                    subList.append(subListDict['item_'+str(i)])
+                                listItems.append(subList)
                             elif subDatatype in regularTypeStrings:
                                 index = regularTypeStrings.index(subDatatype)
                                 listItems.append( regularTypes[index](item[subKey][()]) )
@@ -625,6 +636,9 @@ def LoadDictFromHDF5(fileName, callerGlobals=None):
                 #     result[key] = int(item[()])
                 if datatype == 'str':
                     result[key] = item[()].decode('utf-8')  # Strings are stored as byte arrays, so decode them
+                #automatic:
+                # elif datatype == 'ndarray':
+                #     result[key] = item[:]  # Load the numpy array data
                 elif datatype in regularTypeStrings:
                     index = regularTypeStrings.index(datatype)
                     result[key] = regularTypes[index](item[()])
@@ -665,11 +679,9 @@ def ConvertFunctionToSymbolic(mbs, function, userFunctionName, itemIndex=None, i
     fnArgs = function.__code__.co_varnames
     #fnAnnotations = function.__annotations__ #not necessarily present
     if verbose:
-        #print("Annotations:", fnAnnotations)
-        print("Function Name:", fnName)
-        # print("Docstring:", function.__doc__)
-        print("Number of Arguments:", function.__code__.co_argcount)
-        print("Argument Names:", fnArgs)
+        exudyn.Print("Function Name:", fnName)
+        exudyn.Print("Number of Arguments:", function.__code__.co_argcount)
+        exudyn.Print("Argument Names:", fnArgs)
 
 
     if itemTypeName != None:
@@ -750,8 +762,8 @@ def ConvertFunctionToSymbolic(mbs, function, userFunctionName, itemIndex=None, i
         fnDict[arg] = var
         
     if verbose > 1:
-        print('\nargList=[mbs]+', argList[1:])
-        print('\nfnDict=', fnDict)
+        exudyn.Print('\nargList=[mbs]+', argList[1:])
+        exudyn.Print('\nfnDict=', fnDict)
 
     #now we record the function:
     returnValue = function(**fnDict)
@@ -763,7 +775,7 @@ def ConvertFunctionToSymbolic(mbs, function, userFunctionName, itemIndex=None, i
         returnValue = exudyn.symbolic.Vector(returnValue) #create vector from list
 
     if verbose:
-        print('return value=', returnValue)
+        exudyn.Print('return value=', returnValue)
 
     return {'functionName': fnName, 
             'argList': argList, 
@@ -799,7 +811,7 @@ def ConvertFunctionToSymbolic(mbs, function, userFunctionName, itemIndex=None, i
 #                    referenceLength = 1, stiffness = 100, damping = 1, 
 #                    springForceUserFunction=symbolicFunc))
 #
-# print(symbolicFunc.Evaluate(mbs, 0., 0, 1.1, 0.,  100., 0., 13.) )
+# exudyn.Print(symbolicFunc.Evaluate(mbs, 0., 0, 1.1, 0.,  100., 0., 13.) )
 def CreateSymbolicUserFunction(mbs, function, userFunctionName, itemIndex=None, itemTypeName=None, verbose=0):
     fnDict = ConvertFunctionToSymbolic(mbs, function, userFunctionName, itemIndex, itemTypeName, verbose)
     symbolicFunc = exudyn.symbolic.UserFunction()

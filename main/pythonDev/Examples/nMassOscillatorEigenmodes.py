@@ -167,10 +167,10 @@ simulationSettings.displayComputationTime = True
 #plot FFT
 if False:
     #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    #exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    #SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
     mbs.SolveDynamic(simulationSettings=simulationSettings)
-    #exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.Stop() #safely close rendering window!
 
     from exudyn.signalProcessing import ComputeFFT
     from exudyn.plot import PlotFFT

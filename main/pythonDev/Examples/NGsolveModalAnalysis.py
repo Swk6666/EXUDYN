@@ -71,7 +71,7 @@ pList = [pFoot0,pFoot1,pFoot2,pFoot3,pTip]
 dirList = [dirZ,dirZ,dirZ,dirZ,dirTip]
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
-if False: #needs netgen/ngsolve to be installed with pip install; to compute mesh, see e.g.: https://github.com/NGSolve/ngsolve/releases
+if True: #needs netgen/ngsolve to be installed with pip install; to compute mesh, see e.g.: https://github.com/NGSolve/ngsolve/releases
 
     import ngsolve as ngs
     from netgen.meshing import *
@@ -343,10 +343,10 @@ if True:
         if useGraphics:
             SC.visualizationSettings.general.autoFitScene=False
 
-            exu.StartRenderer()
-            if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+            SC.renderer.Start()
+            if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
         
-            # mbs.WaitForUserToContinue() #press space to continue
+            # SC.renderer.DoIdleTasks() #press space to continue
         
         #we could also perform a static analysis at the beginning, 
         #  then starting dynamic problem from static equilibrium
@@ -359,8 +359,8 @@ if True:
         #print("nModes=", nModes, ", tip displacement=", uTip)
             
         if useGraphics:
-            #SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
+            #SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
             
             mbs.PlotSensor(sensTipDispl,components=[0,1,2],title='arm tip displacements',closeAll=True)
 

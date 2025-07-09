@@ -103,7 +103,7 @@ def GetExudynDisplayScaling():
         if 'currentRendererSystemContainer' in exudyn.sys: 
             guiSC = exudyn.sys['currentRendererSystemContainer']
             if guiSC != 0: #this would mean that renderer is detached
-                rs = guiSC.GetRenderState()
+                rs = guiSC.renderer.GetState()
                 #print('return render state')
                 return rs['displayScaling']
         
@@ -566,8 +566,8 @@ class TkinterEditDictionaryWithTypeInfo(tk.Frame):
             guiSC = exudyn.sys['currentRendererSystemContainer']
             if guiSC != 0:
                 if guiSC.visualizationSettings.dialogs.multiThreadedDialogs:
-                    guiSC.SendRedrawSignal()
-                    exudyn.DoRendererIdleTasks()
+                    guiSC.renderer.SendRedrawSignal()
+                    guiSC.renderer.DoIdleTasks(0) #do not wait
         #++++++++++++++++++++++++++++++++++++++++++++++++
 
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++        

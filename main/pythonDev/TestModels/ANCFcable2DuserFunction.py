@@ -101,14 +101,14 @@ SC.visualizationSettings.window.renderWindowSize=[1200,1024]
 
 
 if useGraphics:
-    exu.StartRenderer()              #start graphics visualization
-    mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+    SC.renderer.Start()              #start graphics visualization
+    SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-    exu.StopRenderer()               #safely close rendering window!
+    SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+    SC.renderer.Stop()               #safely close rendering window!
 
 #evaluate final (=current) output values
 node = ancf[0][-1]

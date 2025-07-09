@@ -14,6 +14,10 @@
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 import sys, platform
 
+#put all local variables into special class, to avoid unintentional overwriting
+class TSScope:
+    pass
+
 if sys.version_info.major != 3 or sys.version_info.minor < 6:# or sys.version_info.minor > 12:
     raise ImportError("EXUDYN only supports python versions >= 3.6")
 isMacOS = (sys.platform == 'darwin')
@@ -65,31 +69,19 @@ if quietMode:
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #choose which tests to run:
-runUnitTests = False #skipped at least since V1.6
-runTestExamples = True
-runMiniExamples = True
-runCppUnitTests = True
+TSScope.runUnitTests = False #skipped at least since V1.6
+TSScope.runTestExamples = True
+TSScope.runMiniExamples = True
+TSScope.runCppUnitTests = True
 
-printTestResults = False #print list, which can be imported for new reference values
+TSScope.printTestResults = False #print list, which can be imported for new reference values
 if platform.architecture()[0] == '32bit' and isWindows:
-    testTolerance = 2e-12 #2022-03-17: use 2e-12 instead of 2e-13 to complete all tests; larger tolerance, because reference values are computed with 64bit version (WHY?)
+    TSScope.testTolerance = 2e-12 #2022-03-17: use 2e-12 instead of 2e-13 to complete all tests; larger tolerance, because reference values are computed with 64bit version (WHY?)
 elif isMacOS or not isWindows:
-    testTolerance = 3e-11 #use larger tolerance value due to different compilation (heavy top gives error > 2.2e-11) on linux error > 2.5e-11
+    TSScope.testTolerance = 3e-11 #use larger tolerance value due to different compilation (heavy top gives error > 2.2e-11) on linux error > 2.5e-11
 else:
-    testTolerance = 5e-14 #on windows 64bit
+    TSScope.testTolerance = 5e-14 #on windows 64bit
 
-#++++++++++++++++++++++++++++++++++++++++++++++++
-#additional options for old trapezoidal solver, NOT active any more!
-# exudynTestGlobals.useCorrectedAccGenAlpha = True                        #use corrected reference values in test suite Examples
-# exu.CorrectOldImplicitSolver(exudynTestGlobals.useCorrectedAccGenAlpha) #add algorithmic acceleration correction to old solver
-
-# #switch tests between old/new dynamic solver
-# exudynTestGlobals.useNewGenAlphaSolver = True
-# if exudynTestGlobals.useNewGenAlphaSolver: 
-#     exu.sys['experimentalNewSolver']='' #solver checks only if variable exists
-# else:
-#     if 'experimentalNewSolver' in exu.sys: #delete if exists already
-#         del exu.sys['experimentalNewSolver']
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #current date and time
 def NumTo2digits(n):
@@ -133,13 +125,13 @@ elif not isWindows:
 pythonVersion = str(sys.version_info.major)+'.'+str(sys.version_info.minor)+'.'+str(sys.version_info.micro)
 pythonVersionMain = str(sys.version_info.major)+'.'+str(sys.version_info.minor)
 
-# localFileName = 'Test for EXUDYN V'+exu.GetVersionString()+' (built:'+exuDateStr+'),'\
+# localFileName = 'Test for EXUDYN V'+exu.config.Version()+' (built:'+exuDateStr+'),'\
 #          +sys.platform+'-'+processorString+'-'+platform.architecture()[0]+',Python'\
 #          +pythonVersion+',date:'+dateStr+': '
 platformString = sys.platform+'-'+processorString+'-'+platform.architecture()[0]+'-P'+pythonVersionMain
-localFileName = 'testSuiteLog_V'+exu.GetVersionString()+'_'+platformString
+localFileName = 'testSuiteLog_V'+exu.config.Version()+'_'+platformString
 
-#logFileName = '../TestSuiteLogs/testSuiteLog_V'+exu.GetVersionString()+'_'+platformString+'.txt'
+#logFileName = '../TestSuiteLogs/testSuiteLog_V'+exu.config.Version()+'_'+platformString+'.txt'
 logFileName = '../TestSuiteLogs/'+localFileName+'.txt'
 exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=False) #write all testSuite logs to files
 
@@ -148,25 +140,25 @@ exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=False)
 exu.Print('\n+++++++++++++++++++++++++++++++++++++++++++')
 exu.Print('+++++        EXUDYN TEST SUITE        +++++')
 exu.Print('+++++++++++++++++++++++++++++++++++++++++++')
-exu.Print('EXUDYN version      = '+exu.GetVersionString())
+exu.Print('EXUDYN version      = '+exu.config.Version())
 exu.Print('EXUDYN build date   = '+exuDateStr)
 exu.Print('architecture        = '+platform.architecture()[0])
 exu.Print('processor           = '+processorString)
 exu.Print('platform            = '+sys.platform)
 exu.Print('Python version      = '+pythonVersion)
 exu.Print('NumPy version       = '+np.__version__)
-exu.Print('test tolerance      =',testTolerance)
+exu.Print('test tolerance      =',TSScope.testTolerance)
 exu.Print('testsuite date (now)= '+dateStr)
 exu.Print('+++++++++++++++++++++++++++++++++++++++++++')
 
-exu.SetWriteToConsole(writeToConsole) #stop output from now on
+exu.config.printToConsole = writeToConsole #stop output from now on
 
-#testFileList = ['Examples/fourBarMechanism.py']
+#TSScope.testFileList = ['Examples/fourBarMechanism.py']
 testsFailed = [] #list of numbers containing the test numbers of failed tests
 exudynTestGlobals.useGraphics = False
 exudynTestGlobals.performTests = True
 
-timeStart= -time.time()
+TSScope.timeStart = -time.time()
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #small (old) unit tests
@@ -175,7 +167,7 @@ testInterface = TestInterface(exudyn = exu, systemContainer = SC, useGraphics=Fa
                               # useNewGenAlphaSolver = exudynTestGlobals.useNewGenAlphaSolver)
 rvModelUnitTests = True
 unitTestsFailed = []
-if runUnitTests:
+if TSScope.runUnitTests:
     exu.Print('\n***********************')
     exu.Print('  RUN MODEL UNIT TESTS ')
     exu.Print('***********************\n')
@@ -183,79 +175,83 @@ if runUnitTests:
 SC.Reset()
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 #run general test examples
-examplesTestSolList={}
-examplesTestErrorList={}
-invalidResult = 1234567890123456 #should not happen occasionally
-if runTestExamples:
+#use TSScope. to avoid that variables in testsuite are overwritten by test models!
+TSScope.examplesTestSolList={}
+TSScope.examplesTestErrorList={}
+TSScope.invalidResult = 1234567890123456 #should not happen occasionally
+if TSScope.runTestExamples:
     from runTestSuiteRefSol import TestExamplesReferenceSolution
-    examplesTestRefSol = TestExamplesReferenceSolution()
+    TSScope.examplesTestRefSol = TestExamplesReferenceSolution()
     
-    testFileList=[] #automatically create list from reference solution ...
-    for key in examplesTestRefSol.keys():
-        testFileList+=[key]
-    totalTests = len(testFileList)
+    TSScope.testFileList=[] #automatically create list from reference solution ...
+    for key in TSScope.examplesTestRefSol.keys():
+        TSScope.testFileList+=[key]
+    TSScope.totalTests = len(TSScope.testFileList)
     
-    testExamplesCnt = 0
-    for file in testFileList:
-        name = file #.split('.')[0] #without '.py'
+    TSScope.testExamplesCnt = 0
+    for TSScope.file in TSScope.testFileList:
+        import platform #if platform is overwritten
+        
+        TSScope.name = TSScope.file #.split('.')[0] #without '.py'
         exu.Print('\n\n******************************************')
-        exu.Print('  START TESTMODEL ' + str(testExamplesCnt) + ' ("' + file + '"):')
+        exu.Print('  START TESTMODEL ' + str(TSScope.testExamplesCnt) + ' ("' + TSScope.file + '"):')
         exu.Print('******************************************')
-        SC.Reset()
+        SC.Reset() #??needed
         exudynTestGlobals.testError = -1 #default value !=-1, if there is an error in the calculation
-        exudynTestGlobals.testResult = invalidResult #strange default value to see if there is a missing testResult
+        exudynTestGlobals.testResult = TSScope.invalidResult #strange default value to see if there is a missing testResult
         try:
-            exec(open(file).read(), globals())
+            exec(open(TSScope.file).read(), globals())
         except Exception as e:
-            exu.Print('TESTMODEL ' + str(testExamplesCnt) + ' ("' + file + '") raised exception:\n'+str(e))
-            print('TESTMODEL ' + str(testExamplesCnt) + ' ("' + file + '") raised exception:\n'+str(e), flush=True)
+            exu.Print('TESTMODEL ' + str(TSScope.testExamplesCnt) + ' ("' + TSScope.file + '") raised exception:\n'+str(e))
+            print('TESTMODEL ' + str(TSScope.testExamplesCnt) + ' ("' + TSScope.file + '") raised exception:\n'+str(e), flush=True)
         finally:
-            examplesTestErrorList[name] = exudynTestGlobals.testError
-            examplesTestSolList[name] = exudynTestGlobals.testResult
+            TSScope.examplesTestErrorList[TSScope.name] = exudynTestGlobals.testError
+            TSScope.examplesTestSolList[TSScope.name] = exudynTestGlobals.testResult
             
-            testTolFact = 1 #special factor for some examples which make problems, e.g., due to sparse eigenvalue solver
-            if file == 'serialRobotTest.py':
-                testTolFact = 100
+            TSScope.testTolFact = 1 #special factor for some examples which make problems, e.g., due to sparse eigenvalue solver
+            if TSScope.file == 'serialRobotTest.py':
+                TSScope.testTolFact = 100
                 if platform.architecture()[0] != '64bit':
-                    testTolFact = 1e7 #32 bits makes problems (error=1e-7)
+                    TSScope.testTolFact = 1e7 #32 bits makes problems (error=1e-7)
     
             if platform.architecture()[0] != '64bit':
-                if file == 'ACNFslidingAndALEjointTest.py':
-                    testTolFact = 50
+                if TSScope.file == 'ACNFslidingAndALEjointTest.py':
+                    TSScope.testTolFact = 50
     
     
             #compute error from reference solution
-            if examplesTestRefSol[name] != invalidResult:
-                exudynTestGlobals.testError = exudynTestGlobals.testResult - examplesTestRefSol[name]
-                exu.Print("refsol=",examplesTestRefSol[name])
-                exu.Print("tol=", testTolerance*testTolFact)
+            if TSScope.examplesTestRefSol[TSScope.name] != TSScope.invalidResult:
+                exudynTestGlobals.testError = exudynTestGlobals.testResult - TSScope.examplesTestRefSol[TSScope.name]
+                exu.Print("refsol=",TSScope.examplesTestRefSol[TSScope.name])
+                exu.Print("tol=", TSScope.testTolerance*TSScope.testTolFact)
     
-            if abs(exudynTestGlobals.testError) < testTolerance*testTolFact:
+            if abs(exudynTestGlobals.testError) < TSScope.testTolerance*TSScope.testTolFact:
                 exu.Print('******************************************')
-                exu.Print('  TESTMODEL ' + str(testExamplesCnt) + ' ("' + file + '") FINISHED SUCCESSFUL')
+                exu.Print('  TESTMODEL ' + str(TSScope.testExamplesCnt) + ' ("' + TSScope.file + '") FINISHED SUCCESSFUL')
                 exu.Print('  RESULT = ' + str(exudynTestGlobals.testResult))
                 exu.Print('  ERROR = ' + str(exudynTestGlobals.testError))
                 exu.Print('******************************************')
             else:
                 exu.Print('******************************************')
-                exu.Print('  TESTMODEL ' + str(testExamplesCnt) + ' ("' + file + '") *FAILED*')
+                exu.Print('  TESTMODEL ' + str(TSScope.testExamplesCnt) + ' ("' + TSScope.file + '") *FAILED*')
                 exu.Print('  RESULT = ' + str(exudynTestGlobals.testResult))
                 exu.Print('  ERROR = ' + str(exudynTestGlobals.testError))
                 exu.Print('******************************************')
-                testsFailed = testsFailed + [testExamplesCnt]
+                testsFailed = testsFailed + [TSScope.testExamplesCnt]
             
-            testExamplesCnt += 1
+            TSScope.testExamplesCnt += 1
 
     #create new reference values set for runTestSuiteRefSol.py:
-    if printTestResults: #print reference solution list:
-        for key,value in examplesTestSolList.items(): print("'"+key+"':"+str(value)+",")
+    if TSScope.printTestResults: #print reference solution list:
+        for key,value in TSScope.examplesTestSolList.items(): print("'"+key+"':"+str(value)+",")
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #test mini examples which are generated with objects
 from MiniExamples.miniExamplesFileList import miniExamplesFileList
 miniExamplesFailed = []
-if runMiniExamples:
+if TSScope.runMiniExamples:
     from runTestSuiteRefSol import MiniExamplesReferenceSolution
 
     miniExamplesRefSol = MiniExamplesReferenceSolution()
@@ -277,7 +273,7 @@ if runMiniExamples:
             print('MINI EXAMPLE ' + str(testExamplesCnt) + ' ("' + file + '") raised exception:\n'+str(e), flush=True)
         finally:
             exudynTestGlobals.testError = exudynTestGlobals.testResult-miniExamplesRefSol[name]
-            if abs(exudynTestGlobals.testError) < testTolerance:
+            if abs(exudynTestGlobals.testError) < TSScope.testTolerance:
                 exu.Print('  MINI EXAMPLE ' + str(testExamplesCnt) + ' ("' + file + '") FINISHED SUCCESSFUL')
                 exu.Print('  RESULT = ' + str(exudynTestGlobals.testResult))
                 exu.Print('  ERROR  = ' + str(exudynTestGlobals.testError))
@@ -292,22 +288,22 @@ if runMiniExamples:
             miniExamplesTestErrorList[name] = exudynTestGlobals.testError #this list contains errors
             testExamplesCnt+=1
 
-    if printTestResults: #print reference solution list:
+    if TSScope.printTestResults: #print reference solution list:
         for key,value in miniExamplesTestSolList.items(): print("'"+key+"':"+str(value)+",")
     
-if runCppUnitTests:
+if TSScope.runCppUnitTests:
     if hasattr(exu.solver, 'RunCppUnitTests'):
         exu.Print('\n******************************************')
         exu.Print('RUN CPP UNIT TESTS:')
         exu.Print('******************************************')
         numberOfCppUnitTestsFailed = exu.special.RunCppUnitTests()
     else:
-        runCppUnitTests = False #will display that they were skipped 
-timeStart += time.time()
+        TSScope.runCppUnitTests = False #will display that they were skipped 
+TSScope.timeStart += time.time()
         
         
 exu.Print('\n')
-exu.SetWriteToConsole(True) #final output always written
+exu.config.printToConsole = True #final output always written
 exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=True) #write also to file (needed?)
 
 exu.Print('******************************************')
@@ -315,7 +311,7 @@ exu.Print('TEST SUITE RESULTS SUMMARY:')
 exu.Print('******************************************')
 
 #++++++++++++++++++++++++++++++++++
-exu.Print('time elapsed =',round(timeStart,3),'seconds') 
+exu.Print('time elapsed =',round(TSScope.timeStart,3),'seconds') 
 #10+5 tests:   2019-12-10: 2.4 seconds on Surface Pro
 #10+5 tests:   2019-12-13: 3.0,2.7 seconds on Surface Pro
 #10+6 tests:   2019-12-16: 3.8, 3.7 seconds on i9
@@ -335,7 +331,7 @@ exu.Print('time elapsed =',round(timeStart,3),'seconds')
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 totalFails = 0
-if runUnitTests:
+if TSScope.runUnitTests:
     if rvModelUnitTests:
         exu.Print('ALL UNIT TESTS SUCCESSFUL')
     else:
@@ -345,19 +341,19 @@ if runUnitTests:
 else:
     exu.Print('UNIT TESTS SKIPPED')
     
-if runTestExamples:
+if TSScope.runTestExamples:
     if len(testsFailed) == 0:
-        exu.Print('ALL ' + str(totalTests) + ' TestModel TESTS SUCCESSFUL')
+        exu.Print('ALL ' + str(TSScope.totalTests) + ' TestModel TESTS SUCCESSFUL')
     else:
-        exu.Print(str(len(testsFailed)) + ' TestModel TEST(S) OUT OF '+ str(totalTests) + ' FAILED: ')
+        exu.Print(str(len(testsFailed)) + ' TestModel TEST(S) OUT OF '+ str(TSScope.totalTests) + ' FAILED: ')
         for i in testsFailed:
-            exu.Print('  TestModel ' + str(i) + ' (' + testFileList[i] + ') FAILED')
+            exu.Print('  TestModel ' + str(i) + ' (' + TSScope.testFileList[i] + ') FAILED')
     # localFileName += '-models'+str(len(testsFailed))
     totalFails+=len(testsFailed)
 else:
     exu.Print(', EXAMPLE TESTS SKIPPED')
     
-if runMiniExamples:
+if TSScope.runMiniExamples:
     if len(miniExamplesFailed) == 0:
         exu.Print('ALL ' + str(len(miniExamplesFileList)) + ' MINI EXAMPLE TESTS SUCCESSFUL')
     else:
@@ -371,7 +367,7 @@ if runMiniExamples:
 else:
     exu.Print('MINI EXAMPLE TESTS SKIPPED')
 
-if runCppUnitTests:
+if TSScope.runCppUnitTests:
     if numberOfCppUnitTestsFailed == 0:
         exu.Print('ALL CPP UNIT TESTS SUCCESSFUL')
     else:

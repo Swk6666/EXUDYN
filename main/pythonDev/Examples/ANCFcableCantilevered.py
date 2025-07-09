@@ -88,12 +88,12 @@ SC.visualizationSettings.loads.show = False
 SC.visualizationSettings.connectors.show = False
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-exu.StartRenderer()
-#mbs.WaitForUserToContinue()
+SC.renderer.Start()
+#SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 #mbs.SolutionViewer()

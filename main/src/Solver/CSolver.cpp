@@ -32,7 +32,7 @@
 Real CSolverTimer::Sum() const
 {
 	return factorization + newtonIncrement + integrationFormula + ODE2RHS + ODE1RHS + AERHS + totalJacobian + massMatrix + reactionForces +
-		postNewton + errorEstimator + writeSolution + overhead + python + visualization;
+		postNewton + errorEstimator + writeSolution + overhead + python + realtimeIdleCPU + visualization;
 }
 
 STDstring CSolverTimer::ToString() const
@@ -49,26 +49,27 @@ STDstring CSolverTimer::ToString() const
 		ostr << "  total time   = " << total << " seconds\n";
 		ostr << "  measured time= " << Sum() << " seconds (=" << 100.*Sum() / total << "%) \n";
 		ostr << "  non-zero timer [__ sub-timer]:\n";
-		if (factorization / sum > limit) ostr << "  factorization     = " << factorization / sum << "%\n";
+		if (factorization / sum > limit) ostr <<   "  factorization     = " << factorization / sum << "%\n";
 		if (newtonIncrement / sum > limit) ostr << "  newtonIncrement   = " << newtonIncrement / sum << "%\n";
 		if (integrationFormula / sum > limit) ostr << "  integrationFormula= " << integrationFormula / sum << "%\n";
-		if (ODE2RHS / sum > limit) ostr << "  ODE2RHS           = " << ODE2RHS / sum << "%\n";
-		if (ODE1RHS / sum > limit) ostr << "  ODE1RHS           = " << ODE1RHS / sum << "%\n";
-		if (AERHS / sum > limit) ostr << "  AERHS             = " << AERHS / sum << "%\n";
-		if (totalJacobian / sum > limit) ostr << "  totalJacobian     = " << totalJacobian / sum << "%\n";
-		if (jacobianODE2_t / sum > limit) ostr << "  __jacobianODE2_t  = " << jacobianODE2_t / sum << "%\n";
-		if (jacobianODE2 / sum > limit) ostr << "  __jacobianODE2    = " << jacobianODE2 / sum << "%\n";
-		if (jacobianODE1 / sum > limit) ostr << "  __jacobianODE1    = " << jacobianODE1 / sum << "%\n";
-		if (jacobianAE / sum > limit) ostr << "  __jacobianAE      = " << jacobianAE / sum << "%\n";
-		if (massMatrix / sum > limit) ostr << "  massMatrix        = " << massMatrix / sum << "%\n";
-		if (reactionForces / sum > limit) ostr << "  reactionForces    = " << reactionForces / sum << "%\n";
+		if (ODE2RHS / sum > limit) ostr <<         "  ODE2RHS           = " << ODE2RHS / sum << "%\n";
+		if (ODE1RHS / sum > limit) ostr <<         "  ODE1RHS           = " << ODE1RHS / sum << "%\n";
+		if (AERHS / sum > limit) ostr <<           "  AERHS             = " << AERHS / sum << "%\n";
+		if (totalJacobian / sum > limit) ostr <<   "  totalJacobian     = " << totalJacobian / sum << "%\n";
+		if (jacobianODE2_t / sum > limit) ostr <<  "  __jacobianODE2_t  = " << jacobianODE2_t / sum << "%\n";
+		if (jacobianODE2 / sum > limit) ostr <<    "  __jacobianODE2    = " << jacobianODE2 / sum << "%\n";
+		if (jacobianODE1 / sum > limit) ostr <<    "  __jacobianODE1    = " << jacobianODE1 / sum << "%\n";
+		if (jacobianAE / sum > limit) ostr <<      "  __jacobianAE      = " << jacobianAE / sum << "%\n";
+		if (massMatrix / sum > limit) ostr <<      "  massMatrix        = " << massMatrix / sum << "%\n";
+		if (reactionForces / sum > limit) ostr <<  "  reactionForces    = " << reactionForces / sum << "%\n";
 		//not computed, implemented as special timer: if (postNewton / sum > limit) ostr << "  postNewtonStep    = " << postNewton / sum << "%\n";
-		if (errorEstimator / sum > limit) ostr << "  errorEstimator    = " << errorEstimator / sum << "%\n";
-		if (postNewton / sum > limit) ostr << "  postNewton    = " << postNewton / sum << "%\n";
-		if (python / sum > limit) ostr << "  Python          = " << python / sum << "%\n";
-		if (writeSolution / sum > limit) ostr << "  writeSolution     = " << writeSolution / sum << "%\n";
-		if (overhead / sum > limit) ostr << "  overhead          = " << overhead / sum << "%\n";
-		if (visualization / sum > limit) ostr << "  visualization/user= " << visualization / sum << "%\n";
+		if (errorEstimator / sum > limit) ostr <<  "  errorEstimator    = " << errorEstimator / sum << "%\n";
+		if (postNewton / sum > limit) ostr <<	   "  postNewton    = " << postNewton / sum << "%\n";
+		if (python / sum > limit) ostr <<		   "  Python          = " << python / sum << "%\n";
+		if (realtimeIdleCPU / sum > limit) ostr << "  realtimeIdleCPU   = " << realtimeIdleCPU / sum << "%\n";
+		if (writeSolution / sum > limit) ostr <<   "  writeSolution     = " << writeSolution / sum << "%\n";
+		if (overhead / sum > limit) ostr <<        "  overhead          = " << overhead / sum << "%\n";
+		if (visualization / sum > limit) ostr <<   "  visualization/user= " << visualization / sum << "%\n";
 	}
 	else
 	{

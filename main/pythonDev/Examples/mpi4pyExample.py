@@ -57,7 +57,7 @@ def TestExudyn(parameterDict):
 
     #assemble and solve system for default parameters
     mbs.Assemble()
-    #exu.SolveDynamic(mbs, exu.SimulationSettings())
+    #mbs.SolveDynamic(exu.SimulationSettings())
 
     h=1e-3
     tEnd = 100 #nominal: 10
@@ -66,9 +66,9 @@ def TestExudyn(parameterDict):
     simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
     simulationSettings.timeIntegration.endTime = tEnd
     simulationSettings.solutionSettings.writeSolutionToFile = False #no concurrent writing to files ...!
-    #exu.StartRenderer() #don't do this in parallelization: will crash
-    exu.SolveDynamic(mbs, simulationSettings)
-    #exu.StopRenderer() #don't do this in parallelization: will crash
+    #SC.renderer.Start() #don't do this in parallelization: will crash
+    mbs.SolveDynamic(simulationSettings)
+    #SC.renderer.Stop() #don't do this in parallelization: will crash
 
     #check result, get current mass position at local position [0,0,0]
     result = mbs.GetObjectOutputBody(mass, exu.OutputVariableType.Position, [0,0,0])[0]

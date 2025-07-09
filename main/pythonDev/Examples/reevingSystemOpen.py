@@ -369,15 +369,15 @@ if False:
     SC.visualizationSettings.contact.showBoundingBoxes = True
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 if True:
     doDynamic = True
     if doDynamic :
-        exu.SolveDynamic(mbs, simulationSettings) #183 Newton iterations, 0.114 seconds
+        mbs.SolveDynamic(simulationSettings) #183 Newton iterations, 0.114 seconds
     else:
-        exu.SolveStatic(mbs, simulationSettings) #183 Newton iterations, 0.114 seconds
+        mbs.SolveStatic(simulationSettings) #183 Newton iterations, 0.114 seconds
 
 
 if useGraphics and True:
@@ -390,8 +390,8 @@ if useGraphics and True:
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     
     # if True:
     #     from exudyn.plot import PlotSensor

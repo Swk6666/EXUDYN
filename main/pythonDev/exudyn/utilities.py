@@ -67,6 +67,116 @@ AddEdgesAndSmoothenNormals = exudyn.graphics.AddEdgesAndSmoothenNormals
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+#**function: creates a new marker for body with bodyNumber using another marker existingMarker, such that the new marker has the same reference position as the existing marker, working for MarkerBodyPosition (no rotations included); this alleviates creation of markers and calculation of localPosition
+#**input: 
+#  mbs: multibody system where new marker is added to
+#  bodyNumber: body where new marker shall be attached to 
+#  existingMarker: marker number which serves as a reference
+#  show: if True, marker is shown
+#**output: returns marker number of new marker
+#**example:
+# #oBody0 = mbs.CreateRigidBody(...)
+# #oBody1 = mbs.CreateRigidBody(...)
+# 
+# marker0 = mbs.AddMarker(MarkerBodyPosition(bodyNumber=oBody0,localPosition=[1,0,0]))
+# 
+# #create joint from one marker (with rotation) and other body
+# mbs.AddObject(SphericalJoint(markerNumbers=[marker0, GetOtherMarker(mbs, oBody1, marker0)]))
+def GetOtherMarker(mbs, bodyNumber, existingMarker, show=True):
+    #reference position and rotation of body:
+    pRefBody = mbs.GetObjectOutputBody(bodyNumber,exudyn.OutputVariableType.Position,
+                                       localPosition=[0,0,0],
+                                       configuration=exudyn.ConfigurationType.Reference)
+
+    rotRefBody = mbs.GetObjectOutputBody(bodyNumber,exudyn.OutputVariableType.RotationMatrix,
+                                         localPosition=[0,0,0],
+                                         configuration=exudyn.ConfigurationType.Reference).reshape((3,3))
+
+    pMarker = mbs.GetMarkerOutput(existingMarker, exudyn.OutputVariableType.Position, 
+                                  configuration=exudyn.ConfigurationType.Reference)
+    pLocal = rotRefBody.T @ (pMarker - pRefBody)
+    marker = mbs.AddMarker(MarkerBodyRigid(bodyNumber=bodyNumber, localPosition=pLocal, 
+                                           visualization=VMarkerBodyRigid(show=show)))
+
+    return marker
+    
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+#**function: creates input args for joints, based on an exiting marker (markerNumber, may be rigid or flex body), with optional existing rotationMarker and uses another rigid body (given as bodyNumber) to create a new MarkerBodyRigid and rotationMarker; this alleviates creation of joint args, see the example; inputs are either markerNumber0 [, rotationMarker0], bodyNumber1 OR markerNumber1 [, rotationMarker1], bodyNumber0
+#**input: 
+#  mbs: multibody system where new marker is added to
+#  markerNumber0: markerNumber of existing rigid body marker
+#  markerNumber1: markerNumber of existing rigid body marker
+#  rotationMarker0: joint marker rotation matrix for markerNumber0 (must be MarkerBodyRigid)
+#  rotationMarker1: joint marker rotation matrix for markerNumber1 (must be MarkerBodyRigid)
+#  bodyNumber0: existing body used to create new marker
+#  bodyNumber1: existing body used to create new marker
+#**output: returns dict with 'markerNumbers' list, 'rotationMarker0' and 'rotationMarker1', ready to be used as args
+#**example:
+# #oBody0 = mbs.CreateRigidBody(...)
+# #oBody1 = mbs.CreateRigidBody(...)
+# 
+# marker0 = mbs.AddMarker(MarkerBodyRigid(bodyNumber=oBody0,localPosition=[1,0,0]))
+# rotM0 = RotationMatrixX(0.5*pi)
+# 
+# #create joint from one marker (with rotation) and other body
+# mbs.AddObject(RevoluteJointZ(**GetJointArgs(mbs, markerNumber0=marker0, 
+#                                             rotationMarker0=rotM0, 
+#                                             bodyNumber1=oBody1)
+def GetJointArgs(mbs, markerNumber0=None, markerNumber1=None, 
+                 rotationMarker0=None, rotationMarker1=None, 
+                 bodyNumber0=None, bodyNumber1=None):
+    rotationMarkerThis = np.eye(3)
+    if markerNumber0 is not None:
+        existingMarker = markerNumber0
+        if rotationMarker0 is not None:
+            rotationMarkerThis = rotationMarker0
+        if markerNumber1 is not None:
+            raise ValueError('GetJointArgs: if markerNumber0 is given, markerNumber1 must be None')
+        if bodyNumber1 is None:
+            raise ValueError('GetJointArgs: if markerNumber0 is given, bodyNumber1 must be given too')
+        bodyNumber = bodyNumber1
+    else:
+        existingMarker = markerNumber1
+        if markerNumber1 is None:
+            raise ValueError('GetJointArgs: if markerNumber0 is None, markerNumber1 must be provided')
+        if rotationMarker1 is not None:
+            rotationMarkerThis = rotationMarker1
+        if bodyNumber0 is None:
+            raise ValueError('GetJointArgs: if markerNumber1 is given, bodyNumber0 must be given too')
+        bodyNumber = bodyNumber0
+        
+
+    #reference position and rotation of body:
+    pRefBody = mbs.GetObjectOutputBody(bodyNumber,exudyn.OutputVariableType.Position,
+                                       localPosition=[0,0,0],
+                                       configuration=exudyn.ConfigurationType.Reference)
+    rotRefBody = mbs.GetObjectOutputBody(bodyNumber,exudyn.OutputVariableType.RotationMatrix,
+                                         localPosition=[0,0,0],
+                                         configuration=exudyn.ConfigurationType.Reference).reshape((3,3))
+
+    pMarker = mbs.GetMarkerOutput(existingMarker, exudyn.OutputVariableType.Position, 
+                                  configuration=exudyn.ConfigurationType.Reference)
+    rotationMarkerNew = mbs.GetMarkerOutput(existingMarker, exudyn.OutputVariableType.RotationMatrix, 
+                                  configuration=exudyn.ConfigurationType.Reference).reshape((3,3))
+    
+    pLocal = rotRefBody.T @ (pMarker - pRefBody)
+    markerNumberNew = mbs.AddMarker(MarkerBodyRigid(bodyNumber=bodyNumber, localPosition=pLocal))
+
+    if markerNumber0 is not None: #create markerNumber1, rotationMarker1
+        return {'markerNumbers':[markerNumber0, markerNumberNew],
+                'rotationMarker0':rotationMarkerThis,
+                'rotationMarker1':rotRefBody.T @ rotationMarkerNew @ rotationMarkerThis,
+                }
+    else: #create markerNumber0, rotationMarker0, bodyNumber1 
+        return {'markerNumbers':[markerNumberNew, markerNumber1],
+                'rotationMarker0':rotRefBody.T @ rotationMarkerNew @ rotationMarkerThis,
+                'rotationMarker1':rotationMarkerThis,
+                }
+
+
+
 #**function: function to hide all objects in mbs except for those listed in objectNumbers
 #**input: 
 #  mbs: mbs containing object
@@ -87,7 +197,8 @@ def ShowOnlyObjects(mbs, objectNumbers=[], showOthers=False):
             flag = not showOthers
         if 'Vshow' in oDict:
             mbs.SetObjectParameter(objectIndex,'Vshow', flag)
-    mbs.SendRedrawSignal()
+    SC=mbs.GetSystemContainer()
+    SC.renderer.SendRedrawSignal()
 
 #**function: highlight a certain item with number itemNumber; set itemNumber to -1 to show again all objects
 #**input: 
@@ -127,7 +238,7 @@ def HighlightItem(SC, mbs, itemNumber, itemType=exudyn.ItemType.Object, showNumb
     else:
         SC.visualizationSettings.sensors.showNumbers = False
 
-    mbs.SendRedrawSignal()
+    SC.renderer.SendRedrawSignal()
 
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -296,7 +407,7 @@ def UFsensorRecord(mbs, t, sensorNumbers, factors, configuration):
 #**output: adds an according SensorUserFunction sensor to mbs; returns new sensor number; during initialization a new numpy array is allocated in  mbs.variables['sensorRecord'+str(sensorNumber)] and the information is written row-wise: [time, sensorValue1, sensorValue2, ...]
 #**notes: Warning: this method is DEPRECATED, use storeInternal in Sensors, which is much more performant; Note, that a sensor usually just passes through values of an existing sensor, while recording the values to a numpy array row-wise (time in first column, data in remaining columns)
 def AddSensorRecorder(mbs, sensorNumber, endTime, sensorsWritePeriod, sensorOutputSize=3):
-    print('WARNING: AddSensorRecorder is DEPRECATED, use sensors and set storeInternal=True to achieve similar functionality')
+    exudyn.Print('WARNING: AddSensorRecorder is DEPRECATED, use sensors and set storeInternal=True to achieve similar functionality')
     nSteps = int(endTime/sensorsWritePeriod)
     mbs.variables['sensorRecord'+str(sensorNumber)] = np.zeros((nSteps+1,1+sensorOutputSize)) #time+3 sensor values
 
@@ -368,7 +479,7 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
         with open(fileName) as file:
             lines = file.readlines()
         
-        if verbose: print('text file loaded ... converting ...')
+        if verbose: exudyn.Print('text file loaded ... converting ...')
         
         cntDataRows = 0
         dataRowStart = -1
@@ -386,7 +497,7 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
                 cntComments += 1
             cnt+=1
         
-        if verbose: print('found',cntComments,'lines with comments, which are ignored')
+        if verbose: exudyn.Print('found',cntComments,'lines with comments, which are ignored')
             
         if maxRows != -1 and cntDataRows > maxRows:
             cntDataRows = maxRows
@@ -394,9 +505,9 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
         if cntDataRows == 0 or dataRowStart == -1:
             raise ValueError('LoadSolutionFile: no rows found')
         else:
-            if verbose: print('data starts at ',dataRowStart, ', found ', cntDataRows, ' rows', sep='')
+            if verbose: exudyn.Print('data starts at ',dataRowStart, ', found ', cntDataRows, ' rows', sep='')
 
-        if verbose: print('check columns ...')
+        if verbose: exudyn.Print('check columns ...')
         
         cols = len(lines[dataRowStart].split(','))
         if hasHeader:
@@ -411,10 +522,10 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
         colsLastLine = len(lines[dataRowLast].split(','))
         skipLast = 0
         if colsLastLine != cols:
-            if verbose: print('LoadSolution: WARNING number of columns in last data row is inconsistent; will be skipped')
+            if verbose: exudyn.Print('LoadSolution: WARNING number of columns in last data row is inconsistent; will be skipped')
             skipLast = 1
         
-        if verbose: print('file contains ',cntDataRows, ' rows and ', cols, ' columns (incl. time)',sep='')
+        if verbose: exudyn.Print('file contains ',cntDataRows, ' rows and ', cols, ' columns (incl. time)',sep='')
         
         data = np.zeros((cntDataRows, nColumns+1))
         
@@ -423,7 +534,7 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
         skipLine = 0 #counter for skipping additional lines with comments
         for i in range(cntDataRows-skipLast):
             if verbose and progress>=progressInfo: #update progress
-                print('import data row', i, '/', cntDataRows)
+                exudyn.Print('import data row', i, '/', cntDataRows)
                 progress = 0
             progress+=nColumns
             
@@ -435,10 +546,10 @@ def LoadSolutionFile(fileName, safeMode=False, maxRows=-1, verbose=True, hasHead
                 y=np.array(ylist, dtype=float)
                 data[i,:] = y[:]
             elif verbose:
-                print('  data row', i, 'is inconsistent:',len(ylist), nColumns+1,' ... skipped')
+                exudyn.Print('  data row', i, 'is inconsistent:',len(ylist), nColumns+1,' ... skipped')
 
-    if verbose: print('columns imported =', columnsExported)
-    if verbose: print('total columns to be imported =', nColumns, ', array size of file =', np.size(data,1))
+    if verbose: exudyn.Print('columns imported =', columnsExported)
+    if verbose: exudyn.Print('total columns to be imported =', nColumns, ', array size of file =', np.size(data,1))
 
     if (nColumns + 1) != np.size(data,1): #one additional column for time!
         raise ValueError('ERROR in LoadSolution: number of columns is inconsistent')
@@ -502,15 +613,15 @@ def BinaryReadRealVector(file, intType, realType):
 #  maxRows: maximum number of data rows loaded, if saveMode=True; use this for huge files to reduce loading time; set -1 to load all rows
 #**output: dictionary with 'data': the matrix of stored solution vectors, 'columnsExported': a list with integer values showing the exported sizes [nODE2, nVel2, nAcc2, nODE1, nVel1, nAlgebraic, nData], 'nColumns': the number of data columns and 'nRows': the number of data rows
 def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
-    print('verbose=',verbose)
+    exudyn.Print('verbose=',verbose)
     with open(fileName, 'r') as file:
         data = np.fromfile(file, dtype=np.byte, count=6)
         s = NumpyInt8ArrayToString(data)
-        if int(verbose)>1: print(s)
+        if int(verbose)>1: exudyn.Print(s)
         if s!='EXUBIN':
             raise ValueError('LoadBinarySolutionFile: no binary header found!')
 
-        if verbose: print('read binary file')
+        if verbose: exudyn.Print('read binary file')
         fileEnd = False
 #             ExuFile::BinaryWriteHeader(solFile, bfs);
         dataHeader = np.fromfile(file, dtype=np.byte, count=10)
@@ -535,30 +646,30 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
             raise ValueError('LoadBinarySolutionFile: invalid Real type size!')
         
         if verbose>1: 
-            print('  indexSize=',indexSize)
-            print('  realSize=',realSize)
-            print('  pointerSize=',pointerSize)
-            print('  bigEndian=',bigEndian)
+            exudyn.Print('  indexSize=',indexSize)
+            exudyn.Print('  realSize=',realSize)
+            exudyn.Print('  pointerSize=',pointerSize)
+            exudyn.Print('  bigEndian=',bigEndian)
 
 #         ExuFile::BinaryWrite(EXUstd::exudynVersion, solFile, bfs);
         sVersion, fileEnd=BinaryReadString(file, intType)
-        if verbose: print('  version=',sVersion)
+        if verbose: exudyn.Print('  version=',sVersion)
 
 #         ExuFile::BinaryWrite(STDstring("Mode0000"), solFile, bfs); //change this in future to add new features
         sMode, fileEnd=BinaryReadString(file, intType)
-        if int(verbose)>1: print('  mode=',sMode)
+        if int(verbose)>1: exudyn.Print('  mode=',sMode)
 
 #             STDstring str = "Exudyn " + GetSolverName() + " ";
 #             if (isStatic) { str+="static "; }
 #             str+="solver solution file";
 #             ExuFile::BinaryWrite(str, solFile, bfs);
         sSolver, fileEnd=BinaryReadString(file, intType)
-        if int(verbose)>1: print('  solver=',sSolver)
+        if int(verbose)>1: exudyn.Print('  solver=',sSolver)
 
 #             //solFile << "#simulation started=" << EXUstd::GetDateTimeString() << "\n";
 #             ExuFile::BinaryWrite(EXUstd::GetDateTimeString(), solFile, bfs);
         sTime, fileEnd=BinaryReadString(file, intType)
-        if int(verbose)>1: print('  data/time=',sTime)
+        if int(verbose)>1: exudyn.Print('  data/time=',sTime)
 
 #             //not needed in binary format:
 #             //solFile << "#columns contain: time, ODE2 displacements";
@@ -575,7 +686,7 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
 #             ArrayIndex sysCoords({nODE2, nODE1, nAE, nData});
 #             ExuFile::BinaryWrite(sysCoords, solFile, bfs);
         systemSizes, fileEnd=BinaryReadArrayIndex(file, intType)
-        if verbose: print('  systemSizes=',systemSizes)
+        if verbose: exudyn.Print('  systemSizes=',systemSizes)
 
 
 #             //solFile << "#number of written coordinates [nODE2, nVel2, nAcc2, nODE1, nVel1, nAlgebraic, nData] = [" << //these are the exported coordinates line-by-line
@@ -583,7 +694,7 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
 #             ArrayIndex writtenCoords({ nODE2, nVel2, nAcc2, nODE1, nVel1, nAEexported, nDataExported });
 #             ExuFile::BinaryWrite(writtenCoords, solFile, bfs);
         columnsExported, fileEnd=BinaryReadArrayIndex(file, intType)
-        if verbose: print('  columnsExported=',columnsExported)
+        if verbose: exudyn.Print('  columnsExported=',columnsExported)
         nColumns = sum(columnsExported) #total size of data per row
         
 #             //solFile << "#total columns exported  (excl. time) = " << totalCoordinates << "\n";
@@ -599,13 +710,13 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
 #             //solution information: always export string, even if has zero length:
 #             ExuFile::BinaryWrite(solutionSettings.solutionInformation, solFile, bfs);
         solutionInformation, fileEnd=BinaryReadString(file, intType)
-        if int(verbose)>1: print('  solutionInformation="'+solutionInformation+'"')
+        if int(verbose)>1: exudyn.Print('  solutionInformation="'+solutionInformation+'"')
 
 #             //add some checksum ...
 #             ExuFile::BinaryWrite(STDstring("EndOfHeader"), solFile, bfs);
 #             //next byte starts with solution
         EndOfHeader, fileEnd=BinaryReadString(file, intType)
-        if int(verbose)>1: print('  EndOfHeader found: ',EndOfHeader)
+        if int(verbose)>1: exudyn.Print('  EndOfHeader found: ',EndOfHeader)
         if EndOfHeader!='EndOfHeader':
             raise ValueError('LoadBinarySolutionFile: EndOfHeader not found')
 
@@ -619,7 +730,7 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
 #             ExuFile::BinaryWrite(lineSizeBytes, solFile, bfs); //size of line, for fast skipping of solution line
 #             ExuFile::BinaryWrite(nVectors, solFile, bfs); //number of vectors could vary if needed
 #         }
-        if fileEnd: print('  ==> end of file found during in header')
+        if fileEnd: exudyn.Print('  ==> end of file found during in header')
         fileEnd = False
         data = np.zeros((0,nColumns+1))
         nRows = 0
@@ -628,7 +739,6 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
         dataList = [] #list is much faster than hstack !
         
         while not fileEnd:
-            #print('read row ',nRows)
             if maxRows != -1 and nRows >= maxRows:
                 fileEnd = True
                 break
@@ -640,11 +750,11 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
                 break
             dataLength = sizeData[0]
             if dataLength  == -1:
-                if int(verbose)>1: print('end of file reached')
+                if int(verbose)>1: exudyn.Print('end of file reached')
                 validEndFound = True
                 break
             if int(verbose)>1: 
-                print('  dataLength=',dataLength)
+                exudyn.Print('  dataLength=',dataLength)
                 
             line = np.fromfile(file, dtype=realType, count=dataLength)
             if line.size != dataLength: 
@@ -652,8 +762,8 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
                 break
             #line, fileEnd=BinaryReadRealVector(file, intType, realType)
             if int(verbose)>1: 
-                print('  read',line.size, 'columns (',nColumns+1,'expected)')
-                print('  line=',line)
+                exudyn.Print('  read',line.size, 'columns (',nColumns+1,'expected)')
+                exudyn.Print('  line=',line)
             if fileEnd: break
             if line.size != nColumns+1:
                 raise ValueError('LoadBinarySolutionFile: rows are inconsistent')
@@ -663,17 +773,17 @@ def LoadBinarySolutionFile(fileName, maxRows=-1, verbose=True):
             dataList+=[line]
             #data = np.vstack((data, line)) #slow!
 
-        if verbose: print('  read '+str(nRows)+' rows from file')
+        if verbose: exudyn.Print('  read '+str(nRows)+' rows from file')
         
         data = np.array(dataList)
         nRows = np.size(data,0)
 
         if not validEndFound:
-            print('LoadBinarySolutionFile: WARNING: end of file inconsistent!')
+            exudyn.Print('LoadBinarySolutionFile: WARNING: end of file inconsistent!')
         else:
             if int(verbose)>1: 
-                print('  valid end of data found')
-                print('LoadBinarySolutionFile finished')
+                exudyn.Print('  valid end of data found')
+                exudyn.Print('LoadBinarySolutionFile finished')
     
         return dict({'data': data, 'columnsExported': columnsExported,'nColumns': nColumns,'nRows': nRows})
         
@@ -708,8 +818,8 @@ def RecoverSolutionFile(fileName, newFileName, verbose=0):
     nColumns = sum(columnsExported)
     expectedColumns = nColumns+1
     if verbose >= 1:
-        print('columns imported =', columnsExported)
-        print('total columns to be imported =', expectedColumns, '(incl. time)\n')
+        exudyn.Print('columns imported =', columnsExported)
+        exudyn.Print('total columns to be imported =', expectedColumns, '(incl. time)\n')
 
 
     with open(newFileName, 'w') as fileWrite:
@@ -719,18 +829,18 @@ def RecoverSolutionFile(fileName, newFileName, verbose=0):
             for line in file:
                 if line[0] == '#':
                     if len(line) < 1000 and verbose >= 1:
-                        print('HEADER:', line, end='')
+                        exudyn.Print('HEADER:', line, end='')
                     fileWrite.write(line)
                 else:
                     #cols = len(line.split(','))
                     cols = line.count(',')+1 #+1 needed, because two columns for one comma
                     if cols == expectedColumns:
                         if verbose >= 2:
-                            print('data row ',cntSolution,', #cols=',cols, ', text=',line[0:12],'...', sep='')
+                            exudyn.Print('data row ',cntSolution,', #cols=',cols, ', text=',line[0:12],'...', sep='')
                         fileWrite.write(line)
                     else:
                         if verbose >= 1:
-                            print('\nWARNING: ignored solution data',cntSolution, '(file line',cnt,'), columns=', cols, '\n')
+                            exudyn.Print('\nWARNING: ignored solution data',cntSolution, '(file line',cnt,'), columns=', cols, '\n')
                     cntSolution += 1
                 
                 cnt += 1
@@ -767,8 +877,8 @@ def InitializeFromRestartFile(mbs, simulationSettings, restartFileName, verbose=
     nColumns = sum(columnsExported)
     expectedColumns = nColumns+1
     if verbose:
-        print('columns available in restart file =', columnsExported)
-        print('total columns to be imported =', expectedColumns, '(incl. time)\n')
+        exudyn.Print('columns available in restart file =', columnsExported)
+        exudyn.Print('total columns to be imported =', expectedColumns, '(incl. time)\n')
 
     if fileLines[-1][0:9]!='#FINISHED':
         raise ValueError('ERROR in InitializeFromRestartFile: last line does not contain "#FINISHED" and is thus expected to be corrupted!')
@@ -796,11 +906,12 @@ def InitializeFromRestartFile(mbs, simulationSettings, restartFileName, verbose=
 
     if configuration == exudyn.ConfigurationType.Visualization:
         mbs.systemData.SetTime(rowData[0], exudyn.ConfigurationType.Visualization)
-        mbs.SendRedrawSignal()
+        SC=mbs.GetSystemContainer()
+        SC.renderer.SendRedrawSignal()
     
     #add integration parameters to simulationSettings ...
     
-    if verbose: print('\nInitializeFromRestartFile finished\n')
+    if verbose: exudyn.Print('\nInitializeFromRestartFile finished\n')
     
 #++++++++++++++++++++++++++++++++++++++++++++
 #**function: load selected row of solution dictionary (previously loaded with LoadSolutionFile) into specific state; flag sendRedrawSignal is only used if configuration = exudyn.ConfigurationType.Visualization
@@ -822,9 +933,10 @@ def SetSolutionState(mbs, solution, row, configuration=exudyn.ConfigurationType.
 
         if configuration == exudyn.ConfigurationType.Visualization:
             mbs.systemData.SetTime(rowData[0], exudyn.ConfigurationType.Visualization)
-            mbs.SendRedrawSignal()
+            SC=mbs.GetSystemContainer()
+            SC.renderer.SendRedrawSignal()
     else:
-        print("ERROR in SetVisualizationState: invalid row (out of range)")
+        exudyn.Print("ERROR in SetVisualizationState: invalid row (out of range)")
 
 #++++++++++++++++++++++++++++++++++++++++++++
 #**function: This function is not further maintaned and should only be used if you do not have tkinter (like on some MacOS versions); use exudyn.interactive.SolutionViewer() instead! AnimateSolution consecutively load the rows of a solution file and visualize the result
@@ -840,10 +952,10 @@ def AnimateSolution(mbs, solution, rowIncrement = 1, timeout=0.04, createImages 
     SC = mbs.GetSystemContainer()
     nRows = solution['nRows']
     if nRows == 0:
-        print('ERROR in AnimateSolution: solution file is empty')
+        exudyn.Print('ERROR in AnimateSolution: solution file is empty')
         return
     if (rowIncrement < 1) or (rowIncrement > nRows):
-        print('ERROR in AnimateSolution: rowIncrement must be at least 1 and must not be larger than the number of rows in the solution file')
+        exudyn.Print('ERROR in AnimateSolution: rowIncrement must be at least 1 and must not be larger than the number of rows in the solution file')
     oldUpdateInterval = SC.visualizationSettings.general.graphicsUpdateInterval
     SC.visualizationSettings.general.graphicsUpdateInterval = 0.5*min(timeout, 2e-3) #avoid too small values to run multithreading properly
     mbs.SetRenderEngineStopFlag(False) #not to stop right at the beginning
@@ -854,9 +966,9 @@ def AnimateSolution(mbs, solution, rowIncrement = 1, timeout=0.04, createImages 
                 #SetVisualizationState(exudyn, mbs, solution, i) #OLD
                 SetSolutionState(mbs, solution, i, exudyn.ConfigurationType.Visualization)
                 if createImages:
-                    SC.RedrawAndSaveImage() #create images for animation
+                    SC.renderer.RedrawAndSaveImage() #create images for animation
                 #time.sleep(timeout)
-                exudyn.DoRendererIdleTasks(timeout)
+                SC.renderer.DoIdleTasks(timeout)
 
     SC.visualizationSettings.general.graphicsUpdateInterval = oldUpdateInterval #set values back to original
 
@@ -892,7 +1004,7 @@ def DrawSystemGraph(mbs, showLoads=True, showSensors=True, useItemNames = False,
     except ImportError as e:
         raise ImportError("numpy, networkx and matplotlib required for DrawSystemGraph(...)") from e
     except :
-        print("DrawSystemGraph(...): unexpected error during import of numpy, networkx and matplotlib")
+        exudyn.Print("DrawSystemGraph(...): unexpected error during import of numpy, networkx and matplotlib")
         raise
     
     itemColors = {'Node':'red', 'Object':'skyblue', 'Oconnector':'dodgerblue', 'Ojoint':'dodgerblue', 'Ocontact':'dodgerblue', #turqoise, skyblue
@@ -1195,7 +1307,6 @@ def DrawSystemGraph(mbs, showLoads=True, showSensors=True, useItemNames = False,
             boxStyle = 'square,pad=0.1'
             fontSize = 8*fontSizeFactor
     
-        #print("color=",currentColor)
         items[itemNames[i]].set_bbox(dict(facecolor=currentColor,  
               edgecolor=currentColor, boxstyle=boxStyle))
         items[itemNames[i]].set_fontsize(fontSize)
@@ -1254,7 +1365,7 @@ class TCPIPdata:
 #         tcp = mbs.sys['TCPIPobject']
 #         y = TCPIPsendReceive(tcp, np.array([t, np.sin(t), np.cos(t)])) #time, torque
 #         tau = y[1]
-#         print('tau=',tau)
+#         exudyn.Print('tau=',tau)
 #     return True
 
 
@@ -1290,14 +1401,14 @@ def CreateTCPIPconnection(sendSize, receiveSize, IPaddress='127.0.0.1', port=524
     packerSend = struct.Struct(s+'d '*sendSize) #'>' for big endian in matlab, I=unsigned int, i=int, d=double
     packerReceive = struct.Struct(s+'d '*receiveSize) #'>' for big endian in matlab, I=unsigned int, i=int, d=double
     if verbose:
-        print('setup TCP/IP socket ...')
+        exudyn.Print('setup TCP/IP socket ...')
     socketTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     socketTCP.bind((IPaddress, port))
     socketTCP.listen()
     connection, address = socketTCP.accept()
 
     if verbose:
-        print('TCP/IP connection running!')
+        exudyn.Print('TCP/IP connection running!')
 
     return TCPIPdata(sendSize, receiveSize, packerSend, packerReceive, 
                      socketTCP, connection, address, 0.)
@@ -1311,7 +1422,7 @@ def CreateTCPIPconnection(sendSize, receiveSize, IPaddress='127.0.0.1', port=524
 #**example:
 #mbs.sys['TCPIPobject']=CreateTCPIPconnection(sendSize=2, receiveSize=1, IPaddress='127.0.0.1')
 #y = TCPIPsendReceive(mbs.sys['TCPIPobject'], np.array([1.,2.]))
-#print(y)
+#exudyn.Print(y)
 #
 def TCPIPsendReceive(TCPIPobject, sendData):
     #first send data (no other way in MATLAB):
@@ -1320,7 +1431,7 @@ def TCPIPsendReceive(TCPIPobject, sendData):
     #now receive data:
     data = TCPIPobject.connection.recv(TCPIPobject.packerReceive.size) #data size in bytes
     if not data:
-        print('WARNING: TCPIPsendReceive: loss of data') #usually does not happen!
+        exudyn.Print('WARNING: TCPIPsendReceive: loss of data') #usually does not happen!
         return np.zeros(TCPIPobject.receiveSize)
     else:
         return TCPIPobject.packerReceive.unpack(data)

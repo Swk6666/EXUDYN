@@ -55,7 +55,7 @@ The version shown is in line with the issue tracker and marks the number of open
 Adding \texttt{True} as argument will also print platform-specific information, which is helpful 
 in case of reporting some compatibility issues:
 \pythonstyle\begin{lstlisting}
-  print('EXUDYN version='+exu.GetVersionString(True))
+  print('EXUDYN version='+exu.config.Version(True))
 \end{lstlisting}
 %
 Using the powerful Python language, we can define some variables for our problem, which will also be used for the analytical solution:
@@ -152,7 +152,7 @@ All settings for simulation, see according reference section, can be provided in
   simulationSettings = exu.SimulationSettings()
   simulationSettings.solutionSettings.solutionWritePeriod = 5e-3 #output interval general
   simulationSettings.solutionSettings.sensorsWritePeriod = 5e-3  #output interval of sensors
-  simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h) #must be integer
+  simulationSettings.timeIntegration.numberOfSteps = tEnd/h
   simulationSettings.timeIntegration.endTime = tEnd
   simulationSettings.displayComputationTime = True               #show how fast
 \end{lstlisting}
@@ -170,8 +170,8 @@ We are using a generalized alpha solver, where numerical damping is needed for i
 %
 In order to visualize the results online, a renderer can be started. As our computation will be very fast, it is a good idea to wait for the user to press SPACE, before starting the simulation (uncomment second line):
 \pythonstyle\begin{lstlisting}
-  exu.StartRenderer()              #start graphics visualization
-  #mbs.WaitForUserToContinue()     #wait for SPACE bar or 'Q' to continue (in render window!)
+  SC.renderer.Start()              #start graphics visualization
+  #SC.renderer.DoIdleTasks()       #wait for SPACE bar or 'Q' to continue (in render window!)
 \end{lstlisting}
 As the simulation is still very fast, we will not see the motion of our node. Using a very small step size of, e.g., \texttt{h=1e-7} in the lines above allows us to visualize the resulting oscillations in realtime.
 
@@ -185,8 +185,8 @@ Finally, we start the solver, by telling which system to be solved, solver type 
 After simulation, our renderer needs to be stopped (otherwise it will stop unsafely as soon as the Python kernel is stopped or restarted). 
 Sometimes you would like to wait until closing the render window, using \texttt{WaitForRenderEngineStopFlag()}:
 \pythonstyle\begin{lstlisting}
-  #SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-  exu.StopRenderer()               #safely close rendering window!
+  #SC.renderer.DoIdleTasks()       #wait for pressing 'Q' to quit
+  SC.renderer.Stop()               #safely close rendering window!
 \end{lstlisting}
 %
 If you run this code, e.g. in Spyder or Visual Studio Code, it may take a 1-2 seconds to complete. However, the time spent is only related to some overhead in the Python environment and for the visualization. The simulation itself will only take around 3-10 milliseconds, in which a large overhead is due to file writing.
@@ -609,15 +609,15 @@ The option \texttt{autoFitScene} is used in order to avoid zooming while loading
 
 \noindent We can start the 3D visualization (Renderer) now:
 \pythonstyle\begin{lstlisting}
-  exu.StartRenderer()
+  SC.renderer.Start()
 \end{lstlisting}
 
 \noindent In order to reload the model view of the last simulation (if there is any), we can use the following commands:
 \pythonstyle\begin{lstlisting}
   if 'renderState' in exu.sys: #reload old view
-      SC.SetRenderState(exu.sys['renderState'])
+      SC.renderer.SetState(exu.sys['renderState'])
 
-  mbs.WaitForUserToContinue() #stop before simulating
+  SC.renderer.DoIdleTasks()    #stop before simulating
 \end{lstlisting}
 the function \texttt{WaitForUserToContinue()} waits with simulation until we press SPACE bar. This allows us to make some pre-checks.
 
@@ -636,11 +636,11 @@ Note that the \mybold{generalized-$\alpha$ method} includes numerical damping (a
 
 \noindent After simulation, the library would immediately exit (and jump back to iPython or close the terminal window). In order to avoid this, we can use \texttt{WaitForRenderEngineStopFlag()} to wait until we press key 'Q'.
 \pythonstyle\begin{lstlisting}
-  SC.WaitForRenderEngineStopFlag() #stop before closing
-  exu.StopRenderer() #safely close rendering window!
+  SC.renderer.DoIdleTasks()   #stop before closing
+  SC.renderer.Stop()          #safely close rendering window!
 \end{lstlisting}
 If you entered everything correctly, the render window should show a nice animation of the 3D double pendulum after pressing the SPACE key. 
-If we do not stop the renderer (\texttt{StopRenderer()}), it will stay open for further simulations. However, it is safer to always close the renderer at the end.
+If we do not stop the renderer (\texttt{SC.renderer.Stop()}), it will stay open for further simulations. However, it is safer to always close the renderer at the end.
 
 \noindent As the simulation will run very fast, if you did not set \texttt{simulateInRealtime} to true. However, you can reload the stored solution and view the stored steps interactively:
 \pythonstyle\begin{lstlisting}
@@ -806,9 +806,9 @@ Note that for 2D objects, we may only fix $X$- and $Y$-translations, as well as 
 \noindent Now start the solver with visualization and run the solution viewer afterwards,
 because simulation may be faster than you can follow:
 \pythonstyle\begin{lstlisting}
-  exu.StartRenderer()
+  SC.renderer.Start()
   mbs.SolveDynamic(simulationSettings)
-  exu.StopRenderer()
+  SC.renderer.Stop()
 
   ## visualize computed solution:
   mbs.SolutionViewer()
@@ -923,9 +923,9 @@ Set the user function to the object, assemble the system, and configure the simu
 %
 Finally, start the renderer and solver, then evaluate the solution:
 \pythonstyle\begin{lstlisting}
-  exu.StartRenderer()
+  SC.renderer.Start()
   mbs.SolveDynamic(simulationSettings, solverType=exu.DynamicSolverType.ExplicitMidpoint)
-  exu.StopRenderer()  # safely close rendering window!
+  SC.renderer.Stop()  # safely close rendering window!
   n1 = mbs.GetObject(massPoint)['nodeNumber']
   u = mbs.GetNodeOutput(n1, exu.OutputVariableType.Position)
   print('u=', u)

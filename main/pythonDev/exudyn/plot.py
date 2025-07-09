@@ -82,14 +82,11 @@ def ParseOutputFileHeader(lines):
         for i in range(parseLines): #header is max. 10 lines
             if i+1 < len(lines) and lines[i][0:17] == '#parameter ranges':
                 ranges = lines[i+1].strip('#').strip('\n').split(';') #this gives e.g. ['(0.1, 5, 4)', '(2,4.5,2)']
-                # print('ranges=', ranges)
                 for j in range(len(ranges)):
                     oneRange = ranges[j].strip('(').strip(')').split(',')
-                    # print('one range=', oneRange)
                     variableRanges += [[float(oneRange[0]),float(oneRange[1]),int(oneRange[2])]]
                 break
     elif lines[0].find('sensor output file') != -1:
-        #print("SENSOR")
         output['type'] = 'sensor'
         outputVariableType = ''
         for i in range(parseLines): #header is max. 10 lines
@@ -126,7 +123,7 @@ def ParseOutputFileHeader(lines):
                 writtenCoordinateTypes = line.split('=')[0].split('[')[1].split(']')[0].replace(' ','').split(',')
                 writtenCoordinates = line.split('=')[1].split('[')[1].split(']')[0].replace(' ','').split(',')
                 variableTypes = ['time']
-                #print('writtenCoordinates=',writtenCoordinates)
+
                 for j in range(len(writtenCoordinateTypes)):
                     for k in range(int(writtenCoordinates[j])):
                        variableTypes += [writtenCoordinateTypes[j].strip('n')+'-'+str(k)]
@@ -150,7 +147,7 @@ def ParseOutputFileHeader(lines):
 ##==>now PlotSensor(..., fontSize=10) will use fontSize=10
 ##==>BUT PlotSensor(..., fontSize=16) will use fontSize=12, BECAUSE 16 is the original default value!!!
 ##see which parameters are available:
-#print(PlotSensorDefaults())
+#exudyn.Print(PlotSensorDefaults())
 def PlotSensorDefaults():
     return __plotSensorDefaults #for definition see at top of this file
    
@@ -357,7 +354,7 @@ def PlotSensor(mbs, sensorNumbers=[], components=0, xLabel='time (s)', yLabel=No
             fig = plt.figure()
         else:
             if IsEmptyList(plt.get_fignums()):
-                print('WARNING: PlotSensor(...,newFigure=False):  no existing figure was found, creating new figure')
+                exudyn.Print('WARNING: PlotSensor(...,newFigure=False):  no existing figure was found, creating new figure')
                 fig = plt.figure()
             else:
                 fig = plt.figure(plt.get_fignums()[-1]) #get last (current figure)
@@ -416,7 +413,6 @@ def PlotSensor(mbs, sensorNumbers=[], components=0, xLabel='time (s)', yLabel=No
 
         sensorDicts += [sensorDict]
         
-        #print('sensorDict=',sensorDict)
         sensorName = sensorDict['name']
 
         variableStr = '' #in case of markers, etc.
@@ -569,7 +565,6 @@ def PlotSensor(mbs, sensorNumbers=[], components=0, xLabel='time (s)', yLabel=No
                 nd = len(data) #len(data[:,componentY])
                 if markerDensity != 0:
                     markEvery = int(1+nd/markerDensity)
-                    #print('markEvery=',markEvery, ', nd=',nd)
             else:
                 markEvery = markerDensity
         else:
@@ -704,7 +699,6 @@ def PlotFFT(frequency, data,
         if frequency[i] <= freqEnd:
             indEnd = i
 
-    #print("fft ind=", indStart, indEnd)
     if len(label) != 0:
         plt.plot(frequency[indStart:indEnd], data[indStart:indEnd], label=label)
         plt.legend() #show labels as legend
@@ -788,7 +782,7 @@ def DataArrayFromSensorList(mbs, sensorNumbers, positionList=[], time=''):
     return data
 
 
-#**function: import image text file as exported from RedrawAndSaveImage() with exportImages.saveImageFormat='TXT'; triangles are converted to lines
+#**function: import image text file as exported from renderer.RedrawAndSaveImage() with exportImages.saveImageFormat='TXT'; triangles are converted to lines
 #**input: fileName includes directory
 #**output: returns dictionary with according structures
 def LoadImage(fileName, trianglesAsLines = True, verbose=False):
@@ -800,10 +794,10 @@ def LoadImage(fileName, trianglesAsLines = True, verbose=False):
         raise ValueError('LoadImage: empty file')
 
     if lines[0][:-1] != '#Exudyn text image export file':
-        print('WARNING: LoadImage found inconsistent file header:',lines[0])
+        exudyn.Print('WARNING: LoadImage found inconsistent file header:',lines[0])
     
     if lines[-1][:-1] != '#END':
-        print('WARNING: LoadImage found inconsistent file ending; expected "END"')
+        exudyn.Print('WARNING: LoadImage found inconsistent file ending; expected "END"')
     
     i = 1
     listLines = []
@@ -817,13 +811,11 @@ def LoadImage(fileName, trianglesAsLines = True, verbose=False):
         data = lines[i+1]
         if lineType == '#COLOR':
             actColor = tuple(np.array(data.split(','), dtype=float))
-            # print('color', actColor)
         elif lineType == '#LINE':
             splitLine = np.array(data.split(','), dtype=float)
             listLines += [list(splitLine)]
             listLineColors += [actColor] #per line
             nSegments +=int(len(splitLine)/3)-1
-            # print('line', listLines)
         elif lineType == '#TRIANGLE':
             nTriangles += 1
             splitLine = np.array(data.split(','), dtype=float)
@@ -840,9 +832,9 @@ def LoadImage(fileName, trianglesAsLines = True, verbose=False):
         i += 2 #always increment by 2
 
     if verbose:
-        print('number of lines:', len(listLines))
-        print('number of line segments:', nSegments)
-        print('number of triangles:', nTriangles)
+        exudyn.Print('number of lines:', len(listLines))
+        exudyn.Print('number of line segments:', nSegments)
+        exudyn.Print('number of triangles:', nTriangles)
         
     return {'linePoints':listLines, 'lineColors':listLineColors, 'triangles':listTriangles}
 
@@ -900,7 +892,6 @@ def PlotImage(imageData, HT = np.eye(4), axesEqual=True, plot3D=False, lineWidth
         colors = []
         
         for i, line3D in enumerate(linePoints):
-            # print('line3D:', line3D)
             nPoints = int(len(line3D)/3)
     
             line = (A @ np.array(line3D).reshape((nPoints,3)).T).T.flatten()
@@ -925,7 +916,7 @@ def PlotImage(imageData, HT = np.eye(4), axesEqual=True, plot3D=False, lineWidth
                 ax.set_aspect('equal', 'box') #for 2D only
 
         if len(triangles) != 0:
-            print('WARNING: PlotImage: triangles are ignored; they can only be plotted if plot3D=True')
+            exudyn.Print('WARNING: PlotImage: triangles are ignored; they can only be plotted if plot3D=True')
             
     else: #plot in 3D
         ax = fig.gca(projection='3d')
@@ -934,7 +925,6 @@ def PlotImage(imageData, HT = np.eye(4), axesEqual=True, plot3D=False, lineWidth
         from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
         for i, line3D in enumerate(linePoints):
-            # print('line3D:', line3D)
             nPoints = int(len(line3D)/3)
 
             line = (A @ np.array(line3D).reshape((nPoints,3)).T).T.flatten()

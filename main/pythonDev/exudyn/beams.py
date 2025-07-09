@@ -532,7 +532,7 @@ def CreateReevingCurve(circleList, drawingLinesPerCircle = 64, numberOfANCFnodes
                 (removeLastLine and i==len(circleListExt)-1)):
             segmentLength = np.linalg.norm(p1-p0)
             if segmentLength == 0.:
-                print('WARNING: CreateReevingCurve: curve seems to be degenerated, check location of circles')
+                exudyn.Print('WARNING: CreateReevingCurve: curve seems to be degenerated, check location of circles')
             curve2D += [{'type':'LINE', 'point0':p0, 'point1':p1}]
             totalLength += segmentLength
     
@@ -616,7 +616,7 @@ def CreateReevingCurve(circleList, drawingLinesPerCircle = 64, numberOfANCFnodes
                 if nextArcCoord != 0:
                     elementLengths += [lElem]
                     curvature = arcSign*1./r #correct sign, whether it is left or right
-                    #print('curvature=',curvature, ', sign=',arcSign)
+
                     elementCurvatures += [curvature] #r may not be zero!
                 nextArcCoord += lElem
             

@@ -382,9 +382,9 @@ lifeVisualization = True
 
 if lifeVisualization:
     SC.visualizationSettings.general.autoFitScene=False #if reloaded view settings
-    exu.StartRenderer()
-    if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
-    mbs.WaitForUserToContinue() #press space to continue
+    SC.renderer.Start()
+    if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
+    SC.renderer.DoIdleTasks() #press space to continue
         
 mbs.SolveDynamic(#solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
                   simulationSettings=simulationSettings)
@@ -394,8 +394,8 @@ if addSensors:
     print("nModes=", nModes, ", mid displacement=", uTip)
 
 if lifeVisualization:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 # # 3D rendering of FMBS

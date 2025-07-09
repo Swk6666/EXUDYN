@@ -76,6 +76,10 @@ CoordinatesTotal & $\cv\cConfig = \uv\cConfig + \pv\cRef$ &  displacement plus r
 Coordinates & $\cv\cConfig = \uv\cConfig = [q_0,\,q_1,\,q_2]\tp\cConfig$ &  coordinate vector of node\\ \hline
 Coordinates\_t & $\dot\cv\cConfig = \vv\cConfig = [\dot q_0,\,\dot q_1,\,\dot q_2]\tp\cConfig$ &  velocity coordinates vector of node\\ \hline
 Coordinates\_tt & $\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1,\,\ddot q_2]\tp\cConfig$ &  acceleration coordinates vector of node\\ \hline
+RotationMatrix &  & identity matrix (only for completeness)\\ \hline
+Rotation & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocity & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocityLocal & $[0,0,0]$ &  (only for completeness)\\ \hline
 \end{longtable}
 \end{center}
  \noindent
@@ -181,6 +185,10 @@ CoordinatesTotal & $\cv\cConfig = \uv\cConfig + \pv\cRef$ &  displacement plus r
 Coordinates & $\cv\cConfig = [q_0,\,q_1]\tp\cConfig$ &  coordinate vector of node\\ \hline
 Coordinates\_t & $\dot\cv\cConfig = [\dot q_0,\,\dot q_1]\tp\cConfig$ &  velocity coordinates vector of node\\ \hline
 Coordinates\_tt & $\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1]\tp\cConfig$ &  acceleration coordinates vector of node\\ \hline
+RotationMatrix &  & identity matrix (only for completeness)\\ \hline
+Rotation & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocity & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocityLocal & $[0,0,0]$ &  (only for completeness)\\ \hline
 \end{longtable}
 \end{center}
  \noindent
@@ -200,16 +208,18 @@ Coordinates\_tt & $\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1]\tp\c
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/pendulumIftommBenchmark.py}{\texttt{pendulumIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/sliderCrank3DwithANCFbeltDrive2.py}{\texttt{sliderCrank3DwithANCFbeltDrive2.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SpringDamperMassUserFunction.py}{\texttt{SpringDamperMassUserFunction.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/xExudynConfigSpecial.py}{\texttt{xExudynConfigSpecial.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2Drigid.py}{\texttt{ANCFslidingJoint2Drigid.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/geneticOptimizationSliderCrank.py}{\texttt{geneticOptimizationSliderCrank.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SliderCrank.py}{\texttt{SliderCrank.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/slidercrankWithMassSpring.py}{\texttt{slidercrankWithMassSpring.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/switchingConstraintsPendulum.py}{\texttt{switchingConstraintsPendulum.py}} (Examples/)
+\item  ...
+
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/modelUnitTests.py}{\texttt{modelUnitTests.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/sparseMatrixSpringDamperTest.py}{\texttt{sparseMatrixSpringDamperTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateVectorConstraint.py}{\texttt{coordinateVectorConstraint.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateVectorConstraintGenericODE2.py}{\texttt{coordinateVectorConstraintGenericODE2.py}} (TestModels/)
 \item  ...
 
 
@@ -347,9 +357,9 @@ AngularAcceleration & $\LU{0}{\talpha}\cConfig = \LU{0}{[\alpha_0,\,\alpha_1,\,\
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/addPrismaticJoint.py}{\texttt{addPrismaticJoint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/addRevoluteJoint.py}{\texttt{addRevoluteJoint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFrotatingCable2D.py}{\texttt{ANCFrotatingCable2D.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bungeeJump.py}{\texttt{bungeeJump.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/explicitLieGroupIntegratorPythonTest.py}{\texttt{explicitLieGroupIntegratorPythonTest.py}} (TestModels/)
@@ -1395,8 +1405,8 @@ Coordinates & $\xv\cConfig = [x_0,\,\ldots,\,x_{nc}]\tp\cConfig$ & data coordina
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveReevingSystem.py}{\texttt{beltDriveReevingSystem.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDrivesComparison.py}{\texttt{beltDrivesComparison.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/leggedRobot.py}{\texttt{leggedRobot.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFcontactCircleTest.py}{\texttt{ANCFcontactCircleTest.py}} (TestModels/)
@@ -1470,6 +1480,10 @@ Velocity & $\vv\cConfig = [0,\,0,\,0]\cConfig\tp$ & zero 3D vector\\ \hline
 CoordinatesTotal & $\cv\cConfig =[]$ & vector of length zero\\ \hline
 Coordinates & $\cv\cConfig =[]$ & vector of length zero\\ \hline
 Coordinates\_t & $\dot\cv\cConfig =[]$ & vector of length zero\\ \hline
+RotationMatrix &  & identity matrix (only for completeness)\\ \hline
+Rotation & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocity & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocityLocal & $[0,0,0]$ &  (only for completeness)\\ \hline
 \end{longtable}
 \end{center}
 \vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
@@ -1622,9 +1636,9 @@ RotationMatrix & $\LU{0b}{\Rot}$ & rotation matrix in vector form (stored in row
         mbs.Assemble()
         sims=exu.SimulationSettings()
         sims.timeIntegration.numberOfSteps = 10000000 #many steps to see graphics
-        exu.StartRenderer() #perform zoom all (press 'a' several times) after startup to see the sphere
+        SC.renderer.Start() #perform zoom all (press 'a' several times) after startup to see the sphere
         mbs.SolveDynamic(sims)
-        exu.StopRenderer()
+        SC.renderer.Stop()
     \end{lstlisting}
     %%RSTCOMPATIBLE
 \vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
@@ -1716,6 +1730,10 @@ Position & $\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\
 Displacement & $\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;q_2]\cConfig\tp$ & global displacement vector of mass point\\ \hline
 Velocity & $\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;\dot q_2]\cConfig\tp$ & global velocity vector of mass point\\ \hline
 Acceleration & $\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;\ddot q_2]\cConfig\tp$ & global acceleration vector of mass point\\ \hline
+RotationMatrix &  & identity matrix (only for completeness)\\ \hline
+Rotation & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocity & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocityLocal & $[0,0,0]$ &  (only for completeness)\\ \hline
 \end{longtable}
 \end{center}
  \noindent
@@ -1852,6 +1870,10 @@ Position & $\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\
 Displacement & $\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;0]\cConfig\tp$ & global displacement vector of mass point\\ \hline
 Velocity & $\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;0]\cConfig\tp$ & global velocity vector of mass point\\ \hline
 Acceleration & $\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;0]\cConfig\tp$ & global acceleration vector of mass point\\ \hline
+RotationMatrix &  & identity matrix (only for completeness)\\ \hline
+Rotation & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocity & $[0,0,0]$ &  (only for completeness)\\ \hline
+AngularVelocityLocal & $[0,0,0]$ &  (only for completeness)\\ \hline
 \end{longtable}
 \end{center}
  \noindent
@@ -1908,6 +1930,7 @@ Acceleration & $\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\d
 \bi
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/myFirstExample.py}{\texttt{myFirstExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/reevingSystemOpen.py}{\texttt{reevingSystemOpen.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/xExudynConfigSpecial.py}{\texttt{xExudynConfigSpecial.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2Drigid.py}{\texttt{ANCFslidingJoint2Drigid.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/geneticOptimizationSliderCrank.py}{\texttt{geneticOptimizationSliderCrank.py}} (Examples/)
@@ -1917,7 +1940,6 @@ Acceleration & $\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\d
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/sliderCrank3DwithANCFbeltDrive2.py}{\texttt{sliderCrank3DwithANCFbeltDrive2.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/slidercrankWithMassSpring.py}{\texttt{slidercrankWithMassSpring.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SpringDamperMassUserFunction.py}{\texttt{SpringDamperMassUserFunction.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/switchingConstraintsPendulum.py}{\texttt{switchingConstraintsPendulum.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/modelUnitTests.py}{\texttt{modelUnitTests.py}} (TestModels/)
@@ -2440,13 +2462,13 @@ AngularAccelerationLocal & $\LU{b}{\talpha}\cConfig = \LU{b0}{\Rot} \LU{0}{\talp
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/addPrismaticJoint.py}{\texttt{addPrismaticJoint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/addRevoluteJoint.py}{\texttt{addRevoluteJoint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFrotatingCable2D.py}{\texttt{ANCFrotatingCable2D.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bungeeJump.py}{\texttt{bungeeJump.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate2.py}{\texttt{chatGPTupdate2.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/craneReevingSystem.py}{\texttt{craneReevingSystem.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/fourBarMechanism3D.py}{\texttt{fourBarMechanism3D.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/explicitLieGroupIntegratorPythonTest.py}{\texttt{explicitLieGroupIntegratorPythonTest.py}} (TestModels/)
@@ -2552,7 +2574,7 @@ AngularAccelerationLocal & $\LU{b}{\talpha}\cConfig = \LU{b0}{\Rot} \LU{0}{\talp
     \finishTable
     %
     \mysubsubsubsection{Equations of motion}
-    The equations of motion in case that \texttt{physicsCenterOfMass=\Null} read:
+    The equations of motion in case that \texttt{physicsCenterOfMass}=$\Null$ read:
     \be 
       \mr{m}{0}{0} {0}{m}{0} {0}{0}{J} \vr{\ddot q_0}{\ddot q_1}{\ddot \psi_0} = \vr{f_0}{f_1}{\tau_2} = \fv.
     \ee
@@ -2929,7 +2951,6 @@ Force &  & generalized forces for all coordinates (residual of all forces except
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateVectorConstraintGenericODE2.py}{\texttt{coordinateVectorConstraintGenericODE2.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/genericODE2test.py}{\texttt{genericODE2test.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/linearFEMgenericODE2.py}{\texttt{linearFEMgenericODE2.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/linearFEMgenericODE2Test.py}{\texttt{linearFEMgenericODE2Test.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFTest.py}{\texttt{objectFFRFTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectGenericODE2Test.py}{\texttt{objectGenericODE2Test.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rigidBodyAsUserFunctionTest.py}{\texttt{rigidBodyAsUserFunctionTest.py}} (TestModels/)
@@ -2967,7 +2988,7 @@ The item \mybold{ObjectKinematicTree} with type = 'KinematicTree' has the follow
     nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number (type NodeIndex) of GenericODE2 node containing the coordinates for the kinematic tree; $n$ being the number of minimal coordinates\\ \hline
     gravity &     Vector3D &      &     [0.,0.,0.] &     \tabnewline gravity vector in inertial coordinates; used to simply apply gravity as LoadMassProportional is not available for KinematicTree\\ \hline
     baseOffset &     Vector3D &      &     [0.,0.,0.] &     \tabnewline offset vector for base, in global coordinates\\ \hline
-    jointTypes &     JointTypeList &      &     [] &     joint types of kinematic Tree joints; must be always set\\ \hline
+    jointTypes &     JointTypeList &      &     [] &     joint types of kinematic Tree joints, using exu.JointType, like exu.JointType.RevoluteZ; must be always set\\ \hline
     linkParents &     ArrayIndex &      &     [] &     index of parent joint/link; if no parent exists, the value is $-1$; by default, $p_0=-1$ because the $i$th parent index must always fulfill $p_i<i$; must be always set\\ \hline
     jointTransformations &     Matrix3DList &      &     [] &     list of constant joint transformations from parent joint coordinates $p_0$ to this joint coordinates $j_0$; this allows to adjust the orientation of the joint axes (but it does not affect the joint offset); if no parent exists ($-1$), the base coordinate system $0$ is used; must be always set\\ \hline
     jointOffsets &     Vector3DList &      &     [] &     list of constant joint offsets from parent joint to this joint; $p_0$, $p_1$, $\ldots$ denote the parent coordinate systems; this means that the joint offset is added prior to performing the joint transformation; if no parent exists ($-1$), the base coordinate system $0$ is used; must be always set\\ \hline
@@ -2997,7 +3018,7 @@ The item \mybold{ObjectKinematicTree} with type = 'KinematicTree' has the follow
     showLinks &     Bool &      &     True &     set true, if links shall be shown; if graphicsDataList is empty, a standard drawing for links is used (drawing a cylinder from previous joint or base to next joint; size relative to frame size in KinematicTree visualization settings); else graphicsDataList are used per link; NOTE visualization of joint and COM frames can be modified via visualizationSettings.bodies.kinematicTree\\ \hline
     showJoints &     Bool &      &     True &     set true, if joints shall be shown; if graphicsDataList is empty, a standard drawing for joints is used (drawing a cylinder for revolute joints; size relative to frame size in KinematicTree visualization settings)\\ \hline
     color &     Float4 &     4 &     [-1.,-1.,-1.,-1.] &     \tabnewline RGBA color for object; 4th value is alpha-transparency; R=-1.f means, that default color is used\\ \hline
-    graphicsDataList &     BodyGraphicsDataList &     \tabnewline  &     \tabnewline  &     Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links\\ \hline
+    graphicsDataList &     BodyGraphicsDataList &     \tabnewline  &     \tabnewline  &     Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links\\ \hline
 \end{longtable}
 \end{center}
 \par\noindent\rule{\textwidth}{0.4pt}
@@ -3330,6 +3351,7 @@ Force &  & generalized forces for all coordinates (residual of all forces except
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/reinforcementLearningRobot.py}{\texttt{reinforcementLearningRobot.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/stiffFlyballGovernorKT.py}{\texttt{stiffFlyballGovernorKT.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/kinematicTreeTest.py}{\texttt{kinematicTreeTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createKinematicTreeTest.py}{\texttt{createKinematicTreeTest.py}} (TestModels/)
 
 \ei
 
@@ -3568,7 +3590,7 @@ Force &  & generalized forces for all coordinates (residual of all forces except
     Note that \eq{eq:ObjectFFRF:Leq} is given in global coordinates for the translational part, in terms of rotation parameters
     for the rotation part and in body-fixed coordinates for the flexible part of the equations.
     
-    In case that \texttt{computeFFRFterms = True}, the equations \ref{eq:ObjectFFRF:Leq} can be transformed into the equations of motion,
+    In case that \texttt{computeFFRFterms = True}, \eqs{eq:ObjectFFRF:Leq} can be transformed into the equations of motion,
     \be \label{eq:ObjectFFRF:eom}
         \left(\Mm_{user}(mbs, t, i_N, \qv,\dot \qv) + \mr{\Mm\indtt}{\Mm\indtr}{\Mm\indtf} {}{\Mm\indrr}{\Mm\indrf} 
                     {\mathrm{sym.}}{}{\LU{b}{\Mm}} \right) \ddot \qv + 
@@ -5452,7 +5474,7 @@ TorqueLocal & $\LU{J0}{\mv}$ & joint torques in local $J0$ coordinates; torque a
     \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{accordingly}
     \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
     \rowTable{joint J1 orientation}{$\LU{0,J1}{\Rot} = \LU{0,m1}{\Rot} \LU{m1,J1}{\Rot}$}{joint $J1$ rotation matrix}
-    \rowTable{joint J1 orientation vectors}{$\LU{0,J1}{\Rot} = [\LU{0}{\tv_{x1}},\,\LU{0}{\tv_{y1}},\,v\tv_{z1}]\tp$}{orientation vectors (represent local $x$, $y$, and $z$ axes) in global coordinates, used for definition of constraint equations}
+    \rowTable{joint J1 orientation vectors}{$\LU{0,J1}{\Rot} = [\LU{0}{\tv_{x1}},\,\LU{0}{\tv_{y1}},\,\LU{0}{\tv_{z1}}]\tp$}{orientation vectors (represent local $x$, $y$, and $z$ axes) in global coordinates, used for definition of constraint equations}
     %
     \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
     \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{accordingly}
@@ -5530,16 +5552,18 @@ TorqueLocal & $\LU{J0}{\mv}$ & joint torques in local $J0$ coordinates; torque a
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate2.py}{\texttt{chatGPTupdate2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/multiMbsTest.py}{\texttt{multiMbsTest.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/openVRengine.py}{\texttt{openVRengine.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/pistonEngine.py}{\texttt{pistonEngine.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rigidBodyTutorial3.py}{\texttt{rigidBodyTutorial3.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rollerBearningModel.py}{\texttt{rollerBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/solutionViewerTest.py}{\texttt{solutionViewerTest.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/universalJoint.py}{\texttt{universalJoint.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/CMSexampleCourse.py}{\texttt{CMSexampleCourse.py}} (Examples/)
+\item  ...
+
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/plotSensorTest.py}{\texttt{plotSensorTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/revoluteJointPrismaticJointTest.py}{\texttt{revoluteJointPrismaticJointTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/bricardMechanism.py}{\texttt{bricardMechanism.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createRollingDiscPenaltyTest.py}{\texttt{createRollingDiscPenaltyTest.py}} (TestModels/)
 \item  ...
 
 
@@ -5816,20 +5840,20 @@ Force & $\LU{0}{\fv}$ & joint force in global coordinates\\ \hline
 \noindent For examples on ObjectJointSpherical see Relevant Examples and TestModels with weblink:
 \bi
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveLinearFEM.py}{\texttt{NGsolveLinearFEM.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/newtonsCradle.py}{\texttt{newtonsCradle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bungeeJump.py}{\texttt{bungeeJump.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/humanRobotInteraction.py}{\texttt{humanRobotInteraction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolvePostProcessingStresses.py}{\texttt{NGsolvePostProcessingStresses.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/objectFFRFreducedOrderNetgen.py}{\texttt{objectFFRFreducedOrderNetgen.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/sliderCrank3DwithANCFbeltDrive.py}{\texttt{sliderCrank3DwithANCFbeltDrive.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ACFtest.py}{\texttt{ACFtest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/driveTrainTest.py}{\texttt{driveTrainTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/mainSystemExtensionsTests.py}{\texttt{mainSystemExtensionsTests.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/genericJointUserFunctionTest.py}{\texttt{genericJointUserFunctionTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/kinematicTreeConstraintTest.py}{\texttt{kinematicTreeConstraintTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFreducedOrderAccelerations.py}{\texttt{objectFFRFreducedOrderAccelerations.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFreducedOrderStressModesTest.py}{\texttt{objectFFRFreducedOrderStressModesTest.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFreducedOrderTest.py}{\texttt{objectFFRFreducedOrderTest.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFTest.py}{\texttt{objectFFRFTest.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/objectFFRFTest2.py}{\texttt{objectFFRFTest2.py}} (TestModels/)
 \item  ...
 
 
@@ -5998,6 +6022,8 @@ RotationMatrix & $\LU{0,J1}{\Am} = [\LU{0}{\wv_{lat}},\, \LU{0}{\wv}_2,\, \LU{0}
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rollingCoinTest.py}{\texttt{rollingCoinTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rollingDiscTangentialForces.py}{\texttt{rollingDiscTangentialForces.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rotatingTableTest.py}{\texttt{rotatingTableTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createRollingDiscTest.py}{\texttt{createRollingDiscTest.py}} (TestModels/)
 
 \ei
 
@@ -6385,7 +6411,7 @@ The item \mybold{ObjectJointALEMoving2D} with type = 'JointALEMoving2D' has the 
     markerNumbers &     ArrayMarkerIndex &     \tabnewline  &     [ invalid [-1], invalid [-1] ] &     \tabnewline marker m0: position-marker of mass point or rigid body; marker m1: updated marker to ANCF Cable2D element, where the sliding joint currently is attached to; must be initialized with an appropriate (global) marker number according to the starting position of the sliding object; this marker changes with time (PostNewtonStep)\\ \hline
     slidingMarkerNumbers &     ArrayMarkerIndex &     \tabnewline  &     [] &     a list of sn (global) marker numbers which are are used to update marker1\\ \hline
     slidingMarkerOffsets &     Vector &      &     [] &     this list contains the offsets of every sliding object (given by slidingMarkerNumbers) w.r.t. to the initial position (0): marker0: offset=0, marker1: offset=Length(cable0), marker2: offset=Length(cable0)+Length(cable1), ...\\ \hline
-    slidingOffset &     Real &      &     0. &     sliding offset list [SI:m]: a list of sn scalar offsets, which represent the (reference arc) length of all previous sliding cable elements\\ \hline
+    slidingOffset &     Real &      &     0. &     sliding offset [SI:m]: a scalar offset, which represents the (reference arc) length of all previous sliding cable elements\\ \hline
     nodeNumbers &     ArrayNodeIndex &      &     [ invalid [-1], invalid [-1] ] &     \tabnewline node number of NodeGenericData (GD) with one data coordinate and of NodeGenericODE2 (ALE) with one \hac{ODE2} coordinate\\ \hline
     usePenaltyFormulation &     Bool &      &     False &     flag, which determines, if the connector is formulated with penalty, but still using algebraic equations (IsPenaltyConnector() still false)\\ \hline
     penaltyStiffness &     Real &      &     0. &     penalty stiffness [SI:N/m] used if usePenaltyFormulation=True\\ \hline
@@ -6414,7 +6440,7 @@ The item \mybold{ObjectJointALEMoving2D} with type = 'JointALEMoving2D' has the 
 \rowTable{markerNumbers}{$[m0,\,m1]\tp$}{}
 \rowTable{slidingMarkerNumbers}{$[m_{s0}, \ldots, m_{sn}]\tp$}{}
 \rowTable{slidingMarkerOffsets}{$[d_{s0}, \ldots, d_{sn}]$}{}
-\rowTable{slidingOffset}{$s_{off}$}{}
+\rowTable{slidingOffset}{$s_\mathrm{off}$}{}
 \rowTable{nodeNumbers}{$[n_{GD}, n_{ALE}]$}{}
 \rowTable{penaltyStiffness}{$k$}{}
 \finishTable
@@ -6427,7 +6453,7 @@ The item \mybold{ObjectJointALEMoving2D} with type = 'JointALEMoving2D' has the 
 \bf output variable & \bf symbol & \bf description \\ \hline
 Position & $\LU{0}{\pv}_{m0}$ & current global position of position marker $m0$\\ \hline
 Velocity & $\LU{0}{\vv}_{m0}$ & current global velocity of position marker $m0$\\ \hline
-SlidingCoordinate & $s_g = q_{ALE} + s_{off}$ & current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!\\ \hline
+SlidingCoordinate & $s_g = q_{ALE} + s_\mathrm{off}$ & current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!\\ \hline
 Coordinates & $[x_{data0},\,q_{ALE}]\tp$ & provides two values: [0] = current sliding marker index, [1] = ALE sliding coordinate\\ \hline
 Coordinates\_t & $[\dot q_{ALE}]\tp$ & provides ALE sliding velocity\\ \hline
 Force & $\fv$ & joint force vector (3D)\\ \hline
@@ -6457,7 +6483,7 @@ Force & $\fv$ & joint force vector (3D)\\ \hline
     %\startTable{output variables}{symbol}{formula}
     %\rowTable{Position}{$\LU{0}{\pv}_{m0}$}{current global position of position marker $m0$}
     %\rowTable{Velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity of position marker $m0$}
-    %\rowTable{SlidingCoordinate}{$s_g = q_{ALE} + s_{off}$}{current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!}
+    %\rowTable{SlidingCoordinate}{$s_g = q_{ALE} + s_\mathrm{off}$}{current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!}
     %\rowTable{Coordinates}{$[x_{data0},\,q_{ALE}]\tp$}{}
     %\rowTable{Coordinates\_t}{$[\dot q_{ALE}]\tp$}{}
     %\rowTable{Force}{$\fv$}{see below}
@@ -6466,7 +6492,7 @@ Force & $\fv$ & joint force vector (3D)\\ \hline
     \mysubsubsubsection{Geometric relations}
     The element sliding coordinate (in the local coordinates of the current sliding element) is computed from the ALE coordinate
     \be
-      s_{el} = q_{ALE} + s_{off} - d_{m1} = s_g - d_{m1}.
+      s_{el} = q_{ALE} + s_\mathrm{off} - d_{m1} = s_g - d_{m1}.
     \ee
     For the description of the according quantities, see the description above. The distance $d_{m1}$ is obtained from the \texttt{slidingMarkerOffsets} list, using the current (local) index $x_{data0}$.
     The vector (=difference; error) between the marker $m0$ and the marker $m1$ (=$\rv_{ANCF}$) positions reads
@@ -6833,20 +6859,20 @@ ForceLocal & $f_{SD}$ & scalar spring-damper force\\ \hline
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/HydraulicsUserFunction.py}{\texttt{HydraulicsUserFunction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SpringDamperMassUserFunction.py}{\texttt{SpringDamperMassUserFunction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/basicTutorial2024.py}{\texttt{basicTutorial2024.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/contactCurveWithLongCurve.py}{\texttt{contactCurveWithLongCurve.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/springDamperTutorialNew.py}{\texttt{springDamperTutorialNew.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/springMassFriction.py}{\texttt{springMassFriction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/symbolicUserFunctionMasses.py}{\texttt{symbolicUserFunctionMasses.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/tutorialNeuralNetwork.py}{\texttt{tutorialNeuralNetwork.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle.py}{\texttt{ANCFcontactCircle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle2.py}{\texttt{ANCFcontactCircle2.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SpringWithConstraints.py}{\texttt{SpringWithConstraints.py}} (Examples/)
 \item  ...
 
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/loadUserFunctionTest.py}{\texttt{loadUserFunctionTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/mainSystemExtensionsTests.py}{\texttt{mainSystemExtensionsTests.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/symbolicUserFunctionTest.py}{\texttt{symbolicUserFunctionTest.py}} (TestModels/)
 \item  ...
 
 
@@ -7508,6 +7534,15 @@ ForceLocal & $f_{SD}$ & (scalar) spring-damper force\\ \hline
     exudynTestGlobals.testResult = mbs.GetNodeOutput(nBody, exu.OutputVariableType.Displacement)[0]
 \end{lstlisting}
 
+\vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
+%
+\noindent For examples on ObjectConnectorLinearSpringDamper see Relevant Examples and TestModels with weblink:
+\bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
+
+\ei
+
+%
 \newpage
 
 %+++++++++++++++++++++++++++++++++++
@@ -7697,6 +7732,7 @@ TorqueLocal & $\tau_{SD}$ & scalar spring-damper torque around the local joint0 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ROSTurtle.py}{\texttt{ROSTurtle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/serialRobotInteractiveLimits.py}{\texttt{serialRobotInteractiveLimits.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/serialRobotTSD.py}{\texttt{serialRobotTSD.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rotatingTableTest.py}{\texttt{rotatingTableTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/sliderCrank3Dbenchmark.py}{\texttt{sliderCrank3Dbenchmark.py}} (TestModels/)
 
@@ -7887,9 +7923,9 @@ Force & $f_{SD}$ & scalar force in connector\\ \hline
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/coordinateSpringDamper.py}{\texttt{coordinateSpringDamper.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/finiteSegmentMethod.py}{\texttt{finiteSegmentMethod.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/geneticOptimizationSliderCrank.py}{\texttt{geneticOptimizationSliderCrank.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/lugreFrictionTest.py}{\texttt{lugreFrictionTest.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/massSpringFrictionInteractive.py}{\texttt{massSpringFrictionInteractive.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/minimizeExample.py}{\texttt{minimizeExample.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/scissorPrismaticRevolute2D.py}{\texttt{scissorPrismaticRevolute2D.py}} (TestModels/)
@@ -8162,6 +8198,7 @@ Force & $f_{SD}$ & scalar spring force\\ \hline
 \noindent For examples on ObjectConnectorCoordinateSpringDamperExt see Relevant Examples and TestModels with weblink:
 \bi
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/coordinateSpringDamper.py}{\texttt{coordinateSpringDamper.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/lugreFrictionTest.py}{\texttt{lugreFrictionTest.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/massSpringFrictionInteractive.py}{\texttt{massSpringFrictionInteractive.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateSpringDamperExt.py}{\texttt{coordinateSpringDamperExt.py}} (TestModels/)
@@ -9053,6 +9090,8 @@ RotationMatrix & $\LU{0,J1}{\Am} = [\LU{0}{\wv_{lat}},\, \LU{0}{\wv}_2,\, \LU{0}
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rollingCoinPenaltyTest.py}{\texttt{rollingCoinPenaltyTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rollingDiscTangentialForces.py}{\texttt{rollingDiscTangentialForces.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/rotatingTableTest.py}{\texttt{rotatingTableTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createRollingDiscPenaltyTest.py}{\texttt{createRollingDiscPenaltyTest.py}} (TestModels/)
 
 \ei
 
@@ -9864,7 +9903,7 @@ ForceLocal & $[f_{t,0},\, f_{n,0},\, f_{t,1},\, f_{n,1},\, \ldots,\, f_{t,n_{cs}
 
 \mysubsubsection{ObjectContactSphereSphere}
 \label{sec:item:ObjectContactSphereSphere}
-[UNDER CONSTRUCTION] A simple contact connector between two spheres. The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
+A simple contact connector between two spheres, using various contact models and the option for contact of sphere inside hollow sphere (marker1). The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
 \vspace{12pt}\\
 
 \noindent Authors: Gerstmayr Johannes, Weyrer Sebastian
@@ -9888,7 +9927,8 @@ The item \mybold{ObjectContactSphereSphere} with type = 'ContactSphereSphere' ha
     name &     String &      &     '' &     constraints's unique name\\ \hline
     markerNumbers &     ArrayMarkerIndex &     \tabnewline 2 &     [ invalid [-1], invalid [-1] ] &     \tabnewline list of markers representing centers of spheres, used in connector\\ \hline
     nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is the plastic overlap of the Edinburgh Adhesive Elasto-Plastic Model, initialized usually with 0 and set back to 0 in case that spheres have been separated.\\ \hline
-    spheresRadii &     Vector2D &     2 &     [-1.,-1.] &     \tabnewline Vector containing radius of sphere 0 and radius of sphere 1 [SI:m]\\ \hline
+    spheresRadii &     Vector2D &     2 &     [-1.,-1.] &     \tabnewline list containing radius of sphere 0 and radius of sphere 1 [SI:m].\\ \hline
+    isHollowSphere1 &     Bool &      &     False &     flag, which determines, if sphere attached to marker 1 (radius 1) is a hollow sphere.\\ \hline
     dynamicFriction &     UReal &      &     0. &     dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}\\ \hline
     frictionProportionalZone &     UReal &      &     1e-3 &     limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}\\ \hline
     contactStiffness &     UReal &      &     0. &     normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)\\ \hline
@@ -9900,7 +9940,7 @@ The item \mybold{ObjectContactSphereSphere} with type = 'ContactSphereSphere' ha
     adhesionExponent &     UReal &      &     1. &     exponent for adhesion coefficient [SI:1]; Edinburgh Adhesive Elasto-Plastic Model\\ \hline
     restitutionCoefficient &     PReal &      &     1. &     coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)\\ \hline
     minimumImpactVelocity &     UReal &      &     0. &     minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)\\ \hline
-    impactModel &     UInt &      &     0 &      number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping still added, if not set to zero!\\ \hline
+    impactModel &     UInt &      &     0 &      number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!\\ \hline
     activeConnector &     Bool &      &     True &     flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint\\ \hline
     visualization &     VObjectContactSphereSphere &      &      &     parameters for visualization of item\\ \hline
 \end{longtable}
@@ -9945,11 +9985,12 @@ The item \mybold{ObjectContactSphereSphere} with type = 'ContactSphereSphere' ha
 \begin{longtable}{| p{5cm} | p{5cm} | p{6cm} |} 
 \hline
 \bf output variable & \bf symbol & \bf description \\ \hline
-Director3 &  & contains normalized vector from marker 0 to marker 1\\ \hline
+Position &  & contact center point (also given for positive gap, when no contact occurs)\\ \hline
 Displacement &  & global displacement vector between the two spheres midpoints\\ \hline
-DisplacementLocal &  & 3D Vector, containing only gap (Z-component)\\ \hline
+DisplacementLocal &  & 1D Vector, containing only gap\\ \hline
 Velocity &  & global relative velocity between the two spheres midpoints\\ \hline
 Force &  & global contact force vector\\ \hline
+Director1 &  & contains normalized vector from marker 0 to marker 1\\ \hline
 Torque &  & global torque due to friction on marker 0; to obetain torque on marker 1, multiply the torque with the factor $\frac{r_1+g/2}{r_0+g/2}$\\ \hline
 \end{longtable}
 \end{center}
@@ -9989,98 +10030,101 @@ Torque &  & global torque due to friction on marker 0; to obetain torque on mark
 
        Two spheres that are in contact, showing a force on marker 1 in normal direction due to overlap; forces on marker 0 act in opposite direction.
     }
+    Calculations reflect the case for outer contact of two spheres using $h_1=1$. 
+    In case that isHollowSphere1=True, we set $h_1=-1$ while the remaining formulas remain unchanged.
+    
     For the following, the gap $g$ between the two spheres is computed as
     \be
-        g = || \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} || - (r_0 + r_1)
+      g = h_1 || \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} || - (r_0 + h_1 r_1)
     \ee
-    and the overlap $\delta$ is the negated gap: $\delta=-g$. In the contact case, the overlap $\delta$ is positive. The normal vector $\LU{0}{\nv}$ points from marker 0 to marker 1 and is computed with
+    and the overlap $\delta$ is the negated gap: $\delta=-g$. In the contact case, the overlap $\delta$ is positive. 
+    The normal vector $\LU{0}{\nv}$ points from marker 0 to the contact point,
     \be
-        \LU{0}{\nv} = \frac{\LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0}}{|| \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} ||} \eqDot
+      \LU{0}{\nv} = h_1 \frac{\LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0}}{|| \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} ||} \eqDot
     \ee
+    which in case of sphere-sphere contact, $\LU{0}{\nv}$ points from marker 0 to marker 1, and 
+    in case of sphere-hollowsphere contact, $\LU{0}{\nv}$ points from marker 1 to marker 0.
+    
     The scalar normal (gap) velocity $v_\mathrm{\delta,n}$ is computed with the velocities $\LU{0}{\vv}_{m0}=\LU{0}{\dot{\pv}}_{m0}$ and $\LU{0}{\vv}_{m1}=\LU{0}{\dot{\pv}}_{m1}$
     \be
-        v_\mathrm{\delta,n} = \left(\LU{0}{\vv}_{m1} - \LU{0}{\vv}_{m0}\right)\cdot \LU{0}{\nv}
+      v_\mathrm{\delta,n} = \left(\LU{0}{\vv}_{m1} - \LU{0}{\vv}_{m0}\right)\cdot \LU{0}{\nv}
     \ee
     and the tangential (gap) velocity $\LU{0}{\vv}_\mathrm{\delta,t}$ at the contact point, that is needed for the friction model, reads
     \be \label{eq:OSSCTangentialVelocity}
-        \LU{0}{\vv}_\mathrm{\delta,t} = \left(\LU{0}{\vv}_{a1} - \LU{0}{\vv}_{a0}\right) - v_\mathrm{\delta,n} \cdot \LU{0}{\nv}, \qquad v_\mathrm{rel} = || \LU{0}{\vv}_\mathrm{\delta,t} || \eqDot
+      \LU{0}{\vv}_\mathrm{\delta,t} = \left(\LU{0}{\vv}_{a1} - \LU{0}{\vv}_{a0}\right) - v_\mathrm{\delta,n} \cdot \LU{0}{\nv}, \qquad v_\mathrm{rel} = || \LU{0}{\vv}_\mathrm{\delta,t} || \eqDot
     \ee
     To take the angular velocity of the spheres into account, the velocities $\LU{0}{\vv}_{a0}$ and $\LU{0}{\vv}_{a1}$ at the contact point are computed using Euler's theorem for kinematics:
     \be
-        \LU{0}{\vv}_{a0} = \LU{0}{\vv}_{m0} + \LU{0}{\tomega}_{m0} \times \left(\LU{0}{\nv}\cdot \left(r_0-\frac{\delta}{2}\right)\right)
-        , \qquad
-        \LU{0}{\vv}_{a1} = \LU{0}{\vv}_{m1} + \LU{0}{\tomega}_{m1} \times \left(-\LU{0}{\nv}\cdot \left(r_1-\frac{\delta}{2}\right)\right) \eqDot
+      \LU{0}{\vv}_{a0} = \LU{0}{\vv}_{m0} + \LU{0}{\tomega}_{m0} \times \left(\LU{0}{\nv}\cdot \left(r_0-\frac{\delta}{2}\right)\right)
+      , \qquad
+      \LU{0}{\vv}_{a1} = \LU{0}{\vv}_{m1} + h_1 \LU{0}{\tomega}_{m1} \times \left(-\LU{0}{\nv}\cdot \left(r_1-h_1 \frac{\delta}{2}\right)\right) \eqDot
     \ee
     The normal force acting on marker 1 is generally written as
     \be
-        \LU{0}{\fv}_\mathrm{1,n} = \underbrace{(f_c + f_d)}_{f_\mathrm{1,n}} \cdot \LU{0}{\nv} \eqComma
+      \LU{0}{\fv}_\mathrm{1,n} = \underbrace{(f_c + f_d)}_{f_\mathrm{1,n}} \cdot \LU{0}{\nv} \eqComma
     \ee
     where $f_c$ is the elastic and $f_d$ the damping part. The damping $f_d$ is always computed the same, independent of the chosen impact model:
     \be
-        f_d = - d_c v_\mathrm{\delta,n} \eqDot
+      f_d = - d_c v_\mathrm{\delta,n} \eqDot
     \ee
     The negative sign is because of the damping acting against the gap velocity: in the case of a positive normal (gap) velocity, the damping acts against $\LU{0}{\nv}$ for marker 1. The elastic force $f_c$ is computed depending on the chosen impact model.
-    \bi
-      \item $m_\mathrm{impact}=0$: the Adhesive Elasto-Plastic model described in \cite{Morrissey2014} is used. This model captures the key bulk behavior of cohesive powders and granular soils. For the impact model, the plastic overlap $\delta_p$ is needed. It is computed with
-      \be
-          \delta_p=\lambda_\mathrm{p}^{\frac{1}{n_\mathrm{exp}}}\delta \eqDot
-      \ee
-      The Adhesive Elasto-Plastic model distinguishes three different cases, modeling the loading and unloading behavior of the spheres:
-      \be
-          f_c=
-          \begin{cases}
-              -f_\mathrm{adh} + k_c \delta^{n_\mathrm{exp}} & \text{if } k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) \geq k_c\delta^{n_\mathrm{exp}} \\
-              -f_\mathrm{adh} + k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) & \text{if } k_c\delta^{n_\mathrm{exp}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}}\right) > -k_\mathrm{adh}\delta^{n_\mathrm{adh}} \\
-              -f_\mathrm{adh}-k_\mathrm{adh}\delta^{n_\mathrm{adh}} & \text{if } -k_\mathrm{adh}\delta^{n_\mathrm{adh}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right)
-          \end{cases}
-          \eqDot
-      \ee
+
+    CASE $m_\mathrm{impact}=0$: the Adhesive Elasto-Plastic model described in \cite{Morrissey2014} is used. This model captures the key bulk behavior of cohesive powders and granular soils. For the impact model, the plastic overlap $\delta_p$ is needed. It is computed with
+    \be
+      \delta_p=\lambda_\mathrm{p}^{\frac{1}{n_\mathrm{exp}}}\delta \eqDot
+    \ee
+    The Adhesive Elasto-Plastic model distinguishes three different cases, modeling the loading and unloading behavior of the spheres:
+    \be
+      f_c=
+      \begin{cases}
+        -f_\mathrm{adh} + k_c \delta^{n_\mathrm{exp}} & \text{if } k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) \geq k_c\delta^{n_\mathrm{exp}} \\
+        -f_\mathrm{adh} + k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) & \text{if } k_c\delta^{n_\mathrm{exp}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}}\right) > -k_\mathrm{adh}\delta^{n_\mathrm{adh}} \\
+        -f_\mathrm{adh}-k_\mathrm{adh}\delta^{n_\mathrm{adh}} & \text{if } -k_\mathrm{adh}\delta^{n_\mathrm{adh}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right)
+      \end{cases}\eqDot
+    \ee
     Note that $k_2$ is computed with $k_2 = k_c/(1-\lambda_\mathrm{P})$. The terms with the stiffness $k_c$ and $k_2$ have a positive sign, since they act in the direction of $\LU{0}{\nv}$ for marker 1. The constant adhesion force $f_\mathrm{adh}$ and the stiffness $k_\mathrm{adh}$ act against $\LU{0}{\nv}$, which corresponds to a force sticking the spheres together.
 
-      \item $m_\mathrm{impact}=1$: the restitution model proposed by Hunt and Crossley in \cite{Hunt1975} is used to simulate the energy loss of the spheres during contact:
-      \be
-          f_c=k_c \delta^{n_\mathrm{exp}} + \lambda \delta^{n_\mathrm{exp}} v_\mathrm{\delta,n}
-      \ee
-      with
-      \be
-          \lambda = \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1) \eqDot
-      \ee
-      The restitution coefficient $e_\mathrm{res}$ describes the ration of the normal (gap) velocity before and after the impact of the spheres. In the case of $e_\mathrm{res}<1$, the impact has a plastic portion, resulting in a force acting against $\LU{0}{\nv}$ for marker 1, which is why $\lambda$ must be negative in that case. $\dot\delta_\mathrm{-}$ is the initial relative velocity, which is either the minimum impact velocity or the normal (negated gap) velocity:
-      \be
-          \dot\delta_\mathrm{-} = \max{\left(\dot\delta_\mathrm{-,min}; -v_\mathrm{\delta,n} \right)}
-      \ee
+    CASE $m_\mathrm{impact}=1$: the restitution model proposed by Hunt and Crossley in \cite{Hunt1975} is used to simulate the energy loss of the spheres during contact:
+    \be
+      f_c=k_c \delta^{n_\mathrm{exp}} + \lambda \delta^{n_\mathrm{exp}} v_\mathrm{\delta,n}
+    \ee
+    with
+    \be
+      \lambda = \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1) \eqDot
+    \ee
+    The restitution coefficient $e_\mathrm{res}$ describes the ration of the normal (gap) velocity before and after the impact of the spheres. In the case of $e_\mathrm{res}<1$, the impact has a plastic portion, resulting in a force acting against $\LU{0}{\nv}$ for marker 1, which is why $\lambda$ must be negative in that case. $\dot\delta_\mathrm{-}$ is the initial relative velocity, which is either the minimum impact velocity or the normal (negated gap) velocity:
+    \be
+      \dot\delta_\mathrm{-} = \max{\left(\dot\delta_\mathrm{-,min}; -v_\mathrm{\delta,n} \right)}
+    \ee
     Note that the Hunt-Crossley restitution is valid for a very small energy loss ($e_\mathrm{res}\approx1$) \cite{Carvalho2019}.
 
-      \item $m_\mathrm{impact}=2$: a generalization of the Hunt-Crossley restitution proposed by Carvalho and Martins in \cite{Carvalho2019} is used for $e_\mathrm{res} > \frac{1}{3}$ and a model proposed by Gonthier et al. in \cite{Gonthier2004} is used for impacts with a high plastic proportion, $e_\mathrm{res} < \frac{1}{3}$. Note that the two models are identical at $e_\mathrm{res} = \frac{1}{3}$. $\lambda$ is therefore computed as follows:
-      \be
-          \lambda=
-          \begin{cases}
-              \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1)\frac{11-e_\mathrm{res}}{1+9e_\mathrm{res}} & \text{if } e_\mathrm{res} > \frac{1}{3} \\
-              \frac{k_c}{\dot\delta_\mathrm{-}}\frac{e_\mathrm{rep}^2-1}{e_\mathrm{rep}} & \text{if } e_\mathrm{res} > 0 \\
-          \end{cases}
-          \eqDot
-      \ee
-    \ei
+    CASE $m_\mathrm{impact}=2$: a generalization of the Hunt-Crossley restitution proposed by Carvalho and Martins in \cite{Carvalho2019} is used for $e_\mathrm{res} > \frac{1}{3}$ and a model proposed by Gonthier et al. in \cite{Gonthier2004} is used for impacts with a high plastic proportion, $e_\mathrm{res} < \frac{1}{3}$. Note that the two models are identical at $e_\mathrm{res} = \frac{1}{3}$. $\lambda$ is therefore computed as follows:
+    \be
+      \lambda=
+      \begin{cases}
+        \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1)\frac{11-e_\mathrm{res}}{1+9e_\mathrm{res}} & \text{if } e_\mathrm{res} > \frac{1}{3} \\
+        \frac{k_c}{\dot\delta_\mathrm{-}}\frac{e_\mathrm{rep}^2-1}{e_\mathrm{rep}} & \text{if } e_\mathrm{res} > 0 \\
+      \end{cases}\eqDot
+    \ee
     The tangential force acting on marker 1 due to the friction model acts against the tangential velocity $\vv_\mathrm{\delta,t}$, see the computation of $\vv_\mathrm{\delta,t}$ in Equation \eqref{eq:OSSCTangentialVelocity}. Thus, the tangential force for marker 1 is computed as
     \be
-        \LU{0}{\fv}_\mathrm{1,t} = -\LU{0}{\vv}_\mathrm{\delta,t} \cdot
-        \begin{cases}
-            \frac{\mu_d f_\mathrm{1,n}}{v_{reg}} & \text{if } v_{rel} < v_{reg} \\
-            \frac{\mu_d f_\mathrm{1,n}}{v_{rel}} & \text{else}\\
-        \end{cases}
-        \eqDot
+      \LU{0}{\fv}_\mathrm{1,t} = -\LU{0}{\vv}_\mathrm{\delta,t} \cdot
+      \begin{cases}
+        \frac{\mu_d f_\mathrm{1,n}}{v_{reg}} & \text{if } v_{rel} < v_{reg} \\
+        \frac{\mu_d f_\mathrm{1,n}}{v_{rel}} & \text{else}\\
+      \end{cases} \eqDot
     \ee
     Note that the case distinction above is made to ensure that for very small relative velocities the friction force does not become implausibly high. Taken together, the force acting on marker 1 due to the connector is computed as
     \be
-        \LU{0}{\fv}_{m1}=\LU{0}{\fv}_\mathrm{1,n}+\LU{0}{\fv}_\mathrm{1,t} \eqComma
+      \LU{0}{\fv}_{m1}=\LU{0}{\fv}_\mathrm{1,n}+\LU{0}{\fv}_\mathrm{1,t} \eqComma
     \ee
     the force acting on marker 0 is $\LU{0}{\fv}_{m0}=-\LU{0}{\fv}_{m1}$. The global torque $\LU{0}{\ttau}_{m1}$ acting on marker 1 due to the connector is computed as
     \be
-        \LU{0}{\ttau}_{m1}=-\LU{0}{\nv}\left( r_1-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m1} \eqComma
+      \LU{0}{\ttau}_{m1}=-h_1 \LU{0}{\nv}\left( r_1-h_1 \frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m1} \eqComma
     \ee
     and on marker 0 as
     \be
-        \LU{0}{\ttau}_{m0}=\LU{0}{\nv} \left(r_0-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m0}= \LU{0}{\nv}\left( r_0-\frac{1}{2}\delta \right) \times -\LU{0}{\fv}_{m1} \eqDot
+      \LU{0}{\ttau}_{m0}=\LU{0}{\nv} \left(r_0-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m0}= \LU{0}{\nv}\left( r_0-\frac{1}{2}\delta \right) \times \left( -\LU{0}{\fv}_{m1} \right) \eqDot
     \ee
     It can be seen that the torque due to the connector is the same for both spheres, if $r_0=r_1$ applies.
     %%RSTCOMPATIBLE
@@ -10089,8 +10133,239 @@ Torque &  & global torque due to friction on marker 0; to obetain torque on mark
 \noindent For examples on ObjectContactSphereSphere see Relevant Examples and TestModels with weblink:
 \bi
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/newtonsCradle.py}{\texttt{newtonsCradle.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rollerBearningModel.py}{\texttt{rollerBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/contactSphereSphereTest.py}{\texttt{contactSphereSphereTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/contactSphereSphereTestEAPM.py}{\texttt{contactSphereSphereTestEAPM.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createSphereQuadContact.py}{\texttt{createSphereQuadContact.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createSphereTriangleContact.py}{\texttt{createSphereTriangleContact.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/sphereTriangleTest2.py}{\texttt{sphereTriangleTest2.py}} (TestModels/)
+
+\ei
+
+%
+\newpage
+
+%+++++++++++++++++++++++++++++++++++
+
+\mysubsubsection{ObjectContactSphereTorus}
+\label{sec:item:ObjectContactSphereTorus}
+[UNDER DEVELOPMENT] A simple contact connector between a sphere (marker0) and a torus (marker1). The sphere is assumed to be placed inside of the torus (outer contact of sphere with torus currently not implemented!).
+\vspace{12pt}\\
+
+\noindent Author: Gerstmayr Johannes
+\vspace{12pt}\\
+
+\noindent \mybold{Additional information for ObjectContactSphereTorus}:
+\bi
+  \item This \texttt{Object} has/provides the following types = \texttt{Connector}
+  \item Requested \texttt{Marker} type = \texttt{Position} + \texttt{Orientation}
+  \item Requested \texttt{Node} type = \texttt{GenericData}
+\ei\vspace{12pt} \noindent 
+The item \mybold{ObjectContactSphereTorus} with type = 'ContactSphereTorus' has the following parameters:
+\vspace{-0.5cm}\\
+\vspace{-0.5cm}\\
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    name &     String &      &     '' &     constraints's unique name\\ \hline
+    markerNumbers &     ArrayMarkerIndex &     \tabnewline 2 &     [ invalid [-1], invalid [-1] ] &     \tabnewline list of markers representing centers of sphere (marker 0) and center of torus (marker 1)\\ \hline
+    nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is unused.\\ \hline
+    radiusSphere &     PReal &      &     0. &      radius of sphere [SI:m]\\ \hline
+    torusMajorRadius &     PReal &      &     0. &      major radius of torus [SI:m], representing center of rotated circle\\ \hline
+    torusMinorRadius &     PReal &      &     0. &      minor radius of torus [SI:m], representing radius of circle of ring\\ \hline
+    torusAxis &     Vector3D &     3 &     [0,0,0] &     Vector containing rotation axis of torus; must be a unit vector.\\ \hline
+    dynamicFriction &     UReal &      &     0. &     dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}\\ \hline
+    frictionProportionalZone &     UReal &      &     1e-3 &     limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}\\ \hline
+    contactStiffness &     UReal &      &     0. &     normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)\\ \hline
+    contactDamping &     UReal &      &     0. &     linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior.\\ \hline
+    contactStiffnessExponent &     PReal &      &     1. &     exponent in normal contact model [SI:1]\\ \hline
+    restitutionCoefficient &     PReal &      &     1. &     coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)\\ \hline
+    minimumImpactVelocity &     UReal &      &     0. &     minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)\\ \hline
+    impactModel &     UInt &      &     0 &      number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!\\ \hline
+    activeConnector &     Bool &      &     True &     flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint\\ \hline
+    visualization &     VObjectContactSphereTorus &      &      &     parameters for visualization of item\\ \hline
+\end{longtable}
+\end{center}
+
+\noindent The item VObjectContactSphereTorus has the following parameters:
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    show &     Bool &      &     False &     set true, if item is shown in visualization and false if it is not shown; draws spheres by given radii\\ \hline
+    color &     Float4 &      &     [0.7,0.7,0.7,1.] &     \tabnewline RGBA connector color; if R==-1, use default color\\ \hline
+\end{longtable}
+\end{center}
+\par\noindent\rule{\textwidth}{0.4pt}
+\mysubsubsubsection{DESCRIPTION of ObjectContactSphereTorus:}
+\label{description_ObjectContactSphereTorus}
+\paragraph{Information on input parameters:} 
+\startTable{input parameter}{symbol}{description see tables above}
+\rowTable{markerNumbers}{$[m0,m1]\tp$}{}
+\rowTable{nodeNumber}{$n_d$}{}
+\rowTable{radiusSphere}{$r_S$}{}
+\rowTable{torusMajorRadius}{$r_{M}$}{}
+\rowTable{torusMinorRadius}{$r_{m}$}{}
+\rowTable{torusAxis}{$\vv_{axis}$}{}
+\rowTable{dynamicFriction}{$\mu_d$}{}
+\rowTable{frictionProportionalZone}{$v_{reg}$}{}
+\rowTable{contactStiffness}{$k_c$}{}
+\rowTable{contactDamping}{$d_c$}{}
+\rowTable{contactStiffnessExponent}{$n_\mathrm{exp}$}{}
+\rowTable{restitutionCoefficient}{$e_\mathrm{res}$}{}
+\rowTable{minimumImpactVelocity}{$\dot\delta_\mathrm{-,min}$}{}
+\rowTable{impactModel}{$m_\mathrm{impact}$}{}
+\finishTable
+
+\mybold{The following output variables are available as OutputVariableType in sensors, Get...Output() and other functions}:
+\begin{center}
+\footnotesize
+\begin{longtable}{| p{5cm} | p{5cm} | p{6cm} |} 
+\hline
+\bf output variable & \bf symbol & \bf description \\ \hline
+Position &  & contact center point (also given for positive gap, when no contact occurs)\\ \hline
+Displacement &  & global displacement vector between the two spheres midpoints\\ \hline
+DisplacementLocal &  & 1D Vector, containing only gap\\ \hline
+Director1 &  & normalized vector from marker 0 to marker 1\\ \hline
+Director2 &  & the normalized vector from marker 0 to marker 1 projected into the plane of the torus major circle\\ \hline
+Director3 &  & normalized vector from the projected point on the major circle (center of the minor circle) to marker 1, being in direction of the contact and normal to the surface\\ \hline
+Force &  & global contact force vector\\ \hline
+Torque &  & global torque due to friction on marker 0\\ \hline
+\end{longtable}
+\end{center}
+ \noindent
+    \mysubsubsubsection{Definition of quantities}
+    \startTable{intermediate variables}{symbol}{description}
+    \rowTable{marker m0 position}{$\LU{0}{\pv}_{m0}$}{global position of torus 0 center as provided by marker m0}
+    \rowTable{marker m0 orientation}{$\LU{0,m0}{\Rot}$}{current rotation matrix provided by marker m0}
+    \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{global position of sphere 1 center as provided by marker m1}
+    \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
+    \rowTable{data coordinates}{$\xv=[x_0,\,x_1,\,x_2,\,x_3]\tp$}{hold the current gap (0), the (norm of the) tangential velocity (1), the impact velocity (2), and (3) which is undefined }
+    \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
+    \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{current global velocity which is provided by marker m1}
+    \rowTable{marker m0 angular velocity}{$\LU{0}{\tomega}_{m0}$}{current angular velocity vector provided by marker m0}
+    \rowTable{marker m1 angular velocity}{$\LU{0}{\tomega}_{m1}$}{current angular velocity vector provided by marker m1}
+    \finishTable
+    \mysubsubsubsection{Connector Forces}
+    TBD
+    %%RSTCOMPATIBLE
+\newpage
+
+%+++++++++++++++++++++++++++++++++++
+
+\mysubsubsection{ObjectContactSphereTriangle}
+\label{sec:item:ObjectContactSphereTriangle}
+[UNDER DEVELOPMENT] A simple contact connector between a sphere (marker0) and a triangle (marker1). Penalty-based contact is computed from penetration of the sphere with the triangle, including contact with edges if desired.
+\vspace{12pt}\\
+
+\noindent Author: Gerstmayr Johannes
+\vspace{12pt}\\
+
+\noindent \mybold{Additional information for ObjectContactSphereTriangle}:
+\bi
+  \item This \texttt{Object} has/provides the following types = \texttt{Connector}
+  \item Requested \texttt{Marker} type = \texttt{Position} + \texttt{Orientation}
+  \item Requested \texttt{Node} type = \texttt{GenericData}
+\ei\vspace{12pt} \noindent 
+The item \mybold{ObjectContactSphereTriangle} with type = 'ContactSphereTriangle' has the following parameters:
+\vspace{-0.5cm}\\
+\vspace{-0.5cm}\\
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    name &     String &      &     '' &     constraints's unique name\\ \hline
+    markerNumbers &     ArrayMarkerIndex &     \tabnewline 2 &     [ invalid [-1], invalid [-1] ] &     \tabnewline list of markers representing the center of the sphere (marker 0) and the reference point of the triangle (marker 1), where triangle nodal positions are defined in the local coordinates of marker 1.\\ \hline
+    nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is unused.\\ \hline
+    radiusSphere &     PReal &      &     0. &      radius of sphere [SI:m]\\ \hline
+    trianglePoints &     Vector3DList &      &     [] &      triangle points, defined in marker 1 local coordinates\\ \hline
+    includeEdges &     UInt &      &     7 &     Binary flag, where 1 defines contact with edges 0, 2 with edge 1 and 4 with edge 2; 7 means that contact with all edges is included; edge 0 is the edge between node 0 and node 1\\ \hline
+    dynamicFriction &     UReal &      &     0. &     dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}\\ \hline
+    frictionProportionalZone &     UReal &      &     1e-3 &     limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}\\ \hline
+    contactStiffness &     UReal &      &     0. &     normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)\\ \hline
+    contactDamping &     UReal &      &     0. &     linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior.\\ \hline
+    contactStiffnessExponent &     PReal &      &     1. &     exponent in normal contact model [SI:1]\\ \hline
+    restitutionCoefficient &     PReal &      &     1. &     coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)\\ \hline
+    minimumImpactVelocity &     UReal &      &     0. &     minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)\\ \hline
+    impactModel &     UInt &      &     0 &      number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!\\ \hline
+    activeConnector &     Bool &      &     True &     flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint\\ \hline
+    visualization &     VObjectContactSphereTriangle &      &      &     parameters for visualization of item\\ \hline
+\end{longtable}
+\end{center}
+
+\noindent The item VObjectContactSphereTriangle has the following parameters:
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    show &     Bool &      &     False &     set true, if item is shown in visualization and false if it is not shown; draws spheres by given radii\\ \hline
+    color &     Float4 &      &     [0.7,0.7,0.7,1.] &     \tabnewline RGBA connector color; if R==-1, use default color\\ \hline
+\end{longtable}
+\end{center}
+\par\noindent\rule{\textwidth}{0.4pt}
+\mysubsubsubsection{DESCRIPTION of ObjectContactSphereTriangle:}
+\label{description_ObjectContactSphereTriangle}
+\paragraph{Information on input parameters:} 
+\startTable{input parameter}{symbol}{description see tables above}
+\rowTable{markerNumbers}{$[m0,m1]\tp$}{}
+\rowTable{nodeNumber}{$n_d$}{}
+\rowTable{radiusSphere}{$r_S$}{}
+\rowTable{trianglePoints}{$[\LU{m_1}{\pv}_0,\LU{m_1}{\pv}_1,\LU{m_1}{\pv}_2]$}{}
+\rowTable{dynamicFriction}{$\mu_d$}{}
+\rowTable{frictionProportionalZone}{$v_{reg}$}{}
+\rowTable{contactStiffness}{$k_c$}{}
+\rowTable{contactDamping}{$d_c$}{}
+\rowTable{contactStiffnessExponent}{$n_\mathrm{exp}$}{}
+\rowTable{restitutionCoefficient}{$e_\mathrm{res}$}{}
+\rowTable{minimumImpactVelocity}{$\dot\delta_\mathrm{-,min}$}{}
+\rowTable{impactModel}{$m_\mathrm{impact}$}{}
+\finishTable
+
+\mybold{The following output variables are available as OutputVariableType in sensors, Get...Output() and other functions}:
+\begin{center}
+\footnotesize
+\begin{longtable}{| p{5cm} | p{5cm} | p{6cm} |} 
+\hline
+\bf output variable & \bf symbol & \bf description \\ \hline
+Position &  & contact center point (also given for positive gap, when no contact occurs)\\ \hline
+Displacement &  & global displacement vector between the two spheres midpoints\\ \hline
+DisplacementLocal &  & 1D Vector, containing only gap\\ \hline
+Director1 &  & normalized vector from sphere midpoint (marker 0) to triangle contact point\\ \hline
+Force &  & global contact force vector\\ \hline
+Torque &  & global torque due to friction on marker 0\\ \hline
+\end{longtable}
+\end{center}
+ \noindent
+    \mysubsubsubsection{Definition of quantities}
+    \startTable{intermediate variables}{symbol}{description}
+    \rowTable{marker m0 position}{$\LU{0}{\pv}_{m0}$}{global position of torus 0 center as provided by marker m0}
+    \rowTable{marker m0 orientation}{$\LU{0,m0}{\Rot}$}{current rotation matrix provided by marker m0}
+    \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{global position of sphere 1 center as provided by marker m1}
+    \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
+    \rowTable{data coordinates}{$\xv=[x_0,\,x_1,\,x_2,\,x_3]\tp$}{hold the current gap (0), the (norm of the) tangential velocity (1), the impact velocity (2), and (3) which is undefined }
+    \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
+    \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{current global velocity which is provided by marker m1}
+    \rowTable{marker m0 angular velocity}{$\LU{0}{\tomega}_{m0}$}{current angular velocity vector provided by marker m0}
+    \rowTable{marker m1 angular velocity}{$\LU{0}{\tomega}_{m1}$}{current angular velocity vector provided by marker m1}
+    \finishTable
+    \mysubsubsubsection{Connector Forces}
+    TBD
+    %%RSTCOMPATIBLE
+\vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
+%
+\noindent For examples on ObjectContactSphereTriangle see Relevant Examples and TestModels with weblink:
+\bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/sphereTriangleTest.py}{\texttt{sphereTriangleTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/sphereTriangleTest2.py}{\texttt{sphereTriangleTest2.py}} (TestModels/)
 
 \ei
 
@@ -10101,7 +10376,7 @@ Torque &  & global torque due to friction on marker 0; to obetain torque on mark
 
 \mysubsubsection{ObjectContactCurveCircles}
 \label{sec:item:ObjectContactCurveCircles}
-[UNDER CONSTRUCTION] A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. Note that there is a limit of 100 circle markes above which computation becomes slower as it requires memory allocation.
+A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. [REQUIRES FURTHER TESTING; friction not yet available]
 \vspace{12pt}\\
 
 \noindent \mybold{Additional information for ObjectContactCurveCircles}:
@@ -10109,8 +10384,8 @@ Torque &  & global torque due to friction on marker 0; to obetain torque on mark
   \item This \texttt{Object} has/provides the following types = \texttt{Connector}
   \item Requested \texttt{Marker} type = \texttt{Position} + \texttt{Orientation}
   \item Requested \texttt{Node} type = \texttt{GenericData}
-  \item {\bf Short name} for Python = \texttt{CamFollower}
-  \item {\bf Short name} for Python visualization object = \texttt{VCamFollower}
+  \item {\bf Short name} for Python = \texttt{CamFollowerContactPlanar}
+  \item {\bf Short name} for Python visualization object = \texttt{VCamFollowerContactPlanar}
 \ei\vspace{12pt} \noindent 
 The item \mybold{ObjectContactCurveCircles} with type = 'ContactCurveCircles' has the following parameters:
 \vspace{-0.5cm}\\
@@ -10126,14 +10401,18 @@ The item \mybold{ObjectContactCurveCircles} with type = 'ContactCurveCircles' ha
     nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number of a NodeGenericData with nDataVariablesPerSegment dataCoordinates per segment, needed for discontinuous iteration; data variables contain values from last PostNewton iteration: data[0+3*i] is the circle number, data[1+3*i] is the gap, data[2+3*i] is the tangential velocity (and thus contains information if it is stick or slip)\\ \hline
     circlesRadii &     NumpyVector &      &     [] &     Vector containing radii of $n_c$ circles [SI:m]; number according to size of markerNumbers-1\\ \hline
     segmentsData &     PyMatrixContainer &     \tabnewline  &     PyMatrixContainer[] &     \tabnewline matrix containing a set of two planar point coordinates in each row, representing segments attached to marker $m0$ and undergoing contact with the circles; for segment $s0$ row 0 reads $[p_{0x,s0},\,p_{0y,s0},\,p_{1x,s0},\,p_{1y,s0}]$; note that the segments must be ordered such that going from $\pv_0$ to $\pv_1$, the exterior lies on the right (positive) side. MatrixContainer has to be provided in dense mode!\\ \hline
-    polynomialData &     PyMatrixContainer &     \tabnewline  &     PyMatrixContainer[] &     \tabnewline matrix containing coefficients for polynomial enhancements of the linear segments; each row contains polynomial coefficients for the according segment; the polynomial coefficients may contain quadratic, cubic, etc. coefficients, while constant and linear coefficients are automatically selected such that the end points of the polynomial match the segment's endpoints; the local coordinate $x$ of the polynomial runs from 0 to 1 and positive values represent concave geometries (enlarging the curve). MatrixContainer has to be provided in dense mode!\\ \hline
+    polynomialData &     PyMatrixContainer &     \tabnewline  &     PyMatrixContainer[] &     \tabnewline matrix containing coefficients for special polynomial enhancements of the linear segments; each row contains coefficients for polynomials for the according segment, prescribing slopes at beginning and end of segment as well as curvature at beginning and end of segment; slopes and curvatures are defined in a local x/y coordinate system where x is the segment axis (start: x=0; x-axis points towards end point) and the segment normal is in y-direction; MatrixContainer has to be provided in dense mode!\\ \hline
     rotationMarker0 &     Matrix3D &      &     [[1,0,0], [0,1,0], [0,0,1]] &     \tabnewline local rotation matrix for marker 0; used to rotate marker coordinates such that the curve lies in the $x-y$-plane\\ \hline
     dynamicFriction &     UReal &      &     0. &     dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}\\ \hline
     frictionProportionalZone &     UReal &      &     1e-3 &     limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}\\ \hline
-    contactStiffness &     Real &      &     0. &     normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)\\ \hline
-    contactDamping &     Real &      &     0. &     linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior.\\ \hline
-    contactModel &     UInt &      &     0 &     number of contact model: 0) linear model for stiffness and damping, only proportional to penetration; 1) model taking contact geometry, in particular curvature of circle and curve into account, giving nonlinear normal force model\\ \hline
+    contactStiffness &     Real &      &     0. &     normal contact stiffness [SI:N/(m*m)]\\ \hline
+    contactDamping &     Real &      &     0. &     linear normal contact damping [SI:N/(m s)]; this damping is a simplification of real contact dissipation and should be used with care.\\ \hline
+    contactModel &     UInt &      &     0 &     number of contact model: 0) linear model for stiffness and damping, only proportional to penetration; contact force is computed from $l_\mathrm{seg}\left(p \cdot  \cdot k_c + \dot p \cdot d_c \right)$ as long as $p>0$; while this is numerically more stable, it gives jumps in forces when sliding over contact geometry 1) contact force proportional to integral over penetration area of circle with segments, giving a smoother contact force when sliding over geometry;\\ \hline
     activeConnector &     Bool &      &     True &     flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint\\ \hline
+    gapPerSegment &     NumpyVector &      &     [] &     temporary vector for computed gap\\ \hline
+    gapPerSegment\_t &     NumpyVector &      &     [] &     temporary vector for computed gap velocity\\ \hline
+    segmentsForceLocalX &     NumpyVector &      &     [] &     temporary vector for contact force per segment in local X-direction\\ \hline
+    segmentsForceLocalY &     NumpyVector &      &     [] &     temporary vector for contact force per segment in local Y-direction\\ \hline
     visualization &     VObjectContactCurveCircles &      &      &     parameters for visualization of item\\ \hline
 \end{longtable}
 \end{center}
@@ -10195,7 +10474,11 @@ ForceLocal &  & pairs of normal and tangential forces per circle or (Nan,Nan) if
 %
 \noindent For examples on ObjectContactCurveCircles see Relevant Examples and TestModels with weblink:
 \bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/contactCurvePolynomial.py}{\texttt{contactCurvePolynomial.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/contactCurveWithLongCurve.py}{\texttt{contactCurveWithLongCurve.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/contactCurveExample.py}{\texttt{contactCurveExample.py}} (TestModels/)
 
 \ei
 
@@ -10335,14 +10618,23 @@ Force & $\lambda_0$ & joint force (=scalar Lagrange multiplier)\\ \hline
 %
 \noindent For examples on ObjectConnectorDistance see Relevant Examples and TestModels with weblink:
 \bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate2.py}{\texttt{chatGPTupdate2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/newtonsCradle.py}{\texttt{newtonsCradle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/HydraulicActuatorStaticInitialization.py}{\texttt{HydraulicActuatorStaticInitialization.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/pendulum2Dconstraint.py}{\texttt{pendulum2Dconstraint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/pendulumIftommBenchmark.py}{\texttt{pendulumIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/fourBarMechanismTest.py}{\texttt{fourBarMechanismTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/deleteItemsTest.py}{\texttt{deleteItemsTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/mainSystemExtensionsTests.py}{\texttt{mainSystemExtensionsTests.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/taskmanagerTest.py}{\texttt{taskmanagerTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateVectorConstraint.py}{\texttt{coordinateVectorConstraint.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/coordinateVectorConstraintGenericODE2.py}{\texttt{coordinateVectorConstraintGenericODE2.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/modelUnitTests.py}{\texttt{modelUnitTests.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/PARTS_ATEs_moving.py}{\texttt{PARTS\_ATEs\_moving.py}} (TestModels/)
+\item  ...
+
 
 \ei
 
@@ -10557,6 +10849,9 @@ Force & $\lambda_0$ & scalar constraint force (Lagrange multiplier)\\ \hline
 \bi
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveModalAnalysis.py}{\texttt{NGsolveModalAnalysis.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/sliderCrank3DwithANCFbeltDrive2.py}{\texttt{sliderCrank3DwithANCFbeltDrive2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ALEANCFpipe.py}{\texttt{ALEANCFpipe.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFALEtest.py}{\texttt{ANCFALEtest.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcantileverTestDyn.py}{\texttt{ANCFcantileverTestDyn.py}} (Examples/)
@@ -10564,14 +10859,11 @@ Force & $\lambda_0$ & scalar constraint force (Lagrange multiplier)\\ \hline
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle2.py}{\texttt{ANCFcontactCircle2.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFmovingRigidbody.py}{\texttt{ANCFmovingRigidbody.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFrotatingCable2D.py}{\texttt{ANCFrotatingCable2D.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2Drigid.py}{\texttt{ANCFslidingJoint2Drigid.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFswitchingSlidingJoint2D.py}{\texttt{ANCFswitchingSlidingJoint2D.py}} (Examples/)
 \item  ...
 
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFBeamTest.py}{\texttt{ANCFBeamTest.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFbeltDrive.py}{\texttt{ANCFbeltDrive.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFcontactCircleTest.py}{\texttt{ANCFcontactCircleTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ballBearingTest.py}{\texttt{ballBearingTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/contactCurveExample.py}{\texttt{contactCurveExample.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/createFunctionsTest.py}{\texttt{createFunctionsTest.py}} (TestModels/)
 \item  ...
 
 
@@ -11193,10 +11485,10 @@ The item \mybold{MarkerBodyRigid} with type = 'BodyRigid' has the following para
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFtestHalfcircle.py}{\texttt{ANCFtestHalfcircle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFtests2.py}{\texttt{ANCFtests2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beamTutorial.py}{\texttt{beamTutorial.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveALE.py}{\texttt{beltDriveALE.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveReevingSystem.py}{\texttt{beltDriveReevingSystem.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDrivesComparison.py}{\texttt{beltDrivesComparison.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/abaqusImportTest.py}{\texttt{abaqusImportTest.py}} (TestModels/)
@@ -11605,6 +11897,188 @@ The item \mybold{MarkerNodeRotationCoordinate} with type = 'NodeRotationCoordina
 
 %+++++++++++++++++++++++++++++++++++
 
+\mysubsubsection{MarkerBodiesRelativeTranslationCoordinate}
+\label{sec:item:MarkerBodiesRelativeTranslationCoordinate}
+A coordinate-based Marker attached to two rigid bodies or beams which computes the relative translation between the bodies according to the given axis; this marker can be used together with coordinate-based constraints and connectors (e.g., CoordinateSpringDamper and CoordinateConstraint). Note that it is assumed that the two bodies can only move along the given axis (e.g., constrained by a prismatic joint) -- otherwise results may be unexpected. Note that this approach is not compatible with FFRF-based flexible bodies and currently requires and intermediate rigid body.
+\vspace{12pt}\\
+
+\noindent \mybold{Additional information for MarkerBodiesRelativeTranslationCoordinate}:
+\bi
+  \item This \texttt{Marker} has/provides the following types = \texttt{Object}, \texttt{Body}, \texttt{Position}, \texttt{Orientation}, \texttt{Coordinate}
+\ei\vspace{12pt} \noindent 
+The item \mybold{MarkerBodiesRelativeTranslationCoordinate} with type = 'BodiesRelativeTranslationCoordinate' has the following parameters:
+\vspace{-0.5cm}\\
+\vspace{-0.5cm}\\
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    name &     String &      &     '' &     marker's unique name\\ \hline
+    bodyNumbers &     ArrayObjectIndex &     \tabnewline  &     [ invalid [-1], invalid [-1] ] &     \tabnewline list of body numbers for which relative coordinate is computed\\ \hline
+    localPosition0 &     Vector3D &     3 &     [0.,0.,0.] &     \tabnewline local position on body 0; i.e. local (body-fixed) position where position is measured and force is applied to\\ \hline
+    localPosition1 &     Vector3D &     3 &     [0.,0.,0.] &     \tabnewline local position on body 1; i.e. local (body-fixed) position where position is measured and force is applied to\\ \hline
+    axis0 &     Vector3D &     3 &     [1.,0.,0.] &     \tabnewline axis defined in body 0, along which the relative translation is measured\\ \hline
+    offset &     Real &      &     0. &     translation offset [SI:m] subtracted from the translation; can be used to change the zero position\\ \hline
+    visualization &     VMarkerBodiesRelativeTranslationCoordinate &      &      &     parameters for visualization of item\\ \hline
+\end{longtable}
+\end{center}
+
+\noindent The item VMarkerBodiesRelativeTranslationCoordinate has the following parameters:
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    show &     Bool &      &     True &     set true, if item is shown in visualization and false if it is not shown\\ \hline
+\end{longtable}
+\end{center}
+\par\noindent\rule{\textwidth}{0.4pt}
+\mysubsubsubsection{DESCRIPTION of MarkerBodiesRelativeTranslationCoordinate:}
+\label{description_MarkerBodiesRelativeTranslationCoordinate}
+\paragraph{Information on input parameters:} 
+\startTable{input parameter}{symbol}{description see tables above}
+\rowTable{bodyNumbers}{$[b_0,b_1]\tp$}{}
+\rowTable{localPosition0}{$\LU{m_0}{\pv}_0$}{}
+\rowTable{localPosition1}{$\LU{m_1}{\pv}_1$}{}
+\rowTable{axis0}{$\LU{m_0}{\av}_0$}{}
+\rowTable{offset}{$x_\mathrm{off}$}{}
+\finishTable
+ \noindent
+    The marker consists of two bodies, body $b_0$ and body $b_1$ with respective global marker positions $\LU{0}{\pv}_{m0}$ and $\LU{0}{\pv}_{m1}$,
+    depending on local positions $\LU{m_0}{\pv}_0$ and $\LU{m_1}{\pv}_1$, 
+    and marker orientations $\LU{0,m_0}{\Rot}_{m0}$ and $\LU{0,m_1}{\Rot}_{m1}$.
+    The global axis is computed as 
+    \be
+      \LU{0}{\av}_0 = \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\av}_0
+    \ee
+    The relative translation marker computes the relative translation from the equation
+    \be
+      t =  \LU{0}{\av}_0\tp (\pv_{m1} - \pv_{m0}) - x_\mathrm{off}
+    \ee
+    The translational velocity, which may be used in coordinate spring-dampers or for velocity-level constraints, is computed as
+    \be
+      \dot t = \LU{0}{\av}_0\tp (\dot \pv_{m1} - \dot \pv_{m0}) + \LU{0}{\dot \av}_0\tp (\pv_{m1} - \pv_{m0})
+    \ee
+    Jacobians are computed according to the relative translational velocity, ignoring the $\dot \av_0$ part.
+    Using this approach, coordinate constraints can be added to mechanisms to purely add internal drives, not affecting global momenta.
+    Furthermore, coupling to a relative rotation marker MarkerBodiesRelativeRotationCoordinate can be used to 
+    create advanced mechanisms and gears.
+    %%RSTCOMPATIBLE
+\vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
+%
+\noindent For examples on MarkerBodiesRelativeTranslationCoordinate see Relevant Examples and TestModels with weblink:
+\bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/relativeRotationTranslationMechanism.py}{\texttt{relativeRotationTranslationMechanism.py}} (TestModels/)
+
+\ei
+
+%
+\newpage
+
+%+++++++++++++++++++++++++++++++++++
+
+\mysubsubsection{MarkerBodiesRelativeRotationCoordinate}
+\label{sec:item:MarkerBodiesRelativeRotationCoordinate}
+A coordinate-based Marker attached to two rigid bodies or beams which computes the relative rotation between the bodies according to the given axis; this marker can be used together with coordinate-based constraints and connectors (e.g., CoordinateSpringDamper and CoordinateConstraint). Note that it is assumed that the two bodies can only rotate about the given axis (e.g., constrained by a revolute joint) -- otherwise results may be unexpected. Note that this approach is not compatible with FFRF-based flexible bodies and currently requires and intermediate rigid body.
+\vspace{12pt}\\
+
+\noindent \mybold{Additional information for MarkerBodiesRelativeRotationCoordinate}:
+\bi
+  \item This \texttt{Marker} has/provides the following types = \texttt{Node}, \texttt{Object}, \texttt{Body}, \texttt{Position}, \texttt{Orientation}, \texttt{Coordinate}
+\ei\vspace{12pt} \noindent 
+The item \mybold{MarkerBodiesRelativeRotationCoordinate} with type = 'BodiesRelativeRotationCoordinate' has the following parameters:
+\vspace{-0.5cm}\\
+\vspace{-0.5cm}\\
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    name &     String &      &     '' &     marker's unique name\\ \hline
+    bodyNumbers &     ArrayObjectIndex &     \tabnewline  &     [ invalid [-1], invalid [-1] ] &     \tabnewline list of body numbers for which relative coordinate is computed\\ \hline
+    nodeNumber &     NodeIndex &      &     invalid (-1) &     \tabnewline node number of NodeGenericData with 1 coordinate which contains previous angle for continuation of angles (initialize accordingly if needed); if node is not supplied, angles will have jump outside $\pm \pi$\\ \hline
+    localPosition0 &     Vector3D &     3 &     [0.,0.,0.] &     \tabnewline local position on body 0; i.e. local (body-fixed) position where position is measured and force is applied to\\ \hline
+    localPosition1 &     Vector3D &     3 &     [0.,0.,0.] &     \tabnewline local position on body 1; i.e. local (body-fixed) position where position is measured and force is applied to\\ \hline
+    axis0 &     Vector3D &     3 &     [1.,0.,0.] &     \tabnewline axis defined in body 0, along which the relative rotation is measured\\ \hline
+    offset &     Real &      &     0. &     rotation offset [SI:1] subtracted from the measured rotation; can be used to change the zero rotation\\ \hline
+    visualization &     VMarkerBodiesRelativeRotationCoordinate &      &      &     parameters for visualization of item\\ \hline
+\end{longtable}
+\end{center}
+
+\noindent The item VMarkerBodiesRelativeRotationCoordinate has the following parameters:
+%reference manual TABLE
+\begin{center}
+  \footnotesize
+  \begin{longtable}{| p{4.5cm} | p{2.5cm} | p{0.5cm} | p{2.5cm} | p{6cm} |}
+    \hline
+    \bf Name & \bf type & \bf size & \bf default value & \bf description \\ \hline
+    show &     Bool &      &     True &     set true, if item is shown in visualization and false if it is not shown\\ \hline
+\end{longtable}
+\end{center}
+\par\noindent\rule{\textwidth}{0.4pt}
+\mysubsubsubsection{DESCRIPTION of MarkerBodiesRelativeRotationCoordinate:}
+\label{description_MarkerBodiesRelativeRotationCoordinate}
+\paragraph{Information on input parameters:} 
+\startTable{input parameter}{symbol}{description see tables above}
+\rowTable{bodyNumbers}{$[b_0,b_1]\tp$}{}
+\rowTable{localPosition0}{$\LU{m_0}{\pv}_0$}{}
+\rowTable{localPosition1}{$\LU{m_1}{\pv}_1$}{}
+\rowTable{axis0}{$\LU{m_0}{\av}_0$}{}
+\rowTable{offset}{$x_\mathrm{off}$}{}
+\finishTable
+ \noindent
+    The marker consists of two bodies, body $b_0$ and body $b_1$ with respective global marker positions $\LU{0}{\pv}_{m0}$ and $\LU{0}{\pv}_{m1}$,
+    depending on local positions $\LU{m_0}{\pv}_0$ and $\LU{m_1}{\pv}_1$, 
+    and marker orientations $\LU{0,m_0}{\Rot}_{m0}$ and $\LU{0,m_1}{\Rot}_{m1}$.
+    From the given axis \texttt{axis0}, we compute an orthonormal basis (orthonormal to axis0) relative to marker $m_0$,
+    \be
+      \LU{m_0,b}{\Rot}_b = \left[\LU{m_0}{\xv}_b, \LU{m_0}{\yv}_b, \LU{m_0}{\av}_0\right]
+    \ee
+    The relative rotation marker computes the relative rotation according to
+    \be
+      \LU{m_0,m_1}{\Rot}_{rel} = \LU{m_0,0}{\Rot}_{m0} \LU{0,m_1}{\Rot}_{m1}
+    \ee
+    This relative rotation, which represents a rotation about axis $\LU{m_0}{\av}_0$ is then transformed into the orthonormal basis,
+    \be
+      \LU{b}{\Rot}_{rel} = \LU{b,m_0}{\Rot}_b \LU{m_0,m_1}{\Rot}_{rel} \LU{m_0,b}{\Rot}_b
+    \ee
+    and contains the desired rotation about the z-axis, which can be extracted as
+    \be
+      \varphi = \mathrm{atan2}(\LU{b}{\Rot}_{rel}[1,0],\LU{b}{\Rot}_{rel}[0,0]) - x_\mathrm{off}
+    \ee
+    The global axis is computed as 
+    \be
+      \LU{0}{\av}_0 = \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\av}_0
+    \ee    
+    Using the angular velocities at the two bodies, $\LU{m_0}{\tomega_0}$ and  $\LU{m_1}{\tomega_1}$, the relative angular velocity, which may be used in coordinate spring-dampers or for velocity-level constraints, 
+    is simply computed as
+    \be
+      \dot \varphi = \LU{0}{\av}_0\tp \left( \LU{0,m_1}{\Rot}_{m1} \LU{m_1}{\tomega_1} - 
+                        \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\tomega_0} \right)
+    \ee
+    Jacobians are computed according to the relative rotation velocity.
+    Using this approach, coordinate constraints can be added to mechanisms to purely add internal drives, not affecting global momenta.
+    Furthermore, coupling to a relative translation can be used to create advanced mechanisms and gears.
+    %%RSTCOMPATIBLE
+\vspace{6pt}\par\noindent\rule{\textwidth}{0.4pt}
+%
+\noindent For examples on MarkerBodiesRelativeRotationCoordinate see Relevant Examples and TestModels with weblink:
+\bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/involuteGearGraphics.py}{\texttt{involuteGearGraphics.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/relativeRotationTranslationMechanism.py}{\texttt{relativeRotationTranslationMechanism.py}} (TestModels/)
+
+\ei
+
+%
+\newpage
+
+%+++++++++++++++++++++++++++++++++++
+
 \mysubsubsection{MarkerSuperElementPosition}
 \label{sec:item:MarkerSuperElementPosition}
 A position marker attached to a SuperElement, such as ObjectFFRF, ObjectGenericODE2 and ObjectFFRFreducedOrder (for which it is in its current implementation inefficient for large number of meshNodeNumbers). The marker acts on the mesh (interface) nodes, not on the underlying nodes of the object.
@@ -11996,6 +12470,7 @@ The item \mybold{MarkerSuperElementRigid} with type = 'SuperElementRigid' has th
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/netgenSTLtest.py}{\texttt{netgenSTLtest.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveCMStutorial.py}{\texttt{NGsolveCMStutorial.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveCraigBampton.py}{\texttt{NGsolveCraigBampton.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveFFRF.py}{\texttt{NGsolveFFRF.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveLinearFEM.py}{\texttt{NGsolveLinearFEM.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/NGsolveModalAnalysis.py}{\texttt{NGsolveModalAnalysis.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ObjectFFRFconvergenceTestBeam.py}{\texttt{ObjectFFRFconvergenceTestBeam.py}} (Examples/)
@@ -12005,7 +12480,6 @@ The item \mybold{MarkerSuperElementRigid} with type = 'SuperElementRigid' has th
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/abaqusImportTest.py}{\texttt{abaqusImportTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ACFtest.py}{\texttt{ACFtest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/linearFEMgenericODE2.py}{\texttt{linearFEMgenericODE2.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/linearFEMgenericODE2Test.py}{\texttt{linearFEMgenericODE2Test.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/NGsolveCMStest.py}{\texttt{NGsolveCMStest.py}} (TestModels/)
 \item  ...
 
@@ -12377,12 +12851,12 @@ The item \mybold{LoadForceVector} with type = 'ForceVector' has the following pa
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ROSMassPoint.py}{\texttt{ROSMassPoint.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/solutionViewerTest.py}{\texttt{solutionViewerTest.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/SpringDamperMassUserFunction.py}{\texttt{SpringDamperMassUserFunction.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcantileverTest.py}{\texttt{ANCFcantileverTest.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcantileverTestDyn.py}{\texttt{ANCFcantileverTestDyn.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle.py}{\texttt{ANCFcontactCircle.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle2.py}{\texttt{ANCFcontactCircle2.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFmovingRigidbody.py}{\texttt{ANCFmovingRigidbody.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFrotatingCable2D.py}{\texttt{ANCFrotatingCable2D.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/cartesianSpringDamper.py}{\texttt{cartesianSpringDamper.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/cartesianSpringDamperUserFunction.py}{\texttt{cartesianSpringDamperUserFunction.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate2.py}{\texttt{chatGPTupdate2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rigidBodyTutorial3.py}{\texttt{rigidBodyTutorial3.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/perf3DRigidBodies.py}{\texttt{perf3DRigidBodies.py}} (TestModels/)
@@ -12475,20 +12949,20 @@ The item \mybold{LoadTorqueVector} with type = 'TorqueVector' has the following 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/leggedRobot.py}{\texttt{leggedRobot.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/reevingSystem.py}{\texttt{reevingSystem.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/sliderCrank3DwithANCFbeltDrive2.py}{\texttt{sliderCrank3DwithANCFbeltDrive2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate.py}{\texttt{chatGPTupdate.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chatGPTupdate2.py}{\texttt{chatGPTupdate2.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rigidBodyTutorial3.py}{\texttt{rigidBodyTutorial3.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle.py}{\texttt{ANCFcontactCircle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFcontactCircle2.py}{\texttt{ANCFcontactCircle2.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFslidingJoint2D.py}{\texttt{ANCFslidingJoint2D.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFtestHalfcircle.py}{\texttt{ANCFtestHalfcircle.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ANCFtests2.py}{\texttt{ANCFtests2.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/flexibleRotor3Dtest.py}{\texttt{flexibleRotor3Dtest.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rigidBodyIMUtest.py}{\texttt{rigidBodyIMUtest.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/rigidRotor3DbasicBehaviour.py}{\texttt{rigidRotor3DbasicBehaviour.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFbeltDrive.py}{\texttt{ANCFbeltDrive.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFgeneralContactCircle.py}{\texttt{ANCFgeneralContactCircle.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFBeamTest.py}{\texttt{ANCFBeamTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ballBearingTest.py}{\texttt{ballBearingTest.py}} (TestModels/)
 \item  ...
 
 
@@ -12833,9 +13307,11 @@ The item \mybold{SensorObject} with type = 'Object' has the following parameters
 %
 \noindent For examples on SensorObject see Relevant Examples and TestModels with weblink:
 \bi
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ballBearningModel.py}{\texttt{ballBearningModel.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveALE.py}{\texttt{beltDriveALE.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveReevingSystem.py}{\texttt{beltDriveReevingSystem.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/ComputeSensitivitiesExample.py}{\texttt{ComputeSensitivitiesExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/craneReevingSystem.py}{\texttt{craneReevingSystem.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/HydraulicActuator2Arms.py}{\texttt{HydraulicActuator2Arms.py}} (Examples/)
@@ -12843,13 +13319,11 @@ The item \mybold{SensorObject} with type = 'Object' has the following parameters
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/HydraulicsUserFunction.py}{\texttt{HydraulicsUserFunction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/leggedRobot.py}{\texttt{leggedRobot.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/lugreFrictionTest.py}{\texttt{lugreFrictionTest.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/minimizeExample.py}{\texttt{minimizeExample.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/mobileMecanumWheelRobotWithLidar.py}{\texttt{mobileMecanumWheelRobotWithLidar.py}} (Examples/)
 \item  ...
 
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ballBearingTest.py}{\texttt{ballBearingTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/carRollingDiscTest.py}{\texttt{carRollingDiscTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/complexEigenvaluesTest.py}{\texttt{complexEigenvaluesTest.py}} (TestModels/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/contactSphereSphereTestEAPM.py}{\texttt{contactSphereSphereTestEAPM.py}} (TestModels/)
 \item  ...
 
 
@@ -12910,14 +13384,14 @@ The item \mybold{SensorBody} with type = 'Body' has the following parameters:
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/beltDriveReevingSystem.py}{\texttt{beltDriveReevingSystem.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bicycleIftommBenchmark.py}{\texttt{bicycleIftommBenchmark.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/bungeeJump.py}{\texttt{bungeeJump.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/camFollowerExample.py}{\texttt{camFollowerExample.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/cartesianSpringDamperUserFunction.py}{\texttt{cartesianSpringDamperUserFunction.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/chainDriveExample.py}{\texttt{chainDriveExample.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/contactCurvePolynomial.py}{\texttt{contactCurvePolynomial.py}} (Examples/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/contactCurveWithLongCurve.py}{\texttt{contactCurveWithLongCurve.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/finiteSegmentMethod.py}{\texttt{finiteSegmentMethod.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/flexiblePendulumANCF.py}{\texttt{flexiblePendulumANCF.py}} (Examples/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/fourBarMechanism3D.py}{\texttt{fourBarMechanism3D.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/kinematicTreePendulum.py}{\texttt{kinematicTreePendulum.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/mobileMecanumWheelRobotWithLidar.py}{\texttt{mobileMecanumWheelRobotWithLidar.py}} (Examples/)
-\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/Examples/newtonsCradle.py}{\texttt{newtonsCradle.py}} (Examples/)
 \item  ...
 
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/ANCFoutputTest.py}{\texttt{ANCFoutputTest.py}} (TestModels/)
@@ -13115,6 +13589,7 @@ The item \mybold{SensorMarker} with type = 'Marker' has the following parameters
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/pendulumFriction.py}{\texttt{pendulumFriction.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/plotSensorTest.py}{\texttt{plotSensorTest.py}} (TestModels/)
 \item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/reevingSystemSpringsTest.py}{\texttt{reevingSystemSpringsTest.py}} (TestModels/)
+\item \exuUrl{https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/TestModels/relativeRotationTranslationMechanism.py}{\texttt{relativeRotationTranslationMechanism.py}} (TestModels/)
 
 \ei
 

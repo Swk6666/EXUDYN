@@ -13,6 +13,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 import numpy as np
+import exudyn
 from exudyn.advancedUtilities import IsListOrArray
 import copy
 
@@ -39,8 +40,7 @@ def FilterSensorOutput(signal, filterWindow=5, polyOrder=3, derivative=0, centra
     derT1 = np.diff(t)
     derT0 = np.append(derT0,derT0[-1])
     derT1 = np.append(derT1[0], derT1)
-    # print("derT0=",derT0)
-    # print("derT1=",derT1)
+
     for i in range(nColumns-1):
         x = signal[:,i+1]
         if filterWindow == 0 and derivative != 0: #regular mode
@@ -58,7 +58,7 @@ def FilterSensorOutput(signal, filterWindow=5, polyOrder=3, derivative=0, centra
                 raise ValueError("FilterSensorOutput: unfiltered signals only supported up to 2nd derivatives")
             data[:,i+1] = der
         elif filterWindow == 0 and derivative == 0:
-            print("WARNING: FilterSensorOutput: no processing")
+            exudyn.Print("WARNING: FilterSensorOutput: no processing")
         else:
             if filterWindow%2 != 1:
                 raise ValueError("FilterSensorOutput: filterWindow must be ODD integer and >= 1")
@@ -101,7 +101,7 @@ def FilterSignal(signal, samplingRate=-1, filterWindow=5, polyOrder=3, derivativ
             raise ValueError("FilterSignal: unfiltered signals only supported up to 2nd derivatives")
         data = der
     elif filterWindow == 0 and derivative == 0:
-        print("WARNING: FilterSignal: no processing")
+        exudyn.Print("WARNING: FilterSignal: no processing")
     else:
         if filterWindow%2 != 1:
             raise ValueError("FilterSignal: filterWindow must be ODD integer and >= 1")
@@ -193,18 +193,18 @@ def GetInterpolatedSignalValue(time, dataArray, timeArray=[], dataArrayIndex = -
 
     
     index = int((time-t0) / dt)
-    #print('index=', index, ', t0=', t0, ', dt=', dt)
+
     if (time-t0) < 0.: #no interpolation
         index = 0
         if rangeWarning:
-            print('Warning: GetInterpolatedSignalValue: index returned smaller than 0; using 0 instead')
+            exudyn.Print('Warning: GetInterpolatedSignalValue: index returned smaller than 0; using 0 instead')
         if dataArrayIndex == -1: #1D array
             value = dataArray[0]
         else: #2D array
             value = dataArray[0,dataArrayIndex]
     elif index >= len(dataArray)-1: #no interpolation any more
         if time > tEnd and rangeWarning:
-            print('Warning: GetInterpolatedSignalValue: time larger than available time data; using last row of dataArray instead')
+            exudyn.Print('Warning: GetInterpolatedSignalValue: time larger than available time data; using last row of dataArray instead')
         index = len(dataArray)-1
         if dataArrayIndex == -1: #1D array
             value = dataArray[-1]
@@ -218,11 +218,11 @@ def GetInterpolatedSignalValue(time, dataArray, timeArray=[], dataArrayIndex = -
         #check if time index is correct:
         if timeArrayIndex == -1: #1D array
             if abs(tA-timeArrayNew[index]) > tolerance or abs(tB-timeArrayNew[index+1]) > tolerance :
-                print('Warning: GetInterpolatedSignalValue: timeArray does not seem to have constant sampling rate; use larger tolerance or numpy.interp(...) instead')
+                exudyn.Print('Warning: GetInterpolatedSignalValue: timeArray does not seem to have constant sampling rate; use larger tolerance or numpy.interp(...) instead')
         else: #2D array
             if (abs(tA-timeArrayNew[index,timeArrayIndex]) > tolerance or 
                 abs(tB-timeArrayNew[index+1,timeArrayIndex]) > tolerance):
-                print('Warning: GetInterpolatedSignalValue: timeArray does not seem to have constant sampling rate; use larger tolerance or numpy.interp(...) instead')
+                exudyn.Print('Warning: GetInterpolatedSignalValue: timeArray does not seem to have constant sampling rate; use larger tolerance or numpy.interp(...) instead')
             
 
         if dataArrayIndex == -1: #1D array
@@ -232,7 +232,6 @@ def GetInterpolatedSignalValue(time, dataArray, timeArray=[], dataArrayIndex = -
             valueA = dataArray[index,dataArrayIndex]
             valueB = dataArray[index+1,dataArrayIndex]
 
-        #print('tA=', tA, ', tB=', tB, ', valueA=', valueA, ', valueB=', valueB)
         value = valueA*(tB-time)/dt + valueB*(time-tA)/dt
 
     return value
@@ -296,7 +295,7 @@ if __name__ == '__main__':
     x2 = np.array([GetInterpolatedSignalValue(ti, x, t, rangeWarning=False) for ti in t2])
 
     #about 1.4 seconds on 3GHz i7 processor
-    print('5e5 x GetInterpolatedSignalValue takes', time.time()+ts, 'seconds')
+    exudyn.Print('5e5 x GetInterpolatedSignalValue takes', time.time()+ts, 'seconds')
 
 
 

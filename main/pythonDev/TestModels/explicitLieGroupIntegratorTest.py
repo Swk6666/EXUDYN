@@ -134,8 +134,8 @@ dSize=0.01
 SC.visualizationSettings.bodies.defaultSize = [dSize, dSize, dSize]
 
 if useGraphics: #only start graphics once, but after background is set
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -197,7 +197,6 @@ for method in methods:
     simulationSettings.timeIntegration.absoluteTolerance = 1e-10
     simulationSettings.timeIntegration.relativeTolerance = 0
     
-    # print(exu.InfoStat())
     solverType = method
     mbs.SolveDynamic(solverType=solverType, simulationSettings=simulationSettings)
     omega=mbs.GetSensorValues(sAngVelLoc) 
@@ -211,7 +210,6 @@ for method in methods:
         exu.Print("nSteps=",nsteps)
         err+=nsteps/8517 #reference value
     #exu.Print("omegay =", mbs.GetNodeOutput(nRB,exu.OutputVariableType.AngularVelocity)[1])
-    # print(exu.InfoStat())
 
 err *=1e-3 #avoid problems with 32/64 bits
 exu.Print("explicitLieGrouIntegratorTest result=",err)
@@ -221,8 +219,8 @@ exudynTestGlobals.testResult = err
 exu.Print("explicitLieGrouIntegratorTest error=",exudynTestGlobals.testError)
 
 if useGraphics: #only start graphics once, but after background is set
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
     if drawResults:
         

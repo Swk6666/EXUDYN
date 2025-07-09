@@ -52,7 +52,6 @@ typedef VectorList<2> Vector2DList; //for BeamSectionGeometry
 typedef VectorList<6> Vector6DList;
 typedef MatrixList<6> Matrix6DList;
 
-
 //typedef ResizableArray<SlimVector<3>> Vector3DList; 
 //typedef ResizableArray<ConstSizeMatrix<3 * 3>> Matrix3DList;
 //typedef ResizableArray<SlimVector<2>> Vector2DList; //for BeamSectionGeometry
@@ -175,20 +174,74 @@ namespace EXUmath {
 		transformedPosition += temp;
 	}
 
-	//! compute orthogonal basis vectors (normal1, normal2) for given vector0 (non-unique solution!); if vector0 == [0,0,0], then any normal basis is returned
-	inline void ComputeOrthogonalBasis(Vector3D vector0, Vector3D& normal1, Vector3D& normal2)
+	//! given a current angle in range [-pi,pi] we like to compute the angle angleCurrent + i*(2*pi) such that the new angle is closest to anglePrev
+	inline Real ContinuousAngle(Real angleCurrent, Real anglePrev)
 	{
-		Real L0 = vector0.GetL2Norm();
-		if (L0 == 0.) { normal1.SetVector({ 1.,0.,0. }); normal2.SetVector({ 0.,1.,0. }); } //any solution will suffice
-		vector0 *= 1. / L0;
+		// Compute the difference between the current angle and the previous angle
+		Real diff = angleCurrent - anglePrev;
 
-		if (::fabs(vector0[0]) > 0.5 && ::fabs(vector0[1]) < 0.1 && ::fabs(vector0[2]) < 0.1) { normal1.SetVector({ 0., 1., 0. }); }
-		else { normal1.SetVector({ 1., 0., 0. }); }
+		// Adjust the difference to be within the range [-pi, pi]
+		diff -= std::round(diff / (2 * EXUstd::pi)) * (2 * EXUstd::pi);
 
-		Real h = normal1 * vector0;
+		// Compute the new angle by adding the adjusted difference to the previous angle
+		return anglePrev + diff;
+	}
+
+	//! compute orthogonal basis vectors (normal1, normal2) for given vector0 (non-unique solution!); if vector0 == [0,0,0], then any normal basis is returned
+	template<class TReal>
+	inline void ComputeOrthogonalBasisVectors(SlimVectorBase<TReal,3> vector0, SlimVectorBase<TReal, 3>& normal1, SlimVectorBase<TReal, 3>& normal2, bool isNormalized=false)
+	{
+		if (!isNormalized)
+		{
+			TReal L0 = vector0.GetL2Norm();
+			if (L0 == (TReal)0.) { normal1.SetVector({ 1.,0.,0. }); normal2.SetVector({ 0.,1.,0. }); return; } //any solution will suffice
+			vector0 *= (TReal)1. / L0;
+		}
+		if (::fabs(vector0[0]) > (TReal)0.5 
+			&& ::fabs(vector0[1]) < (TReal)0.1 
+			&& ::fabs(vector0[2]) < (TReal)0.1) 
+		{ 
+			normal1.SetVector({ (TReal)0., (TReal)1., (TReal)0. });
+		}
+		else 
+		{ 
+			normal1.SetVector({ (TReal)1., (TReal)0., (TReal)0. });
+		}
+
+		TReal h = normal1 * vector0;
 		normal1 -= h * vector0;
 		normal1.Normalize();
 		normal2 = vector0.CrossProduct(normal1);
+	}
+
+	//! compute Matrix3D with basis vectors in columns, from given vector used for X-column;
+	template<class TReal>
+	inline ConstSizeMatrixBase<TReal, 9> ComputeOrthogonalBasisX(SlimVectorBase<TReal, 3> vectorX)
+	{
+		ConstSizeMatrixBase<TReal, 9> matrix3D;
+		matrix3D.SetNumberOfRowsAndColumns(3, 3);
+
+		SlimVectorBase<TReal, 3> vectorY, vectorZ;
+		ComputeOrthogonalBasisVectors(vectorX, vectorY, vectorZ);
+		matrix3D.SetColumnVector(0, vectorX);
+		matrix3D.SetColumnVector(1, vectorY);
+		matrix3D.SetColumnVector(2, vectorZ);
+		return matrix3D;
+	}
+
+	//! compute Matrix3D with basis vectors in columns, from given vector used for Z-column;
+	template<class TReal>
+	inline ConstSizeMatrixBase<TReal, 9> ComputeOrthogonalBasisZ(SlimVectorBase<TReal, 3> vectorZ)
+	{
+		ConstSizeMatrixBase<TReal, 9> matrix3D;
+		matrix3D.SetNumberOfRowsAndColumns(3, 3);
+
+		SlimVectorBase<TReal, 3> normal0, normal1;
+		ComputeOrthogonalBasisVectors(vectorZ, normal0, normal1);
+		matrix3D.SetColumnVector(0, normal1);
+		matrix3D.SetColumnVector(1, -normal0);
+		matrix3D.SetColumnVector(2, vectorZ);
+		return matrix3D;
 	}
 
 	//! compute normalized normal from triangle points; for function with single normal see Geometry.h
@@ -206,17 +259,19 @@ namespace EXUmath {
 	//! Check for overlap along an axis, following SAT (Separating axis theorem / Hyperplane separation theorem) from computer graphics
 	//! v0, v1, v2 define the vertices of the triangle and normAxis is the normalized axis for the check
 	//! the box is having the dimension 2*boxHalfSize and is assumed to be located at (0,0,0)
-	inline bool TriangleOverlapOnAxis(const Vector3D& normAxis, const Vector3D& v0, const Vector3D& v1, const Vector3D& v2, const Vector3D& boxHalfSize)
+	template<class TReal>
+	bool TriangleOverlapOnAxis(const SlimVectorBase<TReal, 3>& normAxis, const SlimVectorBase<TReal, 3>& v0, 
+		const SlimVectorBase<TReal, 3>& v1, const SlimVectorBase<TReal, 3>& v2, const SlimVectorBase<TReal, 3>& boxHalfSize)
 	{
 		// Project triangle onto the axis
-		Real p0 = v0 * normAxis;
-		Real p1 = v1 * normAxis;
-		Real p2 = v2 * normAxis;
-		Real triMin = EXUstd::Minimum(EXUstd::Minimum(p0, p1), p2);
-		Real triMax = EXUstd::Maximum(EXUstd::Maximum(p0, p1), p2);
+		TReal p0 = v0 * normAxis;
+		TReal p1 = v1 * normAxis;
+		TReal p2 = v2 * normAxis;
+		TReal triMin = EXUstd::Minimum(EXUstd::Minimum(p0, p1), p2);
+		TReal triMax = EXUstd::Maximum(EXUstd::Maximum(p0, p1), p2);
 
 		// Project AABB onto the axis
-		Real r = std::fabs(boxHalfSize[0] * normAxis[0]) +
+		TReal r = std::fabs(boxHalfSize[0] * normAxis[0]) +
 			std::fabs(boxHalfSize[1] * normAxis[1]) +
 			std::fabs(boxHalfSize[2] * normAxis[2]);
 
@@ -372,6 +427,19 @@ namespace EXUmath {
 			CHECKandTHROWstring("SetLobattoIntegrationRule: invalid order");
 		}
 	}
+
+	//numerically integrate values (evaluated at points) in interval [a,b]
+	template<class TVector>
+	Real NumIntegrateValues(const TVector & values, const TVector& points, const TVector& weights, Real a, Real b)
+	{
+		Real result = 0;
+		for (Index i = 0; i < points.NumberOfItems(); i++) 
+		{ 
+			result += 0.5 * (b - a) * weights[i] * values[i];
+		}
+		return result;
+	};
+
 
 	//numerically integrate a function in interval [a,b]
 	//inline does not work on older MacOS

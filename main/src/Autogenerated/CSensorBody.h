@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2022-05-26  21:30:36 (last modified)
+* @date         2025-05-05  23:27:44 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -84,6 +84,12 @@ public: // AUTO:
     virtual Index GetObjectNumber() const override
     {
         return parameters.bodyNumber;
+    }
+
+    //! AUTO:  change bodyNumber
+    virtual void SetObjectNumber(Index bodyNumber) override
+    {
+        parameters.bodyNumber = bodyNumber;
     }
 
     //! AUTO:  return sensor type

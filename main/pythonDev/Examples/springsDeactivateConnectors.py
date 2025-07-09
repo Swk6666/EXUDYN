@@ -74,7 +74,7 @@ mGround = mbs.AddMarker(MarkerNodeCoordinate(nodeNumber = nGround, coordinate=0)
 mbs.Assemble()
 
 if useGraphics: 
- exu.StartRenderer()
+ SC.renderer.Start()
 
 simulationSettings = exu.SimulationSettings()
 simulationSettings.timeIntegration.numberOfSteps = 20
@@ -119,6 +119,6 @@ u = mbs.GetNodeOutput(nBodies-2, exu.OutputVariableType.Position) #tip node
 print('dynamic tip displacement (y)=', u[1])
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() 
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() 
 

@@ -123,8 +123,8 @@ simulationSettings.solutionSettings.writeSolutionToFile=False
 SC.visualizationSettings.nodes.defaultSize = 0.05
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
@@ -141,8 +141,8 @@ exudynTestGlobals.testResult = u
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
     
     

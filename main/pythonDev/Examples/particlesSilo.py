@@ -244,10 +244,10 @@ simulate=True
 if simulate:
     if useGraphics:
         SC.visualizationSettings.general.autoFitScene = False
-        exu.StartRenderer()
+        SC.renderer.Start()
         if 'renderState' in exu.sys:
-            SC.SetRenderState(exu.sys['renderState'])
-        #mbs.WaitForUserToContinue()
+            SC.renderer.SetState(exu.sys['renderState'])
+        #SC.renderer.DoIdleTasks()
 
     simulationSettings.timeIntegration.numberOfSteps = int(tEnd/stepSize)
     simulationSettings.timeIntegration.endTime = tEnd
@@ -255,8 +255,8 @@ if simulate:
     #print(gContact)
 
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
         
 if not simulate:
     SC.visualizationSettings.general.autoFitScene = False

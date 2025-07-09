@@ -46,13 +46,16 @@ public:
     //get sensor data list (if available); return true if further sensors available
     virtual bool GetSensorsPositionsVectorsLists(Index mbsNumber, Index positionSensorIndex, Index vectorSensorIndex, Index triadSensorIndex,
         Vector3DList& sensorTracePositions, Vector3DList& sensorTraceVectors, Matrix3DList& sensorTraceTriads, Vector sensorTraceValues, 
-        const VSettingsSensorTraces& traces) = 0;
+        const VSettingsTraces& traces) = 0;
+
+	virtual std::vector<VSettingsMaterial>* GetGraphicsMaterialList() = 0;
+	virtual void CopyMaterialsFromVisualizationSettings() = 0;
 
 	virtual std::string GetComputationMessage(bool solverInformation = true,
 		bool solutionInformation = true, bool solverTime = true) = 0; //! any multi-line text message from computation to be shown in renderer (e.g. time, solver, ...)
 	virtual MainSystem* GetMainSystemBacklink(Index iSystem) = 0; //! REMOVE: get backlink of ith main system (0 if not existing), temporary for selection
 	virtual Index NumberOFMainSystemsBacklink() const = 0; //! REMOVE: get backlink to number of main systems, temporary for selection
-	virtual bool DoIdleOperations() = 0; //!< this function does any idle operations (execute some python commands) and returns false if stop flag in the render engine, otherwise true;
+	virtual bool DoSingleIdleOperation() = 0; //!< this function does any idle operations (execute some python commands) and returns false if stop flag in the render engine, otherwise true;
 	virtual void SetZoomAllRequest(bool flag) = 0; //!< request ZoomAll
 
 	virtual ~VisualizationSystemContainerBase() {} //added for correct deletion of derived classes
@@ -61,24 +64,18 @@ public:
 	//HELPER FUNCTIONS
 
 	//! compute RGBA-color for given value within a min/max range
-	static Float4 ColorBarColor(float minVal, float maxVal, float value)
+	static Float4 ColorBarColor(float minVal, float maxVal, float value, float alpha=1.f)
 	{
-		//float v = EXUstd::LinearInterpolate(0.f, 1.f, minVal, maxVal, value);
 		float v = 0;
 		if (maxVal != minVal) { v = (value - minVal) / (maxVal - minVal); }
 
-		if (v < 0.f) { return Float4({ 0.1f, 0.1f, 0.1f, 1.f }); }
-		else if (v < 0.25f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.1f,0.00f,0.25f, v),EXUstd::LinearInterpolate(0.1f,0.9f,0.00f,0.25f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.00f,0.25f, v), 1.f }); }
-		else if (v < 0.50f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.1f,0.25f,0.50f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.25f,0.50f, v),EXUstd::LinearInterpolate(0.9f,0.1f,0.25f,0.50f, v), 1.f }); }
-		else if (v < 0.75f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.9f,0.50f,0.75f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.50f,0.75f, v),EXUstd::LinearInterpolate(0.1f,0.1f,0.50f,0.75f, v), 1.f }); }
-		else if (v <= 1.00f) { return Float4({ EXUstd::LinearInterpolate(0.9f,0.9f,0.75f,1.00f, v),EXUstd::LinearInterpolate(0.9f,0.1f,0.75f,1.00f, v),EXUstd::LinearInterpolate(0.1f,0.1f,0.75f,1.00f, v), 1.f }); }
+		if (v < 0.f) { return Float4({ 0.1f, 0.1f, 0.1f, alpha }); }
+		else if (v < 0.25f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.1f,0.00f,0.25f, v),EXUstd::LinearInterpolate(0.1f,0.9f,0.00f,0.25f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.00f,0.25f, v), alpha }); }
+		else if (v < 0.50f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.1f,0.25f,0.50f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.25f,0.50f, v),EXUstd::LinearInterpolate(0.9f,0.1f,0.25f,0.50f, v), alpha }); }
+		else if (v < 0.75f) { return Float4({ EXUstd::LinearInterpolate(0.1f,0.9f,0.50f,0.75f, v),EXUstd::LinearInterpolate(0.9f,0.9f,0.50f,0.75f, v),EXUstd::LinearInterpolate(0.1f,0.1f,0.50f,0.75f, v), alpha }); }
+		else if (v <= 1.00f) { return Float4({ EXUstd::LinearInterpolate(0.9f,0.9f,0.75f,1.00f, v),EXUstd::LinearInterpolate(0.9f,0.1f,0.75f,1.00f, v),EXUstd::LinearInterpolate(0.1f,0.1f,0.75f,1.00f, v), alpha }); }
 
-		return Float4({ 0.9f, 0.9f, 0.9f, 1.f });
-		//{ 0.1, 0.1, 0.9 }, //previous values
-		//{ 0.1, 0.9, 0.9 },
-		//{ 0.1, 0.9, 0.1 },
-		//{ 0.9, 0.9, 0.1 },
-		//{ 0.9, 0.1, 0.1 },
+		return Float4({ 0.9f, 0.9f, 0.9f, alpha });
 	}
 };
 
@@ -150,11 +147,17 @@ public:
 	Matrix4DF projectionMatrix;		//!< projection matrix as used in openGL
 	Index projectionInfo;			//!< some additional information on how to apply projection; may be erased in future, just for trial
 	
-	Vector2D mouseCoordinates;		//!current mouse coordinates as obtained from GLFW
-	Vector2D openGLcoordinates;		//!current mouse coordinates projected in current model view plane (x/y)
-	bool mouseLeftPressed;			//!current left mouse button as obtained from GLFW
-	bool mouseRightPressed;			//!current right mouse button as obtained from GLFW
-	bool mouseMiddlePressed;		//!current middle mouse button as obtained from GLFW
+	Vector2D mouseCoordinates;		//!< current mouse coordinates as obtained from GLFW
+	Vector2D openGLcoordinates;		//!< current mouse coordinates projected in current model view plane (x/y)
+	bool mouseLeftPressed;			//!< current left mouse button as obtained from GLFW
+	bool mouseRightPressed;			//!< current right mouse button as obtained from GLFW
+	bool mouseMiddlePressed;		//!< current middle mouse button as obtained from GLFW
+
+	//for item selection:
+	Index mouseSelectionMbsNumber;  //!< mbs number of last selected item
+	ItemType mouseSelectionItemType;//!< item type of last selected item (None if no selection)
+	Index mouseSelectionItemID;		//!< item ID of last selected item
+	float mouseSelectionZdepth;		//!< Z-depth of last selected item
 
 	//for space mouse (3D position + 3D rotation):
 	Vector3D joystickPosition;		//!< stored position of joystick, if available

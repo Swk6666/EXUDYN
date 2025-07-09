@@ -152,13 +152,13 @@ try:
     
     simulationSettings.solutionSettings.solutionInformation = "Rigid pendulum"
     
-    exu.StartRenderer()
+    SC.renderer.Start()
     
     
     mbs.SolveDynamic(simulationSettings)
     
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 finally:
     CloseTCPIPconnection(mbs.sys['TCPIPobject'])

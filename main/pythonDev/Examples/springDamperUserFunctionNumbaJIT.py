@@ -53,7 +53,7 @@ useGraphics = False #without test
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-exu.Print('EXUDYN version='+exu.GetVersionString())
+exu.Print('EXUDYN version='+exu.config.Version())
 
 L=0.5
 mass = 1.6          #mass in kg

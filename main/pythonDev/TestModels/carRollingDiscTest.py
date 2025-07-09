@@ -46,7 +46,7 @@ v0 = -5*0 #initial car velocity in y-direction
 omega0Wheel = [v0/rWheel,0,0]                   #initial angular velocity around z-axis
 
 #v0 = [0,0,0]                                   #initial translational velocity
-#print("v0Car=",v0)
+#exu.Print("v0Car=",v0)
 
 #%%++++++++++++++++++++++++++++++
 #car parameters and inertia:
@@ -213,8 +213,8 @@ h=0.002 #no visual differences for step sizes smaller than 0.0005
 
 if useGraphics:
     tEnd = 4
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
 simulationSettings.timeIntegration.endTime = tEnd
@@ -232,8 +232,8 @@ SC.visualizationSettings.nodes.basisSize = 0.015
 mbs.SolveDynamic(simulationSettings, solverType=exu.DynamicSolverType.TrapezoidalIndex2)
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 c=mbs.GetNodeOutput(n0, variableType=exu.OutputVariableType.Coordinates)
 u=sum(c)

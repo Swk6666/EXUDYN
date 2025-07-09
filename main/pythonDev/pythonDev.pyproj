@@ -53,8 +53,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|venvP311" />
     <InterpreterReference Include="CondaEnv|CondaEnv|venvP39" />
-    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda37-64" />
     <InterpreterReference Include="Global|PythonCore|3.9" />
   </ItemGroup>
   <ItemGroup>

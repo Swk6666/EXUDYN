@@ -1029,15 +1029,15 @@ void CSolverExplicitTimeInt::UpdateODE2StageCoordinatesLieGroup(CSystem& computa
 	const Vector& refODE2 = computationalSystem.GetSystemData().GetCData().referenceState.ODE2Coords;
 
 	int nItems = lieGroupNodes.NumberOfItems();
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 
 	Index taskSplit = (nThreads > 1 && nItems >= 1000) ? 16 * nThreads : nThreads; //difficult to optimally set for nodes
-	exuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
+	ExuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
 
-	exuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2, &refODE2, &stepSize, &i, &nItems](NGSsizeType j)
+	ExuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2, &refODE2, &stepSize, &i, &nItems](ParallelSizeType j)
 	{
 		//as nodes are independent, tasks can be performed thread-independent!
-		//Index threadID = exuThreading::TaskManager::GetThreadId();
+		//Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		Index n = lieGroupNodes[(Index)j];
 		//Lie group nodes:
@@ -1092,15 +1092,15 @@ void CSolverExplicitTimeInt::LieGroupComputeKstage(CSystem& computationalSystem,
 	}
 
 	int nItems = lieGroupNodes.NumberOfItems();
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 
 	Index taskSplit = (nThreads > 1 && nItems >= 1000) ? 16 * nThreads : nThreads; //difficult to optimally set for nodes
-	exuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
+	ExuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
 
-	exuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2_t, &stageDerivODE2, &stageDerivLieODE2, &stepSize, &i, &nItems](NGSsizeType j)
+	ExuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2_t, &stageDerivODE2, &stageDerivLieODE2, &stepSize, &i, &nItems](ParallelSizeType j)
 	{
 		//as nodes are independent, tasks can be performed thread-independent!
-		//Index threadID = exuThreading::TaskManager::GetThreadId();
+		//Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		Index n = lieGroupNodes[(Index)j];
 		//Lie group nodes:
@@ -1166,15 +1166,15 @@ void CSolverExplicitTimeInt::LieGroupODE2StepEvaluation(CSystem& computationalSy
 	//Lie group nodes:
 
 	int nItems = lieGroupNodes.NumberOfItems();
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 
 	Index taskSplit = (nThreads > 1 && nItems >= 1000) ?  16 * nThreads : nThreads; //difficult to optimally set for nodes
-	exuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
+	ExuThreading::TotalCosts costs = (nThreads == 1 || nItems < 100) ? 0 : 1000;
 
-	exuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2, &stepSize, &weights, &refODE2, &nItems](NGSsizeType j) 
+	ExuThreading::ParallelFor(nItems, [this, &computationalSystem, &solutionODE2, &stepSize, &weights, &refODE2, &nItems](ParallelSizeType j) 
 	{
 		//as nodes are independent, tasks can be performed thread-independent!
-		//Index threadID = exuThreading::TaskManager::GetThreadId();
+		//Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		Index n = lieGroupNodes[(Index)j];
 

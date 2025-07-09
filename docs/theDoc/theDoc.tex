@@ -276,7 +276,7 @@ columns=flexible, %do not add Phantom spaces at "'"
 
 \topmargin-1.3cm \headheight0cm \headsep1cm \topskip1cm \leftmargini0.5cm \textwidth17cm \textheight24.5cm \footskip1cm   \oddsidemargin-0.5cm \evensidemargin-0.5cm %adjust page size
 
-\newcommand{\tabnewline}{\newline}
+\newcommand{\tabnewline}{\ \newline} %2025-05-6: add "\ " at the beginning to avoid problems with newer pdflatex
 \newcommand{\horizontalRuler}{\par\noindent\rule{\textwidth}{0.4pt}}
 
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -331,7 +331,7 @@ columns=flexible, %do not add Phantom spaces at "'"
 	{\tiny (mesh and FEM-model generated with NETGEN and NGsolve -- 647058 total coordinates)}
 \end{center}
 \vspace{0.2cm}
-{\small \input{version}}\\
+{\small Exudyn version = \input{version.txt}}\\
 {\small (\input{buildDate})}\\
 {\small CHECK \refSection{sec:issueTracker} for changes from previous versions!!!\\}
 \vspace{0.7cm}
@@ -379,69 +379,6 @@ This section shows typical abbreviations. For further symbols in notation, see S
 \input{tutorial}
 }
 
-%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-%\mysection{Python-C++ command interface} \label{sec:PCpp:command:interface}
-%This chapter lists the basic interface functions which can be used to set up a \codeName\ model in Python.
-%
-%\mysubsection{General information on Python interface}
-%\label{sec:generalPythonInterface}
-%%
-%To import the module, just include the \codeName\ module in Python (for compatibility with examples and other users, we recommend to use the '\texttt{exu}' abbreviation throughout):
-%\bi
-  %\item[] \texttt{import exudyn as exu}
-%\ei
-%In addition, you may work with a convenient interface for your items, therefore also always include the line
-%\bi
-  %\item[] \texttt{from exudyn.itemInterface import *}
-%\ei
-%Everything you work with is provided by the class \texttt{SystemContainer}, except for some very basic system functionality (which is inside the \codeName\ module).
-%
-%You can create a new \texttt{SystemContainer}, which is a class that is initialized by assigning a system container to a variable, usually denoted as 'SC':
-%\bi
-  %\item[] \texttt{SC = exu.SystemContainer()}
-%\ei
-%Note that creating a second \texttt{exu.SystemContainer()} will be independent of \texttt{SC} and therefore usually makes no sense.
-%
-%Furthermore, there are a couple of commands available directly in the \codeName\ module, given in the following subsections.
-%Regarding the {\bf (basic) module access}, functions are related to the '\texttt{exudyn = exu}' module, see these examples:
-%\begin{lstlisting}[language=Python, firstnumber=14]
-  %import exudyn as exu
-  %from exudyn.itemInterface import *
-  %SC = exu.SystemContainer()
-  %exu.InfoStat() #prints some statistics if available
-  %exu.Go() #creates a systemcontainer and main system
-  %nInvalid = exu.InvalidIndex() #the invalid index, depends on architecture and version
-%\end{lstlisting} \vspace{12pt}
-%
-%Understanding the usage of functions for python object '\texttt{SystemContainer}' provided by \codeName, the following examples might help:
-%\begin{lstlisting}[language=Python, firstnumber=14]
-  %import exudyn as exu
-  %from exudyn.itemInterface import *
-  %SC = exu.SystemContainer()
-  %mbs = SC.AddSystem()
-  %nSys = SC.NumberOfSystems()
-  %print(nSys)
-  %SC.Reset()
-%\end{lstlisting} \vspace{12pt}
-%%
-%If you run a parameter variation (check \texttt{Examples/parameterVariationExample.py}), you may delete the created \texttt{MainSystem} \texttt{mbs} and the \texttt{SystemContainer} \texttt{SC} before creating new instances in order to avoid memory growth.
-%
-%\mysubsubsection{Item index}
-%\label{sec:itemIndex}
-%Many functions will work with node numbers ('\texttt{NodeIndex}'), object numbers ('\texttt{ObjectIndex}'), marker numbers ('\texttt{MarkerIndex}') and others. These numbers are special objects, which have been introduced in order to avoid mixing up, e.g., node and object numbers.
-%For example, the command \texttt{mbs.AddNode(...)} returns a \texttt{NodeIndex}. For these indices, the following rules apply:
-%\bi
-	%\item \texttt{mbs.Add[Node|Object|...](...)} returns a specific \texttt{NodeIndex}, \texttt{ObjectIndex}, ...
-	%\item You can create any item index, e.g., using \texttt{ni = NodeIndex(42)} or \texttt{oi = ObjectIndex(42)}
-	%\item You can convert any item index, e.g., NodeIndex \texttt{ni} into an integer number using \texttt{int(ni)} of \texttt{no.GetIndex()}
-	%\item Still, you can use integers as initialization for item numbers, e.g., \\
-	      %\texttt{mbs.AddObject(MassPoint(nodeNumber=13, ...))}\\
-				%However, it must be a pure integer type.
-	%\item You can also print item indices, e.g., \texttt{print(ni)} as it converts to string by default
-	%\item If you are unsure about the type of an index, use \texttt{ni.GetTypeString()} to show the index type
-%\ei
-
 %+++++++++++++++++++++++++++++++++++++
 \iftoggle{compileAll}
 {
@@ -460,8 +397,7 @@ This section shows typical abbreviations. For further symbols in notation, see S
 }
 
 %+++++++++++++++++++++++++++++++++++++
-\mysection{Python utility functions}
-\label{sec:pythonUtilityFunctions}
+\mysectionlabel{Python utility functions}{sec:pythonUtilityFunctions}
 This chapter describes in every subsection the functions and classes of the utility modules. These modules help to create multibody systems with the EXUDYN core module. Functions are implemented in Python and can be easily changed, extended and also verified by the user. {\bf Check the source code} by entering these functions in Sypder and pressing {\bf CTRL + left mouse button}. These Python functions are much slower than the functions available in the C++ core. Some matrix computations with larger matrices implemented in numpy and scipy, however, are parallelized and therefore very efficient.
 
 Note that in general functions accept lists and numpy arrays. If not, an error will occur, which is easily tracked.
@@ -470,8 +406,7 @@ Furthermore, angles are generally provided in radian ($2\pi$ equals 360$^o$) and
 Functions have been implemented, if not otherwise mentioned, by Johannes Gerstmayr.
 
 
-\mysubsection{Utility: ResultsMonitor}
-\label{sec:resultsMonitor}
+\mysubsectionlabel{Utility: ResultsMonitor}{sec:resultsMonitor}
 The results monitor is a special tool, which allows to monitor results during simulation.
 This is intended, e.g., to show results for long-term simulations or to visualize results for teaching.
 The tool can visualize time dependent data (e.g., from sensors or solution files) or data from optimization.
@@ -506,14 +441,14 @@ example: (to be called from windows Anaconda prompt or in linux terminal in the 
 \input{pythonUtilitiesDescription}
 }
 
-\mysection{Objects, nodes, markers, loads and sensors reference manual} \label{sec:item:reference:manual}
+\mysectionlabel{Objects, nodes, markers, loads and sensors reference manual}{sec:item:reference:manual}
 %rather large section on all items [MAIN part of the docu]:
 \iftoggle{compileAll}
 {
 \input{itemDefinition}
 }
 
-\mysection{Structures and Settings}\label{sec:settingsStructures}
+\mysectionlabel{Structures and Settings}{sec:settingsStructures}
 
 %+++++++++++++++++++++++++++++++++++++
 \iftoggle{compileAll}
@@ -537,8 +472,7 @@ example: (to be called from windows Anaconda prompt or in linux terminal in the 
 }
 
 %+++++++++++++++++++++++++++++++++++++
-\mysection{Issues and bugs}
-\label{sec:issueTracker}
+\mysectionlabel{Issues and bugs}{sec:issueTracker}
 \iftoggle{compileAll}
 {
 \renewcommand{\baselinestretch}{1.0} %smaller linespace for issues

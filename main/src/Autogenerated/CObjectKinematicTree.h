@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-10-30  10:57:29 (last modified)
+* @date         2025-06-07  20:45:48 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -40,7 +40,7 @@ public: // AUTO:
     Index nodeNumber;                             //!< AUTO: node number (type NodeIndex) of GenericODE2 node containing the coordinates for the kinematic tree; \f$n\f$ being the number of minimal coordinates
     Vector3D gravity;                             //!< AUTO: gravity vector in inertial coordinates; used to simply apply gravity as LoadMassProportional is not available for KinematicTree
     Vector3D baseOffset;                          //!< AUTO: offset vector for base, in global coordinates
-    JointTypeList jointTypes;                     //!< AUTO: joint types of kinematic Tree joints; must be always set
+    JointTypeList jointTypes;                     //!< AUTO: joint types of kinematic Tree joints, using exu.JointType, like exu.JointType.RevoluteZ; must be always set
     ArrayIndex linkParents;                       //!< AUTO: index of parent joint/link; if no parent exists, the value is \f$-1\f$; by default, \f$p_0=-1\f$ because the \f$i\f$th parent index must always fulfill \f$p_i<i\f$; must be always set
     Matrix3DList jointTransformations;            //!< AUTO: list of constant joint transformations from parent joint coordinates \f$p_0\f$ to this joint coordinates \f$j_0\f$; this allows to adjust the orientation of the joint axes (but it does not affect the joint offset); if no parent exists (\f$-1\f$), the base coordinate system \f$0\f$ is used; must be always set
     Vector3DList jointOffsets;                    //!< AUTO: list of constant joint offsets from parent joint to this joint; \f$p_0\f$, \f$p_1\f$, \f$\ldots\f$ denote the parent coordinate systems; this means that the joint offset is added prior to performing the joint transformation; if no parent exists (\f$-1\f$), the base coordinate system \f$0\f$ is used; must be always set
@@ -305,7 +305,14 @@ public: // AUTO:
     //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
     virtual Index GetNodeNumber(Index localIndex) const override
     {
+        CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);
         return parameters.nodeNumber;
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumber=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object

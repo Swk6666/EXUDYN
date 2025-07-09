@@ -217,7 +217,7 @@ SC.visualizationSettings.connectors.showContact = True
 
 
 if useGraphics: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 #get initial velocities
 vInit = mbs.systemData.GetODE2Coordinates_t(configuration = exu.ConfigurationType.Initial)
@@ -282,8 +282,8 @@ if solveDynamic:
     mbs.SolveDynamic(simulationSettings)
     
 if useGraphics: 
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 sol = mbs.systemData.GetODE2Coordinates(); 

@@ -191,8 +191,8 @@ simulationSettings.linearSolverType = exu.LinearSolverType.EigenSparse
 
  
 if useGraphics:
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue() #press space to continueq
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks() #press space to continueq
 
 mbs.SolveDynamic(simulationSettings=simulationSettings)
 sensorValues = mbs.GetSensorValues(sTip)
@@ -208,8 +208,8 @@ exudynTestGlobals.testResult = result
 
 
 if useGraphics:
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
     mbs.SolutionViewer()
 

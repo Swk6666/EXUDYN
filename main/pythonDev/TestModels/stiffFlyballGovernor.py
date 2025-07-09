@@ -299,8 +299,8 @@ simulationSettings = exu.SimulationSettings() #takes currently set values or def
 
 
 if useGraphics: #only start graphics once, but after background is set
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
     
 dynamicSolver = exu.MainSolverImplicitSecondOrder()
 
@@ -339,8 +339,8 @@ dynamicSolver.SolveSystem(mbs, simulationSettings)
 #mbs.SolveDynamic(simulationSettings)
 
 if useGraphics: #only start graphics once, but after background is set
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 for i in range(4):

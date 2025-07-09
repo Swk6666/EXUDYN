@@ -414,7 +414,7 @@ Index GeneralContact::AddTrianglesRigidBodyBased(Index rigidBodyMarkerIndex, Rea
 			itemTrig.points[i] = pointList[trig[i]];
 		}
 
-		itemTrig.normal = HGeometry::ComputeTriangleNormal(itemTrig.points);
+		itemTrig.normal = EGeometry::ComputeTriangleNormal(itemTrig.points);
 
 		trigsRigidBodyBased.Append(itemTrig); //only add points; in future also add weight ...?
 		cnt++;
@@ -602,7 +602,7 @@ void GeneralContact::FinalizeContact(const CSystem& cSystem)//, Index3 searchTre
 
 	TemporaryComputationDataArray tempArray; //will allocate memory, but just done in finalize contact
     //data.tempCompDataArray.EraseData();		//totally reset; for safety for now!
-    Index nThreads = exuThreading::TaskManager::GetNumThreads();
+    Index nThreads = ExuThreading::TaskManager::GetNumThreads();
     tempArray.SetNumberOfItems(nThreads);
     SetNumberOfThreads(nThreads);
 
@@ -891,8 +891,8 @@ void GeneralContact::ComputeContactDataAndBoundingBoxes(const CSystem& cSystem, 
 {
 	STARTGLOBALTIMERmain(TSboundingBoxes);
 
-	if (verboseMode >= 2) pout << "  **update Data, BB=" << updateBoundingBoxes << ", ST=" << addToSearchTree << "\n";
-	Index nThreads = exuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
+	if (verboseMode >= 2) { pout << "  **update Data, BB=" << updateBoundingBoxes << ", ST=" << addToSearchTree << "\n"; }
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
 	tempArray.SetNumberOfItems(nThreads);
 	SetNumberOfThreads(nThreads);
 	//CHECKandTHROW(tempArray.NumberOfItems() == nThreads, "GeneralContact::ComputeContactDataAndBoundingBoxes: inconsistent tempArray and number of threads; try to restart kernel!");
@@ -984,17 +984,16 @@ void GeneralContact::ComputeContactDataAndBoundingBoxes(const CSystem& cSystem, 
 void GeneralContact::ComputeDataAndBBmarkerBasedSpheres(const CSystemData& systemData, TemporaryComputationDataArray& tempArray,
 	Index nThreads, bool updateBoundingBoxes)
 {
-	NGSsizeType nItems = (NGSsizeType)spheresMarkerBased.NumberOfItems();
+	ParallelSizeType nItems = (ParallelSizeType)spheresMarkerBased.NumberOfItems();
 	//pout << "n spheres=" << nItems << "\n";
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-	if ((Index)nItems > 400 * nThreads) { taskSplit = 100 * nThreads; }
+	Index taskSplit = TaskSplitBoundingBoxes(nThreads, (Index)nItems);
 
-	exuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &nItems](NGSsizeType j) //(NGSsizeType j)
+	ExuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &nItems](ParallelSizeType j) //(ParallelSizeType j)
 	//for (auto& item : spheresMarkerBased)
 	{
 		const bool computeJacobian = true; //good question, if jacobians should be precomputed; if many active contacts, this is better
 		auto& item = spheresMarkerBased[(Index)j];
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		MarkerData& markerData = tempArray[threadID].markerDataStructure.GetMarkerData(0);
 		Index gi = (Index)j + globalJacobianIndexOffsets[spheresMarkerBasedIndex]; //
@@ -1041,15 +1040,14 @@ void GeneralContact::ComputeDataAndBBmarkerBasedSpheres(const CSystemData& syste
 void GeneralContact::ComputeDataAndBBancfCable2D(const CSystemData& systemData, TemporaryComputationDataArray& tempArray,
 	Index nThreads, bool updateBoundingBoxes)
 {
-	NGSsizeType nItems = (NGSsizeType)ancfCable2D.NumberOfItems();
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-	if ((Index)nItems > 400 * nThreads) { taskSplit = 100 * nThreads; }
+	ParallelSizeType nItems = (ParallelSizeType)ancfCable2D.NumberOfItems();
+	Index taskSplit = TaskSplitBoundingBoxes(nThreads, (Index)nItems);
 
-	exuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &nItems](NGSsizeType j) //(NGSsizeType j)
+	ExuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &nItems](ParallelSizeType j) //(ParallelSizeType j)
 	//for (auto& item : spheresMarkerBased)
 	{
 		auto& item = ancfCable2D[(Index)j];
-		//Index threadID = exuThreading::TaskManager::GetThreadId();
+		//Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		//MarkerData& markerData = tempArray[threadID].markerDataStructure.GetMarkerData(0);
 		Index gj = (Index)j + globalJacobianIndexOffsets[ancfCable2DIndex]; //
@@ -1139,9 +1137,9 @@ void GeneralContact::ComputeDataAndBBtrigsRigidBodyBased(const CSystemData& syst
 	//bounding boxes computed in parallel:
 	if (updateBoundingBoxes)
 	{
-		NGSsizeType nItems = (NGSsizeType)trigsRigidBodyBased.NumberOfItems();
+		ParallelSizeType nItems = (ParallelSizeType)trigsRigidBodyBased.NumberOfItems();
 		
-		NGSsizeType itemsOffset = 0;
+		ParallelSizeType itemsOffset = 0;
 		if (staticContactObjectsInitialized) //static objects not recomputed
 		{   
 			itemsOffset += trigsRigidBodyBasedDynamicStartIndex;
@@ -1149,13 +1147,12 @@ void GeneralContact::ComputeDataAndBBtrigsRigidBodyBased(const CSystemData& syst
 			//staticContactObjectsInitialized will be set when static search trees are initialized
 		}
 
-		Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-		if ((Index)nItems > 400 * nThreads) { taskSplit = 100 * nThreads; }
+		Index taskSplit = TaskSplitBoundingBoxes(nThreads, (Index)nItems);
 
-		exuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &itemsOffset, &nItems](NGSsizeType j) 
+		ExuThreading::ParallelFor(nItems, [this, &systemData, &tempArray, &updateBoundingBoxes, &itemsOffset, &nItems](ParallelSizeType j) 
 		{
 			const ContactTriangleRigidBodyBased& item = trigsRigidBodyBased[(Index)(itemsOffset+j)];
-			//Index threadID = exuThreading::TaskManager::GetThreadId();
+			//Index threadID = ExuThreading::TaskManager::GetThreadId();
 			Index gi = (Index)(j+itemsOffset) + globalJacobianIndexOffsets[trigsRigidBodyBasedIndex]; //
 
 			const ContactRigidBodyMarkerBased& rigidMarker = rigidBodyMarkerBased[item.contactRigidBodyIndex];
@@ -1181,7 +1178,7 @@ void GeneralContact::ComputeDataAndBBtrigsRigidBodyBased(const CSystemData& syst
 template<Index opMode>
 void GeneralContact::ComputeContact(const CSystem& cSystem, TemporaryComputationDataArray& tempArray, Vector& systemODE2Rhs)
 {
-    Index nThreads = exuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
+    Index nThreads = ExuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
     tempArray.SetNumberOfItems(nThreads);
     SetNumberOfThreads(nThreads);
     CHECKandTHROW(tempArray.NumberOfItems() == nThreads, "GeneralContact::ComputeContact: inconsistent tempArray and number of threads; try to restart kernel!");
@@ -1258,22 +1255,16 @@ template<Index opMode>
 void GeneralContact::ComputeContactMarkerBasedSpheres(TemporaryComputationDataArray& tempArray, Index nThreads)
 {
 	//loop over all contact spheres:
-	NGSsizeType nItems = (NGSsizeType)spheresMarkerBased.NumberOfItems();
+	ParallelSizeType nItems = (ParallelSizeType)spheresMarkerBased.NumberOfItems();
 
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-	if ((Index)nItems >= 32 * nThreads)
-	{
-		if ((Index)nItems < 128 * nThreads) { taskSplit = 16 * nThreads; }
-		else { taskSplit = 128 * nThreads; }
-	}
+	Index taskSplit = TaskSplit(nThreads, (Index)nItems);
 
-
-	exuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](NGSsizeType i)
+	ExuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](ParallelSizeType i)
 		//for (Index i = 0; i < spheresMarkerBased.NumberOfItems(); i++)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 		ResizableVector& ode2Lhs = tempArray[threadID].localODE2LHS;
 		Index index2JacIndex = globalJacobianIndexOffsets[spheresMarkerBasedIndex] - globalContactIndexOffsets[spheresMarkerBasedIndex];
 
@@ -1427,23 +1418,17 @@ void GeneralContact::ComputeContactANCFCable2D(const CSystem& cSystem, Temporary
 {
 	STARTGLOBALTIMER(TScontactANCFCable);
 	//loop over all contact spheres:
-	NGSsizeType nItems = (NGSsizeType)ancfCable2D.NumberOfItems();
+	ParallelSizeType nItems = (ParallelSizeType)ancfCable2D.NumberOfItems();
 
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems	
-	if ((Index)nItems >= 32 * nThreads) //slower split factor because larger computation effort as compared to spheres
-	{
-		if ((Index)nItems < 128 * nThreads) { taskSplit = 16 * nThreads; }
-		else { taskSplit = 64 * nThreads; }
-	}
-
+	Index taskSplit = TaskSplit(nThreads, (Index)nItems);
 
 	//run over all ancf elements (precomputation for some parts possible if there is contact...)
-	exuThreading::ParallelFor(nItems, [this, &tempArray, &cSystem, &nItems](NGSsizeType i)
+	ExuThreading::ParallelFor(nItems, [this, &tempArray, &cSystem, &nItems](ParallelSizeType i)
 	//for (Index i = 0; i < ancfCable2D.NumberOfItems(); i++)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 		//Index threadID = 0;
 
 		ResizableVector& ode2Lhs = tempArray[threadID].localODE2LHS;
@@ -1656,23 +1641,17 @@ template<Index opMode>
 void GeneralContact::ComputeContactTrigsRigidBodyBased(TemporaryComputationDataArray& tempArray, Index nThreads)
 {
 	//loop over all contact trigs, compute contact with spheres:
-	NGSsizeType nItems = (NGSsizeType)spheresMarkerBased.NumberOfItems();
+	ParallelSizeType nItems = (ParallelSizeType)spheresMarkerBased.NumberOfItems();
 
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-	if ((Index)nItems >= 32 * nThreads) //slower split factor because larger computation effort as compared to spheres
-	{
-		if ((Index)nItems < 256 * nThreads) { taskSplit = 16 * nThreads; }
-		else { taskSplit = 128 * nThreads; }
-	}
-
+	Index taskSplit = TaskSplit(nThreads, (Index)nItems);
 
 	//pout << "compute contact **********\n";
 	//run through all spheres; spheres may contact with planes (trigs or with edges);
-	exuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](NGSsizeType i)
+	ExuThreading::ParallelFor(nItems, [this, &tempArray, &nItems](ParallelSizeType i)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 		ResizableVector& ode2Lhs = tempArray[threadID].localODE2LHS;
 
         std::array<Vector3D, 3> trigPoints; //global triangle points
@@ -1719,7 +1698,7 @@ void GeneralContact::ComputeContactTrigsRigidBodyBased(TemporaryComputationDataA
 				}
 				Vector3D normal = rigid.orientation * trigJ.normal;
 
-				HGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
+				EGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
 
 				Vector3D deltaP(sphereI.position - trigPP);
 				//Real dist = (sphereI.position - trigPP).GetL2Norm() - sphereJ.radius;
@@ -1741,7 +1720,7 @@ void GeneralContact::ComputeContactTrigsRigidBodyBased(TemporaryComputationDataA
 					temp.rigidID = trigJ.contactRigidBodyIndex;
 					temp.trigGID = gj;
 					temp.inside = inside;
-					if (inside) { temp.planeNormal = HGeometry::ComputeTriangleNormal(trigPoints); }
+					if (inside) { temp.planeNormal = EGeometry::ComputeTriangleNormal(trigPoints); }
 
 				}
 
@@ -1763,7 +1742,7 @@ void GeneralContact::ComputeContactTrigsRigidBodyBased(TemporaryComputationDataA
 						if (planeTemp.rigidID == trigFound.rigidID && planeTemp.trigGID != trigFound.trigGID && //only relevant on same rigid body, exclude trig itself
 							(!(trigFound.inside == 2 && planeTemp.trigGID > trigFound.trigGID) || (planeTemp.inside == 1 && settings.excludeOverlappingTrigSphereContacts)) )//if both trigs are in plane (1 or 2), then only exclude trig with larger GID
 						{
-							if (HGeometry::DistanceToPlaneNormalized(trigFound.pointInPlane, planeTemp.planeNormal, planeTemp.pointInPlane) <= settings.tolEquivalentPoints)
+							if (EGeometry::DistanceToPlaneNormalized(trigFound.pointInPlane, planeTemp.planeNormal, planeTemp.pointInPlane) <= settings.tolEquivalentPoints)
 							{
 								//pout << "  ** found plane, trig=" << trigFound.trigGID << " (inside=" << trigFound.inside << "), planeGID=" << planeTemp.trigGID << " (inside=" << planeTemp.inside << ")\n";
 								excludeContact = true; 
@@ -1839,7 +1818,7 @@ void GeneralContact::ComputeContactTrigsRigidBodyBased(TemporaryComputationDataA
 				trigPoints[k] = rigid.orientation * trigJ.points[k] + rigid.position;
 			}
 
-			HGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
+			EGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
 
 			Vector3D deltaP(trigPP - sphereI.position); //points from sphereI to trigJ!!!
 			Real dist = deltaP.GetL2Norm();
@@ -2025,7 +2004,7 @@ void GeneralContact::JacobianODE2LHS(const CSystem& cSystem, TemporaryComputatio
     STARTGLOBALTIMERmain(TScontactJacobian);
     ComputeContactDataAndBoundingBoxes(cSystem, tempArray, false, false);
 
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
 	SetNumberOfThreads(nThreads);
 
 	tempArray.SetNumberOfItems(nThreads); //only affected if changed; will be moved to CSystem!
@@ -2033,20 +2012,20 @@ void GeneralContact::JacobianODE2LHS(const CSystem& cSystem, TemporaryComputatio
 	for (auto item : tempArray) {item->sparseTriplets.SetNumberOfItems(0);}
 
 	//loop over all contact spheres:
-	NGSsizeType nItems = (NGSsizeType)spheresMarkerBased.NumberOfItems();
+	ParallelSizeType nItems = (ParallelSizeType)spheresMarkerBased.NumberOfItems();
 	if (!settings.sphereSphereContact) { nItems = 0; }
 
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//SPHERE-SPHERE
 
-	Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
-	if ((Index)nItems > 400 * nThreads) { taskSplit = 100 * nThreads; }
-	exuThreading::ParallelFor(nItems, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](NGSsizeType i)
+	Index taskSplit = TaskSplit(nThreads, (Index)nItems);
+
+	ExuThreading::ParallelFor(nItems, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](ParallelSizeType i)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		//Index threadID = 0;
 		Index index2JacIndex = globalJacobianIndexOffsets[spheresMarkerBasedIndex] - globalContactIndexOffsets[spheresMarkerBasedIndex];
@@ -2171,16 +2150,16 @@ void GeneralContact::JacobianODE2LHS(const CSystem& cSystem, TemporaryComputatio
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//CIRCLE-ANCF
-	NGSsizeType nItemsANCF = (NGSsizeType)ancfCable2D.NumberOfItems();
+	ParallelSizeType nItemsANCF = (ParallelSizeType)ancfCable2D.NumberOfItems();
 	taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
 	if ((Index)nItemsANCF > 8 * nThreads) { taskSplit = 8 * nThreads; }
-	exuThreading::ParallelFor(nItemsANCF, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](NGSsizeType i)
+	ExuThreading::ParallelFor(nItemsANCF, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](ParallelSizeType i)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 
-	//for (NGSsizeType i = 0; i < nItemsANCF; i++)
+	//for (ParallelSizeType i = 0; i < nItemsANCF; i++)
 	//{
 	//	Index threadID = 0;
 		//Index index2JacIndex = globalJacobianIndexOffsets[ancfCable2DIndex] - globalContactIndexOffsets[ancfCable2DIndex];
@@ -2256,11 +2235,11 @@ void GeneralContact::JacobianODE2LHS(const CSystem& cSystem, TemporaryComputatio
 #ifdef JAC_SPHERE_TRIG
 	taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
 	if ((Index)nItems > 400 * nThreads) { taskSplit = 100 * nThreads; }
-	exuThreading::ParallelFor(nItems, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](NGSsizeType i)
+	ExuThreading::ParallelFor(nItems, [this, &cSystem, &tempArray, &factorODE2, &factorODE2_t, &nItems](ParallelSizeType i)
 	{
 		//+++++++++++++++++++++++++++++
 		//went inside parallel loop:
-		Index threadID = exuThreading::TaskManager::GetThreadId();
+		Index threadID = ExuThreading::TaskManager::GetThreadId();
 
 		//Index index2JacIndex = globalJacobianIndexOffsets[spheresMarkerBasedIndex] - globalContactIndexOffsets[spheresMarkerBasedIndex];
 		SparseTripletVector& triplets = tempArray[threadID].sparseTriplets;
@@ -2301,7 +2280,7 @@ void GeneralContact::JacobianODE2LHS(const CSystem& cSystem, TemporaryComputatio
 				trigPoints[k] = rigid.orientation * trigJ.points[k] + rigid.position;
 			}
 
-			HGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
+			EGeometry::MinDistTP(trigPoints[0], trigPoints[1], trigPoints[2], sphereI.position, trigPP, inside);
 
 			Vector3D deltaP(trigPP - sphereI.position); //points from sphereI to trigJ!!!
 			Real dist = deltaP.GetL2Norm();
@@ -2894,7 +2873,7 @@ bool GeneralContact::ShortestDistanceAlongLine(const Vector3D& pStart, const Vec
 				Vector3D pos = spheresMarkerBased[localIndex].position;
 				Real r = spheresMarkerBased[localIndex].radius;
 				Real relPos;
-				Real d = HGeometry::ShortestDistanceRelativePosition(pStart, pStartDir, pos, relPos);
+				Real d = EGeometry::ShortestDistanceRelativePosition(pStart, pStartDir, pos, relPos);
 				if (d <= (r+cylinderRadius)) //tangent point still works ...
 				{
 					Real deltaX;
@@ -2934,9 +2913,9 @@ bool GeneralContact::ShortestDistanceAlongLine(const Vector3D& pStart, const Vec
 					trigPoints[k] = rigid.orientation * trigJ.points[k] + rigid.position;
 				}
 
-				Vector3D nPlane = HGeometry::ComputeTriangleNormal(trigPoints);
+				Vector3D nPlane = EGeometry::ComputeTriangleNormal(trigPoints);
 				Real relativeDistance; //this is the distance from pStart to cutting point
-				bool rv = HGeometry::LinePlaneIntersection(trigPoints[0], nPlane, pStart, dir0, relativeDistance);
+				bool rv = EGeometry::LinePlaneIntersection(trigPoints[0], nPlane, pStart, dir0, relativeDistance);
 				Vector3D pp = pStart + relativeDistance * dir0; //point in plane
 				//pout << "index=" << localIndex << ", pp=" << pp << ", dist=" << relativeDistance 
 				//	<< ", fd=" << foundDistance
@@ -2951,7 +2930,7 @@ bool GeneralContact::ShortestDistanceAlongLine(const Vector3D& pStart, const Vec
 					Vector3D e1 = trigPoints[1] - trigPoints[0];
 					Vector3D e2 = trigPoints[2] - trigPoints[0];
 
-					HGeometry::LocalTriangleCoordinates(e1, e2, pp - trigPoints[0], lam1, lam2);
+					EGeometry::LocalTriangleCoordinates(e1, e2, pp - trigPoints[0], lam1, lam2);
 					//check if pp is inside triangle or on edges
 					const Real& TOL = settings.tolEquivalentPoints;
 					bool inside = (lam1 >= -TOL) && (lam2 >= -TOL) && (lam1 + lam2 <= (1. + TOL));
@@ -2998,7 +2977,7 @@ bool GeneralContact::ShortestDistanceAlongLine(const Vector3D& pStart, const Vec
 					Vector2D p1({ EXUmath::EvaluatePolynomial(c4x, x1), EXUmath::EvaluatePolynomial(c4y, x1) });
 					Real relPosDist;
 					Real relPosANCF;
-					bool rv = HGeometry::CuttingOf2DLineSegments(pStart2D, dir2D0, p0, p1 - p0, relPosDist, relPosANCF);
+					bool rv = EGeometry::CuttingOf2DLineSegments(pStart2D, dir2D0, p0, p1 - p0, relPosDist, relPosANCF);
 
 					if (rv && relPosANCF >= -settings.tolEquivalentPoints && relPosANCF <= 1. + settings.tolEquivalentPoints && relPosDist >= minDistance && relPosDist < foundDistance)
 					{
@@ -3012,7 +2991,7 @@ bool GeneralContact::ShortestDistanceAlongLine(const Vector3D& pStart, const Vec
 
 						Vector2D p0({ EXUmath::EvaluatePolynomial(c4x, x0), EXUmath::EvaluatePolynomial(c4y, x0) });
 						Vector2D p1({ EXUmath::EvaluatePolynomial(c4x, x1), EXUmath::EvaluatePolynomial(c4y, x1) });
-						rv = HGeometry::CuttingOf2DLineSegments(pStart2D, dir2D0, p0, p1 - p0, relPosDist, relPosANCF);
+						rv = EGeometry::CuttingOf2DLineSegments(pStart2D, dir2D0, p0, p1 - p0, relPosDist, relPosANCF);
 						//==> gives refined relPosDist, which should have at least an accuracy around 1e-6
 
 						if (rv && relPosDist >= minDistance && relPosDist < foundDistance)
@@ -3048,7 +3027,7 @@ void GeneralContact::UpdateContacts(const CSystem& cSystem)
     STARTGLOBALTIMERmain(TScontactPostNewton);
     Vector systemODE2Rhs; //dummy, unused
 
-    Index nThreads = exuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
+    Index nThreads = ExuThreading::TaskManager::GetNumThreads(); //must agree with tempArray
     if (externFunctionsTempArray.NumberOfItems() != nThreads)
     {
         externFunctionsTempArray.EraseData();		//totally reset; for safety for now!

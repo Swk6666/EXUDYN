@@ -118,6 +118,17 @@ public:
 		settings.frictionPairings = frictionPairingsC;
 	}
 
+	Index GetParallelTaskSplit() const { return settings.parallelTaskSplit; }
+	void SetParallelTaskSplit(Index value) { settings.parallelTaskSplit = value; }
+	Index GetParallelTaskSplitBoundingBoxes() const { return settings.parallelTaskSplitBoundingBoxes; }
+	void SetParallelTaskSplitBoundingBoxes(Index value) { settings.parallelTaskSplitBoundingBoxes = value; }
+	Index GetParallelTaskSplitThreshold() const { return settings.parallelTaskSplitThreshold; }
+	void SetParallelTaskSplitThreshold(Index value) { settings.parallelTaskSplitThreshold = value; }
+	Index GetParallelTaskSplitBoundingBoxesThreshold() const { return settings.parallelTaskSplitBoundingBoxesThreshold; }
+	void SetParallelTaskSplitBoundingBoxesThreshold(Index value) { settings.parallelTaskSplitBoundingBoxesThreshold = value; }
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 	//! set number of cells of search tree (boxed search) in x, y and z direction
 	void SetSearchTreeCellSize(const py::object& numberOfCells)
 	{

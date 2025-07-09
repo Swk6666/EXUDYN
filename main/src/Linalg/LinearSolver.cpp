@@ -12,7 +12,8 @@
 #endif
 
 //BasicLinalg provides consistent includes for BasicDefinitions, arrays, vectors and matrices
-#include "Linalg/LinearSolver.h"	
+#include "Linalg/LinearSolver.h"
+#include "Utilities/AdvancedStuff.h"
 #include "Utilities/TimerStructure.h" //for local CPU time measurement
 
 #include "Linalg/MatrixContainer.h"	
@@ -484,8 +485,8 @@ void GeneralMatrixEigenSparse::FinalizeMatrix()
 Index GeneralMatrixEigenSparse::FactorizeNew() //bool ignoreRedundantEquation, Index redundantEquationsStart)
 {
 	CHECKandTHROW(IsMatrixBuiltFromTriplets(), "GeneralMatrixEigenSparse::Factorize(): matrix must be built before factorization!");
-	Index nThreads = exuThreading::TaskManager::GetNumThreads();
-	if (LinearSolverSuspendWorkers && nThreads > 1) { exuThreading::TaskManager::SuspendWorkers(LinearSolverSuspendWorkersTimeUS); }
+	Index nThreads = ExuThreading::TaskManager::GetNumThreads();
+	if (LinearSolverSuspendWorkers && nThreads > 1) { ExuThreading::TaskManager::SuspendWorkers(LinearSolverSuspendWorkersTimeUS); }
 
 	Index rv = 0;
 	if (!IsSymmetric())
@@ -510,7 +511,7 @@ Index GeneralMatrixEigenSparse::FactorizeNew() //bool ignoreRedundantEquation, I
 			solver.factorize(matrix);
 		}
 
-		if (LinearSolverSuspendWorkers && nThreads > 1) { exuThreading::TaskManager::ResumeWorkers(); }
+		if (LinearSolverSuspendWorkers && nThreads > 1) { ExuThreading::TaskManager::ResumeWorkers(); }
 
 		//0: successful factorization
 		//if info = i, and i is
@@ -657,8 +658,8 @@ void GeneralMatrixEigenSparse::Solve(const Vector& rhs, Vector& solution)
 {
 	CHECKandTHROW(IsMatrixIsFactorized(), "GeneralMatrixEigenSparse::Solve( ...): matrix is not factorized!");
 
-	//Index nThreads = exuThreading::TaskManager::GetNumThreads();
-	//if (LinearSolverSuspendWorkers && nThreads > 1) { exuThreading::task_manager->SuspendWorkers(1); }
+	//Index nThreads = ExuThreading::TaskManager::GetNumThreads();
+	//if (LinearSolverSuspendWorkers && nThreads > 1) { ExuThreading::task_manager->SuspendWorkers(1); }
 
 	//will only work for Real==double!!! ==> make type check!
 	Real test=0;
@@ -697,7 +698,7 @@ void GeneralMatrixEigenSparse::Solve(const Vector& rhs, Vector& solution)
 		solution[i] = x[i];
 	}
 
-	//if (LinearSolverSuspendWorkers && nThreads > 1) { exuThreading::task_manager->ResumeWorkers(); }
+	//if (LinearSolverSuspendWorkers && nThreads > 1) { ExuThreading::task_manager->ResumeWorkers(); }
 
 	//STOPGLOBALTIMER(TStimer1);
 }

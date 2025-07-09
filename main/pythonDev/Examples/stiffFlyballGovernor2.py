@@ -286,8 +286,8 @@ mbs.Assemble()
 
 useGraphics=True
 if useGraphics: #only start graphics once, but after background is set
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
     
 # dynamicSolver = exu.MainSolverImplicitSecondOrder()
 
@@ -327,7 +327,7 @@ print(mbs.sys['dynamicSolver'].it)
 
 
 if useGraphics: #only start graphics once, but after background is set
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 
 for i in range(4):

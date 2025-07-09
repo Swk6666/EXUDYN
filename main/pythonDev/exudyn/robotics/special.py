@@ -13,6 +13,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 import numpy as np
+import exudyn
 import exudyn.robotics as rob
 from exudyn.basicUtilities import ScalarMult
 from exudyn.rigidBodyUtilities import RotationMatrix2RotZYZ, HT2rotationMatrix, HT2translation, Skew, HTtranslate
@@ -159,7 +160,7 @@ def JointJacobian(robot, HTJoint,HTLink):
     for frame in range(n):  # frames located in joints
         #if n > len(robot['links']): #old robot dictionary
         if n > len(robot.links):
-            print(
+            exudyn.Print(
                 "ERROR: number of homogeneous transformations (HT) greater than number of links")
         # create robot nodes and bodies:
         for i in range(frame+1):
@@ -175,9 +176,6 @@ def JointJacobian(robot, HTJoint,HTLink):
                 u[i] = HT2rotationMatrix(HTLink[frame]).T @ (HT2rotationMatrix(HTLink[i-1]) @ rotAxis)
                 # difference between rotation axis and COM
                 d[i] = HT2rotationMatrix(HTLink[frame]).T @ (HT2translation(HTCOM[frame])-HT2translation(HTLink[i-1]))
-            #print('Frame=%i, i=%i'%(frame,i))
-            #print('di',d[i])
-        
  
             # revolute joint:
             # if robot['jointType'][frame] == 1:  # revolute joint  #old version with robot dictionary
@@ -332,7 +330,7 @@ def CalculateAllMeasures(robot,robotDic,q,mode, flag = [0,0,0,0] ):
     #     mst,mstM = StiffnessManipulability(robot, JointStiffnesM, HT0newJoint, mode, singularWeight=1000)      
     #     ma,maM = DynamicManipulability(robot, HT0newJoint, MMatrixHT0, TmaxDiag, mode, singularWeight=1000)        
     # else:
-    #     print('flag not defined')
+    #     exudyn.Print('flag not defined')
  
 
     return [mv,mf,mst,mstM,ma,maM]

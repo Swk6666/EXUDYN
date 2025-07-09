@@ -270,8 +270,8 @@ simulate=True
 if simulate:
     useGraphics = True
     if useGraphics:
-        exu.StartRenderer()
-        mbs.WaitForUserToContinue()
+        SC.renderer.Start()
+        SC.renderer.DoIdleTasks()
 
     simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h)
     simulationSettings.timeIntegration.endTime = tEnd
@@ -283,8 +283,8 @@ if simulate:
     print("p=", list(p))
     
     if useGraphics:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
     
     if True:
         

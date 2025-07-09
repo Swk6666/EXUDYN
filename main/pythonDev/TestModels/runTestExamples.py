@@ -65,6 +65,7 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
                 print("ERROR in runTestExamples: unknown command line argument '"+sys.argv[i+1]+"'")
     
     if quietMode:
+        print('*** write to console deactivated ***')
         writeToConsole = False
     
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -130,13 +131,13 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
     pythonVersion = str(sys.version_info.major)+'.'+str(sys.version_info.minor)+'.'+str(sys.version_info.micro)
     pythonVersionMain = str(sys.version_info.major)+'.'+str(sys.version_info.minor)
     
-    # localFileName = 'Test for EXUDYN V'+exu.GetVersionString()+' (built:'+exuDateStr+'),'\
+    # localFileName = 'Test for EXUDYN V'+exu.config.Version()+' (built:'+exuDateStr+'),'\
     #          +sys.platform+'-'+processorString+'-'+platform.architecture()[0]+',Python'\
     #          +pythonVersion+',date:'+dateStr+': '
     platformString = sys.platform+'-'+processorString+'-'+platform.architecture()[0]+'-P'+pythonVersionMain
-    localFileName = 'testExamplesLog_V'+exu.GetVersionString()+'_'+platformString
+    localFileName = 'testExamplesLog_V'+exu.config.Version()+'_'+platformString
     
-    #logFileName = '../TestSuiteLogs/testSuiteLog_V'+exu.GetVersionString()+'_'+platformString+'.txt'
+    #logFileName = '../TestSuiteLogs/testSuiteLog_V'+exu.config.Version()+'_'+platformString+'.txt'
     logFileName = '../TestExamplesLogs/'+localFileName+'.txt'
     exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=False) #write all testSuite logs to files
     
@@ -145,7 +146,7 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
     exu.Print('\n+++++++++++++++++++++++++++++++++++++++++++')
     exu.Print('+++++      EXUDYN TEST EXAMPLES       +++++')
     exu.Print('+++++++++++++++++++++++++++++++++++++++++++')
-    exu.Print('EXUDYN version      = '+exu.GetVersionString())
+    exu.Print('EXUDYN version      = '+exu.config.Version())
     exu.Print('EXUDYN build date   = '+exuDateStr)
     exu.Print('architecture        = '+platform.architecture()[0])
     exu.Print('processor           = '+processorString)
@@ -154,7 +155,7 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
     exu.Print('test date (now)     = '+dateStr)
     exu.Print('+++++++++++++++++++++++++++++++++++++++++++')
     
-    exu.SetWriteToConsole(writeToConsole) #stop output from now on
+    exu.config.printToConsole = writeToConsole #stop output from now on
     
     #testFileList = ['Examples/fourBarMechanism.py']
     testsFailed = [] #list of numbers containing the test numbers of failed tests
@@ -174,6 +175,7 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
     timeStart= -time.time()
     dirPath = '../Examples/'
     listExamples = GetFileNames(dirPath, '.py')
+    # listExamples = [dirPath+'xExudynConfigSpecial.py']
     
     totalExamples = len(listExamples)
     examplesFailed = []
@@ -197,8 +199,9 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
         thisCnt = testExamplesCnt
         testExamplesCnt += 1
 
-        # if thisCnt < 41 or thisCnt > 41:
-        #     print('skip',thisCnt)
+        # if thisCnt < 0 or (thisCnt >= 30 and thisCnt < 68) or thisCnt > 80:
+        # if thisCnt < 30 or thisCnt > 80:
+        #     print('skip',end='')
         #     continue
 
         
@@ -209,8 +212,15 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
         #examples that cannot be tested:
         if (
             'nMassOscillatorEigenmodes' in exampleFileName
-            or 'multiprocessingTest' in exampleFileName    #uses multiprocessing directly, incompatible with exec(...)
-            or 'netgenSTLtest' in exampleFileName          #gives netgen specific error, not clear why this occurs with exec(...) but not when directly executing the file.
+            or 'multiprocessingTest' in exampleFileName     #uses multiprocessing directly, incompatible with exec(...)
+            or 'netgenSTLtest' in exampleFileName           #gives netgen specific error, not clear why this occurs with exec(...) but not when directly executing the file.
+            #++++++++++++++++++++++++++++++++++
+            # or 'NGsolveFFRF' in exampleFileName             #output of Netgen that cannot be turned off
+            # or 'NGsolveGeometry' in exampleFileName         #output of Netgen that cannot be turned off
+            # or 'ObjectFFRFconvergenceTestBeam' in exampleFileName      #output of Netgen that cannot be turned off
+            # or 'pendulumVerify' in exampleFileName          #output of Netgen that cannot be turned off
+            # or 'shapeOptimization' in exampleFileName       #output of Netgen that cannot be turned off
+            #++++++++++++++++++++++++++++++++++
             #or 'dispyParameterVariationExample' in exampleFileName #hangs, dispy not available; but runs in regular mode ...
             #or 'GeneticOptimization' in fileString
             #or 'ParameterVariation' in fileString
@@ -263,13 +273,16 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
             fileString = fileString[:fPlot]+'pass\n'
         
         fileString = fileString.replace('mbs.SolutionViewer(', 'pass #mbs.SolutionViewer(')
-        fileString = fileString.replace('exu.StartRenderer(', 'pass #exu.StartRenderer(')
-        fileString = fileString.replace('exu.StopRenderer(', 'pass #exu.StopRenderer(')
-        fileString = fileString.replace('SC.WaitForRenderEngineStopFlag()', 'pass')
-        fileString = fileString.replace('mbs.WaitForUserToContinue()', 'pass')
+        fileString = fileString.replace('SC.renderer.Start(', 'pass #SC.renderer.Start(')
+        fileString = fileString.replace('SC.renderer.Stop(', 'pass #SC.renderer.Stop(')
+        #fileString = fileString.replace('SC.renderer.DoIdleTasks()', 'pass')
+        fileString = fileString.replace('SC.renderer.DoIdleTasks()', 'pass')
         fileString = fileString.replace('useRenderer=True', 'useRenderer=False') #InverseKinematicsNumericalExample.py
         fileString = fileString.replace('useGraphics = True', 'useGraphics = False') 
         
+        fileString = fileString.replace('netgen.Redraw()', '') 
+        fileString = fileString.replace('import netgen.gui ', 'pass #')
+        fileString = fileString.replace('while SC.renderer.IsActive():', 'while False:')
         fileString = fileString.replace('plt.show()', '') 
         fileString = fileString.replace('plt.tight_layout()', '') 
         fileString = fileString.replace('ClearWorkspace()', '') 
@@ -315,7 +328,7 @@ if __name__ == '__main__': #include to avoid potential problems with multiproces
             
             
     exu.Print('\n')
-    exu.SetWriteToConsole(True) #final output always written
+    exu.config.printToConsole = True #final output always written
     exu.SetWriteToFile(filename=logFileName, flagWriteToFile=True, flagAppend=True) #write also to file (needed?)
     
     exu.Print('******************************************')

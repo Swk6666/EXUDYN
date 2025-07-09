@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-11-03  17:23:29 (last modified)
+* @date         2025-05-06  23:48:37 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -171,6 +171,12 @@ public: // AUTO:
     virtual Index GetNodeNumber(Index localIndex) const override
     {
         return parameters.nodeNumbers[localIndex];
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumbers[localIndex]=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object

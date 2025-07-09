@@ -2,7 +2,7 @@
 * @brief        Implementation of CObjectContactSphereSphere
 *
 * @author       Gerstmayr Johannes and Weyrer Sebastian
-* @date         2018-05-06 (generated)
+* @date         2025-04-01 (generated)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -93,7 +93,7 @@ TReal CObjectContactSphereSphere::ComputeContactForces(TReal gap, const SlimVect
 		}
 	}
 	contactForce *= (-1); // this is the contact force acting on sphere 1 (and moved to the LHS of the ODE2)
-	fVec = contactForce * n0;
+	fVec = contactForce * n0; //fVec = f_m1
 	////////////////////////// add tangential component for the force vector if friction should be added
 	// note that for coulomb friction we need fR acting against the velocity
 	// fR = - fN * deltaVtangent
@@ -113,7 +113,8 @@ TReal CObjectContactSphereSphere::ComputeContactForces(TReal gap, const SlimVect
 			//Warning: in the adhesive model, contactForce could become positive (=tension) and cause unphysical friction behavior
 			// as long as relVel < frictionProportionalZone, friction force is computed linearily with deltaVtangent
 			fFriction = (-dryFriction * contactForce / parameters.frictionProportionalZone) * deltaVtangent;
-		} else 
+		} 
+		else 
 		{
 			if (relVel != 0.) //in case that frictionProportionalZone=0, this could happen!
 			{
@@ -133,12 +134,15 @@ void CObjectContactSphereSphere::ComputeConnectorProperties(const MarkerDataStru
 	Real& frictionCoeff, Real& gap, Vector3D& deltaP, Vector3D& deltaV, 
 	Vector3D& fVec, Vector3D& fFriction, Vector3D& n0, bool contactFromData) const
 {
+	Real h1 = parameters.isHollowSphere1 ? -1. : 1.;
+
 	deltaP = (markerData.GetMarkerData(1).position - markerData.GetMarkerData(0).position);
 	Real dist = deltaP.GetL2Norm();
-	gap = dist - (parameters.spheresRadii[0] + parameters.spheresRadii[1]); //gap = -penetration
+	gap = h1 * dist - (parameters.spheresRadii[0] + h1 * parameters.spheresRadii[1]); //gap = -penetration
+	//if (!contactFromData) pout << "gap=" << gap << "\n";
 
 	//unit direction and relative velocity of spring-damper
-	n0 = deltaP;
+	n0 = h1 * deltaP;
 	if (dist != 0.)
 	{
 		n0 *= (1. / dist);
@@ -167,13 +171,14 @@ void CObjectContactSphereSphere::ComputeConnectorProperties(const MarkerDataStru
 		if (frictionCoeff != 0.)
 		{
 			vSphereI += (markerData.GetMarkerData(0).orientation * markerData.GetMarkerData(0).angularVelocityLocal).CrossProduct((parameters.spheresRadii[0] + 0.5 * gap) * n0);
-			vSphereJ += (markerData.GetMarkerData(1).orientation * markerData.GetMarkerData(1).angularVelocityLocal).CrossProduct((-parameters.spheresRadii[1] - 0.5 * gap) * n0); // use -n0; (-1) is put in the brackets here
+			vSphereJ += h1 * (markerData.GetMarkerData(1).orientation * markerData.GetMarkerData(1).angularVelocityLocal).CrossProduct((-parameters.spheresRadii[1] - h1 * 0.5 * gap) * n0);
 		}
 		deltaV = vSphereJ - vSphereI; //relative velocity in normal direction; to be consistent with jacobian
 		Real deltaVnormal = n0 * deltaV; //relative velocity in normal direction; to be consistent with jacobian
 
-		bool frictionRegularizedRegion = data[dataIndexVtangent]; //==> shall read out data variable
-
+		//frictionRegularizedRegion is only used in case that contactFromData=true
+		bool frictionRegularizedRegion = data[dataIndexVtangent] < parameters.frictionProportionalZone; 
+		
 		//Real contactForce = 
 		ComputeContactForces<Real>(gap, n0, deltaVnormal, deltaV,
 			frictionCoeff, frictionRegularizedRegion, fVec, fFriction, contactFromData);
@@ -189,6 +194,7 @@ void CObjectContactSphereSphere::ComputeConnectorProperties(const MarkerDataStru
 		fVec *= 0;
 		fFriction *= 0;
 	}
+
 }
 
 
@@ -216,9 +222,10 @@ void CObjectContactSphereSphere::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 	ode2Lhs.SetNumberOfItems(markerData.GetMarkerData(0).positionJacobian.NumberOfColumns() + markerData.GetMarkerData(1).positionJacobian.NumberOfColumns());
 	ode2Lhs.SetAll(0.);
 
-	//pout << "test\n";
 	if (parameters.activeConnector)
 	{
+		Real h1 = parameters.isHollowSphere1 ? -1. : 1.;
+		//Real h1 = 1. - 2. * parameters.isHollowSphere1;
 
 		//marker 1 / J (positive):    (according to computation of relative position)
 		//now link ode2Lhs Vector to partial result using the two jacobians
@@ -226,10 +233,12 @@ void CObjectContactSphereSphere::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 		{
 			//positionJacobian.NumberOfColumns() == rotationJacobian.NumberOfColumns()
 			LinkedDataVector ldv1(ode2Lhs, markerData.GetMarkerData(0).positionJacobian.NumberOfColumns(), markerData.GetMarkerData(1).positionJacobian.NumberOfColumns());
-			EXUmath::MultMatrixTransposedVector(markerData.GetMarkerData(1).positionJacobian, fVec, ldv1);
+			EXUmath::MultMatrixTransposedVector(markerData.GetMarkerData(1).positionJacobian, fVec, ldv1); //fVec = f_m1
 			if (frictionCoeff != 0)
 			{
-				Vector3D torque = ((-parameters.spheresRadii[1] - 0.5 * gap) * n0).CrossProduct(fVec);
+				//in case of hollow sphere the contact point is outside the hollow sphere!
+				Vector3D torque = ((-h1 * parameters.spheresRadii[1] - 0.5 * gap) * n0).CrossProduct(fVec); //fVec = f_m1
+				//== Vector3D torque = -h1 * ((parameters.spheresRadii[1] + h1 * 0.5 * gap) * n0).CrossProduct(fVec); //fVec = f_m1
 				EXUmath::MultMatrixTransposedVectorAdd(markerData.GetMarkerData(1).rotationJacobian, torque, ldv1);
 			}
 		}
@@ -239,10 +248,10 @@ void CObjectContactSphereSphere::ComputeODE2LHS(Vector& ode2Lhs, const MarkerDat
 		if (markerData.GetMarkerData(0).positionJacobian.NumberOfColumns()) //special case: COGround has (0,0) Jacobian
 		{
 			LinkedDataVector ldv0(ode2Lhs, 0, markerData.GetMarkerData(0).positionJacobian.NumberOfColumns());
-			EXUmath::MultMatrixTransposedVector(markerData.GetMarkerData(0).positionJacobian, -fVec, ldv0);
+			EXUmath::MultMatrixTransposedVector(markerData.GetMarkerData(0).positionJacobian, -fVec, ldv0); //fVec = f_m1
 			if (frictionCoeff != 0)
 			{
-				Vector3D torque = ((-parameters.spheresRadii[0] - 0.5 * gap) * n0).CrossProduct(fVec);
+				Vector3D torque = ((-parameters.spheresRadii[0] - 0.5 * gap) * n0).CrossProduct(fVec); //fVec = f_m1
 				EXUmath::MultMatrixTransposedVectorAdd(markerData.GetMarkerData(0).rotationJacobian, torque, ldv0);
 			}
 		}
@@ -263,16 +272,20 @@ void CObjectContactSphereSphere::GetOutputVariableConnector(OutputVariableType v
 
 	Real frictionCoeff;
 	Real gap;
+	//Real h1 = parameters.isHollowSphere1 ? -1. : 1.;
 
 	ComputeConnectorProperties(markerData, itemIndex, data,
 		frictionCoeff, gap, deltaP, deltaV, fVec, fFriction, n0);
 
+	const Vector3D& p0 = markerData.GetMarkerData(0).position;
+
 	switch (variableType)
 	{
+	case OutputVariableType::Position: value.CopyFrom(p0 + (parameters.spheresRadii[0] + 0.5 * gap)*n0); break;
 	case OutputVariableType::Displacement: value.CopyFrom(deltaP); break;
 	case OutputVariableType::DisplacementLocal: value.CopyFrom(Vector1D({gap})); break;
 	case OutputVariableType::Velocity: value.CopyFrom(deltaV); break;
-	case OutputVariableType::Director3: value.CopyFrom(n0); break;
+	case OutputVariableType::Director1: value.CopyFrom(n0); break;
 	case OutputVariableType::Force: value.CopyFrom(fVec); break;
 	case OutputVariableType::Torque: value.CopyFrom(((-parameters.spheresRadii[0] - 0.5 * gap) * n0).CrossProduct(fVec)); break;
 	default:
@@ -304,7 +317,8 @@ Real CObjectContactSphereSphere::PostNewtonStep(const MarkerDataStructure& marke
 	Real frictionCoeff;
 	Real currentGap;
 
-	ComputeConnectorProperties(markerDataCurrent, itemIndex, data, frictionCoeff, currentGap, deltaP, deltaV, fVec, fFriction, n0, false);
+	ComputeConnectorProperties(markerDataCurrent, itemIndex, data, frictionCoeff, currentGap, deltaP, deltaV, 
+		fVec, fFriction, n0, false);
 
 	Real vGap = n0 * deltaV; //required for Hunt-Crossley and similar models
 
@@ -325,6 +339,8 @@ Real CObjectContactSphereSphere::PostNewtonStep(const MarkerDataStructure& marke
 	data[dataIndexGap] = currentGap;
 	data[dataIndexVtangent] = (deltaV - (vGap)*n0).GetL2Norm(); //tangent velocity norm
 	data[dataIndexDeltaPlastic] = deltaPlastic; //plastic deformation
+
+	//pout << "curGap=" << currentGap << ", fVec=" << fVec << ", deltaVT=" << data[dataIndexVtangent] << ", fFriction=" << fFriction << "\n";
 
 	////possible situations (state: C=contact, N=no contact); k=parameters.contactStiffness:
 	////  assumption (because of convergence): gap0 and state0 are always consistent
@@ -349,6 +365,8 @@ Real CObjectContactSphereSphere::PostNewtonStep(const MarkerDataStructure& marke
 
 		//pout << "curGap=" << currentGap << ", sosGap=" << startofStepGap << ", discErr=" << discontinuousError << ", recStep=" << recommendedStepSize << ", vGap=" << vGap << "\n";
 		flags = PostNewtonFlags::UpdateJacobian;
+
+		//pout << "  switch gap\n";
 	}
 
 	//compute error for friction:
@@ -362,6 +380,7 @@ Real CObjectContactSphereSphere::PostNewtonStep(const MarkerDataStructure& marke
 			discontinuousError += fabs((parameters.dynamicFriction * (fVec * n0) / parameters.frictionProportionalZone) * (data[dataIndexVtangent] - parameters.frictionProportionalZone));
 
 			//here we do not use a recommendedStepSize!
+			//pout << "  switch stick-slip\n";
 		}
 	}
 

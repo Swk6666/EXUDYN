@@ -283,10 +283,6 @@ class KinematicTree33:
                 avpTrans[i] = XupRot[i] @ (avpTrans[self.listOfParents[i]] - np.cross(XupTrans[i],avpRot[self.listOfParents[i]]) ) 
                 avpTrans[i] += np.cross(vTrans[i], vJrot) + np.cross(vRot[i], vJtrans)
     
-            # print('vRot['+str(i)+']=',  vRot[i].round(4))
-            # print('vTra['+str(i)+']=',  vTrans[i].round(4))
-            # print('avpRot['+str(i)+']=',avpRot[i].round(4))
-            # print('avpTra['+str(i)+']=',avpTrans[i].round(4))
             #continue with adaptation herehere!
             #fvp[i] = self.inertias[i] @ avp[i] + CRF(v[i]) @ self.inertias[i] @ v[i] 
             J = self.listOfInertia3D[i]
@@ -300,8 +296,6 @@ class KinematicTree33:
             fvpTrans[i] = m * avpTrans[i] - np.cross(h, avpRot[i])
             fvpTrans[i] += np.cross(vRot[i], JvTrans)  #CRF(v[i]) @ self.inertias[i] @ v[i] 
     
-        # print('fvpRot =', fvpRot)
-        # print('fvpTrans =', fvpTrans)
         #add external foces
         #to be implemented
         #fvp = self.AddExternalForces(Xup, fvp, externalForces)
@@ -340,11 +334,6 @@ class KinematicTree33:
                 ICm[self.listOfParents[i]] += ICm[i]
                 ICh[self.listOfParents[i]] += R.T @ ICh[i] + ICm[i]*p
                 ICinertia[self.listOfParents[i]] += R.T @ ICinertia[i] @ R - erb.Skew(p)@erb.Skew(R.T @ ICh[i]) - erb.Skew(R.T@ICh[i] + ICm[i]*p) @ erb.Skew(p)
-
-        # for i in range(n):
-        #     print('IC'+str(i)+'m=',ICm[i])
-        #     print('ICh'+str(i)+'=',ICh[i])
-        #     print('ICinertia'+str(i)+'=',ICinertia[i])
     
         #compute generalized mass matrix and projected inertia
         for i in range(n):
@@ -526,14 +515,6 @@ class KinematicTree66:
                 avp[i] = Xup[i] @ avp[self.parents[i]] + CRM(v[i]) @ vJ
     
             fvp[i] = self.inertias[i] @ avp[i] + CRF(v[i]) @ self.inertias[i] @ v[i] 
-
-            # print("Xup"+str(i)+"=",Xup[i])
-            # print("MS"+str(i)+"=",MS[i])
-            # print("IC"+str(i)+"=",self.inertias[i])
-            # print("CRF"+str(i)+"=",CRF(v[i]))
-            # print("v"+str(i)+"=",v[i])
-            # print("avp"+str(i)+"=",avp[i])
-            # print('fvp['+str(i)+']=',fvp[i].round(8))
     
         #add external foces
         fvp = self.AddExternalForces(Xup, fvp, externalForces)

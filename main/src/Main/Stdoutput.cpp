@@ -20,6 +20,7 @@
 //#include "Main/stdoutput.h"
 #include "Utilities/BasicDefinitions.h" //includes stdoutput.h
 #include "Utilities/BasicFunctions.h"	//includes stdoutput.h
+#include "Utilities/AdvancedStuff.h"
 #include "Utilities/ResizableArray.h"	
 #include <chrono> //sleep_for()
 #include <fstream>    
@@ -152,15 +153,21 @@ std::atomic_flag outputBufferAtomicFlag = ATOMIC_FLAG_INIT;   //!< flag, which i
 //! used to print to python; string is temporary stored and written as soon as '\n' is detected
 int OutputBuffer::overflow(int c)
 {
+	return overflowFlush(c);
+}
+
+//if flushOnly or clearBuffer, c is ignored! in case of clearBuffer, the buffer is printed like having "\n" in the string
+int OutputBuffer::overflowFlush(int c, bool flushOnly, bool clearBuffer)
+{
 	EXUstd::WaitAndLockSemaphoreIgnore(outputBufferAtomicFlag); //lock outputBuffer
-	if ((char)c != '\n') {
+	if ((char)c != '\n' && !flushOnly && !clearBuffer) {
 		buf.push_back((char)c);
 	}
 	else 
 	{
 		if (!suspendWriting)
 		{
-			buf.push_back('\n');
+			if (!flushOnly && !clearBuffer) { buf.push_back('\n'); }
 			if (visualizationBuffer.size())
 			{
 				for (char visChar: visualizationBuffer)
@@ -168,50 +175,41 @@ int OutputBuffer::overflow(int c)
 					buf.push_back(visChar);
 				}
 				visualizationBuffer.clear(); //erases memory, same as visualizationBuffer = ""
-				//visualizationBuffer = "capacity=" + EXUstd::ToString(visualizationBuffer.capacity()) + "\n";
 			}
 
-			if (writeToConsole)
+			if (buf.size())
 			{
-				//if python raised already an error, exudyn.Print() will not work, because py::print() still has the exception error_already_set
-				// ==> therefore add try and catch to print, such that subsequent print commands work again
-				try
+				if (writeToConsole)
 				{
-					//py::print(buf);
-					py::print(buf, "end"_a = "");
-				}
-				catch (py::error_already_set &eas) {
-					// Discard the Python error: for future print commands?
-					eas.discard_as_unraisable(__func__); //prints long message ...
-					//py::print(buf); 
-					py::print(buf, "end"_a = "");//try again to print, which should work now
-					//
-					//throw std::runtime_error("Exudyn: print"); //check what happens => still raises an exception (CTRL-C ...) => does not work
-				}
+					//if python raised already an error, exudyn.Print() will not work, because py::print() still has the exception error_already_set
+					// ==> therefore add try and catch to print, such that subsequent print commands work again
+					try
+					{
+						py::print(buf, "end"_a = "", "flush"_a = (writeFlushAlways || flushOnly));
+					}
+					catch (py::error_already_set& eas)
+					{
+						// Discard the Python error: for future print commands?
+						eas.discard_as_unraisable(__func__); //prints long message ...
+						//py::print(buf); 
+						py::print(buf, "end"_a = "");//try again to print, which should work now
+					}
 
-				if (waitMilliSeconds) {
-					std::this_thread::sleep_for(std::chrono::milliseconds(waitMilliSeconds)); //add this to enable Spyder to print messages
+					if (waitMilliSeconds) {
+						std::this_thread::sleep_for(std::chrono::milliseconds(waitMilliSeconds)); //add this to enable Spyder to print messages
+					}
 				}
-			}
-			if (writeToFile)
-			{
-				//file << buf << "\n"; //add "\n" as compared to py::print, which already adds end line command
-				file << buf;
-				if (writeFlushAlways)        //now open file with new file name
+				if (writeToFile)
 				{
-					file.flush();
-					//file.close();
-					//if (writeAppend)
-					//{
-					//	file.open(writeFilename, std::ofstream::app);
-					//}
-					//else
-					//{
-					//	file.open(writeFilename, std::ofstream::out);
-					//}
+					//file << buf << "\n"; //add "\n" as compared to py::print, which already adds end line command
+					file << buf;
+					if (writeFlushAlways || flushOnly)        //now open file with new file name
+					{
+						file.flush();
+					}
 				}
+				buf.clear();
 			}
-			buf.clear();
 		}
 		else
 		{

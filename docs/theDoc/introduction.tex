@@ -61,11 +61,14 @@ Python parts, see \fig{fig_exudyn_CandPython}.
   \item \mybold{C++ parts}, see \fig{fig_exudyn_CPP} and \fig{fig_system_overview}:
   \bi
     \item[--] \texttt{exudyn}:
-    on this level, there are just very few functions: \texttt{SystemContainer()}, \texttt{StartRenderer()}, \texttt{StopRenderer()}, \texttt{GetVersionString()}, \texttt{SolveStatic(...)}, \texttt{SolveDynamic(...)}, ... as well as system and user variable dictionaries \texttt{exudyn.variables} and \texttt{exudyn.sys}
+    on this level, there are just very few functions: \texttt{SystemContainer()}, \texttt{SC.renderer.Start()}, \texttt{SC.renderer.Stop()}, \texttt{SolveStatic(...)}, \texttt{SolveDynamic(...)}, ... as well as system and user variable dictionaries \texttt{exudyn.variables} and \texttt{exudyn.sys}
+    \item[--] \texttt{config}, \texttt{special}: substructures for configuration (global settings) and special settings; use e.g. \texttt{exudyn.config.outputPrecision=4}
+    \item[--] \texttt{symbolic}: tools for symbolic computation in user functions (speedup!)
     \item[--] \texttt{SystemContainer}: contains the systems (most important), solvers (static, dynamics, ...), visualization settings
-    \item[--] \texttt{mbs}: \acf{mbs} created with \texttt{mbs = SC.AddSystem()}, this structure contains everything that defines a solvable multibody system; a large set of nodes, objects, markers, 
+    \item[--] \texttt{MainSystem} \texttt{mbs}: \acf{mbs} created with \texttt{mbs = SC.AddSystem()}, this structure contains everything that defines a solvable multibody system; a large set of nodes, objects, markers, 
     loads can added to the system, see \refSection{sec:item:reference:manual};
     \item[--] \texttt{mbs.systemData}: contains the initial, current, visualization, ... states of the system and holds the items, see \fig{fig_system_overview}
+    \item[--] \texttt{SimulationSettings}: contains the systems (most important), solvers (static, dynamics, ...), visualization settings
   \ei
   \item \mybold{Python parts} (this list is continuously extended, see \refSection{sec:pythonUtilityFunctions}):
   \bi
@@ -424,10 +427,10 @@ Furthermore, you can use sensors to record particular information, e.g., the dis
 position, forces or joint data. For viewing sensor results, use the \texttt{PlotSensor} function of the 
 \texttt{exudyn.plot} tool, see the rigid body and joints tutorial.
 Finally, the render window allows to show traces (trajectories) of position sensors, sensor vector quantities (e.g., velocity vectors),
-or triads given by rotation matrices. For further information, see the \texttt{sensors.traces} structure of \texttt{VisualizationSettings}, \refSection{sec:VSettingsSensorTraces}.
+or triads given by rotation matrices. For further information, see the \texttt{sensors.traces} structure of \texttt{VisualizationSettings}, \refSection{sec:VSettingsTraces}.
 
 \mysubsubsectionlabel{Renderer and 3D graphics}{sec:overview:basics:renderer}
-A 3D renderer is attached to the simulation. Visualization is started with  \texttt{exu.StartRenderer()}, see the examples and tutorials.
+A 3D renderer is attached to the simulation. Visualization is started with  \texttt{SC.renderer.Start()}, see the examples and tutorials.
 In order to show your model in the render window, you have to provide 3D graphics data to the bodies. Flexible bodies (e.g., FFRF-like) can visualize their meshes. Further items (nodes, markers, ...) can be visualized with default settings, however, often you have to turn on drawing or enlarge default sizes to make items visible. Item number can also be shown.
 Finally, since version 1.6.188, sensor traces (trajectories) can be shown in the render window, see the \texttt{VisualizationSettings} in  \refSection{sec:VisualizationSettingsMain}.
 
@@ -442,7 +445,7 @@ The renderer is set up in a minimalistic way, just to ensure that you can check 
   \item After \texttt{visualizationSettings.window.reallyQuitTimeLimit} seconds a 'do you really want to quit' dialog opens for safety on pressing 'Q'; if no tkinter is available, you just have to press 'Q' twice. For closing the window, you need to click a second time on the close button of the window after \texttt{reallyQuitTimeLimit} seconds (usually 900 seconds).
 \ei
  
-\noindent There are some main features in the renderer, using keyboard and mouse, for details see \refSection{sec:graphicsVisualization}:
+\noindent Here are the \mybold{main features of the renderer}, using keyboard and mouse, for details see \refSection{sec:graphicsVisualization}:
 \bi
   \item press key H to show help in renderer
   \item move model by pressing left mouse button and drag
@@ -455,13 +458,14 @@ The renderer is set up in a minimalistic way, just to ensure that you can check 
   \item show item number: click on graphics element with left mouse button
   \item show item dictionary: click on graphics element with right mouse button  
   \item for further keys, see \refSection{sec:GUI:sec:keyboardInput} or press H in renderer
+  \item raytracing mode, see \refSection{sec:overview:basics:raytracing} 
 \ei
 %
-Depending on your model (size, place, ...), you may need to adjust the following visualization and \texttt{openGL} parameters in \texttt{visualizationSettings}, see \refSection{sec:VisualizationSettingsMain}:
+Depending on your model (size, place, ...), you \mybold{may need to adjust the following general visualization} and \texttt{openGL} \mybold{parameters} in \texttt{visualizationSettings}, see \refSection{sec:VisualizationSettingsMain}:
 \bi
   \item change window size
-  \item light and light position 
-  \item shadow (turned off by using 0; turned on by using, e.g., a value of 0.3) and shadow polygon offset; shadow slows down graphics performance by a factor of 2-3, depending on your graphics card
+  \item light and light position; switch \texttt{openGL.lightPositionsInCameraFrame} to switch between model-fixed or camera-fixed lights
+  \item shadow (turned off by using shadow=0; turned on by using, e.g., a value of 0.3) and shadow polygon offset; shadow slows down graphics performance by a factor of 2-3, depending on your graphics card
   \item visibility of nodes, markers, etc. in according bodies, nodes, markers, ..., \texttt{visualizationSettings}
   \item move camera with a selected marker: adjust \texttt{trackMarker} in \texttt{visualizationSettings.interactive}
 \ei
@@ -477,8 +481,7 @@ which is why it is strongly recommended to:
 %
 Visualization settings are used for user interaction with the model. E.g., the nodes, markers, loads, etc., can be visualized for every model. There are default values, e.g., for the size of nodes, which may be inappropriate for your model. Therefore, you can adjust those parameters. In some cases, huge models require simpler graphics representation, in order not to slow down performance -- e.g., the number of faces to represent a cylinder should be small if there are 10000s of cylinders drawn. Even computation performance can be slowed down, if visualization takes lots of CPU power. However, visualization is performed in a separate thread, which usually does not influence the computation exhaustively.
 
-Details on visualization settings and its substructures are provided in \refSection{sec:VisualizationSettingsMain}. These settings may also be edited by pressing 'V' in the active render window (does not work, if there is no active render loop using, e.g., \texttt{SC.WaitForRenderEngineStopFlag()} or 
-\texttt{mbs.WaitForUserToContinue()} ).
+Details on visualization settings and its substructures are provided in \refSection{sec:VisualizationSettingsMain}. These settings may also be edited by pressing 'V' in the active render window (does not work, if there is no active render loop using, e.g., \texttt{SC.renderer.DoIdleTasks()} ).
 The visualization settings dialog is shown exemplarily in \fig{fig_visualizationSettings}.
 Note that this dialog is automatically created and uses Python's \texttt{tkinter}, which is lightweight, but not very well suited if display scalings are large (e.g., on high resolution laptop screens). If working with Spyder, it is recommended to restart Spyder, if display scaling is changed, in order to adjust scaling not only for Spyder but also for \codeName.
 
@@ -522,7 +525,7 @@ The visualization settings structure can be accessed in the system container \te
 \pythonstyle\begin{lstlisting}
   SC.visualizationSettings.nodes.defaultSize = 0.001      #draw nodes very small
 
-  #change openGL parameters; current values can be obtained from SC.GetRenderState()
+  #change openGL parameters; current values can be obtained from SC.renderer.GetState()
   #change zoom factor:
   SC.visualizationSettings.openGL.initialZoom = 0.2       
   #set the center point of the scene (can be attached to moving object):
@@ -542,6 +545,8 @@ The visualization settings structure can be accessed in the system container \te
   SC.visualizationSettings.contour.outputVariableComponent = 1 #0=x, 1=y, 2=z
 \end{lstlisting}
 
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \mysubsubsectionlabel{Execute Command and Help}{sec:overview:basics:commandAndHelp}
 %
 In addition to the Visualization settings dialog, a simple help window opens upon pressing key 'H'. 
@@ -576,12 +581,15 @@ To print values, always use \texttt{print(...)} to see the string representation
 
 Note that you could also change \texttt{visualizationSettings} in this way, but the Visualization settings dialog is much more convenient.
 Changing \texttt{simulationSettings} within the execute command is dangerous and must be treated with care.
+
 Some parameters, such as \texttt{simulationSettings.timeIntegration.endTime} are copied into the internal solver's \texttt{mbs.sys['dynamicSolver'].it} structure.
 
 Thus, changing \texttt{simulationSettings.timeIntegration.endTime} has no effect during simulation. 
 As a rule of thumb, all variables that are not stored inside the solvers structures may be adjusted by the \texttt{simulationSettings} passed to the solver (which are then not copied internally); see the C++ code for details. However, behavior may change in future and unexpected behavior or and changing \texttt{simulationSettings} will likely cause crashes if you do not know exactly the behavior, e.g., changing output format from text to binary ... !
 Specifically, \texttt{newton} and \texttt{discontinuous} settings cannot be changed on the fly as they are copied internally.
 
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \mysubsubsectionlabel{Graphics pipeline}{sec:overview:basics:graphicspipeline}
 %deprecated, since there are user functions!: The user cannot interact with the visualization part for now.
 There are basically two loops during simulation, which feed the graphics pipeline.
@@ -602,8 +610,72 @@ The openGL graphics thread (=separate thread) runs the following loop:
   \item check if new visualization data is available and the time since last update is larger than a presribed value, the graphicsData structure is updated with the new visualization state
 \ei
 
+\mysubsubsectionlabel{Raytracing}{sec:overview:basics:raytracing}
+In order to compensate the limited functionality (but high compatibility) of OpenGL 1.3, an option for CPU-based software rendering (raytracing) has been added.
+This allows to include shadows and transparency correctly, with additional support for relections, refraction, emission, fog and materials.
+In the future, textures may be added as well.
+
+\LatexRSTfigure{figures/raytracerDemo.jpg}{fig:raytracerDemo}{12cm}{400}{Example image of raytraced renderer view.}
+
+The basic things to know are:
+\bi
+  \item Raytracing settings are collected in \texttt{SC.visualizationSettings.raytracer} (in the following, we omit 'SC.visualizationSettings').
+  \item Raytracing is activated by setting \texttt{raytracer.enable=True}. Please make sure that you start with small render window sizes / complexity first.
+  \item The render window size is adjusted by \texttt{window.renderWindowSize}. Be careful with this settings.
+  \item Adjust the \texttt{raytracer.numberOfThreads} for optimal performance, use \texttt{raytracer.verbose} to see render times for different settings. For testing, use \texttt{raytracer.imageSizeFactor>1} to decrease the raytracer's resolution (with same image size), while \texttt{openGL.multiSampling} will increase the resolution (anti-aliasing). Note that switching from \texttt{openGL.multiSampling=1} and \texttt{raytracer.imageSizeFactor=4} to \texttt{openGL.multiSampling=3} and \texttt{raytracer.imageSizeFactor=1} increases computational costs by a factor $4\times 4\times 3\times 3 = 144$. Use only one light, if sufficient (set \texttt{openGL.enableLight1=False}).
+  \item Scene, lights, shadow, clipping plane, etc. settings are taken form OpenGL settings and directly used in the software renderer, like \texttt{openGL.light0position}, \texttt{openGL.shadow}, \texttt{openGL.perspective}, \texttt{openGL.clippingPlaneNormal}, \texttt{openGL.showLines}, etc.; 
+  \item some settings are in general, like \texttt{general.backgroundColor} or \texttt{general.drawWorldBasis};
+  \item In order to see the advantages of the software renderer, materials have to be used, see below.
+\ei
+
+\noindent \mybold{Materials}:
+\bi
+  \item Materials have the type \texttt{VSettingsMaterial}, see description in \refSection{sec:VSettingsMaterial}, for adjusting color, reflectivity, shininess, alpha-transparency, etc.; 
+  \item Materials can only be used within triangulated geometries (GraphicsData \texttt{TriangleList}) using a material-flag in the color, like \texttt{graphics.Sphere(..., color=graphics.material.chrome)}. In the RGBA color, the alpha-channel is replaced by a material index which starts at 1000 (where 1000 represents material index 0). Note that in the regular OpenGL-rendering, alpha$>$1 is equivalent to alpha$=$1. The first 10 materials are linked to \texttt{raytracer.material0 ... raytracer.material9}.
+  \item The material's \texttt{baseColor} is used if the color red-channel is set to $-1$. Note that this allows to globally change the color of objects by changing \texttt{baseColor} in the material settings in \texttt{visualizationSettings}. Summarizing, using \texttt{color=[1,0,0,graphics.material.indexSteel]} chooses red color with steel material settings, while \texttt{color=[-1,-1,-1,graphics.material.indexSteel]} will use the color of steel (but will be black for OpenGL renderer), identical with \texttt{color=graphics.material.steel}.
+  \item The setting \texttt{backgroundColorReflections} can be used to represent the background which is used for rendering, while the background is independently set to black or white. Otherwise, black background leads to black regions on highly reflective objects or very light regions for white backgrounds.
+  \item System text messages (solver, version, etc.) are overlayed over raytracing and can be turned off using the settings in \texttt{general.showComputationInfo} and similar. However, note that \mybold{item texts are currently not shown} in raytracer, affecting node numbers, etc.!
+\ei
+
+\noindent \mybold{Limitations and risks}:
+\bi
+  \item Raytracing is CPU-based and therefore slow. Do not use very high resolution (4K) together with multisampling $>1$. Start with small render window sizes (e.g. 600 $\times$ 400)
+  \item Raytracing usually uses multithreading with speedups $>10$ on 16 cores. However, this cannot be combined with multithreaded simulations. It is therefore recommended to use raytracing in the solution viewer, not during simulation.
+  \item If software rendering of a single frame gets to long (>4 seconds), timeouts become active and it may occasionally not work. There are some options to compensate, see above.
+  \item In general, it is \mybold{recommended to start with default settings and experiment} with changes using the visualization settings dialog.
+\ei
+
+\noindent To add raytracing to your project, do like this:
+\pythonstyle\begin{lstlisting}
+  ...
+  #sphere with chrome
+  graphics.Sphere(radius=radius, 
+                  color=graphics.color.dodgerblue[0:3]+[graphics.material.indexChrome], 
+                  nTiles=32)
+  ground = mbs.CreateGround(referencePosition=[0,0,0],
+                            graphicsDataList=[gSphere])
+
+  #add mbs components
+  #assemble
+  #solve
+  ...
+  #after computation, switch to raytracing
+  SC.visualizationSettings.openGL.multiSampling = 1
+  #SC.visualizationSettings.openGL.imageSizeFactor = 4 #reduce resolution for first tests!
+  SC.visualizationSettings.openGL.enableLight1 = False
+  SC.visualizationSettings.raytracer.numberOfThreads = 16 #adjust to your n-threads
+  SC.visualizationSettings.raytracer.enable = True
+  
+  mbs.SolutionViewer()
+\end{lstlisting}
+
+\noindent Have fun!
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \mysubsubsectionlabel{Storing the model view}{sec:overview:basics:storingmodelview}
-There is a simple way to store the current view (zoom, centerpoint, orientation, etc.) by using \texttt{SC.GetRenderState()} and \texttt{SC.SetRenderState()},
+There is a simple way to store the current view (zoom, centerpoint, orientation, etc.) by using \texttt{SC.renderer.GetState()} and \texttt{SC.renderer.SetState()},
 see also \refSection{sec:renderState}.
 %
 A simple way is to reload the stored render state (model view) after simulating your model once at the end of the simulation\footnote{
@@ -612,21 +684,21 @@ note that \texttt{visualizationSettings.general.autoFitScene} should be set Fals
   import exudyn as exu
   SC=exu.SystemContainer()
   SC.visualizationSettings.general.autoFitScene = False #prevent from autozoom
-  exu.StartRenderer()
+  SC.renderer.Start()
   if 'renderState' in exu.sys:
-      SC.SetRenderState(exu.sys['renderState']) 
+      SC.renderer.SetState(exu.sys['renderState']) 
   #+++++++++++++++
   #do simulation here and adjust model view settings with mouse
   #+++++++++++++++
 
   #store model view for next run:
-  StopRenderer() #stores render state in exu.sys['renderState']
+  SC.renderer.Stop() #stores render state in exu.sys['renderState']
 \end{lstlisting}
 \horizontalRuler \\
 %
 Alternatively, you can obtain the current model view from the console after a simulation, e.g.,
 \pythonstyle\begin{lstlisting}
-  In[1] : SC.GetRenderState()
+  In[1] : SC.renderer.GetState()
   Out[1]: 
   {'centerPoint': [1.0, 0.0, 0.0],
    'maxSceneSize': 2.0,
@@ -638,10 +710,10 @@ Alternatively, you can obtain the current model view from the console after a si
 \end{lstlisting}
 %
 which contains the last state of the renderer.
-Now copy the output and set this with \texttt{SC.SetRenderState} in your Python code to have a fixed model view in every simulation (\texttt{SC.SetRenderState} AFTER \texttt{exu.StartRenderer()}):
+Now copy the output and set this with \texttt{SC.renderer.SetState} in your Python code to have a fixed model view in every simulation (\texttt{SC.renderer.SetState} AFTER \texttt{SC.renderer.Start()}):
 \pythonstyle\begin{lstlisting}
   SC.visualizationSettings.general.autoFitScene = False #prevent from autozoom
-  exu.StartRenderer()
+  SC.renderer.Start()
   renderState={'centerPoint': [1.0, 0.0, 0.0],
                'maxSceneSize': 2.0,
                'zoom': 1.0,
@@ -649,10 +721,10 @@ Now copy the output and set this with \texttt{SC.SetRenderState} in your Python 
                'modelRotation':     [[ 0.34202015,  0.        ,  0.9396926 ],
                                     [-0.60402274,  0.76604444,  0.21984631],
                                     [-0.7198463 , -0.6427876 ,  0.26200265]])
-  SC.SetRenderState(renderState)
+  SC.renderer.SetState(renderState)
   #.... further code for simulation here
 \end{lstlisting}
-Note that in the current version of \codeName there is more data stored in render state, which is not used in \texttt{SC.SetRenderState},
+Note that in the current version of \codeName there is more data stored in render state, which is not used in \texttt{SC.renderer.SetState},
 see also \refSection{sec:renderState}.
 \horizontalRuler
 %
@@ -714,6 +786,7 @@ The \texttt{SolutionViewer} adds a \texttt{tkinter} interactive dialog, which le
 \item In the 'Continuous run' mode, the player runs in an infinite loop
 \item In the 'One cycle' mode, the player runs from the current position to the end; this is perfectly suited to record series of images for \mybold{creating animations}, see \refSection{sec:overview:basics:animations} and works together with the visualization settings dialog.
 \item In the 'Record animation' mode, the player records frames that are shown in the render window; before pressing on 'Record animation', press 'Stop' and switch to 'One cycle'. Then put the solution steps slider to the first frame and press 'Record animation', which stores images in the current subfolder 'images' as 'frame00001.png' with increasing number, using PNG by default. The number is increased and can only be reset after new start of SolutionViewer.
+\item Since \codeName V1.9.83, the button 'Make mp4' allows to directly generate animation files, see next section.
 \ei
 The solution should be loaded with
 \texttt{LoadSolutionFile('coordinatesSolution.txt')}, where 'coordinatesSolution.txt' represents the stored solution file, 
@@ -728,13 +801,13 @@ You can call the \texttt{SolutionViewer} either in the model, or at the command 
   mbs.SolutionViewer(solution=sol)
 \end{lstlisting}
 %
-\mybold{Alternatively}, if no solution is provided, \texttt{SolutionViewer} tries to reload the solution of the previous simulation that is referred to from \texttt{mbs.sys['simulationSettings']}:
+\mybold{By default and as a recommended way}, if no solution is provided, \texttt{SolutionViewer} tries to reload the solution of the previous simulation that is referred to from \texttt{mbs.sys['simulationSettings']}:
 \pythonstyle\begin{lstlisting}
   #... mbs has been previously solved
   mbs.SolutionViewer()
 \end{lstlisting}
 An example for the \texttt{SolutionViewer} is integrated into the \texttt{Examples/} directory, see \texttt{solutionViewerTest.py}. \\
-\mybold{Note}: The previous function \texttt{AnimateSolution} in \texttt{exudyn.utilities} allows to directly visualize the stored solution for according stored time frames without \texttt{tkinter} (useful for MacOS).
+%\mybold{Note}: The previous function \texttt{AnimateSolution} in \texttt{exudyn.utilities} allows to directly visualize the stored solution for according stored time frames without \texttt{tkinter} (useful for MacOS).
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \mysubsubsectionlabel{Generating animations}{sec:overview:basics:animations}
@@ -754,10 +827,11 @@ which means, that after every 0.01 seconds of simulation time, an image of the c
 \ei
 By default, a consecutive numbering is generated for the image, e.g., 'frame0000.png, frame0001.png,...'. Note that the standard file format PNG with ending '.png' uses compression libraries included in glfw, while the alternative TGA format produces '.tga' files which contain raw image data and therefore can become very large.
 
-To create animation files, an external tool FFMPEG is used to efficiently convert a series of images into an animation.
+To create animation files, an external tool FFMPEG is used to efficiently convert a series of images into an animation. Since \codeName V1.9.83, ffmpeg is integrated into the solution viewer (button 'Make mp4'), which requires prior installation using \texttt{pip install ffmpeg-python} . 
+Note that you may also need to install ffmpeg itself, depending on your platform.
 \onlyRST{$\ra$ see theDoc.pdf !}
 \ignoreRST{
-In windows, simple DOS batch files can do the job to convert frames given in the local directory to animations, e.g.:
+In Windows, simple DOS batch files can do the job to convert frames given in the local directory to animations, e.g.:
 \plainlststyle
 \lstinputlisting[breaklines=true, basicstyle=\ttm]{../userTools/makeAnimations/convertToVideo.bat}
 After the video has been created, you should delete the single images:
@@ -918,7 +992,7 @@ in which \texttt{nMarker} represents the desired marker number to follow.
 See also related options in \texttt{SC.visualizationSettings.interactive} in \refSection{sec:VSettingsInteractive}.
 
 The following paragraph represents a slower, slightly outdated approach, which may be interesting for advanced usage of object tracking.
-To do so, the current render state (\texttt{SC.GetRenderState()}, \texttt{SC.SetRenderState(...)}) can be obtained and modified, in order to always follow a certain position.
+To do so, the current render state (\texttt{SC.renderer.GetState()}, \texttt{SC.renderer.SetState(...)}) can be obtained and modified, in order to always follow a certain position.
 As this needs to be done during redraw of every frame, it is conveniently done in a graphicsUserFunction, e.g., within the ground body. This is shown in the following example, in which \texttt{mbs.variables['nTrackNode']} is a node number to be tracked:
 %
 \pythonstyle\begin{lstlisting}
@@ -927,11 +1001,11 @@ As this needs to be done during redraw of every frame, it is conveniently done i
       n = mbs.variables['nTrackNode']
       p = mbs.GetNodeOutput(n,exu.OutputVariableType.Position, 
                             configuration=exu.ConfigurationType.Visualization)
-      rs=SC.GetRenderState() #get current render state
+      rs=SC.renderer.GetState() #get current render state
       A = np.array(rs['modelRotation'])
       p = A.T @ p #transform point into model view coordinates
       rs['centerPoint']=[p[0],p[1],p[2]]
-      SC.SetRenderState(rs)  #modify render state
+      SC.renderer.SetState(rs)  #modify render state
       return []
 
   #add object with graphics user function
@@ -1261,7 +1335,7 @@ The following notation conventions are applied (\mybold{no exceptions!}):
     \item examples for variable names: secondOrderSize, massMatrix, mThetaTheta
     \item examples for function/class names: \texttt{SecondOrderSize}, \texttt{EvaluateMassMatrix}, \texttt{Position(const Vector3D\& localPosition)}
     \item use the Get/Set...() convention if data is retrieved from a class (Get) or something is set in a class (Set); Use \texttt{const T\& Get()/T\& Get} if direct access to variables is needed; Use Get/Set for pybind11
-    \item example Get/Set: \texttt{Real* GetDataPointer()}, \texttt{Vector::SetAll(Real)}, \texttt{GetTransposed()}, \texttt{SetRotationalParameters(...)}, \texttt{SetColor(...)}, ...
+    \item example Get/Set: \texttt{Real* GetDataPointer()}, \texttt{Vector::SetAll(Real)}, \texttt{GetTransposed()}, \\ \texttt{SetRotationalParameters(...)}, \texttt{SetColor(...)}, ...
     \item use 'Real' instead of double or float: for compatibility, also for AVX with SP/DP
     \item use 'Index' for array/vector size and index instead of size\_t or int
     \item item: object, node, marker, load: anything handled within the computational/visualization systems
@@ -1328,7 +1402,7 @@ In the following, two use cases are shown, which show the simplicity of the proc
   \bi
     \item \texttt{ComputeMassMatrix}: computes the mass matrix either in sparse or dense mode; this function is performance-critical if the mass matrix is non-constant
     \item \texttt{ComputeODE2LHS}: computes the \ac{LHS} generalized forces of the body; this function is performance-critical
-    \item \texttt{GetAccessFunctionTypes}: specifies, which access functions are available in \texttt{GetAccessFunctionBody(...)}
+    \item \texttt{GetAccessFunctionTypes}: specifies, which access functions are available in \\ \texttt{GetAccessFunctionBody(...)}
     \item \texttt{GetAccessFunctionBody}: needs to compute functions for 'access' to the body, in the sense that e.g.\ forces or torques can be applied. 
     \item \texttt{GetAvailableJacobians}: shall return the flags which jacobians of \texttt{ComputeODE2LHS} need to be computed and which are available as functions; binary flags added up
     \item \texttt{GetOutputVariableBody}: function needs to implement the output variables, such as position, acceleration, forces, etc.\ as defined in \texttt{GetOutputVariableTypes()}

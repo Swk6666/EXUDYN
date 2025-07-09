@@ -131,7 +131,7 @@ directConversion = {
     '\\phantom{XXXX}':'    ',
     '\\rule{8cm}{0.75pt}':'', 
     '\\textcolor{steelblue}':'', 
-    '\\pythonstyle\begin{lstlisting}':'\\begin{pytlisting}',
+    '\\pythonstyle\\begin{lstlisting}':'\\begin{pytlisting}',
     '    \\item':'\\item',
     '  \\item':'\\item',
     '\\begin{itemize}':'\\bi', 

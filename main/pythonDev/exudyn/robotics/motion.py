@@ -15,6 +15,7 @@
 import numpy as np
 
 from copy import copy, deepcopy
+import exudyn
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #internal class, which stores information on PTP profiles
@@ -148,7 +149,7 @@ class ProfileConstantAcceleration:
     def GetBasicProfile(self, initialTime, initialCoordinates,
                       globalMaxVelocities, globalMaxAccelerations):
         if len(globalMaxVelocities)+len(globalMaxAccelerations) != 0:
-            print('WARNING: ProfileConstantAcceleration: max acceleration and velocities in Trajectory not applicable')
+            exudyn.Print('WARNING: ProfileConstantAcceleration: max acceleration and velocities in Trajectory not applicable')
         distances = self.finalCoordinates-initialCoordinates
         aMax=abs(4.*distances/self.duration**2)
         return BasicProfile(coordinateSets=[np.array(initialCoordinates,dtype=float),self.finalCoordinates],
@@ -181,7 +182,7 @@ class ProfileLinearAccelerationsList:
         if len(self.accelerationList[0][1]) != len(initialCoordinates):
             raise ValueError('ProfileLinearAccelerationsList (robotics.motion): length of acceleration vectors are different from size of initialCoordinates!')
         if len(globalMaxVelocities)+len(globalMaxAccelerations) != 0:
-            print('WARNING: ProfileLinearAccelerationsList: max acceleration and velocities in Trajectory not applicable')
+            exudyn.Print('WARNING: ProfileLinearAccelerationsList: max acceleration and velocities in Trajectory not applicable')
 
         return BasicProfileLinearAcceleration(initialCoordinates, initialTime, self.accelerationList)
         

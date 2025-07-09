@@ -93,11 +93,11 @@ simulationSettings.solutionSettings.sensorsWritePeriod = 0.001
 simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1 #SHOULD work with 0.9 as well
 
 ## start renderer and solver; use explicit solver to account for switching in spring-damper
-exu.StartRenderer()
+SC.renderer.Start()
 mbs.SolveDynamic(simulationSettings, 
                  solverType=exu.DynamicSolverType.ExplicitMidpoint)
-# SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+# SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 ## evaluate solution
 n1 = mbs.GetObject(massPoint)['nodeNumber']

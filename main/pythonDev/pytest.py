@@ -81,25 +81,25 @@ simulationSettings.displayComputationTime = False
 simulationSettings.displayStatistics = True
 
 #start 3D visualization
-exu.StartRenderer()
+SC.renderer.Start()
 
 #+++++++++++++++++++++++++++++++++++
 #solve
-exu.InfoStat()
+exu.special.InfoStat()
 solver = exu.MainSolverImplicitSecondOrder()
 solver.SolveSystem(mbs, simulationSettings)
 print(solver.conv)
 print(solver.it)
-exu.InfoStat()
+exu.special.InfoStat()
 
 #alternative solver command
-#exu.SolveDynamic(mbs, simulationSettings)
+#mbs.SolveDynamic(simulationSettings)
 
 #+++++++++++++++++++++++++++++++++++
 #wait for closing window (press 'Q')
-SC.WaitForRenderEngineStopFlag()
+SC.renderer.DoIdleTasks()
 #stop 3D visualization
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.Stop() #safely close rendering window!
 
 #+++++++++++++++++++++++++++++++++++
 #plot data:

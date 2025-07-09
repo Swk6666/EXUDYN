@@ -56,7 +56,7 @@ def AddLidar(mbs, generalContactIndex,
     for i in range(numberOfSensors):
         phi = i/(numberOfSensors-1)*phiRange+angleStart
         dirSensor = rotation @ np.array([L*cos(phi)*cos(a), L*sin(phi)*cos(a),L*sin(a)])
-        #print(dirSensor, positionOrMarker)
+
         sensorList += [CreateDistanceSensor(mbs, generalContactIndex, 
                                             positionOrMarker=positionOrMarker, 
                                             dirSensor=dirSensor,
@@ -135,7 +135,7 @@ def GetRoboticsToolboxInternalModel(modelName='', ignoreURDFerrors=True):
                                                 urdfBasePath)
     except: #except Exception as e:
         if int(ignoreURDFerrors) <= 1:  #if somebody gets annoyed of warning!
-            print('WARNING: GetRoboticsToolboxInternalModel could not retreive urdf file!')
+            exudyn.Print('WARNING: GetRoboticsToolboxInternalModel could not retreive urdf file!')
         if not ignoreURDFerrors:
             raise
 
@@ -209,7 +209,7 @@ def GetURDFrobotData(robot,
         hasPymeshlab = True
     except:
         if verbose > 0: 
-            print('WARNING: GetURDFrobotData: import of pymeshlab failed. You have to do "pip install pymeshlab" in order to enable visualization!')
+            exudyn.Print('WARNING: GetURDFrobotData: import of pymeshlab failed. You have to do "pip install pymeshlab" in order to enable visualization!')
     
     linkName2Index = {}
     index2linkName = [None]*len(robot.links)
@@ -219,7 +219,7 @@ def GetURDFrobotData(robot,
     
     numberOfJoints = robot.n
     if verbose > 1: 
-        print('load robot "'+robot.name+'": #joints=',numberOfJoints,', #links=',len(robot.links),
+        exudyn.Print('load robot "'+robot.name+'": #joints=',numberOfJoints,', #links=',len(robot.links),
               ', #vlinks=',len(urdf.links))
     
     graphicsBaseList = []
@@ -254,7 +254,7 @@ def GetURDFrobotData(robot,
         staticHT = staticHTlinks[i+offsetLink]
         
         jointIndex = link.jindex
-        #print('link',i,', joint',jointIndex)
+
         linkDict = {} #filled later
         if link.isjoint:
             if jointIndex is None: raise ValueError('inconsistent joint index / isjoint in robot structure')
@@ -282,16 +282,15 @@ def GetURDFrobotData(robot,
             linkDict['staticHT'] = staticHT
             linkDict['graphicsDataList'] = []
             
-            if verbose > 1: print('define link',i,', joint',jointIndex, ', type=', linkDict['jointType'],#link.v.axis, 
+            if verbose > 1: exudyn.Print('define link',i,', joint',jointIndex, ', type=', linkDict['jointType'],#link.v.axis, 
                   #'Ts=\n',np.array(link.Ts).round(3),
                   #'staticHT=\n',staticHT.round(3)
                   )
             
             linkList += [linkDict]
             if link.isflip and verbose > 0:
-                print('WARNING: joint',i,'is flipped, but this is not implemented!')
+                exudyn.Print('WARNING: joint',i,'is flipped, but this is not implemented!')
             
-        #print('pos link',i,'=',HT2translation(staticHT))
         sceneGroup = link.geometry
         nScenes = len(sceneGroup)
         for j, scene in enumerate(sceneGroup):
@@ -304,9 +303,9 @@ def GetURDFrobotData(robot,
                 
                 
                 if np.linalg.norm(mesh.transform_matrix()-np.eye(4)) != 0:
-                    if verbose > 1: print('mesh',i,'has additional transformation')
+                    if verbose > 1: exudyn.Print('mesh',i,'has additional transformation')
                 # if mesh.has_face_color(): #only in case of .obj files! use: convert3d.org/dae-to-obj
-                #     if verbose > 0: print('link',i,'scene',j,'has colored faces')
+                #     if verbose > 0: exudyn.Print('link',i,'scene',j,'has colored faces')
                 color = graphics.colorList[i%16]
                 if linkColorList is not None:
                     color = linkColorList[i]
@@ -338,20 +337,16 @@ def GetURDFrobotData(robot,
                 for index, visLink in enumerate(urdf.links):
                     if visLink.name == link.name:
                         k = index
-                        #print('visuals for link',i,'(visual',k,')=',link.name)
+                        #exudyn.Print('visuals for link',i,'(visual',k,')=',link.name)
     
                 if k is None:
-                    if verbose > 0: print('WARNING: inconsistent urdf and robot model detected!')
+                    if verbose > 0: exudyn.Print('WARNING: inconsistent urdf and robot model detected!')
                 else:
                     if len(urdf.links[k].visuals) != nScenes:
-                        if verbose > 0: print('WARNING: inconsistent urdf and robot model: number of visual objects is different!')
+                        if verbose > 0: exudyn.Print('WARNING: inconsistent urdf and robot model: number of visual objects is different!')
                         continue
                     
                     visualHT = urdf.links[k].visuals[j].origin
-                    #print('link',i,'j=',j, 'origin=',HT2translation(visualHT), ',n=',len(urdf.links[i].visuals))
-    
-                    # if np.linalg.norm(visualHT-np.eye(4)) != 0:
-                    #     print('link',i,':',visualHT,'has special origin')
     
                     if link.isjoint:
                         linkDict['graphicsDataList'] += [graphics.Move(gData, HT2translation(visualHT), HT2rotationMatrix(visualHT))]

@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-02-03  15:27:07 (last modified)
+* @date         2025-05-08  11:59:27 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -106,8 +106,14 @@ public: // AUTO:
     //! AUTO:  Read (Reference) access to:temporary list of vectors representing the rope local positions
     Vector3DList& GetTempPositionsList() { return tempPositionsList; }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }

@@ -156,8 +156,8 @@ SC.visualizationSettings.bodies.defaultSize = [dSize, dSize, dSize]
 
 
 if useGraphics: #only start graphics once, but after background is set
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -261,8 +261,8 @@ exudynTestGlobals.testError = omegay - (0) #2020-02-11:
 exudynTestGlobals.testResult = omegay
 
 if useGraphics: #only start graphics once, but after background is set
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 if useGraphics:
     import matplotlib.pyplot as plt

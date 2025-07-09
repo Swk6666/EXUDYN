@@ -144,8 +144,8 @@ SC.visualizationSettings.bodies.beams.crossSectionFilled = False
 
 ## start graphics
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 ## start static solver
 mbs.SolveStatic(simulationSettings)
@@ -156,8 +156,8 @@ exu.Print("uTip =", uLast[0:2])
 
 ## stop graphics
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 exu.Print('solution of LShapeGeomExactBeam2D=',uLast[1]) #use y-coordinate
 

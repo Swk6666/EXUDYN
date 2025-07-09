@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-11-03  19:05:55 (last modified)
+* @date         2025-05-17  00:41:06 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -38,7 +38,7 @@ public: // AUTO:
 
 /** ***********************************************************************************************
 * @class        MainObjectContactCurveCircles
-* @brief        [UNDER CONSTRUCTION] A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. Note that there is a limit of 100 circle markes above which computation becomes slower as it requires memory allocation.
+* @brief        A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. [REQUIRES FURTHER TESTING; friction not yet available]
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
@@ -107,7 +107,7 @@ public: // AUTO:
     //! AUTO:  Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?
     virtual const char* GetTypeName() const override
     {
-        return "ContactSphereSphere";
+        return "ContactCurveCircles";
     }
 
 
@@ -149,6 +149,10 @@ public: // AUTO:
         d["contactDamping"] = (Real)cObjectContactCurveCircles->GetParameters().contactDamping; //! AUTO: cast variables into python (not needed for standard types) 
         d["contactModel"] = (Index)cObjectContactCurveCircles->GetParameters().contactModel; //! AUTO: cast variables into python (not needed for standard types) 
         d["activeConnector"] = (bool)cObjectContactCurveCircles->GetParameters().activeConnector; //! AUTO: cast variables into python (not needed for standard types) 
+        d["gapPerSegment"] = EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetGapPerSegment()); //! AUTO: cast variables into python (not needed for standard types) 
+        d["gapPerSegment_t"] = EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetGapPerSegment_t()); //! AUTO: cast variables into python (not needed for standard types) 
+        d["segmentsForceLocalX"] = EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetSegmentsForceLocalX()); //! AUTO: cast variables into python (not needed for standard types) 
+        d["segmentsForceLocalY"] = EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetSegmentsForceLocalY()); //! AUTO: cast variables into python (not needed for standard types) 
         d["name"] = (std::string)name; //! AUTO: cast variables into python (not needed for standard types) 
         d["Vshow"] = (bool)visualizationObjectContactCurveCircles->GetShow(); //! AUTO: cast variables into python (not needed for standard types) 
         d["Vcolor"] = (std::vector<float>)visualizationObjectContactCurveCircles->GetColor(); //! AUTO: cast variables into python (not needed for standard types) 
@@ -171,6 +175,10 @@ public: // AUTO:
         else if (parameterName.compare("contactDamping") == 0) { return py::cast((Real)cObjectContactCurveCircles->GetParameters().contactDamping);} //! AUTO: get parameter
         else if (parameterName.compare("contactModel") == 0) { return py::cast((Index)cObjectContactCurveCircles->GetParameters().contactModel);} //! AUTO: get parameter
         else if (parameterName.compare("activeConnector") == 0) { return py::cast((bool)cObjectContactCurveCircles->GetParameters().activeConnector);} //! AUTO: get parameter
+        else if (parameterName.compare("gapPerSegment") == 0) { return EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetGapPerSegment());} //! AUTO: get parameter
+        else if (parameterName.compare("gapPerSegment_t") == 0) { return EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetGapPerSegment_t());} //! AUTO: get parameter
+        else if (parameterName.compare("segmentsForceLocalX") == 0) { return EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetSegmentsForceLocalX());} //! AUTO: get parameter
+        else if (parameterName.compare("segmentsForceLocalY") == 0) { return EPyUtils::Vector2NumPy(cObjectContactCurveCircles->GetSegmentsForceLocalY());} //! AUTO: get parameter
         else if (parameterName.compare("Vshow") == 0) { return py::cast((bool)visualizationObjectContactCurveCircles->GetShow());} //! AUTO: get parameter
         else if (parameterName.compare("Vcolor") == 0) { return py::cast((std::vector<float>)visualizationObjectContactCurveCircles->GetColor());} //! AUTO: get parameter
         else  {PyError(STDstring("ObjectContactCurveCircles::GetParameter(...): illegal parameter name ")+parameterName+" cannot be read");} // AUTO: add warning for user

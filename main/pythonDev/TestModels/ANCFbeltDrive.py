@@ -99,8 +99,8 @@ cableTemplate = Cable2D(#physicsLength = L / nElements, #set in GenerateStraight
                         #nodeNumbers = [0, 0], #will be filled in GenerateStraightLineANCFCable2D(...)
                         visualization=VCable2D(drawHeight=2*h),
                         )
-print("pre-stretch force=", preStretch*E*A)
-print("beam mass per length=", rhoBeam*A)
+exu.Print("pre-stretch force=", preStretch*E*A)
+exu.Print("beam mass per length=", rhoBeam*A)
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #create belt drive:
 distanceWheels = 2 #distance of wheel centers
@@ -219,7 +219,7 @@ if useContact:
         else:
             #add measurement roll:
             dRoll = dRelRoll * (2*sqrt(kRoll*mRoll))
-            print('measurement roll resonance=',sqrt(kRoll/mRoll)/(2*pi))
+            exu.Print('measurement roll resonance=',sqrt(kRoll/mRoll)/(2*pi))
             frictionMaterialIndex=1 #no friction
             mCWheel0 = mbs.AddMarker(MarkerNodeCoordinate(nodeNumber=nMass, coordinate=0))
             mCWheel1 = mbs.AddMarker(MarkerNodeCoordinate(nodeNumber=nMass, coordinate=1))
@@ -318,8 +318,8 @@ if False:
     SC.visualizationSettings.contact.showBoundingBoxes = True
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 if doDynamic :
     mbs.SolveDynamic(simulationSettings) #183 Newton iterations, 0.114 seconds
@@ -332,13 +332,13 @@ if useGraphics and True:
     SC.visualizationSettings.general.graphicsUpdateInterval=0.02
     
     sol = LoadSolutionFile('solution/coordinatesSolution.txt', safeMode=True)#, maxRows=100)
-    print('start SolutionViewer')
+    exu.Print('start SolutionViewer')
     mbs.SolutionViewer(sol)
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     
     if True:
         

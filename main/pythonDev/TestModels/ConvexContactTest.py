@@ -92,12 +92,12 @@ sims.solutionSettings.coordinatesSolutionFileName = 'solution/coordinatesSolutio
 if useGraphics: 
     sims.timeIntegration.verboseMode = 1
     sims.timeIntegration.stepInformation = 3+128+256
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(sims)
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 sol = mbs.systemData.GetODE2Coordinates()
 exudynTestGlobals.testResult = np.sum(sol[:2])
@@ -117,6 +117,6 @@ if useGraphics and False:
     SC.visualizationSettings.general.graphicsUpdateInterval=0.02
     
     sol = LoadSolutionFile('solution/coordinatesSolution.txt', safeMode=True)#, maxRows=100)
-    print('start SolutionViewer')
+    exu.Print('start SolutionViewer')
     mbs.SolutionViewer(sol)
 

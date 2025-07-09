@@ -102,14 +102,14 @@ def ParameterFunction(parameterSet):
     
     simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1 #no damping
     
-    #exu.StartRenderer()              #start graphics visualization
-    #mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+    #SC.renderer.Start()              #start graphics visualization
+    #SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
     
     #start solver:
     mbs.SolveDynamic(simulationSettings)
     
-    #SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-    #exu.StopRenderer()               #safely close rendering window!
+    #SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+    #SC.renderer.Stop()               #safely close rendering window!
     
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++
     #evaluate difference between reference and optimized solution

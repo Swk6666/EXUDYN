@@ -63,7 +63,7 @@ void CObjectConnectorReevingSystemSprings::ComputeReevingGeometry(const MarkerDa
 		Vector3D aA = markerData.GetMarkerData(i).orientation*parameters.sheavesAxes[i];
 		Vector3D aB = markerData.GetMarkerData(i + 1).orientation*parameters.sheavesAxes[i + 1];
 
-		bool rv = HGeometry::CommonTangentOf2Circles(pA, pB, 
+		bool rv = EGeometry::CommonTangentOf2Circles(pA, pB, 
 			aA, aB, RA, RB, rA, rB, 1, 1, true);
 		if (!rv) { SysError("CObjectConnectorReevingSystemSprings::ComputeReevingGeometry: computation of common tangent of 2 circles failed; check the geometry of your reeving system!"); }
 

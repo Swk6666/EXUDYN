@@ -218,10 +218,10 @@ simulationSettings.solutionSettings.writeSolutionToFile = False
 #SC.visualizationSettings.exportImages.saveImageFileName = "animation/frame"
 
 if useGraphics:
-    exu.StartRenderer()
-    if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+    SC.renderer.Start()
+    if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
 
-    mbs.WaitForUserToContinue() #press space to continue
+    SC.renderer.DoIdleTasks() #press space to continue
 
 mbs.SolveDynamic(simulationSettings)
     
@@ -236,8 +236,8 @@ exudynTestGlobals.testResult = result/(10*61576.266114362006)
 exu.Print('ObjectFFRFreducedOrderAccelerations test result=',exudynTestGlobals.testResult)
 
 if useGraphics:
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++

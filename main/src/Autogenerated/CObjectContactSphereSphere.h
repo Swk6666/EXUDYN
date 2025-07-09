@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes, Weyrer Sebastian
 * @date         2019-07-01 (generated)
-* @date         2025-02-05  08:26:52 (last modified)
+* @date         2025-06-29  11:10:36 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -29,7 +29,8 @@ class CObjectContactSphereSphereParameters // AUTO:
 public: // AUTO: 
     ArrayIndex markerNumbers;                     //!< AUTO: list of markers representing centers of spheres, used in connector
     Index nodeNumber;                             //!< AUTO: node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is the plastic overlap of the Edinburgh Adhesive Elasto-Plastic Model, initialized usually with 0 and set back to 0 in case that spheres have been separated.
-    Vector2D spheresRadii;                        //!< AUTO: Vector containing radius of sphere 0 and radius of sphere 1 [SI:m]
+    Vector2D spheresRadii;                        //!< AUTO: list containing radius of sphere 0 and radius of sphere 1 [SI:m].
+    bool isHollowSphere1;                         //!< AUTO: flag, which determines, if sphere attached to marker 1 (radius 1) is a hollow sphere.
     Real dynamicFriction;                         //!< AUTO: dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}
     Real frictionProportionalZone;                //!< AUTO: limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}
     Real contactStiffness;                        //!< AUTO: normal contact stiffness [SI:N/m] (units in case that \f$n_\mathrm{exp}=1\f$)
@@ -41,7 +42,7 @@ public: // AUTO:
     Real adhesionExponent;                        //!< AUTO: exponent for adhesion coefficient [SI:1]; Edinburgh Adhesive Elasto-Plastic Model
     Real restitutionCoefficient;                  //!< AUTO: coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)
     Real minimumImpactVelocity;                   //!< AUTO: minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)
-    Index impactModel;                            //!< AUTO:  number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping still added, if not set to zero!
+    Index impactModel;                            //!< AUTO:  number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!
     bool activeConnector;                         //!< AUTO: flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint
     //! AUTO: default constructor with parameter initialization
     CObjectContactSphereSphereParameters()
@@ -49,6 +50,7 @@ public: // AUTO:
         markerNumbers = ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex });
         nodeNumber = EXUstd::InvalidIndex;
         spheresRadii = Vector2D({-1.,-1.});
+        isHollowSphere1 = false;
         dynamicFriction = 0.;
         frictionProportionalZone = 1e-3;
         contactStiffness = 0.;
@@ -68,7 +70,7 @@ public: // AUTO:
 
 /** ***********************************************************************************************
 * @class        CObjectContactSphereSphere
-* @brief        [UNDER CONSTRUCTION] A simple contact connector between two spheres. The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
+* @brief        A simple contact connector between two spheres, using various contact models and the option for contact of sphere inside hollow sphere (marker1). The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
 *
 * @author       Gerstmayr Johannes, Weyrer Sebastian
 * @date         2019-07-01 (generated)
@@ -105,8 +107,14 @@ public: // AUTO:
     //! AUTO: Read access to parameters
     virtual const CObjectContactSphereSphereParameters& GetParameters() const { return parameters; }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }
@@ -116,6 +124,12 @@ public: // AUTO:
     {
         CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);
         return parameters.nodeNumber;
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumber=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object
@@ -187,11 +201,12 @@ public: // AUTO:
     virtual OutputVariableType GetOutputVariableTypes() const override
     {
         return (OutputVariableType)(
-            (Index)OutputVariableType::Director3 +
+            (Index)OutputVariableType::Position +
             (Index)OutputVariableType::Displacement +
             (Index)OutputVariableType::DisplacementLocal +
             (Index)OutputVariableType::Velocity +
             (Index)OutputVariableType::Force +
+            (Index)OutputVariableType::Director1 +
             (Index)OutputVariableType::Torque );
     }
 

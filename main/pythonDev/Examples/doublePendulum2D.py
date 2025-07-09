@@ -67,7 +67,7 @@ simulationSettings.timeIntegration.verboseMode = 1
 # simulationSettings.displayComputationTime = True
 
 #simulate:
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(simulationSettings)
-exu.StopRenderer()
+SC.renderer.Stop()

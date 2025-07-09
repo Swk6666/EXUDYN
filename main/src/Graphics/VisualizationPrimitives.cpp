@@ -362,7 +362,7 @@ namespace EXUvis {
 		{ 
 			v0 /= L;
 			Vector3D n1, n2;
-			EXUmath::ComputeOrthogonalBasis(v0, n1, n2);
+			EXUmath::ComputeOrthogonalBasisVectors(v0, n1, n2, true);
 
 			Vector3D pLast = p0;
 
@@ -419,6 +419,27 @@ namespace EXUvis {
 	}
 
 
+	//! add a 3D circle to graphicsData with reference point (pMid) and rotation matrix rot, which serves as a transformation;
+	//! points for circles are computed in x/y plane and hereafter rotated by rotation matrix rot
+	void DrawCircle(const Vector3D& pMid, const Matrix3D& rot, Real radius, const Float4& color, GraphicsData& graphicsData, Index itemID, Index nTiles)
+	{
+		if (nTiles < 2) { nTiles = 2; } //less than 2 tiles makes no sense
+		if (radius <= 0.) { return; } //just a line
+
+		Real fact = (Real)(nTiles - 1) / (2.*EXUstd::pi);
+		for (Index i = 0; i < nTiles+1; i++)
+		{
+			Real phi0 = i / fact;
+			Real phi1 = (i + 1) / fact;
+
+			Real x0 = radius*sin(phi0);
+			Real y0 = radius * cos(phi0);
+			Real x1 = radius * sin(phi1);
+			Real y1 = radius * cos(phi1);
+
+			graphicsData.AddLine(pMid + rot * Vector3D({ x0,y0,0. }), pMid + rot * Vector3D({ x1,y1,0. }), color, color, itemID);
+		}
+	}
 
 	//! add a cylinder to graphicsData with reference point (pAxis0), axis vector (vAxis) and radius using triangle representation
 	//! angleRange is used to draw only part of the cylinder; 
@@ -437,7 +458,7 @@ namespace EXUvis {
 		Vector3D pAxis1 = pAxis0 + vAxis;
 
 		Vector3D basisN1, basisN2;
-		EXUmath::ComputeOrthogonalBasis(vAxis, basisN1, basisN2);
+		EXUmath::ComputeOrthogonalBasisVectors(vAxis, basisN1, basisN2, false);
 
 		//#create normals at left and right face(pointing inwards)
 		Real alpha = angleRange[1] - angleRange[0]; //angular range
@@ -757,7 +778,7 @@ namespace EXUvis {
 		Vector3D pAxis1 = pAxis0 + vAxis;
 
 		Vector3D basisN1, basisN2;
-		EXUmath::ComputeOrthogonalBasis(vAxis, basisN1, basisN2);
+		EXUmath::ComputeOrthogonalBasisVectors(vAxis, basisN1, basisN2, false);
 
 		//#create normals at left and right face(pointing inwards)
 		Real alpha = 2.*EXUstd::pi;
@@ -869,7 +890,7 @@ namespace EXUvis {
 			{
 				Vector3D v1 = (len - 3 * radius * arrowSizeRelative)*v0;
 				Vector3D n1, n2;
-				EXUmath::ComputeOrthogonalBasis(v0, n1, n2);
+				EXUmath::ComputeOrthogonalBasisVectors(v0, n1, n2, true);
 
 				graphicsData.AddLine(p, p + v, color, color, itemID);
 				graphicsData.AddLine(p + v, p + v1 + radius * n1, color, color, itemID);
@@ -910,6 +931,7 @@ namespace EXUvis {
 	//! draw node either with 3 circles or with sphere at given point and with given radius
 	void DrawNode(const Vector3D& p, Real radius, const Float4& color, GraphicsData& graphicsData, Index itemID, bool draw3D, Index nTiles)
 	{
+		if (radius == 0) { return; } //this is for the special case where the node is not shown, but the basis vectors shall be drawn!
 		if (nTiles == 0)
 		{
 			graphicsData.AddSphere(p, color, itemID);

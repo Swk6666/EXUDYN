@@ -134,13 +134,16 @@ plrmain.AddDocuCodeBlock(code="""
 #  import exudyn module:
 import exudyn as exu
 #  print detailed exudyn version, Python version (at which it is compiled):
-exu.GetVersionString(addDetails = True)
+exu.config.Version(addDetails = True)
 #  set precision of C++ output to console
-exu.SetOutputPrecision(numberOfDigits)
+exu.config.precision = numberOfDigits
 #  turn on/off output to console
-exu.SetWriteToConsole(False)
+exu.config.printToConsole = False
 #  invalid index, may depend on compilation settings:
 nInvalid = exu.InvalidIndex() #the invalid index, depends on architecture and version
+#  run basic demos (without/with graphics):
+exu.demos.Demo1()
+exu.demos.Demo2()
 """)
 
 plrmain.AddDocu('Understanding the usage of functions for python object \\texttt{SystemContainer} of the module \\texttt{exudyn}, the following examples might help:')
@@ -234,15 +237,15 @@ plrmain.AddDocu('There are several levels of type and argument checks, leading t
                 'not mean that it is a wrong error, but it could also be, e.g., a wrong order of function calls.',
                 section='Exceptions and Error Messages', sectionLevel=2,sectionLabel='sec:cinterface:exceptions')
 
-plrmain.AddDocu("As an example, a type conversion error is raised when providing wrong argument types, e.g., try \\texttt{exu.GetVersionString('abc')}:")
+plrmain.AddDocu("As an example, a type conversion error is raised when providing wrong argument types, e.g., try \\texttt{exu.config.Version('abc')}:")
 
 plrmain.AddDocuCodeBlock(code="""
 Traceback (most recent call last):
 
 File "C:\\Users\\username\\AppData\\Local\\Temp\\ipykernel_24988\\2212168679.py", line 1, in <module>
-    exu.GetVersionString('abc')
+    exu.config.Version('abc')
 
-TypeError: GetVersionString(): incompatible function arguments. The following argument types are supported:
+TypeError: Version(): incompatible function arguments. The following argument types are supported:
     1. (addDetails: bool = False) -> str
 
 Invoked with: 'abc'
@@ -315,7 +318,7 @@ plr.sPy += '\n//        pybinding to enum classes:\n'
 pyClass = 'OutputVariableType'
 
 descriptionStr = 'This section shows the ' + pyClass + ' structure, which is used for selecting output values, e.g. for GetObjectOutput(...) or for selecting variables for contour plot.\n\n'
-descriptionStr += 'Available output variables and the interpreation of the output variable can be found at the object definitions. \n The OutputVariableType does not provide information about the size of the output variable, which can be either scalar or a list (vector). For vector output quantities, the contour plot option offers an additional parameter for selection of the component of the OutputVariableType. The components are usually out of \{0,1,2\}, representing \{x,y,z\} components (e.g., of displacements, velocities, ...), or \{0,1,2,3,4,5\} representing \{xx,yy,zz,yz,xz,xy\} components (e.g., of strain or stress). In order to compute a norm, chose component=-1, which will result in the quadratic norm for other vectors and to a norm specified for stresses (if no norm is defined for an outputVariable, it does not compute anything)\n'
+descriptionStr += 'Available output variables and the interpreation of the output variable can be found at the object definitions. \n The OutputVariableType does not provide information about the size of the output variable, which can be either scalar or a list (vector). For vector output quantities, the contour plot option offers an additional parameter for selection of the component of the OutputVariableType. The components are usually out of \\{0,1,2\\}, representing \\{x,y,z\\} components (e.g., of displacements, velocities, ...), or \\{0,1,2,3,4,5\\} representing \\{xx,yy,zz,yz,xz,xy\\} components (e.g., of strain or stress). In order to compute a norm, chose component=-1, which will result in the quadratic norm for other vectors and to a norm specified for stresses (if no norm is defined for an outputVariable, it does not compute anything)\n'
 
 #plr.sPy +=	'  py::enum_<' + pyClass + '>(m, "' + pyClass + '")\n'
 plr.DefStartEnumClass(className = pyClass, 
@@ -631,17 +634,74 @@ mbs = SC.AddSystem()
 """)
 plr.DefLatexStartTable('exudyn')
 
-plr.DefPyFunctionAccess('', 'GetVersionString', 'PyGetVersionString', 
-                               argList=['addDetails'],
-                               defaultArgs=['False'],
-                               description='Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.; the Python micro version may differ from that you are working with; AVX2 shows that you are running a AVX2 compiled version)',
-                               returnType='str',
-                               )
-
 plr.DefPyFunctionAccess('', 'Help', 'PyHelp', 
                                description='Show basic help information',
                                returnType='None',
                                )
+
+plr.DefPyFunctionAccess(cClass='', pyName='StartRenderer', cName='PyStartOpenGLRenderer', 
+                                description="DEPRECATED; Start OpenGL rendering engine (in separate thread) for visualization of rigid or flexible multibody system; use verbose=1 to output information during OpenGL window creation; verbose=2 produces more output and verbose=3 gives a debug level; some of the information will only be seen in windows command (powershell) windows or linux shell, but not inside iPython of e.g. Spyder",
+                                argList=['verbose','deprecationWarning'],
+                                defaultArgs=['0','True'],
+                                returnType='bool',
+                                addDocu=False,
+                                )
+
+#new, defined in C++ as lambda function:
+# sOld = plr.PyStr()
+plr.DefPyFunctionAccess(cClass='', pyName='StopRenderer', cName='PyStopOpenGLRenderer',#'no direct link to C++ here', 
+                                description="DEPRECATED; Stop OpenGL rendering engine",
+                                argList=['deprecationWarning'],
+                                defaultArgs=['True'],
+                                addDocu=False,
+                                )
+# plr.sPy = sOld
+
+plr.DefPyFunctionAccess(cClass='', pyName='IsRendererActive', cName='PyIsRendererActive', 
+                                description="DEPRECATED; returns True if GLFW renderer is available and running; otherwise False",
+                                argList=['deprecationWarning'],
+                                defaultArgs=['True'],
+                                returnType='bool',
+                                addDocu=False,
+                                )
+
+plr.DefPyFunctionAccess(cClass='', pyName='DoRendererIdleTasks', cName='PyDoRendererIdleTasks', 
+                                description="DEPRECATED; Call this function in order to interact with Renderer window; use waitSeconds in order to run this idle tasks while animating a model (e.g. waitSeconds=0.04), use waitSeconds=0 without waiting, or use waitSeconds=-1 (default) to wait until window is closed",
+                                argList=['waitSeconds','deprecationWarning'],
+                                defaultArgs=['0','True'],
+                                returnType='None',
+                                addDocu=False,
+                                )
+
+sOld = plr.PyStr()
+plr.DefPyFunctionAccess(cClass='', pyName='SolveStatic', cName='SolveDynamic', 
+                               description='DEPRECATED; Static solver function, mapped from module \\texttt{solver}, to solve static equations (without inertia terms) of constrained rigid or flexible multibody system; for details on the Python interface see \\refSection{sec:mainsystemextensions:SolveStatic}; for background on solvers, see \\refSection{sec:solvers}',
+                               argList=['mbs', 'simulationSettings', 'updateInitialValues', 'storeSolver'],
+                               defaultArgs=['','exudyn.SimulationSettings()','False','True'],
+                               argTypes=['MainSystem','SimulationSettings', '', ''],
+                               returnType='bool',
+                               addDocu=False,
+                               )
+                
+plr.DefPyFunctionAccess(cClass='', pyName='SolveDynamic', cName='SolveDynamic', 
+                               description='DEPRECATED; Dynamic solver function, mapped from module \\texttt{solver}, to solve equations of motion of constrained rigid or flexible multibody system; for details on the Python interface see \\refSection{sec:mainsystemextensions:SolveDynamic}; for background on solvers, see \\refSection{sec:solvers}',
+                               argList=['mbs', 'simulationSettings', 'solverType', 'updateInitialValues', 'storeSolver'],
+                               defaultArgs=['','exudyn.SimulationSettings()','exudyn.DynamicSolverType.GeneralizedAlpha','False','True'],
+                               argTypes=['MainSystem','SimulationSettings', 'DynamicSolverType', '', ''],
+                               returnType='bool',
+                               addDocu=False,
+                               )
+                
+plr.DefPyFunctionAccess(cClass='', pyName='ComputeODE2Eigenvalues', cName='ComputeODE2Eigenvalues', 
+                               description='DEPRECATED; Simple interface to scipy eigenvalue solver for eigenvalue analysis of the second order differential equations part in mbs, mapped from module \\texttt{solver}; for details on the Python interface see \\refSection{sec:mainsystemextensions:ComputeODE2Eigenvalues}',
+                               argList=['mbs', 'simulationSettings', 'useSparseSolver', 'numberOfEigenvalues', 'setInitialValues', 'convert2Frequencies'],
+                               defaultArgs=['','exudyn.SimulationSettings()','False','-1','True','False'],
+                               #argTypes=['MainSystem','SimulationSettings', 'bool', 'int', 'bool', 'bool'],
+                               argTypes=['MainSystem','SimulationSettings', '', '', '', ''],
+                               returnType='bool',
+                               addDocu=False,
+                               )
+plr.sPy = sOld
 
 sOld = plr.PyStr()
 plr.DefPyFunctionAccess('', 'RequireVersion', '', 
@@ -653,144 +713,116 @@ plr.DefPyFunctionAccess('', 'RequireVersion', '',
                                )
 plr.sPy = sOld #this function is defined in __init__.py ==> do not add to cpp bindings
 
-plr.DefPyFunctionAccess(cClass='', pyName='StartRenderer', cName='PyStartOpenGLRenderer', 
-                                defaultArgs=['0'],
-                                argList=['verbose'],
-                                description="Start OpenGL rendering engine (in separate thread) for visualization of rigid or flexible multibody system; use verbose=1 to output information during OpenGL window creation; verbose=2 produces more output and verbose=3 gives a debug level; some of the information will only be seen in windows command (powershell) windows or linux shell, but not inside iPython of e.g. Spyder",
-                                returnType='bool',
-                                )
 
-#new, defined in C++ as lambda function:
-sOld = plr.PyStr()
-plr.DefPyFunctionAccess('', 'StopRenderer', 'no direct link to C++ here', "Stop OpenGL rendering engine")
-plr.sPy = sOld
+#print('complete stub file for exudyn module? config?')
 
-plr.DefPyFunctionAccess(cClass='', pyName='IsRendererActive', cName='PyIsRendererActive', 
-                                description="returns True if GLFW renderer is available and running; otherwise False",
-                                returnType='bool',
-                                )
-
-plr.DefPyFunctionAccess(cClass='', pyName='DoRendererIdleTasks', cName='PyDoRendererIdleTasks', 
-                                defaultArgs=['0'],
-                                argList=['waitSeconds'],
-                                description="Call this function in order to interact with Renderer window; use waitSeconds in order to run this idle tasks while animating a model (e.g. waitSeconds=0.04), use waitSeconds=0 without waiting, or use waitSeconds=-1 to wait until window is closed",
-                                returnType='None',
-                                )
-
-sOld = plr.PyStr()
-plr.DefPyFunctionAccess(cClass='', pyName='SolveStatic', cName='SolveDynamic', 
-                               description='Static solver function, mapped from module \\texttt{solver}, to solve static equations (without inertia terms) of constrained rigid or flexible multibody system; for details on the Python interface see \\refSection{sec:mainsystemextensions:SolveStatic}; for background on solvers, see \\refSection{sec:solvers}',
-                               argList=['mbs', 'simulationSettings', 'updateInitialValues', 'storeSolver'],
-                               defaultArgs=['','exudyn.SimulationSettings()','False','True'],
-                               argTypes=['MainSystem','SimulationSettings', '', ''],
-                               returnType='bool',
-                               )
-                
-plr.DefPyFunctionAccess(cClass='', pyName='SolveDynamic', cName='SolveDynamic', 
-                               description='Dynamic solver function, mapped from module \\texttt{solver}, to solve equations of motion of constrained rigid or flexible multibody system; for details on the Python interface see \\refSection{sec:mainsystemextensions:SolveDynamic}; for background on solvers, see \\refSection{sec:solvers}',
-                               argList=['mbs', 'simulationSettings', 'solverType', 'updateInitialValues', 'storeSolver'],
-                               defaultArgs=['','exudyn.SimulationSettings()','exudyn.DynamicSolverType.GeneralizedAlpha','False','True'],
-                               argTypes=['MainSystem','SimulationSettings', 'DynamicSolverType', '', ''],
-                               returnType='bool',
-                               )
-                
-plr.DefPyFunctionAccess(cClass='', pyName='ComputeODE2Eigenvalues', cName='ComputeODE2Eigenvalues', 
-                               description='Simple interface to scipy eigenvalue solver for eigenvalue analysis of the second order differential equations part in mbs, mapped from module \\texttt{solver}; for details on the Python interface see \\refSection{sec:mainsystemextensions:ComputeODE2Eigenvalues}',
-                               argList=['mbs', 'simulationSettings', 'useSparseSolver', 'numberOfEigenvalues', 'setInitialValues', 'convert2Frequencies'],
-                               defaultArgs=['','exudyn.SimulationSettings()','False','-1','True','False'],
-                               #argTypes=['MainSystem','SimulationSettings', 'bool', 'int', 'bool', 'bool'],
-                               argTypes=['MainSystem','SimulationSettings', '', '', '', ''],
-                               returnType='bool',
-                               )
-plr.sPy = sOld
-
-plr.DefPyFunctionAccess(cClass='', pyName='SetOutputPrecision', cName='PySetOutputPrecision', 
-                                description="Set the precision (integer) for floating point numbers written to console (reset when simulation is started!); NOTE: this affects only floats converted to strings inside C++ exudyn; if you print a float from Python, it is usually printed with 16 digits; if printing numpy arrays, 8 digits are used as standard, to be changed with numpy.set_printoptions(precision=16); alternatively convert into a list",
-                                argList=['numberOfDigits'],
-                                argTypes=['int'],
-                                returnType='None',
-                                )
-
-plr.DefPyFunctionAccess(cClass='', pyName='SetLinalgOutputFormatPython', cName='PySetLinalgOutputFormatPython', 
-                                description="True: use Python format for output of vectors and matrices; False: use matlab format",
-                                argList=['flagPythonFormat'],
-                                argTypes=['bool'],
-                                returnType='None',
-                                )
-
-plr.DefPyFunctionAccess(cClass='', pyName='SetWriteToConsole', cName='PySetWriteToConsole', 
-                            description="set flag to write (True) or not write to console; default = True",
-                            argList=['flag'],
-                            argTypes=['bool'],
-                            returnType='None',
-                            )
-
-print('complete stub file for exudyn module')
 
 plr.DefPyFunctionAccess(cClass='', pyName='SetWriteToFile', cName='PySetWriteToFile', 
-                            description="set flag to write (True) or not write to console; default value of flagWriteToFile = False; flagAppend appends output to file, if set True; in order to finalize the file, write \\texttt{exu.SetWriteToFile('', False)} to close the output file; in case of flagFlushAlways=True, file will be finalized immediately in every print command;",
+                            description="set flag to write (True) or not write to console; default value of flagWriteToFile = False; flagAppend appends output to file, if set True; in order to finalize the file, write \\texttt{exu.SetWriteToFile('', False)} to close the output file; in case of flagFlushAlways=True, file will be finalized immediately in every print command, but may be slower;",
                             argList=['filename', 'flagWriteToFile', 'flagAppend', 'flagFlushAlways'],
                             defaultArgs=['', 'True', 'False', 'False'],
-                            example="exu.SetWriteToConsole(False) #no output to console\\\\exu.SetWriteToFile(filename='testOutput.log', flagWriteToFile=True, flagAppend=False)\\\\exu.Print('print this to file')\\\\exu.SetWriteToFile('', False) #terminate writing to file which closes the file",
+                            example="exudyn.config.printToConsole = False #no output to console\\\\exu.SetWriteToFile(filename='testOutput.log', flagWriteToFile=True, flagAppend=False, flagFlushAlways=False)\\\\exu.Print('print this to file')\\\\exu.SetWriteToFile('', False) #terminate writing to file which closes the file",
                             argTypes=['str','','',''],
                             returnType='None',
                             )
 
+plr.DefPyFunctionAccess(cClass='', pyName='Print', cName='PyPrint', 
+                            description="this allows printing via exudyn with similar syntax as in Python print(args) except for keyword arguments: exu.Print('test=',42,sep=' ',end='',flush=True); allows to redirect all output to file given by SetWriteToFile(...); does not print to console in case that exudyn.config.printToConsole eis set to False",
+                            #argList=[], 
+                            #this fails in C++ compilation: ['*args','**kwargs'], and also these:
+                            #argList=['args','kwargs'], #shall be: ['py::arg("args" = py::args(), py::arg("kwargs") = py::kwargs()
+                            #defaultArgs=['py::args()', 'py::kwargs()'],
+                            argTypes=['Any'], #for pyi
+                            returnType='None',
+                            )
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#DEPRECATED:
+plr.DefPyFunctionAccess(cClass='', pyName='SetOutputPrecision', cName='PySetOutputPrecisionOld', 
+                                description="DEPRECATED; use set exudyn.config.precision instead",
+                                argList=['numberOfDigits'],
+                                argTypes=['int'],
+                                returnType='None',
+                                addDocu=False,
+                                )
+
+plr.DefPyFunctionAccess(cClass='', pyName='SetLinalgOutputFormatPython', cName='PySetLinalgOutputFormatPython', 
+                                description="DEPRECATED; True: use Python format for output of vectors and matrices; False: use Matlab format",
+                                argList=['flagPythonFormat'],
+                                argTypes=['bool'],
+                                returnType='None',
+                                addDocu=False,
+                                )
+
+plr.DefPyFunctionAccess('', 'GetVersionString', 'PyGetVersionString', 
+                               description='DEPRECATED; Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.; the Python micro version may differ from that you are working with; AVX2 shows that you are running a AVX2 compiled version)',
+                               argList=['addDetails'],
+                               defaultArgs=['False'],
+                               returnType='str',
+                               addDocu=False,
+                               )
+
 plr.DefPyFunctionAccess(cClass='', pyName='SetPrintDelayMilliSeconds', cName='PySetPrintDelayMilliSeconds', 
-                            description="add some delay (in milliSeconds) to printing to console, in order to let Spyder process the output; default = 0",
+                            description="DEPRECATED; add some delay (in milliSeconds) to printing to console, in order to let Spyder process the output; default = 0",
                             argList=['delayMilliSeconds'],
                             argTypes=['int'],
                             returnType='None',
+                            addDocu=False,
                             )
 
-plr.DefPyFunctionAccess(cClass='', pyName='Print', cName='PyPrint', 
-                            description="this allows printing via exudyn with similar syntax as in Python print(args) except for keyword arguments: print('test=',42); allows to redirect all output to file given by SetWriteToFile(...); does not output in case that SetWriteToConsole is set to False",
-                            argList=['*args'], 
-                            argTypes=['Any'],
-                            returnType='None',
-                            )
-
-plr.DefPyFunctionAccess(cClass='', pyName='SuppressWarnings', cName='PySuppressWarnings', 
-                            description="set flag to suppress (=True) or enable (=False) warnings",
+plr.DefPyFunctionAccess(cClass='', pyName='SuppressWarnings', cName='PySuppressWarningsOld', 
+                            description="DEPRECATED; set flag to suppress (=True) or enable (=False) warnings",
                             argList=['flag'],
                             argTypes=['bool'],
                             returnType='None',
+                            addDocu=False,
                             )
 
-plr.DefPyFunctionAccess(cClass='', pyName='InfoStat', cName='PythonInfoStat', 
-                            description='Retrieve list of global information on memory allocation and other counts as list:[array_new_counts, array_delete_counts, vector_new_counts, vector_delete_counts, matrix_new_counts, matrix_delete_counts, linkedDataVectorCast_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with __FAST_EXUDYN_LINALG flag',
+plr.DefPyFunctionAccess(cClass='', pyName='InfoStat', cName='PythonInfoStatOld', 
+                            description='DEPRECATED; Retrieve list of global information on memory allocation and other counts as list:[array_new_counts, array_delete_counts, vector_new_counts, vector_delete_counts, matrix_new_counts, matrix_delete_counts, linkedDataVectorCast_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with __FAST_EXUDYN_LINALG flag',
                             argList=['writeOutput'],
                             defaultArgs=['True'],
                             argTypes=[''],
                             returnType='List[int]',
+                            addDocu=False,
                             )
 
-plr.DefPyFunctionAccess('', 'Go', 'PythonGo', 'Creates a SystemContainer SC and a main multibody system mbs',
+plr.DefPyFunctionAccess(cClass='', pyName='SetWriteToConsole', cName='PySetWriteToConsole', 
+                            description="DEPRECATED; set flag to write (True) or not write to console; default = True",
+                            argList=['flag'],
+                            argTypes=['bool'],
                             returnType='None',
+                            addDocu=False,
                             )
 
-sPyOld = plr.PyStr() #Demos added via Python
-plr.DefPyFunctionAccess(cClass='', pyName='Demo1', cName='Demo1', 
-                            description="Run simple demo without graphics to check functionality, see exudyn/demos.py",
-                            argList=['showAll'], 
-                            argTypes=['bool'],
-                            returnType='[MainSystem, SystemContainer]',
-                            )
+
+# plr.DefPyFunctionAccess('', 'Go', 'PythonGo', 'Creates a SystemContainer SC and a main multibody system mbs',
+#                             returnType='None',
+#                             )
+
+# sPyOld = plr.PyStr() #Demos added via Python
+# plr.DefPyFunctionAccess(cClass='', pyName='demos.Demo1', cName='Demo1', 
+#                             description="Run simple demo without graphics to check functionality, see exudyn/demos.py",
+#                             argList=['showAll'], 
+#                             argTypes=['bool'],
+#                             returnType='[MainSystem, SystemContainer]',
+#                             )
     
-plr.DefPyFunctionAccess(cClass='', pyName='Demo2', cName='Demo2', 
-                            description="Run advanced demo without graphics to check functionality, see exudyn/demos.py",
-                            argList=['showAll'], 
-                            argTypes=['bool'],
-                            returnType='[MainSystem, SystemContainer]',
-                            )
-plr.sPy = sPyOld  #system container manually added 
+# plr.DefPyFunctionAccess(cClass='', pyName='demos.Demo2', cName='Demo2', 
+#                             description="Run advanced demo without graphics to check functionality, see exudyn/demos.py",
+#                             argList=['showAll'], 
+#                             argTypes=['bool'],
+#                             returnType='[MainSystem, SystemContainer]',
+#                             )
+# plr.sPy = sPyOld  #pybindings added manually
     
 plr.DefPyFunctionAccess('', 'InvalidIndex', 'GetInvalidIndex', 
                             "This function provides the invalid index, which may depend on the kind of 32-bit, 64-bit signed or unsigned integer; e.g. node index or item index in list; currently, the InvalidIndex() gives -1, but it may be changed in future versions, therefore you should use this function",
                             returnType='int',
                             )
 
-plr.DefLatexDataAccess('__version__','stores the current version of the Exudyn package',
+plr.DefLatexDataAccess('__version__','contains the current version of the Exudyn package',
                        dataType='str', isTopLevel = True,
                        )
 
@@ -799,6 +831,46 @@ plr.DefLatexDataAccess('symbolic','the symbolic submodule for creating symbolic 
                        dataType='', isTopLevel = True,
                        )
 
+#++++++++++
+#config
+oldPyi = plr.sPyi #this would not work directly! 
+#                  seems that pybind11 provides enough information to get 
+#                  type completion working for config, special, ...!
+
+plr.sPy += '        m.attr("config") = py::cast(&pyConfig);\n' 
+
+sPyOld = plr.PyStr() #remaining config pybindings added only in C++
+plr.DefLatexDataAccess('config','global config settings, like precision, print behavior, warnings, etc.',
+                       dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.suppressWarnings','flag to suppress all warnings (default=False)',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.outputPrecision','change precision (number of digits) in C++ and Python output',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.linalgOutputFormatPython','True (default): use Python format for output of vectors and matrices; False: use Matlab format',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printDelayMilliSeconds','add some delay (in milliSeconds) to printing to console (exudyn.Print), in order to let console (e.g. Spyder) process the output; default = 0',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printFlushAlways','flush always buffers when using exudyn.Print(...) to write to file or console; this is needed if you are streaming text or showing counters in parameter variation; default=False',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printToConsole','enables or disables writing to console with exudyn.Print(...); default=True',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printToFile','flag that shows if writing to file with exudyn.Print(...) is enabled; flag is readonly',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printFileName','file name for writing to file with exudyn.Print(...); flag is readonly',
+                        dataType='Config', isTopLevel = True)
+plr.DefLatexDataAccess('config.printToFileAppend','flag that shows if append mode is used for writing to file with exudyn.Print(...); flag is readonly',
+                        dataType='Config', isTopLevel = True)
+
+
+plr.DefPyFunctionAccess(cClass='', pyName='config.Version', cName='unused', 
+                        argList=['addDetails'],
+                        defaultArgs=['False'],
+                        description='Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.; the Python micro version may differ from that you are working with; AVX2 shows that you are running a AVX2 compiled version)',
+                        returnType='str',
+                        )
+plr.sPy = sPyOld
+
+#++++++++++
 plr.sPy += '        m.attr("experimental") = py::cast(&pyExperimental);\n' 
 plr.DefLatexDataAccess('experimental','Experimental features, not intended for regular users; for available features, see the C++ code class PyExperimental',
                        dataType='Experimental', isTopLevel = True)
@@ -807,19 +879,32 @@ plr.sPy += '        m.attr("special") = py::cast(&pySpecial);\n'
 plr.DefLatexDataAccess('special','special attributes and functions, such as global (solver) flags or helper functions; not intended for regular users; for available features, see the C++ code class PySpecial',
                         dataType='Special', isTopLevel = True)
 
+sPyOld = plr.PyStr() #pybindings added only in C++
+plr.DefPyFunctionAccess(cClass='', pyName='special.InfoStat', cName='unused', 
+                        description='Retrieve list of global information on memory allocation and other counts as list:[array_new_counts, array_delete_counts, vector_new_counts, vector_delete_counts, matrix_new_counts, matrix_delete_counts, linkedDataVectorCast_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with __FAST_EXUDYN_LINALG flag',
+                        argList=['writeOutput'],
+                        defaultArgs=['True'],
+                        argTypes=[''],
+                        returnType='List[int]',
+                        )
+plr.sPy = sPyOld
+
 plr.DefLatexDataAccess('special.solver','special solver attributes and functions; not intended for regular users; for available features, see the C++ code class PySpecialSolver',
                         dataType='SpecialSolver', isTopLevel = True)
 
 plr.DefLatexDataAccess('special.solver.timeout','if >= 0, the solver stops after reaching accoring CPU time specified with timeout; makes sense for parameter variation, automatic testing or for long-running simulations; default=-1 (no timeout)',
                         dataType='float', isTopLevel = True)
+plr.DefLatexDataAccess('special.solver.multiThreadingLoadBalancing','if True (=default), multithreaded code parts (in particular solver and raytracing) use load balancing, which may give better performance in case of non-equilibrated loads; (mobile) Intel CPUs may perform significantly better without load balancing',
+                        dataType='bool', isTopLevel = True)
 
+plr.sPyi = oldPyi
 
 plr.sPy += '        m.attr("variables") = exudynVariables;\n' 
-plr.DefLatexDataAccess('variables','this dictionary may be used by the user to store exudyn-wide data in order to avoid global Python variables; usage: exu.variables["myvar"] = 42 ',
+plr.DefLatexDataAccess('variables','this dictionary may be used by the user to store exudyn-wide data in order to avoid global Python variables; usage: exu.variables["myvar"] = 42; can be used in particular to exchange data between different mbs or between packages by importing exudyn.variables wherever needed.',
                        dataType='dict', isTopLevel = True)
 
 plr.sPy += '        m.attr("sys") = exudynSystemVariables;\n' 
-plr.DefLatexDataAccess('sys',"this dictionary is used and reserved by the system, e.g. for testsuite, graphics or system function to store module-wide data in order to avoid global Python variables; the variable exu.sys['renderState'] contains the last render state after exu.StopRenderer() and can be used for subsequent simulations ",
+plr.DefLatexDataAccess('sys',"this dictionary is used and reserved by the system, e.g. for testsuite, graphics or system function to store module-wide data in order to avoid global Python variables; the variable exu.sys['renderState'] contains the last render state after SC.renderer.Stop() and can be used for subsequent simulations ",
                        dataType='dict', isTopLevel = True)
 
 
@@ -843,9 +928,10 @@ sPyOld = plr.PyStr() #systemcontainer manually added in C++
 plr.DefPyStartClass(classStr, pyClassStr, '')
 
 plr.AddDocu('The SystemContainer is the top level of structures in \\codeName. '+
-            'The container holds all (multibody) systems, solvers and all other data structures for computation. '+
+            'The container holds all (multibody) systems, solvers and all other data structures for computation and it is the hub for the OpenGL renderer. '+
             "A SystemContainer is created by \\texttt{SC = exu.SystemContainer()}, understanding \\texttt{exu.SystemContainer} as a class like Python's internal list class, creating a list instance with \\texttt{x=list()}. "+
-            'Currently, only one container shall be used. In future, multiple containers might be usable at the same time. '+
+            'Currently, only one container shall be used, while multiple containers are possible -- e.g. for reasons of different behavior. '+
+            'The SystemContainer contains visualizationSettings, see \\refSection{sec:VisualizationSettingsMain}, which can be edited when pressing the key V in the render window and it holds the renderer substructure to start and stop the renderer, and to interact with the renderer. '+
             'Regarding the \\mybold{(basic) module access}, functions are related to the \\texttt{exudyn = exu} module, '+
             'see also the introduction of this chapter and this example:')
 
@@ -863,7 +949,7 @@ plr.DefLatexStartTable(pyClassStr)
 #GENERAL FUNCTIONS
 
 plr.DefPyFunctionAccess(cClass=classStr, pyName='Reset', cName='Reset', 
-                        description="delete all multibody systems and reset SystemContainer (including graphics); this also releases SystemContainer from the renderer, which requires SC.AttachToRenderEngine() to be called in order to reconnect to rendering; a safer way is to delete the current SystemContainer and create a new one (SC=SystemContainer() )",
+                        description="delete all multibody systems and reset SystemContainer (including graphics); this also releases SystemContainer from the renderer, which requires SC.renderer.Attach() to be called in order to reconnect to rendering; a safer way is to delete the current SystemContainer and create a new one (SC=SystemContainer() )",
                         returnType='None',
                         )
 
@@ -911,17 +997,159 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='SetDictionary', cName='SetDicti
                         )
 
 
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#keep for compatibility until mid 2027:
+
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetRenderState', cName='PyGetRenderState', 
-                        description="Get dictionary with current render state (openGL zoom, modelview, etc.); will have no effect if GLFW_GRAPHICS is deactivated",
-                        example = "SC = exu.SystemContainer()\\\\renderState = SC.GetRenderState() \\\\print(renderState['zoom'])",
+                        description="DEPRECATED; Get dictionary with current render state (openGL zoom, modelview, etc.); will have no effect if GLFW_GRAPHICS is deactivated",
                         returnType='dict',
-                                )
+                        addDocu=False,
+                        )
 
 plr.DefPyFunctionAccess(cClass=classStr, pyName='SetRenderState', cName='PySetRenderState', 
-                        description="Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState; will have no effect if GLFW_GRAPHICS is deactivated",
-                        example = "SC = exu.SystemContainer()\\\\SC.SetRenderState(renderState)",
-                        argList=['renderState'],
-                        argTypes=['dict'],
+                        description="DEPRECATED; Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState; waitForRendererFullStartup is used to wait at startup for the first frame to be drawn (and zoom all to be set), but be be set False in case of performance issues; will have no effect if GLFW_GRAPHICS is deactivated",
+                        argList=['renderState','waitForRendererFullStartup'],
+                        argTypes=['dict','bool'],
+                        defaultArgs=['','True'],
+                        returnType='None',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='RedrawAndSaveImage', cName='RedrawAndSaveImage', 
+                        description="DEPRECATED; Redraw openGL scene and save image (command waits until process is finished)",
+                        returnType='None',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='WaitForRenderEngineStopFlag', cName='WaitForRenderEngineStopFlag', 
+                        description="DEPRECTED; Wait for user to stop render engine (Press 'Q' or Escape-key); this command is used to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; behaves similar as mbs.WaitForUserToContinue()",
+                        returnType='bool',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='RenderEngineZoomAll', cName='PyZoomAll', 
+                        description="DEPRECATED; Send zoom all signal, which will perform zoom all at next redraw request",
+                        returnType='None',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='AttachToRenderEngine', cName='AttachToRenderEngine', 
+                        description="DEPRECATED; Links the SystemContainer to the render engine, such that the changes in the graphics structure drawn upon updates, etc.; done automatically on creation of SystemContainer; return False, if no renderer exists (e.g., compiled without GLFW) or cannot be linked (if other SystemContainer already linked)",
+                        returnType='bool',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DetachFromRenderEngine', cName='DetachFromRenderEngine', 
+                        description="DEPRECATED; Releases the SystemContainer from the render engine; return True if successfully released, False if no GLFW available or detaching failed",
+                        returnType='bool',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='SendRedrawSignal', cName='SendRedrawSignal', 
+                        description="DEPRECATED; This function is used to send a signal to the renderer that all MainSystems (mbs) shall be redrawn",
+                        returnType='None',
+                        addDocu=False,
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetCurrentMouseCoordinates', cName='PyGetCurrentMouseCoordinates', 
+                        description="DEPRECATED; Get current mouse coordinates as list [x, y]; x and y being floats, as returned by GLFW, measured from top left corner of window; use GetCurrentMouseCoordinates(useOpenGLcoordinates=True) to obtain OpenGLcoordinates of projected plane",
+                        argList=['useOpenGLcoordinates'],
+                        argTypes=['bool'],
+                        defaultArgs=['False'],
+                        returnType='[float,float]',
+                        addDocu=False,
+                        )
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+plr.DefLatexDataAccess('renderer','The substructure in SystemContainer responsible for rendering (except visualizationSettings)',
+                        dataType='Renderer')
+
+plr.DefLatexDataAccess('visualizationSettings','Structure representing the settings for renderer; for details of visualizationSettings see Section Structures and Settings',
+                        dataType='VisualizationSettings')
+
+plr.sPy = sPyOld  #system container manually added 
+
+
+plr.DefLatexFinishTable()#only finalize latex table
+
+savedPyi = plr.sPyi+savedPyi
+plr.sPyi = ''
+
+
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+plr.CreateNewRSTfile('Renderer')
+pyClassStr = 'Renderer'
+classStr = 'Main'+pyClassStr
+#sPyOld = plr.PyStr() #renderer manually added in C++
+
+plr.DefPyStartClass(classStr,pyClassStr, '', labelName='sec:SC:renderer',
+                    forbidPythonConstructor=True)
+
+plr.AddDocu('This is the substructure of SystemContainer that collects rendering and visualization interaction. Rendering is done for a SystemContainer, which may include several MainSystems. Note that visualizationSettings are directly accessible from the SystemContainer.')
+
+plr.AddDocuCodeBlock(code="""
+import exudyn as exu
+from exudyn.utilities import *
+import exudyn.graphics as graphics
+SC = exu.SystemContainer()
+mbs = SC.AddSystem()
+mbs.CreateMassPoint(physicsMass=1)
+
+mbs.Assemble()
+SC.visualizationSettings.general.drawWorldBasis = True
+SC.renderer.Start()
+SC.renderer.DoIdleTasks() #wait until user presses space, etc.
+mbs.SolveDynamic()
+SC.renderer.Stop()
+""")
+
+plr.DefLatexStartTable(classStr)
+
+#+++++++++++++++++++++++++++++++++
+#General functions:
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Start', cName='Start', 
+                        description="Start OpenGL rendering engine (in separate thread) for visualization of rigid or flexible multibody system; use verbose=1 to output information during OpenGL window creation; verbose=2 produces more output and verbose=3 gives a debug level; some of the information will only be seen in windows command (powershell) windows or linux shell, but not inside iPython of e.g. Spyder",
+                        argList=['verbose'],
+                        defaultArgs=['0'],
+                        returnType='bool',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Stop', cName='Stop', 
+                        description="Stop OpenGL rendering engine; uses timeout in multithreading.",
+                        returnType='None',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='IsActive', cName='IsActive', 
+                        description="returns True if GLFW renderer is available and running; otherwise False",
+                        #argList=[''],
+                        #defaultArgs=[''],
+                        returnType='bool',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Attach', cName='Attach', 
+                        description="Links the SystemContainer to the render engine, such that the changes in the graphics structure drawn upon updates, etc.; done automatically on creation of SystemContainer; return False, if no renderer exists (e.g., compiled without GLFW) or cannot be linked (if other SystemContainer already linked)",
+                        returnType='bool',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Detach', cName='Detach', 
+                        description="DEPRECATED; Releases the SystemContainer from the render engine; return True if successfully released, False if no GLFW available or detaching failed",
+                        returnType='bool',
+                        )
+
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DoIdleTasks', cName='DoIdleTasks', 
+                        description="Interrupt further computation until user input (Space, 'Q', Escape-key), representing a PAUSE function; this command runs a loop in the background to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; replaces former SC.WaitForRenderEngineStopFlag() and mbs.WaitForUserToContinue(); call this function in order to interact with Renderer window; use waitSeconds in order to run this idle tasks while animating a model (e.g. waitSeconds=0.04), use waitSeconds=0 without waiting, or use waitSeconds=-1 (default) to wait until window is closed",
+                        example = 'SC.renderer.DoIdleTasks()',
+                        argList=['waitSeconds','printPauseMessage'],
+                        argTypes=['float','bool'],
+                        defaultArgs=['-1.','True'],
+                        returnType='bool',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='ZoomAll', cName='ZoomAll', 
+                        description="Send zoom all signal, which will perform zoom all at next redraw request",
                         returnType='None',
                         )
 
@@ -930,45 +1158,72 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='RedrawAndSaveImage', cName='Red
                         returnType='None',
                         )
 
-plr.DefPyFunctionAccess(cClass=classStr, pyName='WaitForRenderEngineStopFlag', cName='WaitForRenderEngineStopFlag', 
-                        description="Wait for user to stop render engine (Press 'Q' or Escape-key); this command is used to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; behaves similar as mbs.WaitForUserToContinue()",
-                        returnType='bool',
-                        )
-
-plr.DefPyFunctionAccess(cClass=classStr, pyName='RenderEngineZoomAll', cName='PyZoomAll', 
-                        description="Send zoom all signal, which will perform zoom all at next redraw request",
-                        returnType='None',
-                        )
-
-plr.DefPyFunctionAccess(cClass=classStr, pyName='AttachToRenderEngine', cName='AttachToRenderEngine', 
-                        description="Links the SystemContainer to the render engine, such that the changes in the graphics structure drawn upon updates, etc.; done automatically on creation of SystemContainer; return False, if no renderer exists (e.g., compiled without GLFW) or cannot be linked (if other SystemContainer already linked)",
-                        returnType='bool',
-                        )
-
-plr.DefPyFunctionAccess(cClass=classStr, pyName='DetachFromRenderEngine', cName='DetachFromRenderEngine', 
-                        description="Releases the SystemContainer from the render engine; return True if successfully released, False if no GLFW available or detaching failed",
-                        returnType='bool',
-                        )
-
 plr.DefPyFunctionAccess(cClass=classStr, pyName='SendRedrawSignal', cName='SendRedrawSignal', 
                         description="This function is used to send a signal to the renderer that all MainSystems (mbs) shall be redrawn",
                         returnType='None',
                         )
 
-plr.DefPyFunctionAccess(cClass=classStr, pyName='GetCurrentMouseCoordinates', cName='PyGetCurrentMouseCoordinates', 
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetRenderCount', cName='GetRedrawCount', 
+                        description="Returns the number of rendered OpenGL images; can be used to determine if image has been drawn by comparing to previous counter; also shows that first image has been drawn (needed for zoom all)",
+                        returnType='bool',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetState', cName='GetState', 
+                        description="Get dictionary with current render state (openGL zoom, modelview, etc.); will have no effect if GLFW_GRAPHICS is deactivated",
+                        example = "SC = exu.SystemContainer()\\\\renderState = SC.renderer.GetState() \\\\print(renderState['zoom'])",
+                        returnType='dict',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='SetState', cName='SetState', 
+                        description="Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState; waitForRendererFullStartup is used to wait at startup for the first frame to be drawn (and zoom all to be set), but be be set False in case of performance issues; will have no effect if GLFW_GRAPHICS is deactivated",
+                        example = "SC = exu.SystemContainer()\\\\SC.renderer.SetState(renderState)",
+                        argList=['renderState','waitForRendererFullStartup'],
+                        argTypes=['dict','bool'],
+                        defaultArgs=['','True'],
+                        returnType='None',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetMouseCoordinates', cName='GetMouseCoordinates', 
                         description="Get current mouse coordinates as list [x, y]; x and y being floats, as returned by GLFW, measured from top left corner of window; use GetCurrentMouseCoordinates(useOpenGLcoordinates=True) to obtain OpenGLcoordinates of projected plane",
                         argList=['useOpenGLcoordinates'],
                         argTypes=['bool'],
                         defaultArgs=['False'],
                         returnType='[float,float]',
                         )
-plr.sPy = sPyOld  #system container manually added 
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetItemSelection', cName='GetItemSelection', 
+                        description="Get selected item in render state; option to reset selected item afterwards; item is selected in render window by clicking left mouse button; returns [mbs number, ItemType, ItemIndex, depth] where depth is the Z-depth in the current view; note that only items of the categories activated in visualizationSettings.interactive.selectionLeftMouseItemTypes are returned; if itemType == 0 if no item has been selected",
+                        argList=['resetSelection'],
+                        argTypes=['bool'],
+                        defaultArgs=['True'],
+                        returnType='[int,int,int,float]',
+                        )
 
 
-plr.DefLatexFinishTable()#only finalize latex table
+plr.sPy += '        .def_readwrite("materials", &MainRenderer::materials, py::return_value_policy::reference);\n'
+
+plr.DefLatexDataAccess('materials','GraphicsMaterialList used for raytracer (possibly for OpenGL in future); list can be accessed with [] operator, reset and extended. Note that after Reset() there are at least 10 materials available, which are copied from visualizationSettings.raytracer.materials which are synced continuously',
+                        dataType='GraphicsMaterialList', isTopLevel = False)
+
+#plr.sPy = sPyOld  #renderer manually added 
+plr.DefPyFinishClass('Renderer')
+#plr.DefLatexFinishTable() #only finalize latex table
 
 savedPyi = plr.sPyi+savedPyi
 plr.sPyi = ''
+
+
+
+# plr.DefLatexFinishTable()
+
+# #now finalize pybind class, but do nothing on latex side (sL1 ignored)
+# plr2 = PyLatexRST()
+# plr2.DefPyFinishClass('SystemData')
+# plr.sPy += plr2.PyStr() #only use Pybind string
+
+# savedPyi = plr.sPyi+savedPyi
+# plr.sPyi = ''
+
 
 
 
@@ -1034,11 +1289,13 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='GetSystemContainer', cName='Get
 
 plr.DefPyFunctionAccess(cClass=classStr, pyName='WaitForUserToContinue', cName='WaitForUserToContinue', 
                         description="interrupt further computation until user input --> 'pause' function; this command runs a loop in the background to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; behaves similar as SC.WaitForRenderEngineStopFlag()",
-                        argList=['printMessage'],
-                        defaultArgs=['True'],
+                        argList=['printMessage','deprecationWarning'],
+                        defaultArgs=['True','True'],
                         returnType='None',
+                        addDocu=False,
                         )
 
+#this function is not absolutely needed, but kept for some possible use case with several mbs
 plr.DefPyFunctionAccess(cClass=classStr, pyName='SendRedrawSignal', cName='SendRedrawSignal', 
                         description="this function is used to send a signal to the renderer that the scene shall be redrawn because the visualization state has been updated",
                         returnType='None',
@@ -1338,6 +1595,15 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='AddNode', cName='AddMainNodePyC
                                 returnType='NodeIndex',
                                 )
 
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DeleteNode', cName='PyDeleteNode', 
+                                description="delete the node with nodeNumber in MainSystem; consistently renames nodes according to their new node numbers; adapts node numbers in sensors and in markers; items using deleted nodeNumber obtain invalid nodeNumber",
+                                argList=['nodeNumber','suppressWarnings'],
+                                defaultArgs=['','False'],
+                                argTypes=['NodeIndex'],
+                                example = "mbs.DeleteNode(nodeNumber=42)",
+                                returnType='None',
+                                )
+
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetNodeNumber', cName='PyGetNodeNumber', 
                                 description="get node's number by name (string)",
                                 argList=['nodeName'],
@@ -1457,6 +1723,15 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='AddObject', cName='AddMainObjec
                                 returnType='ObjectIndex',
                                 )
 
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DeleteObject', cName='PyDeleteObject', 
+                                description="delete the object with objectNumber in MainSystem; consistently renames objects according to their new object numbers; adapts object numbers in sensors and in markers; items using deleted objectNumber obtain invalid objectNumber; with the option deleteDependentItems (default=True) the function also delete nodes and markers which are used by the object",
+                                argList=['objectNumber','deleteDependentItems','suppressWarnings'],
+                                argTypes=['ObjectIndex','bool','bool'],
+                                defaultArgs=['','True','False'],
+                                example = "mbs.DeleteObject(objectNumber=42)",
+                                returnType='None',
+                                )
+
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetObjectNumber', cName='PyGetObjectNumber', 
                                 description="get object's number by name (string)",
                                 argList=['objectName'],
@@ -1565,6 +1840,15 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='AddMarker', cName='AddMainMarke
                                 returnType='MarkerIndex',
                                 )
 
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DeleteMarker', cName='PyDeleteMarker', 
+                                description="delete the marker with markerNumber in MainSystem; consistently renames markers according to their new marker numbers; adapts marker numbers in objects, loads and sensors; items using deleted markerNumber obtain invalid markerNumber",
+                                argList=['markerNumber','suppressWarnings'],
+                                defaultArgs=['','False'],
+                                argTypes=['MarkerIndex','bool'],
+                                example = "mbs.DeleteMarker(markerNumber=42)",
+                                returnType='None',
+                                )
+
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetMarkerNumber', cName='PyGetMarkerNumber', 
                                 description="get marker's number by name (string)",
                                 argList=['markerName'],
@@ -1653,6 +1937,15 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='AddLoad', cName='AddMainLoadPyC
                                 returnType='LoadIndex',
                                 )
 
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DeleteLoad', cName='PyDeleteLoad', 
+                                description="delete the load with loadNumber in MainSystem; consistently renames loads according to their new load numbers; deleteDependentMarkers (default=True) also deletes the corresponding marker",
+                                argList=['loadNumber', 'deleteDependentMarkers', 'suppressWarnings'],
+                                defaultArgs=['','True','False'],
+                                argTypes=['LoadIndex','bool','bool'],
+                                example = "mbs.DeleteLoad(loadNumber=42)",
+                                returnType='None',
+                                )
+
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetLoadNumber', cName='PyGetLoadNumber', 
                                 description="get load's number by name (string)",
                                 argList=['loadName'],
@@ -1728,7 +2021,7 @@ mbs.AddLoad(Force(markerNumber = mMP, loadVector=[2,0,5]))
 sMP = mbs.AddSensor(SensorNode(nodeNumber=nMP, storeInternal=True,
                                outputVariableType=exu.OutputVariableType.Position))
 mbs.Assemble()
-exu.SolveDynamic(mbs, exu.SimulationSettings())
+mbs.SolveDynamic(exu.SimulationSettings())
 from exudyn.plot import PlotSensor
 PlotSensor(mbs, sMP, components=[0,1,2])
 """)
@@ -1741,6 +2034,15 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='AddSensor', cName='AddMainSenso
                                 example = "item = mbs.AddSensor(SensorNode(sensorType= exu.SensorType.Node, nodeNumber=0, name='test sensor')) \\\\mbs.AddSensor(item)\\\\" + "sensorDict = {'sensorType': 'Node',\\\\  'nodeNumber': 0,\\\\  'fileName': 'sensor.txt',\\\\  'name': 'test sensor'} \\\\mbs.AddSensor(sensorDict)",
                                 argTypes=[itemDict],
                                 returnType='SensorIndex',
+                                )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='DeleteSensor', cName='PyDeleteSensor', 
+                                description="delete the marker with sensorNumber in MainSystem; consistently renames sensors according to their new sensor numbers; adapts sensor numbers in sensors; items using deleted sensorNumber obtain invalid sensorNumber",
+                                argList=['sensorNumber', 'suppressWarnings'],
+                                defaultArgs=['','False'],
+                                argTypes=['SensorIndex'],
+                                example = "mbs.DeleteSensor(sensorNumber=42)",
+                                returnType='None',
                                 )
 
 plr.DefPyFunctionAccess(cClass=classStr, pyName='GetSensorNumber', cName='PyGetSensorNumber', 
@@ -1838,7 +2140,7 @@ mbs.AddObject(ObjectMassPoint(physicsMass=10, nodeNumber=nMP ))
 mMP = mbs.AddMarker(MarkerNodePosition(nodeNumber = nMP))
 mbs.AddLoad(Force(markerNumber = mMP, loadVector=[2,0,5]))
 mbs.Assemble()
-exu.SolveDynamic(mbs, exu.SimulationSettings())
+mbs.SolveDynamic(exu.SimulationSettings())
 
 #obtain current ODE2 system vector including reference values:
 uTotal = mbs.systemData.GetODE2CoordinatesTotal()
@@ -3166,7 +3468,7 @@ plr.DefLatexDataAccess('minRelDistanceSpheresTriangles','(default=1e-10) toleran
                        )
 
 plr.sPy +=  '        .def_property("frictionProportionalZone", &PyGeneralContact::GetFrictionProportionalZone, &PyGeneralContact::SetFrictionProportionalZone)\n' 
-plr.DefLatexDataAccess('frictionProportionalZone','(default=0.001) velocity $v_{\mu,reg}$ upon which the dry friction coefficient is interpolated linearly (regularized friction model); must be greater 0; very small values cause oscillations in friction force ',
+plr.DefLatexDataAccess('frictionProportionalZone','(default=0.001) velocity $v_{\\mu,reg}$ upon which the dry friction coefficient is interpolated linearly (regularized friction model); must be greater 0; very small values cause oscillations in friction force ',
                        dataType='float',
                        )
 
@@ -3185,7 +3487,7 @@ plr.DefLatexDataAccess('excludeDuplicatedTrigSphereContactPoints','(default=Fals
                        dataType='bool',
                        )
 plr.sPy +=  '        .def_property("computeExactStaticTriangleBins", &PyGeneralContact::GetComputeExactStaticTriangleBins, &PyGeneralContact::SetComputeExactStaticTriangleBins)\n' 
-plr.DefLatexDataAccess('computeExactStaticTriangleBins','if True, search tree bins are computed exactly for static triangles while if False, it uses the overall (=very inaccurate) AABB of each triangle in the search tree',
+plr.DefLatexDataAccess('computeExactStaticTriangleBins','(default=True) if True, search tree bins are computed exactly for static triangles while if False, it uses the overall (=very inaccurate) AABB of each triangle in the search tree',
                        dataType='bool',
                        )
 
@@ -3208,6 +3510,25 @@ plr.sPy +=  '        .def_property("ancfCableMeasuringSegments", &PyGeneralConta
 plr.DefLatexDataAccess('ancfCableMeasuringSegments','(default=20) number of segments used to approximate geometry for ANCFCable2D elements for measuring with ShortestDistanceAlongLine; with 20 segments the relative error due to approximation as compared to 10 segments usually stays below 1e-8 ',
                        dataType='int',
                        )
+#+++++++++++++++++
+#parallel:
+plr.sPy +=  '        .def_property("parallelTaskSplit", &PyGeneralContact::GetParallelTaskSplit, &PyGeneralContact::SetParallelTaskSplit)\n' 
+plr.DefLatexDataAccess('parallelTaskSplit','(default=12) general number of tasks per thread (min)',
+                       dataType='int',
+                       )
+plr.sPy +=  '        .def_property("parallelTaskSplitBoundingBoxes", &PyGeneralContact::GetParallelTaskSplitBoundingBoxes, &PyGeneralContact::SetParallelTaskSplitBoundingBoxes)\n' 
+plr.DefLatexDataAccess('parallelTaskSplitBoundingBoxes','(default=48) number of tasks per thread for bounding box computations',
+                       dataType='int',
+                       )
+plr.sPy +=  '        .def_property("parallelTaskSplitThreshold", &PyGeneralContact::GetParallelTaskSplitThreshold, &PyGeneralContact::SetParallelTaskSplitThreshold)\n' 
+plr.DefLatexDataAccess('parallelTaskSplitThreshold','(default=12) general threshold below which only one task per thread is used',
+                       dataType='int',
+                       )
+plr.sPy +=  '        .def_property("parallelTaskSplitBoundingBoxesThreshold", &PyGeneralContact::GetParallelTaskSplitBoundingBoxesThreshold, &PyGeneralContact::SetParallelTaskSplitBoundingBoxesThreshold)\n' 
+plr.DefLatexDataAccess('parallelTaskSplitBoundingBoxesThreshold','(default=400) threshold below which only one task per thread is used, for bounding box computations',
+                       dataType='int',
+                       )
+#+++++++++++++++++
 
 
 # plr.DefPyFunctionAccess(cClass=classStr, pyName='FinalizeContact', cName='PyFinalizeContact', 
@@ -3539,6 +3860,142 @@ plr.DefPyFunctionAccess(cClass=classStr, pyName='__repr__', cName='[](const PyMa
 plr.DefPyFinishClass('MatrixContainer')
 
 
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#documentation and pybindings for GraphicsMaterialList
+
+
+classStr = 'MainGraphicsMaterialList'
+pyClassStr = 'GraphicsMaterialList'
+plr.DefPyStartClass(classStr, pyClassStr, "The GraphicsMaterialList contains the list of materials (material properties) for visualization; currently, only the raytracer uses materials. Materials can be accessed via the variable materials in renderer of SystemContainer.", 
+                    subSection=True, labelName='sec:GraphicsMaterialList')
+
+plr.AddDocuCodeBlock(code="""
+#access material 0:
+mat0 = SC.renderer.materials[0]
+#convert into dictionary for easier processing:
+matDict = mat0.GetDictionary()
+matDict['alpha'] = 0.5
+#change material (e.g. using a data base):
+mat0.SetDictionary(matDict)
+#or directly update material
+mat0.name = 'new name'
+mat0.emission = [0.8,0.6,0.]
+
+#update material in renderer:
+SC.renderer.materials.Set(0,mat0)
+#update material directly with dictionary:
+SC.renderer.materials.Set(0,matDict)
+
+#create new material:
+mat10 = SC.renderer.materials.New()
+mat10.reflectivity = 0.8
+SC.renderer.materials.Append(mat10) #returns index of mat10
+
+#10 default graphics materials in Exudyn
+#listed here with default color and some properties:
+#note the increased computational costs for reflection & transparency
+#the material names are as follows:
+SC.renderer.materials[0].name == "default"    #steel blue
+SC.renderer.materials[1].name == "matt"       #green
+SC.renderer.materials[2].name == "steel"      #grey (reflection)
+SC.renderer.materials[3].name == "plastic"    #red (reflection)
+SC.renderer.materials[4].name == "chrome"     #light grey (reflection)
+SC.renderer.materials[5].name == "shiny"      #orange (reflection)
+SC.renderer.materials[6].name == "transparent"#(transparency,slight refraction)
+SC.renderer.materials[7].name == "glass"      #light grey (reflection,transparency,refraction)
+SC.renderer.materials[8].name == "mirror"     #light grey (reflection)
+SC.renderer.materials[9].name == "emission"   #light yellow
+
+""") #keep empty line for RST
+
+
+plr.DefLatexStartTable(pyClassStr)
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Reset', cName='Reset', 
+                        description="reset materials to 10 default materials",
+                        returnType='None',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Append', cName='PyAppend', 
+                        argList=['material'],
+                        description="add single material as dict or VSettingsMaterial to list; returns index of newly added material",
+                        argTypes=['Any'],
+                        returnType='int',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='New', cName='NewMaterial', 
+                        description="Get new default material, which can be modified or appended to materials list",
+                        returnType='VSettingsMaterial',
+                        )
+                                                                                                            
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Set', cName='PySetMaterial', 
+                        argList=['indexOrName','material'],
+                        description="set material with index 'materialIndex' as dict or VSettingsMaterial",
+                        argTypes=['int','Any'],
+                        returnType='None',
+                        )
+                                                                                                            
+plr.DefPyFunctionAccess(cClass=classStr, pyName='Get', cName='GetMaterial', 
+                        argList=['indexOrName'],
+                        description="get material with index 'materialIndex' as VSettingsMaterial",
+                        argTypes=['int'],
+                        returnType='None',
+                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='GetDict', cName='PyGetMaterialDict', 
+                        argList=['indexOrName'],
+                        description="get material with index 'materialIndex' as dict",
+                        argTypes=['int'],
+                        returnType='None',
+                        )
+                                                                                                            
+plr.DefPyFunctionAccess(cClass=classStr, pyName='__len__', 
+                       cName='[](const MainGraphicsMaterialList &item) {\n            return item.NumberOfItems(); }', 
+                       description="return length of the Vector3DList, using len(data) where data is the Vector3DList",
+                       isLambdaFunction = True,
+                       )
+
+#not possible, because sync with visSettings would be lost:
+# plr.DefPyFunctionAccess(cClass=classStr, pyName='__setitem__', 
+#                        cName='[](MainGraphicsMaterialList &item, Index index, const py::object& material) {\n            item.PySetMaterial(index, material); }', 
+#                        description="set list item 'index' with material; usage: materials[index] = material",
+#                        isLambdaFunction = True,
+#                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='__getitem__', 
+                        cName='[](const MainGraphicsMaterialList &item, py::object index) {\n            return py::cast<const VSettingsMaterial&>(item.GetMaterial(index)); }', 
+                        description="get reference access of material with 'index' as VSettingsMaterial",
+                        isLambdaFunction = True,
+                        )
+
+
+# plr.DefPyFunctionAccess(cClass=classStr, pyName='__copy__', 
+#                        cName='[](const PyVector3DList &item) {\n            return PyVector3DList(item); }', 
+#                        description="copy method to be used for copy.copy(...); in fact does already deep copy",
+#                        isLambdaFunction = True,
+#                        )
+
+# plr.DefPyFunctionAccess(cClass=classStr, pyName='__deepcopy__', 
+#                        cName='[](const PyVector3DList &item, py::dict) {\n            return PyVector3DList(item); }, "memo"_a', 
+#                        description="deepcopy method to be used for copy.copy(...)",
+#                        isLambdaFunction = True,
+#                        )
+
+plr.DefPyFunctionAccess(cClass=classStr, pyName='__repr__', 
+                       cName='[](const MainGraphicsMaterialList &item) {\n            return EXUstd::ToString(item); }', 
+                       description="return the string representation of the GraphicsMaterialList",
+                       isLambdaFunction = True,
+                       )
+
+#++++++++++++++++
+plr.DefPyFinishClass('GraphicsMaterialList')
+
+
+
+
+
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #documentation and pybindings for PyVector3DList
@@ -3547,9 +4004,9 @@ plr.DefPyFinishClass('MatrixContainer')
 classStr = 'PyVector3DList'
 pyClassStr = 'Vector3DList'
 plr.DefPyStartClass(classStr, pyClassStr, "The Vector3DList is used to represent lists of 3D vectors. This is used to transfer such lists from Python to C++." +
-        ' \\\\ \\\\ Usage: \\bi\n'+
+        ' \\\\ \\\\ Usage:\n\\bi\n'+
         '  \\item Create empty \\texttt{Vector3DList} with \\texttt{x = Vector3DList()} \n'+
-        '  \\item Create \\texttt{Vector3DList} with list of numpy arrays:\\\\\\texttt{x = Vector3DList([ numpy.array([1.,2.,3.]), numpy.array([4.,5.,6.]) ])}\n'+
+        '  \\item Create \\texttt{Vector3DList} with list of numpy arrays:\\texttt{x = Vector3DList([ numpy.array([1.,2.,3.]), numpy.array([4.,5.,6.]) ])}\n'+
         '  \\item Create \\texttt{Vector3DList} with list of lists \\texttt{x = Vector3DList([[1.,2.,3.], [4.,5.,6.]])}\n'+
         '  \\item Append item: \\texttt{x.Append([0.,2.,4.])}\n'+
         '  \\item Convert into list of numpy arrays: \\texttt{x.GetPythonObject()}\n'+

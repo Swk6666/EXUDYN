@@ -359,12 +359,11 @@ if True: #now import mesh as mechanical model to EXUDYN
         if useGraphics:
             SC.visualizationSettings.general.autoFitScene=False
 
-            exu.StartRenderer()
-            if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+            SC.renderer.Start()
+            if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
         
-            mbs.WaitForUserToContinue() #press space to continue
+            SC.renderer.DoIdleTasks() #press space to continue
 
-        #SC.RedrawAndSaveImage()
         if True:
             # mbs.SolveDynamic(solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
             #                   simulationSettings=simulationSettings)
@@ -374,8 +373,8 @@ if True: #now import mesh as mechanical model to EXUDYN
 
             
         if useGraphics:
-            SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
+            SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
         
         if mBushing != None:
             uTip = mbs.GetSensorValues(sensBushing)
@@ -385,12 +384,12 @@ if True: #now import mesh as mechanical model to EXUDYN
                 mbs.PlotSensor(sensorNumbers=[sensBushingVel], components=[1])
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-if True:
+if False:
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
     import exudyn as exu
     from exudyn.utilities import * #includes itemInterface and rigidBodyUtilities
-import exudyn.graphics as graphics #only import if it does not conflict
+    import exudyn.graphics as graphics #only import if it does not conflict
     CC = PlotLineCode
     comp = 3 #1=x, 2=y, ...
     var = 'Vel'

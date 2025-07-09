@@ -893,6 +893,23 @@ public:
 		return result;
 	}
 
+	//! get column vector as a SlimVector (no memory allocation, but final size needs to be known at compile time)
+//! use e.g.: Vector3D v = GetColumnVector<3>(i);
+	template<Index columnSize>
+	void SetColumnVector(Index column, const SlimVectorBase<T, columnSize>& columnVector)
+	{
+		CHECKandTHROW(this->numberOfRows == columnSize,
+			"ConstSizeMatrixBase::SetColumnVector(...): size mismatch");
+		CHECKandTHROW(column < this->numberOfColumns,
+			"ConstSizeMatrixBase::SetColumnVector(...): illegal column");
+
+		for (Index i = 0; i < this->numberOfRows; i++)
+		{
+			this->GetUnsafe(i, column) = columnVector[i];
+		}
+	}
+
+
 	//! get row vector as a SlimVector (no memory allocation, but final size needs to be known at compile time)
 	//! use e.g.: Vector3D v = GetColumnVector<3>(i);
 	template<Index rowSize>

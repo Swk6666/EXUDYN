@@ -82,7 +82,7 @@ Index PyProcessGetResult();
 void PyProcessSetResult(Index value);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//FILL QUQUES
+//FILL QUEUES
 
 //! put process ID into queue, which is then called from main (Python) thread
 void PyQueuePythonProcess(ProcessID::Type processID, Index info=-1);
@@ -124,7 +124,7 @@ void PyProcessExecuteStringAsPython(const STDstring& str, bool lockRendererCallb
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //! perform idle tasks for single-threaded renderer
-void RendererDoSingleThreadedIdleTasks();
+void RendererDoSingleThreadedIdleTasks(Real waitSeconds = 0.);
 //! check if renderer is single-threaded
 bool RendererIsSingleThreadedOrNotRunning();
 

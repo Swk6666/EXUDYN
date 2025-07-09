@@ -100,7 +100,7 @@ h = 0.001    #step size; leads to 1000 steps
 simulationSettings = exu.SimulationSettings()
 simulationSettings.solutionSettings.solutionWritePeriod = 5e-3 #output interval general
 simulationSettings.solutionSettings.sensorsWritePeriod = 5e-3  #output interval of sensors
-simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h) #must be integer
+simulationSettings.timeIntegration.numberOfSteps = tEnd/h
 simulationSettings.timeIntegration.endTime = tEnd
 
 simulationSettings.timeIntegration.verboseMode = 1             #show some solver output
@@ -212,7 +212,7 @@ h = 0.002    #step size; leads to 1000 steps
 
 simulationSettings = exu.SimulationSettings()
 simulationSettings.solutionSettings.sensorsWritePeriod = h  #output interval of sensors
-simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h) #must be integer
+simulationSettings.timeIntegration.numberOfSteps = tEnd/h
 simulationSettings.timeIntegration.endTime = tEnd
 
 if useGraphics:

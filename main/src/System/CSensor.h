@@ -50,41 +50,76 @@ public:
 		case SensorType::Object: return GetObjectNumber();
 		case SensorType::Body:  return GetObjectNumber();
 		case SensorType::SuperElement:  return GetObjectNumber();
+		case SensorType::KinematicTree:  return GetObjectNumber();
 		case SensorType::Marker: return GetMarkerNumber();
 		case SensorType::Load:  return GetLoadNumber();
 		case SensorType::UserFunction:  return 0; //would be several numbers ...
 		default: SysError("Sensor::GetTypeDependentIndex: invalid sensor type");  return 0;
 		}
 	}
+	//! check if sensor has object number
+	virtual bool HasObjectNumber() const {
+		if ((GetType() == SensorType::Object) || 
+			(GetType() == SensorType::Body) ||
+			(GetType() == SensorType::SuperElement) || 
+			(GetType() == SensorType::KinematicTree)
+			) {return true;}
+		else { return false; }
+	}
 
-	//! if object/body Sensor: get object number (otherwise assertion)
+	//! if object/body Sensor: get object number (otherwise exception)
 	virtual Index GetObjectNumber() const {
-		CHECKandTHROWstring("Invalid call to CSensor::GetBodyNumber");
+		CHECKandTHROWstring("Invalid call to CSensor::GetObjectNumber");
 		return EXUstd::InvalidIndex;
 	}
 
-	//! if node Sensor: get node number (otherwise assertion)
+	//! if object/body Sensor: set object number (otherwise exception)
+	virtual void SetObjectNumber(Index objectNumber) {
+		CHECKandTHROWstring("Invalid call to CSensor::SetObjectNumber");
+	}
+
+	//! if node Sensor: get node number (otherwise exception)
 	virtual Index GetNodeNumber() const {
 		CHECKandTHROWstring("Invalid call to CSensor::GetNodeNumber");
 		return EXUstd::InvalidIndex;
 	}
 
-	//! if load Sensor: get load number (otherwise assertion)
+	//! if node Sensor: set node number (otherwise exception)
+	virtual void SetNodeNumber(Index nodeNumber) {
+		CHECKandTHROWstring("Invalid call to CSensor::SetNodeNumber");
+	}
+
+	//! if load Sensor: get load number (otherwise exception)
 	virtual Index GetLoadNumber() const {
 		CHECKandTHROWstring("Invalid call to CSensor::GetLoadNumber");
 		return EXUstd::InvalidIndex;
 	}
 
-	//! if marker Sensor: get load number (otherwise assertion)
+	//! if load Sensor: set load number (otherwise exception)
+	virtual void SetLoadNumber(Index loadNumber) {
+		CHECKandTHROWstring("Invalid call to CSensor::SetLoadNumber");
+	}
+
+	//! if marker Sensor: get marker number (otherwise exception)
 	virtual Index GetMarkerNumber() const {
 		CHECKandTHROWstring("Invalid call to CSensor::GetMarkerNumber");
 		return EXUstd::InvalidIndex;
 	}
 
-	//! if user function Sensor: get sensor number (otherwise assertion)
+	//! if marker Sensor: set marker number (otherwise exception)
+	virtual void SetMarkerNumber(Index markerNumber) {
+		CHECKandTHROWstring("Invalid call to CSensor::SetMarkerNumber");
+	}
+
+	//! if user function Sensor: get sensor number (otherwise exception)
 	virtual Index GetSensorNumber(Index localIndex) const {
 		CHECKandTHROWstring("Invalid call to CSensor::GetSensorNumber");
 		return EXUstd::InvalidIndex;
+	}
+
+	//! if node Sensor: set node number (otherwise exception)
+	virtual void SetSensorNumber(Index localIndex, Index sensorNumber) {
+		CHECKandTHROWstring("Invalid call to CSensor::SetSensorNumber");
 	}
 
 	//! if user function Sensor: get number of related sensors

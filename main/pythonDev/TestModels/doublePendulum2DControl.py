@@ -122,7 +122,7 @@ simulationSettings.timeIntegration.verboseMode = 1
 simulationSettings.displayStatistics = True
 simulationSettings.displayComputationTime = True
 
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(simulationSettings)
-exu.StopRenderer()
+SC.renderer.Stop()

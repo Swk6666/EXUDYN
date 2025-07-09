@@ -134,14 +134,14 @@ SC.visualizationSettings.openGL.multiSampling = 4
 SC.visualizationSettings.openGL.lineWidth = 2
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 phi = mbs.GetNodeOutput(nRigid, variableType=exu.OutputVariableType.Coordinates)[2]
 phi2 = mbs.GetNodeOutput(nRigid2, variableType=exu.OutputVariableType.Coordinates)[2]

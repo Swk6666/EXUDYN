@@ -27,9 +27,16 @@ rstFolder = 'docs/RST/' #folder where generated .rst files are stored
 sourceDir='../../../docs/theDoc/'
 destDir='../../../'
 
+#copy from issueTracker.py
+versionNames = {'1.0':'Abercrombie', '1.1':'Burton', '1.2':'Corea', '1.3':'Davis', '1.4':'Ellington', '1.5':'Fitzgerald', 
+                '1.6':'Gillespie', '1.7':'Hall', '1.8':'Jones', #Jim Hall, Elvin Jones; leave out 'I' as there are not many => two 'M'
+                '1.9':'Krall', '1.10': 'Lagrene', '2.1':'McLaughlin', '2.2':'Metheney'} #Bireli Lagrene
+                #(Phineas) Newborn, (Charlie) Parker, (Jaco) Pastorius, (Oscar) Peterson, #3xP for missing O and Q
+                #(Django) Reinhardt, Scofield, Thielemans, (Steve) Vai, (Sarah) Vaughan
+
 #main files
 filesParsed=[
-              'version.tex',
+              'version.txt',
               'gettingStarted.tex',
               'introduction.tex',
               'tutorial.tex',
@@ -61,7 +68,7 @@ for i, (header, label) in enumerate(undefLabelList):
     
 undefLabels+='Further information\n'
 undefLabels+='===================\n\n'
-undefLabels+='\ **SEE Exudyn documentation** : `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ '
+undefLabels+='\\ **SEE Exudyn documentation** : `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ '
 
 
 sectionsList = []
@@ -236,6 +243,16 @@ def ParseFile(fileName, header = ''):
     fileLines = file.readlines()
     file.close()
 
+    if 'version.txt' in fileName:
+        exudynVersionStr = ''.join(fileLines)
+        exudynMinor = exudynVersionStr.split('.')[0]+'.'+exudynVersionStr.split('.')[1]
+        #print('Exudyn minor=',exudynMinor)
+        exudynVersionName = versionNames[exudynMinor]
+        
+        fileLines[0] = '\n+  Exudyn version = ' + fileLines[0] + ' ('+exudynVersionName+')'
+        #print('Exudyn full version:',fileLines[0])
+
+
     nLines = len(fileLines)
     
     for line in fileLines:
@@ -244,14 +261,15 @@ def ParseFile(fileName, header = ''):
             break
         if not (len(line.strip()) > 0 and line.strip()[0] == '%'):
             sFile += line# + '\n'
+
     
-    #print(sFile)
-    if fileName == 'version.tex':
-        # sRST += '\n| '
-        sFile += '\n+  '
-    if fileName == 'buildDate.tex':
-        # sRST += '| '
-        sFile += '+  '
+    #DELETE: this seems to be a relict:
+    # if fileName == 'version.txt':
+    #     # sRST += '\n| '
+    #     sFile += '\n+  '
+    # if fileName == 'buildDate.tex':
+    #     # sRST += '| '
+    #     sFile += '+  '
     return sFile
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -290,7 +308,7 @@ if False: #for debug:
 [sRSTmain, hierarchicalRST] = ExtractSections(sRST)
 
 #long README.rst, not used any more:
-sRSTmain += '\n\n\ **FOR FURTHER INFORMATION see** `Exudyn Github pages <https://jgerstmayr.github.io/EXUDYN>`_ and'
+sRSTmain += '\n\n\\ **FOR FURTHER INFORMATION see** `Exudyn Github pages <https://jgerstmayr.github.io/EXUDYN>`_ and'
 sRSTmain += ' see `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ !!!\n\n'
 
 #on github, first page:
@@ -344,7 +362,7 @@ sRST = sRST.replace('docs/demo/','../demo/')
 #on github pages and readthedocs:
 modMainPage = hierarchicalRST[0][1].replace(sectionMarkerText+'0','')
 modMainPage += 'Changes can be tracked in the :ref:`Issue tracker <sec-issuetracker>` \n\n'
-modMainPage += 'For searching on Read the Docs (especially with the search preview), add \* or ~1 / ~2 / ... to your search to search more general, e.g., FEMinter\* to search for FEMinterface, or objetfrf~3 to find ObjectFFRF. Your search preview usually finds less results than the search when pressing Enter. See also `Read the Docs documentation <https://docs.readthedocs.io/en/stable/server-side-search/syntax.html#special-queries>`_ \n\n'
+modMainPage += 'For searching on Read the Docs (especially with the search preview), add \\* or ~1 / ~2 / ... to your search to search more general, e.g., FEMinter\\* to search for FEMinterface, or objetfrf~3 to find ObjectFFRF. Your search preview usually finds less results than the search when pressing Enter. See also `Read the Docs documentation <https://docs.readthedocs.io/en/stable/server-side-search/syntax.html#special-queries>`_ \n\n'
 modMainPage += '\\ **READ Exudyn documentation** : `theDoc.pdf <https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf>`_ \n\n'
 
 #last commit
@@ -628,7 +646,7 @@ List of Abbreviations
 =====================
 
 This section shows typical abbreviations. For further notation, 
-see also :ref:`Section Notation <sec-generalnotation>`\ .
+see also :ref:`Section Notation <sec-generalnotation>`\\ .
 
 """
 for key, value in abbrvDict.items():

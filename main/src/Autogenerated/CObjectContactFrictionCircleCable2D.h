@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2023-01-11  19:34:03 (last modified)
+* @date         2025-05-08  11:59:28 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -94,8 +94,14 @@ public: // AUTO:
     //! AUTO: Read access to parameters
     virtual const CObjectContactFrictionCircleCable2DParameters& GetParameters() const { return parameters; }
 
-    //! AUTO:  default function to return Marker numbers
+    //! AUTO:  default (read) function to return Marker numbers
     virtual const ArrayIndex& GetMarkerNumbers() const override
+    {
+        return parameters.markerNumbers;
+    }
+
+    //! AUTO:  default (write) function to return Marker numbers
+    virtual ArrayIndex& GetMarkerNumbers() override
     {
         return parameters.markerNumbers;
     }
@@ -105,6 +111,12 @@ public: // AUTO:
     {
         CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);
         return parameters.nodeNumber;
+    }
+
+    //! AUTO:  Get global node number (with local node index); needed for every object ==> does local mapping
+    virtual void SetNodeNumber(Index localIndex, Index nodeNumber) override
+    {
+        parameters.nodeNumber=nodeNumber;
     }
 
     //! AUTO:  number of nodes; needed for every object

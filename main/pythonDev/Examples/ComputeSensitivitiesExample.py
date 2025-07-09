@@ -92,8 +92,8 @@ def ParameterFunction(parameterSet):
     # if not(flagWriteFile): 
     #     sRecorder = AddSensorRecorder(mbs, sData, tEnd, simulationSettings.solutionSettings.sensorsWritePeriod, sensorOutputSize=1)
     
-    #exu.StartRenderer()              #start graphics visualization
-    #mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+    #SC.renderer.Start()              #start graphics visualization
+    #SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
     mbs.Assemble()
     
     #start solver:

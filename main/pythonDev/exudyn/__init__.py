@@ -20,7 +20,7 @@
 #    mMP = mbs.AddMarker(MarkerNodePosition(nodeNumber = nMP))
 #    mbs.AddLoad(Force(markerNumber = mMP, loadVector=[0.001,0,0]))
 #    mbs.Assemble() #assemble system and solve
-#    exu.SolveDynamic(mbs, exu.SimulationSettings())
+#    mbs.SolveDynamic(exu.SimulationSettings())
 #
 # Copyright:This file is part of Exudyn. Exudyn is free software. You can redistribute it and/or modify it under the terms of the Exudyn license. See 'LICENSE.txt' for more details.
 #
@@ -44,26 +44,33 @@ if __cpuHasAVX2:
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #use numpy.core to find if AVX+AVX2 is available ...
 try:
+    thisCpuHasAVX2 = False #assume this for now!
     if sys.platform != 'darwin' and sys.platform != 'linux': #MacOS does not support AVX2; no AVX2 for linux right now; therefore there are not non-AVX modules compiled ...
         import numpy
-        thisCpuHasAVX2 = True #assume this for now!
         if numpy.__version__ <= '2.0': #otherwise _multiarray_umath not available (moved to _core and raises warnings)
             from numpy.core._multiarray_umath import __cpu_features__
             if (('AVX' in __cpu_features__) and ('AVX2' in __cpu_features__) and
                 (__cpu_features__['AVX'] == True) and (__cpu_features__['AVX2'] == True)):
-                if not __cpuHasAVX2 and hasattr(sys, 'exudynCPUhasAVX2'):
-                    print('WARNING: user deactivated AVX2 support, but support detected on current CPU')
-                else:
-                    __cpuHasAVX2 = True
-            elif __cpuHasAVX2:
-                print('WARNING: user activated AVX2 support, but no AVX2 support has been detected on current CPU; may crash')
-        else: #we do not know what the user has, but assume AVX!
-            if not hasattr(sys, 'exudynCPUhasAVX2'):
-                __cpuHasAVX2 = True #standard case!
+                thisCpuHasAVX2 = True
+        #Numpy2.0 way, using numpy config:
+        elif 'AVX2' in numpy.__config__.CONFIG['SIMD Extensions']['found']: #this also works for Numpy 1.26 but not for 1.22 ....
+            thisCpuHasAVX2 = True
+        
+        if thisCpuHasAVX2:
+            if not __cpuHasAVX2 and hasattr(sys, 'exudynCPUhasAVX2'):
+                print('WARNING: user deactivated AVX2 support, but support detected on current CPU')
+            else:
+                __cpuHasAVX2 = True
+        elif __cpuHasAVX2:
+            print('\n*********\nWARNING: user activated AVX2 support, but no AVX2 support has been detected on current CPU; may crash\n*********\n\n')
+        # else: #we do not know what the user has, but assume AVX!
+        #     if not hasattr(sys, 'exudynCPUhasAVX2'):
+        #         __cpuHasAVX2 = True #standard case!
     else:
         __cpuHasAVX2 = True #for MacOS and Linux, this means that there is no exudynCPPnoAVX version!
+    del thisCpuHasAVX2
 except:
-    print('Warning: during import of exudyn, it was detected that either numpy or the numpy.core module "_multiarray_umath" is missing')
+    print('Warning: during import of exudyn, it was detected that either numpy, numpy.core module "_multiarray_umath" or "numpy.__config__.CONFIG" are missing')
 
 try:
     #for regular loading in installed python package
@@ -103,11 +110,13 @@ except:
     #for run inside Visual Studio (exudynCPP lies in Release or Debug folders):
     from solver import SolveStatic, SolveDynamic, SolverSuccess, ComputeLinearizedSystem, ComputeSystemDegreeOfFreedom, ComputeODE2Eigenvalues
 
+#use exudyn.demos.Demo1() from 1.9.137 onwards!
 try:
-    from .demos import Demo1, Demo2
+    from . import demos
 except:
     #for run inside Visual Studio (exudynCPP lies in Release or Debug folders):
-    from demos import Demo1, Demo2
+    pass
+    #import exudyn.demos as demos
 
 try:
     from .mainSystemExtensions import JointPreCheckCalc #import just some function, will assign MainSystem patches
@@ -116,7 +125,7 @@ except:
     from mainSystemExtensions import JointPreCheckCalc
 
 
-__version__ = GetVersionString() #add __version__ to exudyn module ...
+__version__ = config.Version() #add __version__ to exudyn module ...
 
 
 #add a functionality to check the current version
@@ -136,7 +145,7 @@ def RequireVersion(requiredVersionString):
     RequireVersion("1.0.26")
 
     """
-    vExudyn=GetVersionString().split('.')
+    vExudyn = config.Version().split('.')
     vRequired = requiredVersionString.split('.')
     isOk = True
     if int(vExudyn[0]) < int(vRequired[0]):
@@ -148,12 +157,9 @@ def RequireVersion(requiredVersionString):
             if int(vExudyn[2]) < int(vRequired[2]): #check micro version
                 isOk = False
     if not isOk:
-        #print("EXUDYN version "+requiredVersionString+" required, but only " + GetVersionString() + " available")
-        raise RuntimeError("EXUDYN version "+requiredVersionString+" required, but only " + GetVersionString() +
+        raise RuntimeError("EXUDYN version "+requiredVersionString+" required, but only " + config.Version() +
                            " available!\nYou can install the latest development version with:\npip install -U exudyn --pre\n\n")
     
 
-#do not import itemInterface here, as it would go into exu. scope
-#from .itemInterface import *
 
 

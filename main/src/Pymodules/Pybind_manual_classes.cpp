@@ -91,11 +91,8 @@ STDstring GetExudynBuildVersionString(bool addDetails)
 	return str;
 }
 
-//! retrieve current version as m.attr is not passed trough package
-py::str PyGetVersionString(bool addDetails = false)
-{
-	return GetExudynBuildVersionString(addDetails);
-}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// the following functions are kept in exudyn main module (not in exudyn.config):
 
 //! this function is available outside PybindModule.cpp and returns version + additional information
 void PyHelp()
@@ -103,18 +100,22 @@ void PyHelp()
 	pout << "This is the exudyn Python module.\n";
 	pout << "For basic help, visit the github page and start reading: https://github.com/jgerstmayr/EXUDYN \n";
 	pout << "For tutorials, visit https://github.com/jgerstmayr/EXUDYN#tutorial \n";
-	pout << "For quick demos, just write exudyn.Demo1() and exudyn.Demo2() \n";
+	pout << "For quick demos, just write exudyn.demos.Demo1() and exudyn.demos.Demo2() \n";
 	pout << "For many examples and test models, see https://github.com/jgerstmayr/EXUDYN/tree/master/main/pythonDev ; consider clone or .zip the repository\n";
 	pout << "For advanced information, read theDoc: https://github.com/jgerstmayr/EXUDYN/blob/master/docs/theDoc/theDoc.pdf \n";
 	pout << "Good luck and have fun!\n";
-	pout << "(C) 2018-2023 University of Innsbruck\n\n";
+	pout << "(C) 2018-2025 University of Innsbruck\n\n";
 }
 
 //! Definition of Invalid Index; to be used in Python to check whether a function returned a valid index (e.g. AddObject(...))
 Index GetInvalidIndex() { return EXUstd::InvalidIndex; }
 
 //! set flag to write (true) or not write to console; default = true
-void PySetWriteToConsole(bool flag) { outputBuffer.SetWriteToConsole(flag); }
+void PySetWriteToConsole(bool flag) 
+{ 
+	PyWarning("exudyn.SetWriteToConsole(): function is deprecated; use set exudyn.config.printToConsole instead");
+	outputBuffer.SetWriteToConsole(flag);
+}
 
 //! set flag to write (true) or not write to console; default = false
 void PySetWriteToFile(STDstring filename, bool flagWriteToFile, bool flagAppend, bool flagFlushAlways)
@@ -122,27 +123,92 @@ void PySetWriteToFile(STDstring filename, bool flagWriteToFile, bool flagAppend,
 	outputBuffer.SetWriteToFile(filename, flagWriteToFile, flagAppend, flagFlushAlways);
 }
 
+//! print function with line feed; this allows to either stream to console or to redirect to file, following settings in pout.
+void PyPrint(py::args args, py::kwargs kwargs) {
+	// Extract keyword arguments with defaults
+	std::string sep = kwargs.contains("sep") ? kwargs["sep"].cast<std::string>() : " ";
+	std::string end = kwargs.contains("end") ? kwargs["end"].cast<std::string>() : "\n";
+	bool flush = kwargs.contains("flush") ? kwargs["flush"].cast<bool>() : false;
+
+	// Print all positional arguments with separator
+	bool first = true;
+	for (auto item : args) 
+	{
+		if (!first) { pout << sep; }
+		first = false;
+		pout << item;
+	}
+
+	pout << end;
+
+	if (flush || end!="\n") { outputBuffer.overflowFlush(0, flush, end != "\n"); } //does not print 0, but does flush or clears buffer if there is no "\n" at end of string
+}
+
+//void PyPrint(py::args args)
+//{
+//	for (auto item : args)
+//	{
+//		pout << item << " ";
+//	}
+//	pout << "\n";
+//}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//the following functions/structures move to exudyn.config:
+
+//! retrieve current version as m.attr is not passed trough package
+py::str PyGetVersionString(bool addDetails = false)
+{
+	PyWarning("exudyn.GetVersionString(): function is deprecated; use set exudyn.config.Version() instead");
+	return GetExudynBuildVersionString(addDetails);
+}
+
 extern bool suppressWarnings; //!< global flag to suppress warnings
 //! set flag to suppress (=true) or enable (=false) warnings
-void PySuppressWarnings(bool flag)
+void PySuppressWarningsOld(bool flag)
 {
+	PyWarning("exudyn.SuppressWarnings(): function is deprecated; use set exudyn.config.suppressWarnings instead");
 	suppressWarnings = flag;
 }
 
-//! print function with line feed
-void PyPrint(py::args args)
-{
-	for (auto item : args)
-	{
-		pout << item << " ";
-	}
-	pout << "\n";
-}
+
 //! add some delay (in milliSeconds) to printing to console, in order to let Spyder process the output; default = 0
 void PySetPrintDelayMilliSeconds(Index delayMilliSeconds)
 {
+	PyWarning("SetPrintDelayMilliSeconds(): function is deprecated; use set exudyn.config.printDelayMilliSeconds instead");
 	outputBuffer.SetDelayMilliSeconds(delayMilliSeconds);
 }
+
+//! Set the precision for floating point numbers written to console; this is reset after a simulation is started by according simulation settings
+void PySetOutputPrecision(Index precision)
+{
+	std::cout.precision(precision);
+	pout.precision(precision);
+}
+
+void PySetOutputPrecisionOld(Index precision)
+{
+	PyWarning("SetOutputPrecision(): function is deprecated; use set exudyn.config.precision instead");
+	PySetOutputPrecision(precision);
+}
+
+//! Set the precision for floating point numbers written to console; this is reset after a simulation is started by according simulation settings
+Index PyGetOutputPrecision()
+{
+	return (Index)pout.precision();
+}
+
+extern bool linalgPrintUsePythonFormat; //!< true: use python format for output of vectors and matrices; false: use matlab format
+
+//! true: use python format for output of vectors and matrices; false: use matlab format
+void PySetLinalgOutputFormatPython(bool flagPythonFormat)
+{
+	PyWarning("SetLinalgOutputFormatPython(): function is deprecated; use set exudyn.config.linalgOutputFormatPython instead");
+	linalgPrintUsePythonFormat = flagPythonFormat;
+}
+
 
 #ifdef __EXUDYN_RUNTIME_CHECKS__
 extern Index array_new_counts;		//global counter of item allocations; is increased every time a new is called
@@ -195,28 +261,20 @@ py::list PythonInfoStat(bool writeOutput = true)
 	list.append(0);
 #endif
 	return list;
-
-
 }
 
-//! Set the precision for floating point numbers written to console; this is reset after a simulation is started by according simulation settings
-void PySetOutputPrecision(Index precision)
+py::list PythonInfoStatOld(bool writeOutput = true)
 {
-	std::cout.precision(precision);
-	pout.precision(precision);
+	PyWarning("exudyn.InfoStat(): function is deprecated; use set exudyn.special.InfoStat() instead");
+	return PythonInfoStat(writeOutput);
 }
-
-extern bool linalgPrintUsePythonFormat; //!< true: use python format for output of vectors and matrices; false: use matlab format
-
-//! true: use python format for output of vectors and matrices; false: use matlab format
-void PySetLinalgOutputFormatPython(bool flagPythonFormat)
-{
-	linalgPrintUsePythonFormat = flagPythonFormat;
-}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //! start glfw renderer; return true if successful
-bool PyStartOpenGLRenderer(Index verbose = true)
+bool PyStartOpenGLRenderer(Index verbose = true, bool deprecationWarning = false)
 {
+	if (deprecationWarning) { PyWarning("exudyn.StartRenderer(): function is deprecated; for SystemContainer SC use set SC.renderer.Start() instead"); }
 #ifdef USE_GLFW_GRAPHICS
 #if defined(__EXUDYN__APPLE__)
 	//on APPLE, tkinter must be imported before start of OpenGL - workaround for BUG, #1339
@@ -234,24 +292,41 @@ bool PyStartOpenGLRenderer(Index verbose = true)
 #endif
 	return glfwRenderer.SetupRenderer(verbose);
 #else
-	PyWarning("StartRenderer(): has no effect as GLFW_GRAPHICS is deactivated in your exudyn module (needs recompile or another version)");
+	PyWarning("SC.renderer.Start(): has no effect as GLFW_GRAPHICS is deactivated in your exudyn module (needs recompile or another version)");
 	return false;
 #endif
 }
 
 //! start glfw renderer; return true if successful
-void PyStopOpenGLRenderer()
+void PyStopOpenGLRenderer(bool deprecationWarning = false)
 {
+	if (deprecationWarning) { PyWarning("exudyn.StopRenderer(): function is deprecated; for SystemContainer SC use set SC.renderer.Stop() instead"); }
+
 #ifdef USE_GLFW_GRAPHICS
-	glfwRenderer.StopRenderer();
+	try
+	{
+		glfwRenderer.StopRenderer();
+		py::dict d = MainSystemContainer::RenderState2PyDict(glfwRenderer.GetRenderState());
+		py::module exudynModule = py::module::import("exudyn");
+		exudynModule.attr("sys")["renderState"] = d;
+	}
+	catch (const EXUexception& ex)
+	{
+		SysError("EXUDYN raised internal error in renderer.Stop():\n" + STDstring(ex.what()) + "\n");
+	}
+	catch (...) //any other exception
+	{
+		SysError("Unexpected exception during renderer.Stop()!\n");
+	}
 #else
-	PyWarning("StopRenderer(): has no effect as GLFW_GRAPHICS is deactivated in your exudyn module (needs recompile or another version)");
+		PyWarning("SC.renderer.Stop(): has no effect as GLFW_GRAPHICS is deactivated in your exudyn module (needs recompile or another version)");
 #endif
 }
 
 //! start glfw renderer; return true if successful
-bool PyIsRendererActive()
+bool PyIsRendererActive(bool deprecationWarning = false)
 {
+	if (deprecationWarning) { PyWarning("exudyn.IsRendererActive(): function is deprecated; for SystemContainer SC use set SC.renderer.IsActive() instead"); }
 #ifdef USE_GLFW_GRAPHICS
 	return glfwRenderer.IsGlfwInitAndRendererActive();
 #else
@@ -259,9 +334,18 @@ bool PyIsRendererActive()
 #endif
 }
 
-//! run renderer idle for certain amount of time; use this for single-threaded, interactive animations
-void PyDoRendererIdleTasks(Real waitSeconds)
+//! wait until the first frame of the renderer has been drawn
+Index PyGetRendererUpdateCount()
 {
+	return GlfwRenderer::GetRendererTasksCount();
+}
+
+
+
+//! run renderer idle for certain amount of time; use this for single-threaded, interactive animations
+void PyDoRendererIdleTasks(Real waitSeconds, bool deprecationWarning = false)
+{
+	if (deprecationWarning) { PyWarning("exudyn.DoRendererIdleTasks(): function is deprecated; for SystemContainer SC use set SC.renderer.DoIdleTasks() instead"); }
 #ifdef USE_GLFW_GRAPHICS
 	glfwRenderer.DoRendererIdleTasks(waitSeconds);
 #else
@@ -269,17 +353,18 @@ void PyDoRendererIdleTasks(Real waitSeconds)
 #endif
 }
 
+//removed:
 //! simple startup of exudyn module for debug, etc.
-void PythonGo()
-{
-	py::exec(R"(
-import exudyn
-systemContainer = exudyn.SystemContainer()
-mbs = systemContainer.AddSystem()
-    )");
-	pout << "main variables:\n systemContainer=exudyn.SystemContainer()\n mbs = systemContainer.AddSystem()\n";
-	//pout << "ready to go\n";
-}
+//void PythonGo()
+//{
+//	py::exec(R"(
+//import exudyn
+//systemContainer = exudyn.SystemContainer()
+//mbs = systemContainer.AddSystem()
+//    )");
+//	pout << "main variables:\n systemContainer=exudyn.SystemContainer()\n mbs = systemContainer.AddSystem()\n";
+//	//pout << "ready to go\n";
+//}
 
 
 
@@ -291,6 +376,8 @@ mbs = systemContainer.AddSystem()
 PyExperimental pyExperimental;	//! for experimental things, not to be used by common user
 PySpecial pySpecial;			//! special features; affects exudyn globally; treat with care
 
+#include "Main/Config.h"
+ExudynConfig pyConfig;				//! unified config for exudyn, avoid bloating main scope
 
 
 
@@ -299,6 +386,32 @@ PySpecial pySpecial;			//! special features; affects exudyn globally; treat with
 void Init_Pybind_manual_classes(py::module& m) {
 	py::dict exudynVariables; //!< global dictionary which can be used by the user to store local variables
 	py::dict exudynSystemVariables; //!< global dictionary which is used by system functions to store local variables
+
+	//interface to exudyn.config
+	py::class_<ExudynConfig>(m, "Config", "global config, including special settings for output and printing behavior")
+		.def(py::init<>())
+		//+++++++++++++++++++++++++++++++++++++++++++
+		.def_property("outputPrecision", &ExudynConfig::GetOutputPrecision, &ExudynConfig::SetOutputPrecision)
+		.def_property("suppressWarnings", &ExudynConfig::GetSuppressWarnings, &ExudynConfig::SetSuppressWarnings)
+		.def_property("linalgOutputFormatPython", &ExudynConfig::GetLinalgPrintUsePythonFormat, &ExudynConfig::SetLinalgPrintUsePythonFormat)
+
+		.def_property("printDelayMilliSeconds", &ExudynConfig::GetPrintDelayMilliSeconds, &ExudynConfig::SetPrintDelayMilliSeconds)
+		.def_property("printFlushAlways", &ExudynConfig::GetFlushAlways, &ExudynConfig::SetFlushAlways)
+		.def_property("printToConsole", &ExudynConfig::GetWriteToConsole, &ExudynConfig::SetWriteToConsole)
+		.def_property_readonly("printToFile", &ExudynConfig::GetWriteToFile)
+		.def_property_readonly("printFileName", &ExudynConfig::GetFileName)
+		.def_property_readonly("printToFileAppend", &ExudynConfig::GetWriteAppend)
+
+
+		.def("Version", &ExudynConfig::Version, "Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.)", py::arg("addDetails") = false)
+
+		//representation:
+		.def("__repr__", [](const ExudynConfig& item) {
+		return STDstring(EXUstd::ToString(item));
+			}, "return the string representation of Config class")
+		;
+
+
 
 	//use _Experimental, because __Experimental (__) has special meaning in Python and may lead to different behavior
 	py::class_<PyExperimental>(m, "Experimental", "Experimental features, not intended for regular users") //use _Experimental to distinguish from Experimental() function
@@ -321,6 +434,7 @@ void Init_Pybind_manual_classes(py::module& m) {
 		//multiThreadingType = MultiThreadingType::LoadBalancing;
 		.def_readwrite("timeout", &PySpecialSolver::timeout)
 		.def_readwrite("throwErrorWithCtrlC", &PySpecialSolver::throwErrorWithCtrlC)
+		.def_readwrite("multiThreadingLoadBalancing", &PySpecialSolver::multiThreadingLoadBalancing)
 
 		//representation:
 		.def("__repr__", [](const PySpecialSolver& item) {
@@ -347,6 +461,7 @@ void Init_Pybind_manual_classes(py::module& m) {
 		//+++++++++++++++++++++++++++++++++++++++++++
 		.def_readwrite("solver", &PySpecial::solver)
 		.def_readwrite("exceptions", &PySpecial::exceptions)
+		.def_static("InfoStat", &PythonInfoStat, "Retrieve list of global information on memory allocation and other counts as list:[array_new_counts, array_delete_counts, vector_new_counts, vector_delete_counts, matrix_new_counts, matrix_delete_counts, linkedDataVectorCast_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with __FAST_EXUDYN_LINALG flag", py::arg("writeOutput") = true)
 
 #ifdef PERFORM_UNIT_TESTS
 			.def("RunCppUnitTests", &PySpecial::SpecialRunUnitTests, "Run C++ unit tests and return int with 'number of fails' (0 if all tests passed); reportOnPass=True also outputs the passed tests; printOutput prints according output to console",
@@ -365,28 +480,12 @@ void Init_Pybind_manual_classes(py::module& m) {
 			//};
 
 
-	//moved here in order to be able to store current renderState in exudynSystemVariables
-	//m.def("StopOpenGLRenderer", &GetVector, "GetVector");
-	m.def("StopRenderer", [exudynSystemVariables]() {
-		try
-		{
-			PyStopOpenGLRenderer();
-#ifdef USE_GLFW_GRAPHICS
-			py::dict d = MainSystemContainer::RenderState2PyDict(glfwRenderer.GetRenderState());
-			exudynSystemVariables["renderState"] = d;
-			//pout << "stop renderer\n";
-#endif
-		}
-		catch (const EXUexception& ex)
-		{
-			SysError("EXUDYN raised internal error in StopOpenGLRenderer:\n" + STDstring(ex.what()) + "\n");
-		}
-		catch (...) //any other exception
-		{
-			SysError("Unexpected exception during StopOpenGLRenderer!\n");
-		}
+	////moved here in order to be able to store current renderState in exudynSystemVariables
+	////m.def("StopOpenGLRenderer", &GetVector, "GetVector");
+	//m.def("StopRenderer", [exudynSystemVariables]() {
+	//		PyStopOpenGLRenderer();
 
-		}, "Stop the openGL renderer and write current renderState to exudyn.sys['renderState']");
+	//	}, "Stop the openGL renderer and write current renderState to exudyn.sys['renderState']");
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

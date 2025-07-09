@@ -101,8 +101,8 @@ simulationSettings.timeIntegration.endTime = endTime
 simulationSettings.timeIntegration.newton.useModifiedNewton = True
 
 if useGraphics:
-    exu.StartRenderer()
-    # mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    # SC.renderer.DoIdleTasks()
 
 import time
 ts = time.time()
@@ -111,7 +111,7 @@ mbs.SolveDynamic(simulationSettings, solverType=exu.DynamicSolverType.RK44)
 exu.Print('finished: ', time.time()-ts, 'seconds')
 
 if useGraphics:
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 n = mbs.GetObject(oMassPoint)['nodeNumber']
 p = mbs.GetNodeOutput(n, exu.OutputVariableType.Position)

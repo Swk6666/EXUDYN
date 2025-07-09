@@ -26,9 +26,10 @@ mutableArgsFunctionsChecked = [
     #graphics:
     'Sphere','Line','Lines','Circle','Text','Cuboid','BrickXYZ','Brick','Cylinder','RigidLink','SolidOfRevolution',
     'Arrow','Basis','Frame','Quad','CheckerBoard','SolidExtrusion','FromPointsAndTrigs','FromSTLfileASCII',
-    'FromSTLfile','Brick','Brick','Brick','Brick',
+    'FromSTLfile','Brick','Torus','Tube',
     #graphicsDataUtilities:
     'CirclePointsAndSegments', 'GraphicsDataRectangle', 'GraphicsDataOrthoCubeLines', 'AddEdgesAndSmoothenNormals',
+    'BallBearingRings','InvoluteGear','ToothedRack',
     # 'GraphicsDataFromPointsAndTrigs', 
     # 'GraphicsDataLine', 'GraphicsDataCircle', 'GraphicsDataText', 'GraphicsDataRectangle', #4 x problems fixed using list()
     # 'GraphicsDataOrthoCubeLines', 'GraphicsDataOrthoCube', 'GraphicsDataOrthoCubePoint', 'GraphicsDataCube', #4 x problems fixed using list()
@@ -43,9 +44,10 @@ mutableArgsFunctionsChecked = [
     #mainSystemExtensions:
     'MainSystemCreateGround','MainSystemCreateMassPoint','MainSystemCreateRigidBody','MainSystemCreateSpringDamper','MainSystemCreateCartesianSpringDamper',
     'MainSystemCreateRigidBodySpringDamper', 'MainSystemCreateTorsionalSpringDamper', 'MainSystemCreateRevoluteJoint', 'MainSystemCreatePrismaticJoint',
-    'MainSystemCreateSphericalJoint', 'MainSystemCreateGenericJoint', 
-    'MainSystemCreateDistanceConstraint', 'MainSystemCreateRollingDiscPenalty', 'MainSystemCreateRollingDisc',
-    'MainSystemCreateForce','MainSystemCreateTorque',
+    'MainSystemCreateSphericalJoint', 'MainSystemCreateGenericJoint', 'MainSystemCreateDistanceConstraint',
+    'MainSystemCreateDistanceConstraint', 'MainSystemCreateRollingDiscPenalty', 'MainSystemCreateRollingDisc', 'MainSystemCreateKinematicTree',
+    'MainSystemCreateForce','MainSystemCreateTorque','MainSystemCreateCoordinateConstraint',
+    'MainSystemCreateSphereSphereContact','MainSystemCreateSphereQuadContact','MainSystemCreateSphereTriangleContact',
     #plot:
     'PlotSensor', 'DataArrayFromSensorList',
     #processing:
@@ -78,6 +80,7 @@ filesParsed=[
              'artificialIntelligence.py',
              'basicUtilities.py',
              'beams.py',
+             'demos.py',
              'FEM.py',
              'graphics.py',
              'graphicsDataUtilities.py',
@@ -153,7 +156,7 @@ def ToLatex(s, replaceCurlyBracket=True): #replace _ and other symbols to fit in
 
     # s = s.replace('[','\\[')
     # s = s.replace(']','\\]')
-    s = s.replace('&','\&')
+    s = s.replace('&','\\&')
     return s
 
 
@@ -452,7 +455,7 @@ def DictToItemsText(functionDict, tagList, addStr, eraseInput=''):
     global mycnt
     sLatex = ''
     sRST = ''
-    sIndentRST = '  '
+    #sIndentRST = '  '
     sSpaces = '  '*0
     for tag in tagList:
         if tag in functionDict:
@@ -481,11 +484,11 @@ def DictToItemsText(functionDict, tagList, addStr, eraseInput=''):
                 sLatex += RemoveIndentation(strTag, '  ', removeAllSpaces = False, removeIndentation = True)
                 if sLatex[-1] != '\n': sLatex+='\n'
                 sLatex += '\\end{lstlisting}' #' \\vspace{6pt}'
-                sLatex += '\\vspace{-24pt}\\bi\item[]\\vspace{-24pt}' #for global itemize list for function
+                sLatex += '\\vspace{-24pt}\\bi\\item[]\\vspace{-24pt}' #for global itemize list for function
                 sRST += '\n'+RSTcodeBlock(RemoveIndentation(strTag, '  ', removeAllSpaces = False, removeIndentation = True)+'\n', 'python')
             elif strTag.count("\n") > 0 and strTag.strip() != '': #multiple lines are replaced by list
                 sLatex += '\\vspace{-6pt}\n'+sSpaces+'\\begin{itemize}[leftmargin=1.2cm]\n'
-                sLatex += '\setlength{\itemindent}{-0.7cm}\n'
+                sLatex += '\\setlength{\\itemindent}{-0.7cm}\n'
                 if strTag[0] == '\n':
                     strTag = strTag[1:]
                 if strTag[-1] == '\n':
@@ -501,7 +504,7 @@ def DictToItemsText(functionDict, tagList, addStr, eraseInput=''):
                             s = '{\\it '+s[:n].replace('_','\\_')+'}'+ s[n:]
                         else:
                             sr = LatexString2RSTspecial(s, replaceMarkups = replaceMarkups)
-                        sLatex += sSpaces*2+'\item[]'+s+'\n'
+                        sLatex += sSpaces*2+'\\item[]'+s+'\n'
                         sRST += '  | '+RemoveIndentation(sr) + '\n'
                     
                 sLatex += '\\end{itemize}\n'
@@ -535,7 +538,7 @@ def WriteFunctionDescription2LatexRST(functionDict, moduleNamePython, pythonFile
     functionName = functionDict['functionName']
     lineNumberStr = '' #will be e.g: '#L122'
     if functionDict['lineNumber'] != 0:
-        lineNumberStr = '\#L'+str(functionDict['lineNumber']+1)
+        lineNumberStr = '\\#L'+str(functionDict['lineNumber']+1)
     #github link:
     url = 'https://github.com/jgerstmayr/EXUDYN/blob/master/main/pythonDev/exudyn/'+pythonFileName +lineNumberStr
 
@@ -544,7 +547,7 @@ def WriteFunctionDescription2LatexRST(functionDict, moduleNamePython, pythonFile
 
     if True:
         sLatex += '\\begin{flushleft}\n'
-        sLatex += '\\noindent '+addStr+'{def {\\bf \exuUrl{'+url
+        sLatex += '\\noindent '+addStr+'{def {\\bf \\exuUrl{'+url
         sLatex += '}{' + functionName +'}{' '}}}'
     # else:
     #     sLatex += '\\noindent '+addStr+'{def '
@@ -639,7 +642,7 @@ def WriteFunctionDescription2LatexRST(functionDict, moduleNamePython, pythonFile
     sLatex += '\\end{flushleft}\n'
     
     if not redirectBelongsTo:
-        sLatex += '\setlength{\itemindent}{0.7cm}\n'
+        sLatex += '\\setlength{\\itemindent}{0.7cm}\n'
         sLatex += '\\begin{itemize}[leftmargin=0.7cm]\n'
         [sDictLatex, sDictRST] = DictToItemsText(functionDict, docuTags, addStr)
     
@@ -723,7 +726,7 @@ for fileName in filesParsed:
             #print('header=\n'+sRST)
         if len(header)>1:
             sLatex += '\\begin{itemize}[leftmargin=1.4cm]\n'
-            sLatex += '\\setlength{\itemindent}{-1.4cm}\n'
+            sLatex += '\\setlength{\\itemindent}{-1.4cm}\n'
             sRST += '\n'
             for tag in headerTags:
                 if tag in header and tag != 'Details' and tag != 'Copyright':
@@ -736,7 +739,7 @@ for fileName in filesParsed:
                         sLatex += '\\item[]' + tag + ':' + '\n' #+ listString[0] + ' \n'
                         sLatex += '\\vspace{-22pt}'
                         sLatex += '\\begin{itemize}[leftmargin=0.5cm]\n'
-                        sLatex += '\\setlength{\itemindent}{-0.5cm}\n'
+                        sLatex += '\\setlength{\\itemindent}{-0.5cm}\n'
                         for i in range(len(listString)-0):
                             sTag = listString[i+0]
                             sLatex += '\\item[]' + sTag.replace('\n',' ') + '\n'
@@ -851,7 +854,7 @@ for fileName in filesParsed:
                 textAdd += '\\refSection{'+mseLabel+'}.\n'
                 
                 sRST += '\n'+'- | **NOTE**\\ : '+textAddRST + '\n'
-                sLatex += '\\bi\n  \\item \mybold{NOTE}: ' + textAdd + '\n\\ei\n'
+                sLatex += '\\bi\n  \\item \\mybold{NOTE}: ' + textAdd + '\n\\ei\n'
 
             if addExampleReferences and not belongsTo:
                 sLatex += sExamples
@@ -892,7 +895,7 @@ for fileName in filesParsed:
         localTags.remove('class')
         [sTags, sTagsRST] = DictToItemsText(classDict, localTags, '')
         if sTags != '':
-            sLatex += '\setlength{\itemindent}{0.7cm}\n'
+            sLatex += '\\setlength{\\itemindent}{0.7cm}\n'
             sLatex += '\\begin{itemize}[leftmargin=0.7cm]\n'
             sLatex += sTags
             sLatex += '\\vspace{24pt}\\end{itemize}\n%\n'
@@ -955,10 +958,10 @@ Python Utility Functions
 ========================
 
 This chapter describes in every subsection the functions and classes of the utility modules. 
-These modules help to create multibody systems with the EXUDYN core module. Functions are implemented in Python and can be easily changed, extended and also verified by the user. **Check the source code** by entering these functions in Sypder and pressing ``CTRL + left mouse button``\ . These Python functions are much slower than the functions available in the C++ core. Some matrix computations with larger matrices implemented in numpy and scipy, however, are parallelized and therefore very efficient.
+These modules help to create multibody systems with the EXUDYN core module. Functions are implemented in Python and can be easily changed, extended and also verified by the user. **Check the source code** by entering these functions in Sypder and pressing ``CTRL + left mouse button``\\ . These Python functions are much slower than the functions available in the C++ core. Some matrix computations with larger matrices implemented in numpy and scipy, however, are parallelized and therefore very efficient.
 
 Note that in general functions accept lists and numpy arrays. If not, an error will occur, which is easily tracked.
-Furthermore, angles are generally provided in radian ($2\pi$ equals $360\,^o$) and no units are used for distances, but it is recommended to use SI units (m, kg, s) throughout.
+Furthermore, angles are generally provided in radian ($2\\pi$ equals $360\\,^o$) and no units are used for distances, but it is recommended to use SI units (m, kg, s) throughout.
 
 Functions have been implemented, if not otherwise mentioned, by Johannes Gerstmayr.
 """

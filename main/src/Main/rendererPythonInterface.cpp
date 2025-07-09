@@ -535,7 +535,7 @@ label = tk.Label(tkWindow, text=description, justify=tk.LEFT,
                  relief=tk.SUNKEN, background='gray94')
 label.grid(row=0, column=0, padx=15, pady=(15,0), sticky='W')
 
-text_area = scrolledtext.ScrolledText(root, wrap=tk.WORD,
+text_area = scrolledtext.ScrolledText(tkWindow, wrap=tk.WORD,
                                       width=60, height=8,
                                       #font=("Times New Roman", 15)
                                       )
@@ -615,7 +615,7 @@ examples+= '#pause after each step:\n'
 examples+= "simulationSettings.pauseAfterEachStep=True\n"
 examples+= '\n#==>BUT changing simulationSettings is dangerous!'
 
-textExample = scrolledtext.ScrolledText(root, wrap=tk.WORD,
+textExample = scrolledtext.ScrolledText(tkWindow, wrap=tk.WORD,
                                       width=60, height=examples.count('\n')+1,
                                       background='gray94',
                                       )
@@ -752,12 +752,14 @@ bool RendererIsSingleThreadedOrNotRunning()
 }
 
 //! perform idle tasksfor single-threaded renderer
-void RendererDoSingleThreadedIdleTasks()
+void RendererDoSingleThreadedIdleTasks(Real waitSeconds)
 {
+	//this may only be done from main thread; used for PrintDelayed:
+	outputBuffer.overflowFlush(0, false, true); //clear buffer, in particular visualization buffer!
 #ifdef USE_GLFW_GRAPHICS //only works with renderer active
 	if (GetGlfwRenderer().IsGlfwInitAndRendererActive() && !GetGlfwRenderer().UseMultiThreadedRendering())
 	{
-		GetGlfwRenderer().DoRendererIdleTasks(0);
+		GetGlfwRenderer().DoRendererIdleTasks(waitSeconds);
 	}
 #endif // USE_GLFW_GRAPHICS
 }

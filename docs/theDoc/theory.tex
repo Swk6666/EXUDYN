@@ -309,7 +309,7 @@ In \codeName, position, orientation and deformation coordinates (of bodies) are 
 
 The \mybold{generalized (Lagrangian) coordinates}, which are employed in Lagrange's equations of motion, are another set of well known coordinates used for mechanisms. As known from Lagrange's formalism, coordinates may be defined relative to each other.
 
-\mysubsubsection{Reference and current coordinates}\label{sec:referenceAndCurrentCoordinates}
+\mysubsubsectionlabel{Reference and current coordinates}{sec:referenceAndCurrentCoordinates}
 %
 An important fact on the coordinates used in \codeName is upon the \mybold{additive}\footnote{This additive splitting is also used for rotations: therefore, only the sum of reference and current (or visualization) coordinates has a geometrical meaning, while the parts are only used within the solver for incrementing.} splitting of quantities (e.g. position, rotation parameters, etc.) into \mybold{reference} and \mybold{current} (initial/visualization/...) coordinates.
 The current position vector of a point node is computed from the reference position plus the current displacement, reading
@@ -1402,7 +1402,7 @@ As an example, we consider a part denoted as 'hinge' in the following, see \fig{
 
 After import of mass and stiffness matrix, eigenmodes and eigenfrequencies can be computed using \texttt{fem.ComputeEigenFrequencies(...)}, 
 which computes the quantities \texttt{fem.modeBasis} and \texttt{fem.eigenValues}.
-The eigenvalues in Hz can be retrieved also with the function \texttt{fem.GetEigenFrequenciesHz()}.
+The eigenvalues in Hz can be retrieved with \texttt{fem.GetEigenFrequenciesHz()}.
 The function \texttt{fem.ComputeEigenFrequencies(...)} is available for dense and sparse matrices, and uses \texttt{scipy.linalg} to compute eigenvalues of the linear, undamped mechanical system
 \be \label{theory:eigenmodes:EOM}
   \Mm \ddot \qv(t) + \Km \qv(t) = \fv(t) \eqDot

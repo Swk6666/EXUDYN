@@ -75,7 +75,7 @@ simulationSettings.displayComputationTime = True
 simulationSettings.solutionSettings.solutionInformation = "Rigid pendulum"
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 
 mbs.SolveDynamic(simulationSettings)
@@ -88,8 +88,8 @@ exudynTestGlobals.testResult = result
 exudynTestGlobals.testTolFact = 1e5 #larger error due to many implicit steps?
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 

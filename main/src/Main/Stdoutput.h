@@ -49,20 +49,30 @@ public:
 		writeFlushAlways = false;
 		writeAppend = false;
 	} 
-	//! virtual int sync(); //this solution does not work!
+	//! override overflow in std::stringbuf; alternative: virtual int sync(); ==> this solution does not work!
 	virtual int overflow(int c = EOF);
+
+	//! special overflow with option to flush, ignoring char
+	inline virtual int overflowFlush(int c = EOF, bool flushOnly=false, bool clearBuffer=false);
 
 	//! function which allows to write asynchronuously during visualization thread; requires lateron call of pout in main thread (to clear buffer!)
 	virtual void WriteVisualization(const STDstring& string);
 
 	//! set delay added to writing in order to resolve problems of some ipython consoles
 	virtual void SetDelayMilliSeconds(Index delayMilliSeconds) { waitMilliSeconds = delayMilliSeconds; }
-
-	//! activate/deactivate writing to console
-	virtual void SetWriteToConsole(bool flag) { writeToConsole = flag; }
+	virtual Index GetDelayMilliSeconds() const { return waitMilliSeconds; }
 
 	//! activate/deactivate writing to file
 	virtual void SetWriteToFile(STDstring filename, bool flagWriteToFile = true, bool flagAppend = false, bool flagFlushAlways = false);
+	virtual void SetFlushAlways(bool flag) { writeFlushAlways = flag; }
+	virtual bool GetFlushAlways() const { return writeFlushAlways; }
+	//this cannot be changed on the fly: virtual void SetWriteAppend(bool flag) { writeAppend = flag; }
+	virtual bool GetWriteAppend() const { return writeAppend; }
+	//this cannot be changed on the fly: virtual void SetWriteToFile(bool flag) { writeToFile = flag; }
+	virtual bool GetWriteToFile() const { return writeToFile; }
+	virtual std::string GetFileName() const { return writeFilename; }
+	virtual void SetWriteToConsole(bool flag) { writeToConsole = flag; }
+	virtual bool GetWriteToConsole() const { return writeToConsole; }
 
 	//! suspend writing to console/file with flag=true; needs to be set to false, otherwise writing to console is fully stopped
 	virtual void SetSuspendWriting(bool flag) { suspendWriting = flag; }

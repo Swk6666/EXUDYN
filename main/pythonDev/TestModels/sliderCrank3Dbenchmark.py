@@ -259,10 +259,10 @@ SC.visualizationSettings.nodes.basisSize = 0.05
 
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene = False #prevent from autozoom
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
 
 
 mbs.SolveDynamic(simulationSettings,
@@ -311,8 +311,8 @@ exudynTestGlobals.testResult = u
 
 
 if useGraphics:
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 if False:
     #%%+++++++++++++++++++++++

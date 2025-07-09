@@ -117,14 +117,14 @@ simulationSettings.solutionSettings.solutionInformation = "Planar four-bar-mecha
 
 #useGraphics = True #uncomment this line to visualize the example!
 if useGraphics: 
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 #compute error for test suite:
 sol = mbs.systemData.GetODE2Coordinates(); 

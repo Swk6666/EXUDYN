@@ -41,6 +41,20 @@ class CObjectConnector : public CObject
 protected:
     //marker numbers available in spezialized object! ResizableArray<CMarker*> markers;
 
+private:
+	//the following functions are not available for connectors, because they need the markerData structure
+	//they could be called via the base class, therefore exceptions are thrown!
+	using CObject::ComputeODE2LHS; //avoid warnings in gcc
+	using CObject::ComputeODE1RHS; //avoid warnings in gcc
+	using CObject::ComputeJacobianODE2_ODE2;
+	using CObject::ComputeJacobianAE;
+	using CObject::GetOutputVariable;
+	virtual void ComputeODE2LHS(Vector& ode2Lhs, Index objectNumber) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeODE2LHS"); }//!< this is the non-connector function, which is not available for connectors!
+	virtual void ComputeODE1RHS(Vector& ode1Rhs, Index objectNumber) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeODE1LHS"); }//!< this is the non-connector function, which is not available for connectors!
+	virtual void ComputeJacobianODE2_ODE2(EXUmath::MatrixContainer& jacobianODE2, JacobianTemp& temp, Real factorODE2, Real factorODE2_t, Index objectNumber, const ArrayIndex& ltg) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeJacobianODE2_ODE2"); }//!< this is the non-connector function, which is not available for connectors!
+	virtual void ComputeJacobianAE(ResizableMatrix& jacobian_ODE2, ResizableMatrix& jacobian_ODE2_t, ResizableMatrix& jacobian_ODE1, ResizableMatrix& jacobian_AE) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeJacobianAE"); }//!< this is the non-connector function, which is not available for connectors!
+	virtual void GetOutputVariable(OutputVariableType variableType, Vector& value, ConfigurationType configuration, Index objectNumber) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::GetOutputVariable"); } //!< this is the non-connector function, which is not available for connectors!
+
 public:
     //! get an exact clone of *this, must be implemented in all derived classes! Necessary for better handling in ObjectContainer
     virtual CObjectConnector* GetClone() const { return new CObjectConnector(*this); }
@@ -51,8 +65,10 @@ public:
         CObject::Print(os);
     }
 
-	//! connectors are attached to markers; this function must be overwritten in derived class
-	virtual const ArrayIndex& GetMarkerNumbers() const { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::GetMarkerNumbers"); ArrayIndex* v = new ArrayIndex(0); return *v; }
+	//! marker numbers for connectors (read); this function must be overwritten in derived class
+	virtual const ArrayIndex& GetMarkerNumbers() const { CHECKandTHROWstring("ERROR: illegal call to const CObjectConnector::GetMarkerNumbers"); ArrayIndex* v = new ArrayIndex(0); return *v; }
+	//! marker numbers for connectors (write); this function must be overwritten in derived class
+	virtual ArrayIndex& GetMarkerNumbers() { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::GetMarkerNumbers"); ArrayIndex* v = new ArrayIndex(0); return *v; }
 
 	//! connector may have nodes (data coordinates)
 	virtual Index GetNumberOfNodes() const override { return 0; }
@@ -132,13 +148,6 @@ public:
 
 	//! function called after discontinuous iterations have been completed for one step (e.g. to finalize history variables and set initial values for next step)
 	virtual void PostDiscontinuousIterationStep() {};
-
-private:
-	//the following functions are not available for connectors, because they need the markerData structure
-	//they could be called via the base class, therefore exceptions are thrown!
-	virtual void ComputeJacobianODE2_ODE2(Matrix& jacobian, Matrix& jacobian_ODE2_t) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeJacobianODE2_ODE2"); }; //!< this is the non-connector function, which is not available for connectors!
-	virtual void ComputeJacobianAE(Matrix& jacobian, ResizableMatrix& jacobian_t, Matrix& jacobian_AE) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::ComputeJacobianAE"); }; //!< this is the non-connector function, which is not available for connectors!
-	virtual void GetOutputVariable(OutputVariableType variableType, Vector& value) const final { CHECKandTHROWstring("ERROR: illegal call to CObjectConnector::GetOutputVariable"); } //!< this is the non-connector function, which is not available for connectors!
 
 };
 

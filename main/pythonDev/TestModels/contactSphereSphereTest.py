@@ -29,7 +29,7 @@ except:
 
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
-exu.Print('EXUDYN version='+exu.GetVersionString())
+exu.Print('EXUDYN version='+exu.config.Version())
 
 use2contacts = True
 yInit = 0.5
@@ -118,15 +118,15 @@ SC.visualizationSettings.window.renderWindowSize=[1600,2000]
 SC.visualizationSettings.openGL.multiSampling=4
 
 if useGraphics:
-    exu.StartRenderer()              #start graphics visualization
-    mbs.WaitForUserToContinue()    #wait for pressing SPACE bar to continue
+    SC.renderer.Start()              #start graphics visualization
+    SC.renderer.DoIdleTasks()    #wait for pressing SPACE bar to continue
 
 #start solver:q
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()#wait for pressing 'Q' to quit
-    exu.StopRenderer()               #safely close rendering window!
+    SC.renderer.DoIdleTasks()#wait for pressing 'Q' to quit
+    SC.renderer.Stop()               #safely close rendering window!
 
 #evaluate final (=current) output values
 # u = mbs.GetNodeOutput(n1, exu.OutputVariableType.Position)

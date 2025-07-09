@@ -149,8 +149,8 @@ mbs.AddLoad(LoadCoordinate(markerNumber=mRigid1CoordinateTheta, load = M)) #torq
 #assemble, adjust settings and start time integration
 mbs.Assemble()
 if useGraphics: 
-    exu.StartRenderer()
-    #mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    #SC.renderer.DoIdleTasks()
 
 simulationSettings = exu.SimulationSettings() #takes currently set values or default values
 
@@ -164,7 +164,7 @@ if initCrank:
     mbs.systemData.SetSystemState(currentState, configuration=exu.ConfigurationType.Initial)
 
     mbs.SetObjectParameter(constraintCrankAngle, 'activeConnector', False)
-    #mbs.WaitForUserToContinue()
+    #SC.renderer.DoIdleTasks()
 
 h = 5e-3   #5e-3 in paper of Arnold and Bruls
 T = 1
@@ -200,8 +200,8 @@ if useGraphics:
 #        AnimateSolution(mbs, solution, 10, 0.025, True)
     #+++++++++++++++++++++++++++++++++++++
 
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 u = mbs.GetNodeOutput(nMass4, exu.OutputVariableType.Position) #tip node
 print('sol =', abs(u[0]))

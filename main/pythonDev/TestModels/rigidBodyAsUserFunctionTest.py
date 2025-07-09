@@ -173,7 +173,7 @@ simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.8 #SHOULD
 SC.visualizationSettings.nodes.showBasis=True
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 mbs.SolveDynamic(simulationSettings)
 
@@ -193,6 +193,6 @@ exudynTestGlobals.testError = result - (8.950865271552146) #2020-06-28: 8.950865
 exudynTestGlobals.testResult = result
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 

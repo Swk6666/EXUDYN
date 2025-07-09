@@ -65,14 +65,10 @@ public:
 class PySpecialSolver
 {
 public:
-    enum class MultiThreadingType {
-        MicroThreading = 0,
-        LoadBalancing = 1,
-    };
 
-    MultiThreadingType multiThreadingType;  //!< multithreadingType, according to given enum
-    Real timeout;                     //!< specific timeout used if >= 0
+    Real timeout;                           //!< specific timeout used if >= 0
     bool throwErrorWithCtrlC;               //!< switches behavior for CTRL-C; both works in console, but not in Spyder's iPython
+    bool multiThreadingLoadBalancing;       //!< true=use load balancing
 
     PySpecialSolver()
     {
@@ -81,7 +77,7 @@ public:
 
     void Initialize()
     {
-        multiThreadingType = MultiThreadingType::LoadBalancing;
+        multiThreadingLoadBalancing = true;
         timeout = -1.; //means no timeout
         throwErrorWithCtrlC = false; //false works cleaner in Windows-console
     }
@@ -90,13 +86,10 @@ public:
     //! to get representation:
     virtual void Print(std::ostream& os) const
     {
-        os << "  multiThreadingType = ";
-        if (multiThreadingType == MultiThreadingType::LoadBalancing ) {os << "LoadBalancing";}
-        else if (multiThreadingType == MultiThreadingType::MicroThreading) { os << "MicroThreading"; }
-        else { os << "Undefined"; }
         os << "\n";
         os << "  timeout = " << timeout << "\n";
         os << "  throwErrorWithCtrlC = " << throwErrorWithCtrlC << "\n";
+        os << "  multiThreadingLoadBalancing = " << multiThreadingLoadBalancing << "\n";
 
         os << "\n";
     }
@@ -171,12 +164,15 @@ public:
 #endif
     }
 
+    //py::list InfoStat(bool writeOutput = true) const { return PythonInfoStat(writeOutput); }
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //! to get representation:
     virtual void Print(std::ostream& os) const
     {
         os << "solver:\n" << solver;
         os << "exceptions:\n" << exceptions;
+        //os << "  InfoStat() = " << InfoStat(false) << "\n";
         os << "\n";
     }
 

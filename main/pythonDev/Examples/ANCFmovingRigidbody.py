@@ -240,12 +240,12 @@ simulationSettings.solutionSettings.solutionInformation = "ANCF cable with impos
 
 solveDynamic = True
 if solveDynamic: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
     mbs.SolveDynamic(simulationSettings)
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 else:
     simulationSettings.staticSolver.newton.numericalDifferentiation.relativeEpsilon = 1e-8 #*100 #can be quite small; WHY?
@@ -263,7 +263,7 @@ else:
     simulationSettings.staticSolver.pauseAfterEachStep = False
     simulationSettings.staticSolver.stabilizerODE2term = 100*0.0
 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
     mbs.SolveStatic(simulationSettings)
 
@@ -277,10 +277,9 @@ else:
     print('sol_t='+str(sol_t))
 
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
-# exu.InfoStat();
 
 
 

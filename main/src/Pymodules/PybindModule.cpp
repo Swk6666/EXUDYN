@@ -489,9 +489,11 @@ PYBIND11_MODULE(exudynCPP, m) {
 
 		.def_property("visualizationSettings", &MainSystemContainer::PyGetVisualizationSettings, &MainSystemContainer::PySetVisualizationSettings)//, py::return_value_policy::reference)
 
+		.def_property("renderer", &MainSystemContainer::PyGetRenderer, &MainSystemContainer::PySetRenderer)
+
 		.def("GetRenderState", &MainSystemContainer::PyGetRenderState, "Get dictionary with current render state (openGL zoom, modelview, etc.)")
 
-		.def("SetRenderState", &MainSystemContainer::PySetRenderState, "Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState")
+		.def("SetRenderState", &MainSystemContainer::PySetRenderState, "Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState", py::arg("renderState"), py::arg("waitForRendererFullStartup") = true)
 
 		.def("WaitForRenderEngineStopFlag", &MainSystemContainer::WaitForRenderEngineStopFlag, "Wait for user to stop render engine (CTRL+Q)")
 

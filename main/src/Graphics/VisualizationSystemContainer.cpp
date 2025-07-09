@@ -94,6 +94,8 @@ void VisualizationSystemContainer::UpdateGraphicsData()
 	updateGraphicsDataNowInternal = false; //only valid for one run; may not be earlier, as item->UpdateGraphicsData(...) needs this flag!
 }
 
+Index globalTimeOutVisualizationContainer = 5000;
+
 // put this to SystemContainer ...
 //! perform render update and save the current openGL window to file using the visualization settings
 void VisualizationSystemContainer::RedrawAndSaveImage()
@@ -103,6 +105,7 @@ void VisualizationSystemContainer::RedrawAndSaveImage()
 	saveImageOpenGL = false;	//after graphics update, the scene is saved and flags (saveImage, saveImageOpenGL) are set to false
 	UpdateGraphicsDataNow();	//if a current redraw is performed, it will also initiate a second redraw operation ...
 
+	globalTimeOutVisualizationContainer = settings.exportImages.saveImageTimeOut; //used in CSystem, as it is not available there!
 	Index timeOut = 500; //max iterations to wait, before frame is redrawn and saved
 	Index timerMilliseconds = settings.exportImages.saveImageTimeOut / timeOut;
 	if (timerMilliseconds == 0) { timerMilliseconds = 1; } //min wait time per iteration
@@ -216,8 +219,27 @@ bool VisualizationSystemContainer::RendererIsRunning() const
 }
 
 
+//! update materials from visualizationSettings
+void VisualizationSystemContainer::CopyMaterialsFromVisualizationSettings()
+{
+	const VSettingsRaytracer& raytracer = settings.raytracer;
+	materials[0] = raytracer.material0;
+	materials[1] = raytracer.material1;
+	materials[2] = raytracer.material2;
+	materials[3] = raytracer.material3;
+	materials[4] = raytracer.material4;
+	materials[5] = raytracer.material5;
+	materials[6] = raytracer.material6;
+	materials[7] = raytracer.material7;
+	materials[8] = raytracer.material8;
+	materials[9] = raytracer.material9;
+}
+
+
+
+
 //! this function does any idle operations (execute some python commands) and returns false if stop flag in the render engine, otherwise true;
-bool VisualizationSystemContainer::DoIdleOperations()
+bool VisualizationSystemContainer::DoSingleIdleOperation()
 {
 #ifdef USE_GLFW_GRAPHICS
 	if (!stopSimulationFlagSC && RendererIsRunning())
@@ -233,7 +255,6 @@ bool VisualizationSystemContainer::DoIdleOperations()
 	}
 	else
 	{
-		//if (stopSimulationFlagSC) { pout << "VisualizationSystemContainer::DoIdleOperations(): stopSimulationFlagSC was 1\n"; }
 		stopSimulationFlagSC = false; //initialize the flag, if used several times; this is thread safe
 		//StopSimulation(false); //also reset all simulation stop flags?
 	}
@@ -242,13 +263,52 @@ bool VisualizationSystemContainer::DoIdleOperations()
 }
 
 
-//! this function waits for the stop flag in the render engine;
-bool VisualizationSystemContainer::WaitForRenderEngineStopFlag()
+//! this function waits for the stop flag in the render engine; or for given time
+bool VisualizationSystemContainer::DoIdleTasks(Real waitSeconds, bool printPauseMessage)
 {
 #ifdef USE_GLFW_GRAPHICS
-	while (DoIdleOperations())
+	Real time = EXUstd::GetTimeInSeconds();
+	STDstring strSolver;
+	bool simulationPaused = false;
+
+	if (waitSeconds == -1. && !(visualizationSystems[0]->postProcessData->simulationFinished))
+	{
+		simulationPaused = true;
+		for (auto item : visualizationSystems)
+		{
+			item->postProcessData->simulationPaused = true;
+		}
+
+		strSolver = visualizationSystems[0]->postProcessData->GetSolverMessage();
+
+		visualizationSystems[0]->postProcessData->SetSolverMessage("Computation paused... (press SPACE to continue / Q to quit)");
+		if (printPauseMessage)
+		{
+			pout << "Computation paused... (press SPACE in render window to continue / Q to quit)\n";
+		}
+
+	}
+	bool pauseFlag = simulationPaused;
+
+	while (DoSingleIdleOperation() 
+		&& (waitSeconds == -1. || EXUstd::GetTimeInSeconds() < time + waitSeconds) 
+		&& (pauseFlag == simulationPaused) ) //if this switches, Space has been pressed
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		for (auto item : visualizationSystems)
+		{
+			pauseFlag &= item->postProcessData->simulationPaused;
+		}
+	}
+
+	if (simulationPaused)
+	{
+		for (auto item : visualizationSystems)
+		{
+			item->postProcessData->simulationPaused = false;
+
+		}
+		visualizationSystems[0]->postProcessData->SetSolverMessage(strSolver); //restore solver message
 	}
 #endif
 	return true;
@@ -291,6 +351,11 @@ void VisualizationSystemContainer::InitializeView()
 	renderState.joystickRotation.SetAll(0.);
 	renderState.joystickAvailable = -1; //GlfwClient::invalidIndex
 	renderState.displayScaling = 1;
+
+	renderState.mouseSelectionMbsNumber = 0;
+	renderState.mouseSelectionItemType = ItemType::_None;
+	renderState.mouseSelectionItemID = 0;
+	renderState.mouseSelectionZdepth = 0.f;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//openVR:
@@ -336,11 +401,25 @@ void VisualizationSystemContainer::GetMarkerPositionOrientation(Index markerNumb
 	//no error, as this is inside graphics ...
 }
 
+bool UseTraceData(const VSettingsTraces& traces, const ResizableMatrix& data, Real time, Index i)
+{
+	if (traces.timeSpan != 0 && 
+		((traces.showPast && data(i, 0) <= time - traces.timeSpan) ||
+			(traces.showFuture && data(i, 0) > time + traces.timeSpan))
+		)
+	{
+			return 0;
+	}
+	return ((traces.showPast && data(i, 0) <= time) ||
+		(traces.showFuture && data(i, 0) > time) ||
+		(traces.showCurrent && fabs(data(i, 0) - time) < 1e-10)//needed for current vectors
+		);
+}
 
 //get sensor data list (if available)
 bool VisualizationSystemContainer::GetSensorsPositionsVectorsLists(Index mbsNumber, Index positionSensorIndex, Index vectorSensorIndex, Index triadSensorIndex,
     Vector3DList& sensorTracePositions, Vector3DList& sensorTraceVectors, Matrix3DList& sensorTraceTriads, Vector sensorTraceValues, 
-    const VSettingsSensorTraces& traces)
+    const VSettingsTraces& traces)
 {
     sensorTracePositions.SetNumberOfItems(0);
     sensorTraceVectors.SetNumberOfItems(0);
@@ -362,9 +441,7 @@ bool VisualizationSystemContainer::GetSensorsPositionsVectorsLists(Index mbsNumb
                 {
                     for (Index i = 0; i < data.NumberOfRows(); i++)
                     {
-                        if ((traces.showPast && data(i, 0) <= time) ||
-                            (traces.showFuture && data(i, 0) > time) ||
-                            (traces.showCurrent && fabs(data(i, 0) - time) < 1e-10)) //needed for current vectors
+						if (UseTraceData(traces, data, time, i))
                         {
                             Vector3D v({ data(i,1), data(i,2), data(i,3) }); //time not used
                             sensorTracePositions.Append(v);
@@ -380,26 +457,12 @@ bool VisualizationSystemContainer::GetSensorsPositionsVectorsLists(Index mbsNumb
                     {
                         for (Index i = 0; i < data.NumberOfRows(); i++)
                         {
-                            if ((traces.showPast && data(i, 0) <= time) ||
-                                (traces.showFuture && data(i, 0) > time) ||
-                                (traces.showCurrent && fabs(data(i, 0) - time) < 1e-10) )
+							if (UseTraceData(traces, data, time, i))
                             {
                                 Vector3D v({ data(i,1), data(i,2), data(i,3) }); //time not used
                                 sensorTraceVectors.Append(v);
                             }
                         }
-                        //this won't work, as in solution viewer current values are not "current"!
-                        //if (showCurrent)
-                        //{
-                        //    vectorSensor.GetSensorValues(cSystem.GetSystemData(), sensorTraceValues, ConfigurationType::Visualization);
-                        //    if (sensorTraceValues.NumberOfItems() == 3)
-                        //    {
-                        //        Vector3D v({ sensorTraceValues[0],
-                        //            sensorTraceValues[1],
-                        //            sensorTraceValues[2] }); //time not used
-                        //        sensorTraceVectors.Append(v);
-                        //    }
-                        //}
                     }
                 }
                 if (traces.showTriads && triadSensorIndex >= 0 && triadSensorIndex < cSystem.GetSystemData().GetCSensors().NumberOfItems())
@@ -412,10 +475,8 @@ bool VisualizationSystemContainer::GetSensorsPositionsVectorsLists(Index mbsNumb
                     {
                         for (Index i = 0; i < data.NumberOfRows(); i++)
                         {
-                            if ((traces.showPast && data(i, 0) <= time) ||
-                                (traces.showFuture && data(i, 0) > time) ||
-                                (traces.showCurrent && fabs(data(i, 0) - time) < 1e-10) )
-                            {
+							if (UseTraceData(traces, data, time, i))
+							{
                                 Matrix3D m(3, 3, { data(i,1), data(i,2), data(i,3),
                                 data(i,4), data(i,5), data(i,6),
                                 data(i,7), data(i,8), data(i,9) }); //time not used
@@ -423,17 +484,6 @@ bool VisualizationSystemContainer::GetSensorsPositionsVectorsLists(Index mbsNumb
                                 //std::cout << "out";
                             }
                         }
-                        //if (showCurrent)
-                        //{
-                        //    triadSensor.GetSensorValues(cSystem.GetSystemData(), sensorTraceValues, ConfigurationType::Visualization);
-                        //    if (sensorTraceValues.NumberOfItems() == 10)
-                        //    {
-                        //        Matrix3D m(3, 3, { sensorTraceValues[1], sensorTraceValues[2], sensorTraceValues[3],
-                        //            sensorTraceValues[4], sensorTraceValues[5], sensorTraceValues[6],
-                        //            sensorTraceValues[7], sensorTraceValues[8], sensorTraceValues[9] }); //time not used
-                        //        sensorTraceTriads.Append(m);
-                        //    }
-                        //}
                     }
                 }
             }

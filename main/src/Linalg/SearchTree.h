@@ -27,218 +27,197 @@
 //++++++++++++++++++++++++    BOX3D     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//_Quad a = 4;
-//_float128 a = 1.23;
 
-class Box3D
+template<typename T>
+class Box3DBase
 {
 public:
-	//! create box; by default, it is set to an empty box
-	Box3D(bool clear=true)
+	using Vector3T = SlimVectorBase<T, 3>;
+
+	Box3DBase(bool clear = true)
 	{
 		if (clear)
 		{
 			Clear();
 		}
-		////set empty box:
-		//pmin = Vector3D({ EXUstd::MAXREAL, EXUstd::MAXREAL, EXUstd::MAXREAL });
-		//pmax = Vector3D({EXUstd::LOWESTREAL, EXUstd::LOWESTREAL, EXUstd::LOWESTREAL});
 	}
-	Box3D(const Vector3D& p1, const Vector3D& p2)
-	{
-		pmin[0] = EXUstd::Minimum(p1.X(),p2.X());
-		pmin[1] = EXUstd::Minimum(p1.Y(),p2.Y());
-		pmin[2] = EXUstd::Minimum(p1.Z(),p2.Z());
 
-		pmax[0] = EXUstd::Maximum(p1.X(),p2.X());
-		pmax[1] = EXUstd::Maximum(p1.Y(),p2.Y());
-		pmax[2] = EXUstd::Maximum(p1.Z(),p2.Z());
-	}
-	Box3D(const Box3D& b)
+	Box3DBase(const Vector3T& p1, const Vector3T& p2)
 	{
-		pmin[0] = b.pmin[0];
-		pmin[1] = b.pmin[1];
-		pmin[2] = b.pmin[2];
-		pmax[0] = b.pmax[0];
-		pmax[1] = b.pmax[1];
-		pmax[2] = b.pmax[2];
+		pmin[0] = EXUstd::Minimum(p1[0], p2[0]);
+		pmin[1] = EXUstd::Minimum(p1[1], p2[1]);
+		pmin[2] = EXUstd::Minimum(p1[2], p2[2]);
+
+		pmax[0] = EXUstd::Maximum(p1[0], p2[0]);
+		pmax[1] = EXUstd::Maximum(p1[1], p2[1]);
+		pmax[2] = EXUstd::Maximum(p1[2], p2[2]);
 	}
-	Box3D(const Vector3D& c, Real r)
+
+	Box3DBase(const Box3DBase& b)
 	{
-		pmin[0] = c.X();
-		pmin[1] = c.Y();
-		pmin[2] = c.Z();
-		pmax[0] = c.X();
-		pmax[1] = c.Y();
-		pmax[2] = c.Z();
+		for (int i = 0; i < 3; ++i)
+		{
+			pmin[i] = b.pmin[i];
+			pmax[i] = b.pmax[i];
+		}
+	}
+
+	Box3DBase(const Vector3T& c, T r)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			pmin[i] = pmax[i] = c[i];
+		}
 		Increase(r);
 	}
 
 	//! check if box is empty, only based on x-value!
-	bool Empty() const 
+	bool Empty() const
 	{
-		if (pmin[0] == EXUstd::MAXREAL) {return true;}
-		return false;
-	}
-	void Clear()
-	{
-		//set empty box:
-		pmin[0] = EXUstd::MAXREAL;
-		pmin[1] = EXUstd::MAXREAL;
-		pmin[2] = EXUstd::MAXREAL;
-		pmax[0] = EXUstd::LOWESTREAL;
-		pmax[1] = EXUstd::LOWESTREAL;
-		pmax[2] = EXUstd::LOWESTREAL;
+		return pmin[0] == std::numeric_limits<T>::max();
 	}
 
-	void Add(const Vector3D & p)
+	void Clear()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			pmin[i] = std::numeric_limits<T>::max();
+			pmax[i] = std::numeric_limits<T>::lowest();
+		}
+	}
+
+	void Add(const Vector3T& p)
 	{
 		if (Empty())
 		{
-			pmin[0] = p.X();
-			pmin[1] = p.Y();
-			pmin[2] = p.Z();
-			pmax[0] = p.X();
-			pmax[1] = p.Y();
-			pmax[2] = p.Z();
+			for (int i = 0; i < 3; ++i) { pmin[i] = pmax[i] = p[i]; }
 		}
 		else
 		{
-			pmin[0] = EXUstd::Minimum(pmin[0], p.X());
-			pmin[1] = EXUstd::Minimum(pmin[1], p.Y());
-			pmin[2] = EXUstd::Minimum(pmin[2], p.Z());
-
-			pmax[0] = EXUstd::Maximum(pmax[0], p.X());
-			pmax[1] = EXUstd::Maximum(pmax[1], p.Y());
-			pmax[2] = EXUstd::Maximum(pmax[2], p.Z());
+			for (int i = 0; i < 3; ++i)
+			{
+				pmin[i] = EXUstd::Minimum(pmin[i], p[i]);
+				pmax[i] = EXUstd::Maximum(pmax[i], p[i]);
+			}
 		}
 	}
-	void Add(const Box3D& b)
+
+	void Add(const Box3DBase& b)
 	{
 		if (b.Empty()) return;
 
 		if (Empty())
 		{
-			pmin[0] = b.pmin[0];
-			pmin[1] = b.pmin[1];
-			pmin[2] = b.pmin[2];
-			pmax[0] = b.pmax[0];
-			pmax[1] = b.pmax[1];
-			pmax[2] = b.pmax[2];
+			for (int i = 0; i < 3; ++i)
+			{
+				pmin[i] = b.pmin[i];
+				pmax[i] = b.pmax[i];
+			}
 		}
 		else
 		{
-			pmin[0] = EXUstd::Minimum(pmin[0], b.pmin[0]);
-			pmin[1] = EXUstd::Minimum(pmin[1], b.pmin[1]);
-			pmin[2] = EXUstd::Minimum(pmin[2], b.pmin[2]);
-
-			pmax[0] = EXUstd::Maximum(pmax[0], b.pmax[0]);
-			pmax[1] = EXUstd::Maximum(pmax[1], b.pmax[1]);
-			pmax[2] = EXUstd::Maximum(pmax[2], b.pmax[2]);
+			for (int i = 0; i < 3; ++i)
+			{
+				pmin[i] = EXUstd::Minimum(pmin[i], b.pmin[i]);
+				pmax[i] = EXUstd::Maximum(pmax[i], b.pmax[i]);
+			}
 		}
 	}
-	//! get c-arrays
-	const Real* PMinC() const { return pmin; }
-	const Real* PMaxC() const { return pmax; }
 
+	//! get c-arrays
+	const T* PMinC() const { return pmin; }
+	const T* PMaxC() const { return pmax; }
+	
 	//! convert to Vector3D; const added to raise error if assignment happens e.g. box.PMin() = ...
-	const Vector3D PMin() const { return Vector3D({ pmin[0], pmin[1], pmin[2] }); }
-	const Vector3D PMax() const { return Vector3D({ pmax[0], pmax[1], pmax[2] }); }
+	const Vector3T PMin() const { return Vector3T({ pmin[0], pmin[1], pmin[2] }); }
+	const Vector3T PMax() const { return Vector3T({ pmax[0], pmax[1], pmax[2] }); }
 
 	//! direct read access to Reals:
-	EXUINLINE const Real& PMinX() const { return pmin[0]; }
-	EXUINLINE const Real& PMinY() const { return pmin[1]; }
-	EXUINLINE const Real& PMinZ() const { return pmin[2]; }
-	EXUINLINE const Real& PMaxX() const { return pmax[0]; }
-	EXUINLINE const Real& PMaxY() const { return pmax[1]; }
-	EXUINLINE const Real& PMaxZ() const { return pmax[2]; }
+	EXUINLINE const T& PMinX() const { return pmin[0]; }
+	EXUINLINE const T& PMinY() const { return pmin[1]; }
+	EXUINLINE const T& PMinZ() const { return pmin[2]; }
+	EXUINLINE const T& PMaxX() const { return pmax[0]; }
+	EXUINLINE const T& PMaxY() const { return pmax[1]; }
+	EXUINLINE const T& PMaxZ() const { return pmax[2]; }
 
 	//! direct write access to Reals:
-	EXUINLINE Real& PMinX() { return pmin[0]; }
-	EXUINLINE Real& PMinY() { return pmin[1]; }
-	EXUINLINE Real& PMinZ() { return pmin[2]; }
-	EXUINLINE Real& PMaxX() { return pmax[0]; }
-	EXUINLINE Real& PMaxY() { return pmax[1]; }
-	EXUINLINE Real& PMaxZ() { return pmax[2]; }
-
+	EXUINLINE T& PMinX() { return pmin[0]; }
+	EXUINLINE T& PMinY() { return pmin[1]; }
+	EXUINLINE T& PMinZ() { return pmin[2]; }
+	EXUINLINE T& PMaxX() { return pmax[0]; }
+	EXUINLINE T& PMaxY() { return pmax[1]; }
+	EXUINLINE T& PMaxZ() { return pmax[2]; }
 
 	//! set with Vector3D
-	EXUINLINE void SetPMin(const Vector3D& p) { pmin[0] = p[0]; pmin[1] = p[1]; pmin[2] = p[2]; }
-	EXUINLINE void SetPMax(const Vector3D& p) { pmax[0] = p[0]; pmax[1] = p[1]; pmax[2] = p[2]; }
+	EXUINLINE void SetPMin(const Vector3T& p) { for (int i = 0; i < 3; ++i) pmin[i] = p[i]; }
+	EXUINLINE void SetPMax(const Vector3T& p) { for (int i = 0; i < 3; ++i) pmax[i] = p[i]; }
 
-	//! some math operations on boxes
-	const Real SizeX() const {return pmax[0]-pmin[0];}
-	const Real SizeY() const {return pmax[1]-pmin[1];}
-	const Real SizeZ() const {return pmax[2]-pmin[2];}
-	Vector3D Center() const {return Vector3D({ 0.5*(pmin[0]+pmax[0]), 0.5*(pmin[1] + pmax[1]), 0.5*(pmin[2] + pmax[2]) });}
-	Real Radius() const {return 0.5*(PMax() - PMin()).GetL2Norm();}
+	T SizeX() const { return pmax[0] - pmin[0]; }
+	T SizeY() const { return pmax[1] - pmin[1]; }
+	T SizeZ() const { return pmax[2] - pmin[2]; }
 
-	void Increase(Real x, Real y, Real z)
+	Vector3T Center() const { return Vector3T({ (pmin[0] + pmax[0]) * (T)0.5, (pmin[1] + pmax[1]) * (T)0.5, (pmin[2] + pmax[2]) * (T)0.5 }); }
+	T Radius() const { return (PMax() - PMin()).GetL2Norm() * (T)0.5; }
+
+	void Increase(T x, T y, T z)
 	{
-		pmin[0] -= x;
-		pmin[1] -= y;
-		pmin[2] -= z;
-		pmax[0] += x;
-		pmax[1] += y;
-		pmax[2] += z;
+		pmin[0] -= x; pmin[1] -= y; pmin[2] -= z;
+		pmax[0] += x; pmax[1] += y; pmax[2] += z;
 	}
-	void Increase(Real x) 
+	void Increase(T x) { Increase(x, x, x); }
+
+	void InflateFactor(T x)
 	{
-		Increase(x,x,x);
+		Vector3T pc = Center();
+		for (int i = 0; i < 3; ++i)
+		{
+			pmin[i] = pc[i] + (pmin[i] - pc[i]) * x;
+			pmax[i] = pc[i] + (pmax[i] - pc[i]) * x;
+		}
 	}
-  void InflateFactor(Real x)
-	{
-		Vector3D pc = Center();
-		pmin[0] = pc[0] + (pmin[0] - pc[0]) * x;
-		pmin[1] = pc[1] + (pmin[1] - pc[1]) * x;
-		pmin[2] = pc[2] + (pmin[2] - pc[2]) * x;
-		pmax[0] = pc[0] + (pmax[0] - pc[0]) * x;
-		pmax[1] = pc[1] + (pmax[1] - pc[1]) * x;
-		pmax[2] = pc[2] + (pmax[2] - pc[2]) * x;
-  }
 
 	//! check if box b intersects with this (boundary included)
-	bool Intersect(const Box3D& b) const 
+	bool Intersect(const Box3DBase& b) const
 	{
 		//> and < changed to >= and <= in order to simplify problems with points on boundaries
-		if ( pmin[0] >= b.pmax[0] || pmax[0] <= b.pmin[0]
+		if (pmin[0] >= b.pmax[0] || pmax[0] <= b.pmin[0]
 			|| pmin[1] >= b.pmax[1] || pmax[1] <= b.pmin[1]
 			|| pmin[2] >= b.pmax[2] || pmax[2] <= b.pmin[2])
+		{
 			return false;
-
+		}
 		return true;
 	}
 
 	//! return true if point p in closure or on boundary
-	bool IsInside (const Vector3D & p) const
+	bool IsInside(const Vector3T& p) const
 	{
-		if ( pmin[0] <= p[0] && pmax[0] >= p[0]
-			&& pmin[1] <= p[1] && pmax[1] >= p[1]
-			&& pmin[2] <= p[2] && pmax[2] >= p[2])
-			return true;
-
-		return false;
+		for (int i = 0; i < 3; ++i)
+		{
+			if (p[i] < pmin[i] || p[i] > pmax[i]) return false;
+		}
+		return true;
 	}
 
 	//! Function to check intersection of Box3D and triangle given by vertices v0, v1 and v2
 	//! returns true, if box and triangle intersect
-	bool BoxTriangleIntersect(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2) 
+	bool BoxTriangleIntersect(const Vector3T& v0, const Vector3T& v1, const Vector3T& v2)
 	{
-		Vector3D boxCenter = this->Center();
-		Vector3D boxHalfSize = (this->PMax() - this->PMin()) * 0.5;
+		Vector3T boxCenter = this->Center();
+		Vector3T boxHalfSize = (this->PMax() - this->PMin()) * (T)0.5;
 
 		// Move triangle relative to AABB center
-		Vector3D v0rel = v0 - boxCenter;
-		Vector3D v1rel = v1 - boxCenter;
-		Vector3D v2rel = v2 - boxCenter;
+		Vector3T v0rel = v0 - boxCenter;
+		Vector3T v1rel = v1 - boxCenter;
+		Vector3T v2rel = v2 - boxCenter;
 
 		// Triangle edges
-		Vector3D edge1 = v1rel - v0rel;
-		Vector3D edge2 = v2rel - v1rel;
-		Vector3D edge3 = v0rel - v2rel;
+		Vector3T edge1 = v1rel - v0rel;
+		Vector3T edge2 = v2rel - v1rel;
+		Vector3T edge3 = v0rel - v2rel;
 
 		// AABB face normals (x, y, z axes)
-		for (int i = 0; i < 3; i++) 
+		for (int i = 0; i < 3; i++)
 		{
 			if (std::max(v0rel[i], std::max(v1rel[i], v2rel[i])) < -boxHalfSize[i] ||
 				std::min(v0rel[i], std::min(v1rel[i], v2rel[i])) > boxHalfSize[i]) {
@@ -247,26 +226,26 @@ public:
 		}
 
 		// Triangle normal
-		Vector3D triNormal = edge1.CrossProduct(edge2);
+		Vector3T triNormal = edge1.CrossProduct(edge2);
 		if (!(triNormal == 0))
 		{
-			triNormal.Normalize();
+			triNormal.NormalizeSafe();
 			if (!EXUmath::TriangleOverlapOnAxis(triNormal, v0rel, v1rel, v2rel, boxHalfSize)) { return false; }
 		}
 
 		// Test cross products of box axes and triangle edges
-		std::array<Vector3D, 3> boxAxes = { Vector3D({1, 0, 0}), Vector3D({0, 1, 0}), Vector3D({0, 0, 1}) };
-		std::array<Vector3D, 3> edges = { edge1, edge2, edge3 };
+		std::array<Vector3T, 3> boxAxes = { Vector3T({1, 0, 0}), Vector3T({0, 1, 0}), Vector3T({0, 0, 1}) };
+		std::array<Vector3T, 3> edges = { edge1, edge2, edge3 };
 
-		for (const auto& edge : edges) 
+		for (const auto& edge : edges)
 		{
-			for (const auto& axis : boxAxes) 
+			for (const auto& axis : boxAxes)
 			{
-				Vector3D testAxis = axis.CrossProduct(edge);
-				Real axisLength = testAxis.GetL2Norm();
+				Vector3T testAxis = axis.CrossProduct(edge);
+				T axisLength = testAxis.GetL2Norm();
 				if (axisLength > 1e-12)
-				{  
-					if (!EXUmath::TriangleOverlapOnAxis((1. / axisLength)*testAxis, v0rel, v1rel, v2rel, boxHalfSize)) 
+				{
+					if (!EXUmath::TriangleOverlapOnAxis(((T)1. / axisLength) * testAxis, v0rel, v1rel, v2rel, boxHalfSize))
 					{
 						return false;
 					}
@@ -279,18 +258,18 @@ public:
 
 
 	//! @brief Output operator for Box3D
-	friend std::ostream& operator<<(std::ostream& os, const Box3D& v)
+	friend std::ostream& operator<<(std::ostream& os, const Box3DBase& v)
 	{
 		os << "{" << v.PMin() << ", " << v.PMax() << "}";
 		return os;
 	}
 
 private:
-	//Vector3D pmin, pmax; //maybe not that efficient because no simple type; gives warning in gcc
-	Real pmin[3];
-	Real pmax[3];
+	T pmin[3];
+	T pmax[3];
 };
 
+typedef Box3DBase<Real> Box3D; 
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -301,49 +280,26 @@ private:
 //all items must fit into this box and should be equally distributed
 //then use AddItems to add items with a bounding box and an identifier
 //GetItemsInBox() gives you all identifiers which have a bounding box within the specified box
-class SearchTree
+template<typename T>
+class SearchTreeBase
 {
 private:
+	using Box3T = Box3DBase<T>;
+	using Vector3T = SlimVectorBase<T, 3>;
+
 	Index sx, sy, sz;
 	ArrayIndex* data;
-	Box3D box;
+	Box3T box;
 
 public:
-	SearchTree(): sx(0), sy(0), sz(0), data(nullptr) {};
+	SearchTreeBase(): sx(0), sy(0), sz(0), data(nullptr) {};
 
-	//SearchTree& operator=(const SearchTree& tree)
-	//{
-	//	if (&tree == this) return *this;
-
-	//	if (data)
-	//	{
-	//		for (Index i = 0; i < TotalSize(); i++)
-	//		{
-	//			data[i].Flush();
-	//		}
-	//		delete [] data;
-	//	}
-
-	//	box = tree.box;
-
-	//	sx = tree.sx;
-	//	sy = tree.sy;
-	//	sz = tree.sz;
-
-	//	data = new ArrayIndex[TotalSize()]();
-	//	for (Index i = 0; i < TotalSize(); i++)
-	//	{
-	//		data[i] = tree.data[i];
-	//	}
-	//	return *this;
-	//}
-	
 	bool isEmpty()
 	{
 		return TotalSize() == 0;
 	}
 
-	~SearchTree()
+	~SearchTreeBase()
 	{
 		Flush();
 	}
@@ -373,10 +329,10 @@ public:
 	}
 
 	//! get searchtree box
-	const Box3D& GetBox() const { return box; }
-	Box3D& GetBox() { return box; }
+	const Box3T& GetBox() const { return box; }
+	Box3T& GetBox() { return box; }
 
-	void GetCellLengths(Real& Lx, Real& Ly, Real& Lz) const
+	void GetCellLengths(T& Lx, T& Ly, T& Lz) const
 	{ 
 		CHECKandTHROW(sx+sy+sz > 0, "SearchTree/GeneralContact: number of cells may not be zero for any dimension");
 		Lx = box.SizeX() / sx;
@@ -385,15 +341,15 @@ public:
 	}
 
 	//! get box for a specific bin
-	Box3D GetBinBox(Index ix, Index iy, Index iz) const
+	Box3T GetBinBox(Index ix, Index iy, Index iz) const
 	{
-		Real Lx, Ly, Lz;
+		T Lx, Ly, Lz;
 		GetCellLengths(Lx, Ly, Lz);
-		return Box3D(Vector3D({
+		return Box3T(Vector3T({
 			box.PMinX() + ix * Lx,
 			box.PMinY() + iy * Ly,
 			box.PMinZ() + iz * Lz }),
-			Vector3D({
+			Vector3T({
 			box.PMinX() + (ix + 1) * Lx,
 			box.PMinY() + (iy + 1) * Ly,
 			box.PMinZ() + (iz + 1) * Lz }));
@@ -405,8 +361,9 @@ public:
 	Index TotalSize() const { return sx*sy*sz; }
 
 	Index3 NumberOfCellsXYZ() const { return Index3({ sx, sy, sz }); }
+	Index NumberOfCells() const { return sx*sy*sz; }
 
-	void ResetSearchTree(Index sizex, Index sizey, Index sizez, Box3D b)
+	void ResetSearchTree(Index sizex, Index sizey, Index sizez, Box3T b)
 	{
 		ClearItems(); //empty all items
 		box = b;
@@ -432,7 +389,7 @@ public:
 	}
 
 	//return 6 indices for box: minx, maxx, miny, maxy, minz, maxz
-	void GetBoxIndizes(const Box3D& b, Index6& ind) const
+	void GetBoxIndizes(const Box3T& b, Index6& ind) const
 	{
 		ind[0] = IndX(b.PMinX());
 		ind[1] = IndX(b.PMaxX());
@@ -489,7 +446,7 @@ public:
 	}
 
 	//get only items in box
-	void GetItemsInBox(const Box3D& b, ArrayIndex& items, bool resetItems = true) const
+	void GetItemsInBox(const Box3T& b, ArrayIndex& items, bool resetItems = true) const
 	{
 		if (resetItems) { items.SetNumberOfItems(0); }
 		Index ind[6];
@@ -520,7 +477,7 @@ public:
 
 	//get items in box b; do not add duplicates by using indexFlags array, having one bool per index, all initialized with false
 	//leave out items with index >= maxIndex or index < minIndex
-	void GetSingleItemsInBoxMaxMinIndex(const Box3D& b, ArrayIndex& items, ResizableArray<bool>& indexFlags, 
+	void GetSingleItemsInBoxMaxMinIndex(const Box3T& b, ArrayIndex& items, ResizableArray<bool>& indexFlags, 
 		Index maxIndex, Index minIndex = 0, bool clearIndexFlags = true, bool resetItems = true) const
 	{
 		if (resetItems) { items.SetNumberOfItems(0); }
@@ -566,8 +523,8 @@ public:
 	//!get items in box b; do not add duplicates by using indexFlags array, having one bool per index, all initialized with false
 	//!leave out items with index >= maxIndex or index < minIndex
 	//!by supplying the pre-computed bounding boxes of items, only items are considered, which really intersect with b
-	void GetSingleItemsInBoxMaxMinIndex(const Box3D& b, ArrayIndex& items, ResizableArray<bool>& indexFlags,
-		const ResizableArray<Box3D>& allBoundingBoxes, Index maxIndex, Index minIndex = 0, bool clearIndexFlags = true, 
+	void GetSingleItemsInBoxMaxMinIndex(const Box3T& b, ArrayIndex& items, ResizableArray<bool>& indexFlags,
+		const ResizableArray<Box3T>& allBoundingBoxes, Index maxIndex, Index minIndex = 0, bool clearIndexFlags = true, 
 		bool resetItems = true) const
 	{
 		if (resetItems) { items.SetNumberOfItems(0); }
@@ -613,7 +570,7 @@ public:
 	}
 
 	//get items in box b; do not add duplicates by using indexFlags array, having one bool per index, all initialized with false
-	void GetSingleItemsInBox(const Box3D& b, ArrayIndex& items, ResizableArray<bool>& indexFlags, 
+	void GetSingleItemsInBox(const Box3T& b, ArrayIndex& items, ResizableArray<bool>& indexFlags, 
 		bool clearIndexFlags=true, bool resetItems = true) const
 	{
 		if (resetItems) { items.SetNumberOfItems(0); }
@@ -657,7 +614,7 @@ public:
 	}
 
 	//get items in box, do not reset items list
-	void AddItemsInBox(const Box3D& b, ArrayIndex& items) const
+	void AddItemsInBox(const Box3T& b, ArrayIndex& items) const
 	{
 		Index ind[6];
 		ind[0] = IndX(b.PMinX());
@@ -686,9 +643,9 @@ public:
 	}
 
 	//! get number of items in box with (global) index
-	Index NumberOfItemsInBox(Index ind) const
+	Index NumberOfItemsInBox(Index globalBinIndex) const
 	{
-		return data[ind].NumberOfItems();
+		return data[globalBinIndex].NumberOfItems();
 	}
 
 	////! get all items of the box with global index ind
@@ -698,25 +655,25 @@ public:
 	//}
 
 	////! get all items of the box in which the point 'pos' lies
-	//void GetItemsOfBox(const Vector3D& pos, ArrayIndex& items) const
+	//void GetItemsOfBox(const Vector3T& pos, ArrayIndex& items) const
 	//{
 	//	GetItemsOfBox(GlobalIndex(IndX(pos.X()), IndY(pos.Y()), IndZ(pos.Z())), items);
 	//}
 
 	//add all items of the box with index ind
-	void AddItemsOfBox(Index ind, ArrayIndex& items) const
+	void AddItemsOfBox(Index globalBinIndex, ArrayIndex& items) const
 	{
-		items.AppendArray(data[ind]);
+		items.AppendArray(data[globalBinIndex]);
 	}
 
 	//! add all items of the box in which the point lies
-	void AddItemsOfPoint(const Vector3D& pos, ArrayIndex& items) const
+	void AddItemsOfPoint(const Vector3T& pos, ArrayIndex& items) const
 	{
 		AddItemsOfBox(GlobalIndex(IndX(pos.X()), IndY(pos.Y()), IndZ(pos.Z())), items);
 	}
 
 	//! add item to search tree
-	void AddItem(const Box3D& b, Index identifier)
+	void AddItem(const Box3T& b, Index identifier)
 	{
 		Index pMinX = IndX(b.PMinX());
 		Index pMaxX = IndX(b.PMaxX());
@@ -743,7 +700,7 @@ public:
 	}
 
 	//! add triangle item only if triangle really intersects with bins
-	void AddItemTriangle(const Box3D& b, Index identifier, const Vector3D& v0, const Vector3D& v1, const Vector3D& v2)
+	void AddItemTriangle(const Box3T& b, Index identifier, const Vector3T& v0, const Vector3T& v1, const Vector3T& v2)
 	{
 		Index pMinX = IndX(b.PMinX());
 		Index pMaxX = IndX(b.PMaxX());
@@ -761,7 +718,7 @@ public:
 			{
 				for (Index ix = pMinX; ix <= pMaxX; ix++)
 				{
-					Box3D binBox = GetBinBox(ix, iy, iz);
+					Box3T binBox = GetBinBox(ix, iy, iz);
 					if (binBox.BoxTriangleIntersect(v0, v1, v2))
 					{
 						data[gi + ix].AppendPure(identifier);
@@ -773,37 +730,37 @@ public:
 
 	}
 
-	//! return x-index for a Real x-value in Box
-	Index IndX(Real x) const
+	//! return x-index for a T x-value in Box
+	Index IndX(T x) const
 	{
 		//(Index) would behave wrong between -1 to +1: (int)0.8 => 0, (int)(-0.8) => 0
 		//        floor(...) corrects this: floor(0.8) => 0, fllor(-0.8) => -1
-		Index i = (Index)floor(((x - box.PMinX())*(Real)sx) / box.SizeX());
+		Index i = (Index)floor(((x - box.PMinX())*(T)sx) / box.SizeX());
 		if (i < 0) { i = 0; }
 		if (i >= sx) { i = sx - 1; }
 		return i;
 	}
 
-	//! return y-index for a Real y-value in Box
-	Index IndY(Real y) const
+	//! return y-index for a T y-value in Box
+	Index IndY(T y) const
 	{
-		Index i = (Index)floor(((y - box.PMinY())*(Real)sy) / box.SizeY());
+		Index i = (Index)floor(((y - box.PMinY())*(T)sy) / box.SizeY());
 		if (i < 0) { i = 0; }
 		if (i >= sy) { i = sy - 1; }
 		return i;
 	}
 
-	//! return z-index for a Real z-value in Box
-	Index IndZ(Real z) const
+	//! return z-index for a T z-value in Box
+	Index IndZ(T z) const
 	{
-		Index i = (Index)floor(((z - box.PMinZ())*(Real)sz) / box.SizeZ());
+		Index i = (Index)floor(((z - box.PMinZ())*(T)sz) / box.SizeZ());
 		if (i < 0) { i = 0; }
 		if (i >= sz) { i = sz - 1; }
 		return i;
 	}
 
-	//! return x/y/z index for Real value and given axis in [0,1,2] corresponding to [x,y,z]
-	Index IndexOfReal(Real value, Index axis)
+	//! return x/y/z index for T value and given axis in [0,1,2] corresponding to [x,y,z]
+	Index IndexOfReal(T value, Index axis)
 	{
 		if (axis == 0) { return IndX(value); }
 		else if (axis == 1) { return IndY(value); }
@@ -828,19 +785,9 @@ public:
 		{
 			data[i].SetNumberOfItems(0);
 		}
-		//for (Index ix=0; ix < sx; ix++)
-		//{
-		//	for (Index iy=0; iy < sy; iy++)
-		//	{
-		//		for (Index iz=0; iz < sz; iz++)
-		//		{
-		//			data[GlobalIndex(ix,iy,iz)].SetNumberOfItems(0);
-		//		}
-		//	}
-		//}
 	}
 
-	void GetStatistics(Index& numberOfTreeItems, Real& averageFill, Index& numberOfZeros, Index& maxFill, Index& numberOf10average) const
+	void GetStatistics(Index& numberOfTreeItems, T& averageFill, Index& numberOfZeros, Index& maxFill, Index& numberOf10average) const
 	{
 		numberOfTreeItems = 0;
 		averageFill = -1;
@@ -856,7 +803,7 @@ public:
 		}
 		if (TotalSize() != 0)
 		{
-			averageFill = (Real)numberOfTreeItems / (Real)TotalSize();
+			averageFill = (T)numberOfTreeItems / (T)TotalSize();
 			numberOf10average = 0;
 			for (Index i = 0; i < TotalSize(); i++)
 			{
@@ -869,7 +816,190 @@ public:
 
 	}
 
-};
+	//! get all bin indices that are crossed by a line with startPoint and normalized direction
+	void GetBinsCrossedByLine(const Vector3T& startPoint, const Vector3T& direction, ArrayIndex& globalBinIndices) const
+	{
+		globalBinIndices.SetNumberOfItems(0);
+
+		const Box3T& b = this->box;
+
+		// Ray-box intersection using slab method
+		T tmin = 0;
+		T tmax = std::numeric_limits<T>::max();
+
+		for (int i = 0; i < 3; ++i)
+		{
+			if (std::abs(direction[i]) < (T)1e-15)
+			{
+				if (startPoint[i] < b.PMinC()[i] || startPoint[i] > b.PMaxC()[i])
+					return; // Ray parallel and outside slab
+			}
+			else
+			{
+				T invD = (T)1. / direction[i];
+				T t0 = (b.PMinC()[i] - startPoint[i]) * invD;
+				T t1 = (b.PMaxC()[i] - startPoint[i]) * invD;
+				if (t0 > t1) std::swap(t0, t1);
+				tmin = std::max(tmin, t0);
+				tmax = std::min(tmax, t1);
+				if (tmin > tmax) return; // No intersection
+			}
+		}
+
+		// Start position inside box
+		Vector3T entryPoint = startPoint + direction * tmin;
+
+		// Cell sizes
+		T cellSizeX = b.SizeX() / (T)sx;
+		T cellSizeY = b.SizeY() / (T)sy;
+		T cellSizeZ = b.SizeZ() / (T)sz;
+
+		// Starting voxel
+		Index ix = IndX(entryPoint[0]);
+		Index iy = IndY(entryPoint[1]);
+		Index iz = IndZ(entryPoint[2]);
+
+		Index stepX = (direction[0] > 0) ? 1 : (direction[0] < 0) ? -1 : 0;
+		Index stepY = (direction[1] > 0) ? 1 : (direction[1] < 0) ? -1 : 0;
+		Index stepZ = (direction[2] > 0) ? 1 : (direction[2] < 0) ? -1 : 0;
+
+		auto computeInitial = [](T coord, T dir, T minCoord, T cellSize, Index i, Index step) -> std::pair<T, T> {
+			if (dir == 0) return { std::numeric_limits<T>::max(), std::numeric_limits<T>::max() };
+			T nextBoundary = minCoord + ((step > 0) ? (i + 1) * cellSize : i * cellSize);
+			T tMax = (nextBoundary - coord) / dir;
+			T tDelta = cellSize / std::abs(dir);
+			return { tMax, tDelta };
+			};
+
+		auto [tMaxX, tDeltaX] = computeInitial(entryPoint[0], direction[0], b.PMinX(), cellSizeX, ix, stepX);
+		auto [tMaxY, tDeltaY] = computeInitial(entryPoint[1], direction[1], b.PMinY(), cellSizeY, iy, stepY);
+		auto [tMaxZ, tDeltaZ] = computeInitial(entryPoint[2], direction[2], b.PMinZ(), cellSizeZ, iz, stepZ);
+
+		// Traverse until the ray exits the box
+		while (ix >= 0 && ix < sx && iy >= 0 && iy < sy && iz >= 0 && iz < sz)
+		{
+			globalBinIndices.AppendPure(GlobalIndex(ix, iy, iz));
+
+			if (tMaxX < tMaxY)
+			{
+				if (tMaxX < tMaxZ) {
+					if (tMaxX > tmax) break;
+					ix += stepX;
+					tMaxX += tDeltaX;
+				}
+				else {
+					if (tMaxZ > tmax) break;
+					iz += stepZ;
+					tMaxZ += tDeltaZ;
+				}
+			}
+			else
+			{
+				if (tMaxY < tMaxZ) {
+					if (tMaxY > tmax) break;
+					iy += stepY;
+					tMaxY += tDeltaY;
+				}
+				else {
+					if (tMaxZ > tmax) break;
+					iz += stepZ;
+					tMaxZ += tDeltaZ;
+				}
+			}
+		}
+	}
+
+	//! collect items 
+	void GetUniqueItemsFromBins(const ArrayIndex& globalBinIndices, ArrayIndex& items,
+		ResizableArray<bool>& indexFlags,
+		bool clearIndexFlags = true, bool resetItems = true) const
+	{
+		if (resetItems) {
+			items.SetNumberOfItems(0);
+		}
+
+		for (Index binIndex : globalBinIndices)
+		{
+			const ArrayIndex& binItems = data[binIndex];
+			for (Index i = 0; i < binItems.NumberOfItems(); ++i)
+			{
+				Index item = binItems.GetItemUnsafe(i);
+				if (!indexFlags[item])
+				{
+					items.AppendPure(item);
+					indexFlags[item] = true;
+				}
+			}
+		}
+
+		// Reset flags if requested
+		if (clearIndexFlags)
+		{
+			for (Index i : items)
+			{
+				indexFlags[i] = false;
+			}
+		}
+	}
+
+	//! collect items WITH DUPLICATES
+	void GetItemsFromBins(const ArrayIndex& globalBinIndices, ArrayIndex& items, bool resetItems = true) const
+	{
+		if (resetItems) {
+			items.SetNumberOfItems(0);
+		}
+
+		for (Index binIndex : globalBinIndices)
+		{
+			const ArrayIndex& binItems = data[binIndex];
+			for (Index i = 0; i < binItems.NumberOfItems(); ++i)
+			{
+				Index item = binItems.GetItemUnsafe(i);
+				items.AppendPure(item);
+			}
+		}
+	}
+
+	//! helper function to well estimate searchtree size
+	static void ComputeSearchTreeBinCounts(Index nItems, const Box3T& box,
+		Index& sx, Index& sy, Index& sz, Index maxBins = 100, Index minBins=2)
+	{
+		T sizeX = box.SizeX();
+		T sizeY = box.SizeY();
+		T sizeZ = box.SizeZ();
+	
+		// Normalize size ratios
+		T volume = sizeX * sizeY * sizeZ;
+		if (volume <= (T)0.0) {
+			sx = sy = sz = minBins;
+			return;
+		}
+
+		// Target total bin count
+		Index targetBins = EXUstd::Maximum(1, nItems);
+
+		// Compute scaling factors
+		T scaleX = sizeX / std::cbrt(volume);
+		T scaleY = sizeY / std::cbrt(volume);
+		T scaleZ = sizeZ / std::cbrt(volume);
+
+		// Compute unbounded bin sizes based on relative volume
+		T totalScale = scaleX * scaleY * scaleZ;
+		T scaleFactor = std::pow((T)targetBins / totalScale, (T)(1.0 / 3.0));
+
+		// Initial floating bin counts
+		T binX = scaleX * scaleFactor;
+		T binY = scaleY * scaleFactor;
+		T binZ = scaleZ * scaleFactor;
+
+		// Clamp to 1...100
+		sx = EXUstd::Maximum(minBins, EXUstd::Minimum(maxBins, (Index)(binX + (T)0.5)));
+		sy = EXUstd::Maximum(minBins, EXUstd::Minimum(maxBins, (Index)(binY + (T)0.5)));
+		sz = EXUstd::Maximum(minBins, EXUstd::Minimum(maxBins, (Index)(binZ + (T)0.5)));
+
+	}};
+
+typedef SearchTreeBase<Real> SearchTree;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //! a search tree containing a static and a dynamic search tree for higher efficiency in contact search;

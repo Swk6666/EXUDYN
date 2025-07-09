@@ -378,15 +378,15 @@ SC.visualizationSettings.window.renderWindowSize = [1600,1200]
 
 ## start visualization and solve
 SC.visualizationSettings.general.autoFitScene = False #use loaded render state
-exu.StartRenderer()
+SC.renderer.Start()
 if 'renderState' in exu.sys:
-    SC.SetRenderState(exu.sys[ 'renderState' ])
+    SC.renderer.SetState(exu.sys[ 'renderState' ])
 
-mbs.WaitForUserToContinue()
+SC.renderer.DoIdleTasks()
 
-exu.SolveDynamic(mbs, simulationSettings)
+mbs.SolveDynamic(simulationSettings)
 
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.Stop() #safely close rendering window!
 
 
 ## import plot tools and plot some sensors

@@ -152,10 +152,10 @@ SC.visualizationSettings.openGL.multiSampling = 4
 SC.visualizationSettings.general.autoFitScene = False #prevent from autozoom
 
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys['renderState'])
-    mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys['renderState'])
+    SC.renderer.DoIdleTasks()
 
 dof=mbs.ComputeSystemDegreeOfFreedom()
 exu.Print('dof',dof)
@@ -165,7 +165,7 @@ exu.Print('eigenvalues=',eigenValues)
 mbs.SolveDynamic(simulationSettings = simulationSettings)
 
 if useGraphics:
-    exu.StopRenderer()
+    SC.renderer.Stop()
 
 if False:
     #%%++++

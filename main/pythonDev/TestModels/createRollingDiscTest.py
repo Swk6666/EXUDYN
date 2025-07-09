@@ -28,9 +28,6 @@ except:
     exudynTestGlobals = ExudynTestGlobals()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-import exudyn as exu
-from exudyn.utilities import * #includes itemInterface and rigidBodyUtilities
-import numpy as np
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
@@ -74,8 +71,8 @@ SC.visualizationSettings.openGL.shadow=0.3
 SC.visualizationSettings.openGL.multiSampling=4
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
@@ -89,7 +86,7 @@ exudynTestGlobals.testResult = u
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 # mbs.SolutionViewer()

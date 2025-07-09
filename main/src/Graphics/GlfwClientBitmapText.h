@@ -137,9 +137,41 @@ public:
 		return newFont;
 	}
 
+	guint GetGrayPixel(guint iChar, guint x, guint y)
+	{
+		const Index subpixels = 3;
+		const Index offset = subpixels / 2+1;
+		Index w = characterWidth; 
+		Index h = characterHeight;
+		Index color = 0;
+		const Index kernel[3][3] = {
+				{ 1, 2, 1 },
+				{ 2, 4, 2 },
+				{ 1, 2, 1 }
+		};
+		const Index kernelSum = 16;
+
+		for (Index subx = 0; subx < subpixels; subx++)
+		{
+			if (EXUstd::IndexIsInRange((Index)x + subx - offset, 0, w))
+			{
+				for (Index suby = 0; suby < subpixels; suby++)
+				{
+					if (EXUstd::IndexIsInRange((Index)y + suby - offset, 0, h))
+					{
+						color += kernel[subx][suby] * GetPixel(iChar, 
+							(guint)((Index)x + subx - offset), 
+							(guint)((Index)y + suby - offset) ) * 255;
+					}
+				}
+			}
+		}
+		return color / (kernelSum);
+	}
+
 	//! get new RGB image for opengl texture2D for given character (needs to be deleted hereafter)
     //! transparent flag gives only transparent background, transparent=false always gives background
-	gchar* GetRGBFontCharacter(guint iChar, bool transparent=true)
+	gchar* GetRGBAFontCharacter(guint iChar, bool transparent=true)
 	{
 		const int colorSize = 4; //RGBA
 		gchar* font;
@@ -152,8 +184,9 @@ public:
 		{
 			for (guint x = 0; x < w; x++)
 			{
-                gchar b = GetPixel(iChar, x, y) * 255;
-                gchar binv = (1 - GetPixel(iChar, x, y)) * 255;
+                //gchar b = GetPixel(iChar, x, y) * 255;
+				gchar b = GetGrayPixel(iChar, x, y); //subpixel-smoothing; includes 255
+                gchar binv = (255 - b);
 
                 if (transparent)
                 {

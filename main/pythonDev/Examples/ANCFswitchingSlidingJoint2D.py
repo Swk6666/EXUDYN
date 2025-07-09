@@ -18,7 +18,7 @@ import exudyn.graphics as graphics #only import if it does not conflict
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 #testInterface = TestInterface(exudyn = exu, systemContainer = SC, useGraphics=False)
 #RunAllModelUnitTests(mbs, testInterface)
@@ -225,7 +225,7 @@ def UFgondulaReset(mbs, t):
 mbs.SetPreStepUserFunction(UFgondulaReset)
 
 
-exu.StartRenderer()
+SC.renderer.Start()
 mbs.SolveDynamic(simulationSettings)
 
 if False:
@@ -268,7 +268,7 @@ if False:
             coordsData[LTGdata[0]] = 0 #initial sliding marker index
             coordsData[LTGdata[1]] = 0 #initial (start of step) sliding coordinate
             mbs.systemData.SetDataCoordinates(coordsData,configuration = exu.ConfigurationType.Current) #is used as startOfStep for next step
-            #mbs.WaitForUserToContinue()
+            #SC.renderer.DoIdleTasks()
         
         
         
@@ -278,6 +278,6 @@ if False:
         mbs.systemData.SetAECoordinates(coordsAE,configuration = exu.ConfigurationType.Initial)
 
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 

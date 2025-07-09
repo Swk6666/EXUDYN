@@ -74,17 +74,15 @@ simulationSettings.displayStatistics = True
 #simulationSettings.solutionSettings.recordImagesInterval = 0.04
 
 SC.visualizationSettings.nodes.defaultSize = 0.05
-exu.StartRenderer()
+SC.renderer.Start()
 
-#mbs.WaitForUserToContinue()
-#exu.InfoStat()
+#SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(simulationSettings, 
                  # solverType=exu.DynamicSolverType.TrapezoidalIndex2
                  )
-#exu.InfoStat()
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 nODE2 = len(mbs.systemData.GetODE2Coordinates())
 print("ODE2=",nODE2)

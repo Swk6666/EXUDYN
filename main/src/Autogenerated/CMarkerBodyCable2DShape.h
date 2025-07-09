@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2022-03-07  09:35:24 (last modified)
+* @date         2025-06-29  16:12:53 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -76,9 +76,21 @@ public: // AUTO:
     virtual const CMarkerBodyCable2DShapeParameters& GetParameters() const { return parameters; }
 
     //! AUTO:  general access to object number
-    virtual Index GetObjectNumber() const override
+    virtual Index GetObjectNumber(Index localIndex = 0) const override
     {
         return parameters.bodyNumber;
+    }
+
+    //! AUTO:  change bodyNumber
+    virtual void SetObjectNumber(Index bodyNumber, Index localIndex = 0) override
+    {
+        parameters.bodyNumber = bodyNumber;
+    }
+
+    //! AUTO:  general access to object number
+    virtual Index GetNumberOfObjects() const override
+    {
+        return 1;
     }
 
     //! AUTO:  return marker type (for node treatment in computation)

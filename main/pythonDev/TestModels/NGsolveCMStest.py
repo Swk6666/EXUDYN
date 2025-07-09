@@ -93,14 +93,16 @@ if hasNGsolve:
     #if you want to replace it, delete the old file!
     try:
         fem.LoadFromFile(fileName, mode='PKL')
-    except:
+    except Exception as e:
+        exu.Print(f'\nNGsolveCMStest: LoadFromFile(...) failed; {e}\n')
         fem.SaveToFile(fileName, mode='PKL')
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
 #compute Hurty-Craig-Bampton modes
 try:
     fem.LoadFromFile(fileName, mode='PKL')
-except:
+except Exception as e:
+    exu.Print(f'\nNGsolveCMStest: LoadFromFile(...) failed; {e}\n')
     raise ValueError('NGsolveCMStest: mesh file not found!')
 
     
@@ -131,16 +133,17 @@ SC.visualizationSettings.contour.outputVariableComponent = 0 #x-component
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
 #now we test load/save for different formats!
+fileName2 = fileName+'2'
 try:
-    fem.SaveToFile(fileName+'2.npy')
-    fem.LoadFromFile(fileName+'2', mode='NPY')
+    fem.SaveToFile(fileName2+'2.npz')
+    fem.LoadFromFile(fileName2+'2', mode='NPZ')
 except:
     #this should always work!
-    raise ValueError('NGsolveCMStest: load/save with NPY mode failed!')
+    raise ValueError('NGsolveCMStest: load/save with NPZ mode failed!')
 
 try:
-    fem.SaveToFile(fileName+'.pkl', mode='PKL')
-    fem.LoadFromFile(fileName, mode='PKL')
+    fem.SaveToFile(fileName2+'.pkl', mode='PKL')
+    fem.LoadFromFile(fileName2, mode='PKL')
 except:
     #this should always work!
     raise ValueError('NGsolveCMStest: load/save with PKL mode failed!')
@@ -153,8 +156,8 @@ except:
     exu.Print('NGsolveCMStest: import of h5py failed; to test, requires to pip install h5py')
     
 try:
-    fem.SaveToFile(fileName, mode='HDF5')
-    fem.LoadFromFile(fileName+'.hdf5')
+    fem.SaveToFile(fileName2, mode='HDF5')
+    fem.LoadFromFile(fileName2+'.hdf5')
 except:
     if hasHDF5:
         raise ValueError('NGsolveCMStest: load/save with HDF5 mode failed even though h5py is installed!')
@@ -243,10 +246,10 @@ SC.visualizationSettings.openGL.multiSampling = 4
 if useGraphics:
     SC.visualizationSettings.general.autoFitScene=False
 
-    exu.StartRenderer()
-    if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+    SC.renderer.Start()
+    if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
 
-    mbs.WaitForUserToContinue() #press space to continue
+    SC.renderer.DoIdleTasks() #press space to continue
 
 mbs.SolveDynamic(simulationSettings=simulationSettings)
     
@@ -255,15 +258,15 @@ exu.Print("nModes=", nModes, ", tip displacement=", uTip)
 
     
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 result = np.linalg.norm(uTip)
 exu.Print('solution of NGsolveCMStest=',result)
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-exudynTestGlobals.testError = result - (0.06953227339277462 )   
+exudynTestGlobals.testError = result - (0.06953224923173523  )   
 exudynTestGlobals.testResult = result
 
 

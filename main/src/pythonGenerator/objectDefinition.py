@@ -53,7 +53,7 @@ cParentClass = CNodeODE2
 mainParentClass = MainNode
 visuParentClass = VisualizationNode
 pythonShortName = Point
-outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,p_2]\cConfig\tp= \uv\cConfig + \pv\cRef$global 3D position vector of node; $\uv\cRef=0$', 'Displacement':'$\uv\cConfig = [q_0,\,q_1,\,q_2]\cConfig\tp$global 3D displacement vector of node', 'Velocity':'$\vv\cConfig = [\dot q_0,\,\dot q_1,\,\dot q_2]\cConfig\tp$global 3D velocity vector of node', 'Acceleration':'$\av\cConfig = \ddot \qv\cConfig = [\ddot q_0,\,\ddot q_1,\,\ddot q_2]\cConfig\tp$global 3D acceleration vector of node', 'CoordinatesTotal':'$\cv\cConfig = \uv\cConfig + \pv\cRef$ displacement plus reference coordinates of node', 'Coordinates':'$\cv\cConfig = \uv\cConfig = [q_0,\,q_1,\,q_2]\tp\cConfig$ coordinate vector of node', 'Coordinates_t':'$\dot\cv\cConfig = \vv\cConfig = [\dot q_0,\,\dot q_1,\,\dot q_2]\tp\cConfig$ velocity coordinates vector of node', 'Coordinates_tt':'$\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1,\,\ddot q_2]\tp\cConfig$ acceleration coordinates vector of node'}"
+outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,p_2]\cConfig\tp= \uv\cConfig + \pv\cRef$global 3D position vector of node; $\uv\cRef=0$', 'Displacement':'$\uv\cConfig = [q_0,\,q_1,\,q_2]\cConfig\tp$global 3D displacement vector of node', 'Velocity':'$\vv\cConfig = [\dot q_0,\,\dot q_1,\,\dot q_2]\cConfig\tp$global 3D velocity vector of node', 'Acceleration':'$\av\cConfig = \ddot \qv\cConfig = [\ddot q_0,\,\ddot q_1,\,\ddot q_2]\cConfig\tp$global 3D acceleration vector of node', 'CoordinatesTotal':'$\cv\cConfig = \uv\cConfig + \pv\cRef$ displacement plus reference coordinates of node', 'Coordinates':'$\cv\cConfig = \uv\cConfig = [q_0,\,q_1,\,q_2]\tp\cConfig$ coordinate vector of node', 'Coordinates_t':'$\dot\cv\cConfig = \vv\cConfig = [\dot q_0,\,\dot q_1,\,\dot q_2]\tp\cConfig$ velocity coordinates vector of node', 'Coordinates_tt':'$\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1,\,\ddot q_2]\tp\cConfig$ acceleration coordinates vector of node', 'RotationMatrix':'identity matrix (only for completeness)', 'Rotation':'$[0,0,0]$ (only for completeness)', 'AngularVelocity':'$[0,0,0]$ (only for completeness)', 'AngularVelocityLocal':'$[0,0,0]$ (only for completeness)'}"
 classType = Node
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 equations =
@@ -101,7 +101,7 @@ cParentClass = CNodeODE2
 mainParentClass = MainNode
 visuParentClass = VisualizationNode
 pythonShortName = Point2D
-outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,0]\cConfig\tp= \uv\cConfig + \pv\cRef$global 3D position vector of node; $\uv\cRef=0$', 'Displacement':'$\uv\cConfig = [q_0,\,q_1,\,0]\cConfig\tp$global 3D displacement vector of node', 'Velocity':'$\vv\cConfig = [\dot q_0,\,\dot q_1,\,0]\cConfig\tp$global 3D velocity vector of node', 'Acceleration':'$\av\cConfig = [\ddot q_0,\,\ddot q_1,\,0]\cConfig\tp$global 3D acceleration vector of node', 'CoordinatesTotal':'$\cv\cConfig = \uv\cConfig + \pv\cRef$ displacement plus reference coordinates of node', 'Coordinates':'$\cv\cConfig = [q_0,\,q_1]\tp\cConfig$ coordinate vector of node', 'Coordinates_t':'$\dot\cv\cConfig = [\dot q_0,\,\dot q_1]\tp\cConfig$ velocity coordinates vector of node', 'Coordinates_tt':'$\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1]\tp\cConfig$ acceleration coordinates vector of node'}"
+outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,0]\cConfig\tp= \uv\cConfig + \pv\cRef$global 3D position vector of node; $\uv\cRef=0$', 'Displacement':'$\uv\cConfig = [q_0,\,q_1,\,0]\cConfig\tp$global 3D displacement vector of node', 'Velocity':'$\vv\cConfig = [\dot q_0,\,\dot q_1,\,0]\cConfig\tp$global 3D velocity vector of node', 'Acceleration':'$\av\cConfig = [\ddot q_0,\,\ddot q_1,\,0]\cConfig\tp$global 3D acceleration vector of node', 'CoordinatesTotal':'$\cv\cConfig = \uv\cConfig + \pv\cRef$ displacement plus reference coordinates of node', 'Coordinates':'$\cv\cConfig = [q_0,\,q_1]\tp\cConfig$ coordinate vector of node', 'Coordinates_t':'$\dot\cv\cConfig = [\dot q_0,\,\dot q_1]\tp\cConfig$ velocity coordinates vector of node', 'Coordinates_tt':'$\ddot\cv\cConfig = \av\cConfig = [\ddot q_0,\,\ddot q_1]\tp\cConfig$ acceleration coordinates vector of node', 'RotationMatrix':'identity matrix (only for completeness)', 'Rotation':'$[0,0,0]$ (only for completeness)', 'AngularVelocity':'$[0,0,0]$ (only for completeness)', 'AngularVelocityLocal':'$[0,0,0]$ (only for completeness)'}"
 classType = Node
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 equations =
@@ -942,7 +942,7 @@ cParentClass = CNodeODE2
 mainParentClass = MainNode
 visuParentClass = VisualizationNode
 pythonShortName = PointGround
-outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,p_2]\cConfig\tp = \pv\cRef$global 3D position vector of node (=reference position)', 'Displacement':'$\uv\cConfig = [0,\,0,\,0]\cConfig\tp$zero 3D vector', 'Velocity':'$\vv\cConfig = [0,\,0,\,0]\cConfig\tp$zero 3D vector', 'CoordinatesTotal':'$\cv\cConfig =[]$vector of length zero', 'Coordinates':'$\cv\cConfig =[]$vector of length zero', 'Coordinates_t':'$\dot\cv\cConfig =[]$vector of length zero'}"
+outputVariables = "{'Position':'$\pv\cConfig = [p_0,\,p_1,\,p_2]\cConfig\tp = \pv\cRef$global 3D position vector of node (=reference position)', 'Displacement':'$\uv\cConfig = [0,\,0,\,0]\cConfig\tp$zero 3D vector', 'Velocity':'$\vv\cConfig = [0,\,0,\,0]\cConfig\tp$zero 3D vector', 'CoordinatesTotal':'$\cv\cConfig =[]$vector of length zero', 'Coordinates':'$\cv\cConfig =[]$vector of length zero', 'Coordinates_t':'$\dot\cv\cConfig =[]$vector of length zero', 'RotationMatrix':'identity matrix (only for completeness)', 'Rotation':'$[0,0,0]$ (only for completeness)', 'AngularVelocity':'$[0,0,0]$ (only for completeness)', 'AngularVelocityLocal':'$[0,0,0]$ (only for completeness)'}"
 classType = Node
 #V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
 Vp,     M,      name,                           ,               ,       String,     "",                       ,       I,      "node's unique name"
@@ -1045,9 +1045,9 @@ equations =
         mbs.Assemble()
         sims=exu.SimulationSettings()
         sims.timeIntegration.numberOfSteps = 10000000 #many steps to see graphics
-        exu.StartRenderer() #perform zoom all (press 'a' several times) after startup to see the sphere
+        SC.renderer.Start() #perform zoom all (press 'a' several times) after startup to see the sphere
         mbs.SolveDynamic(sims)
-        exu.StopRenderer()
+        SC.renderer.Stop()
     \end{lstlisting}
     %%RSTCOMPATIBLE
 /end
@@ -1074,6 +1074,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,                            "return 'Ground';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(0, __EXUDYN_invalid_local_node0);\n        return 0;",       "Index localIndex",       CI,     "No nodenumber can be returned for ground object!" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "CHECKandTHROW(0, __EXUDYN_invalid_local_node0);",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 0;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return 0;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
 #as there are no node numbers, there is no check needed: Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position2D + Node::Orientation2D);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -1100,7 +1101,7 @@ mainParentClass = MainObjectBody
 visuParentClass = VisualizationObject
 pythonShortName = MassPoint
 addProtectedC = "    static constexpr Index nODE2coordinates = 3;\n"
-outputVariables = "{'Position':'$\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\cRef + \LU{0b}{\ImThree}\pLocB$global position vector of translated local position; local (body) coordinate system = global coordinate system', 'Displacement':'$\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;q_2]\cConfig\tp$global displacement vector of mass point', 'Velocity':'$\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;\dot q_2]\cConfig\tp$global velocity vector of mass point', 'Acceleration':'$\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;\ddot q_2]\cConfig\tp$global acceleration vector of mass point'}"
+outputVariables = "{'Position':'$\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\cRef + \LU{0b}{\ImThree}\pLocB$global position vector of translated local position; local (body) coordinate system = global coordinate system', 'Displacement':'$\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;q_2]\cConfig\tp$global displacement vector of mass point', 'Velocity':'$\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;\dot q_2]\cConfig\tp$global velocity vector of mass point', 'Acceleration':'$\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;\ddot q_2]\cConfig\tp$global acceleration vector of mass point', 'RotationMatrix':'identity matrix (only for completeness)', 'Rotation':'$[0,0,0]$ (only for completeness)', 'AngularVelocity':'$[0,0,0]$ (only for completeness)', 'AngularVelocityLocal':'$[0,0,0]$ (only for completeness)'}"
 classType = Object
 objectType = Body
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1168,6 +1169,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'MassPoint';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -1191,7 +1193,7 @@ mainParentClass = MainObjectBody
 visuParentClass = VisualizationObject
 pythonShortName = MassPoint2D
 addProtectedC = "    static constexpr Index nODE2coordinates = 2;\n"
-outputVariables = "{'Position':'$\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\cRef + \LU{0b}{\ImTwo}\pLocB$global position vector of translated local position; local (body) coordinate system = global coordinate system', 'Displacement':'$\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;0]\cConfig\tp$global displacement vector of mass point', 'Velocity':'$\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;0]\cConfig\tp$global velocity vector of mass point', 'Acceleration':'$\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;0]\cConfig\tp$global acceleration vector of mass point'}"
+outputVariables = "{'Position':'$\LU{0}{\pv}\cConfig(\pLocB) = \LU{0}{\pRef}\cConfig + \LU{0}{\pRef}\cRef + \LU{0b}{\ImTwo}\pLocB$global position vector of translated local position; local (body) coordinate system = global coordinate system', 'Displacement':'$\LU{0}{\uv}\cConfig = [q_0,\;q_1,\;0]\cConfig\tp$global displacement vector of mass point', 'Velocity':'$\LU{0}{\vv}\cConfig = \LU{0}{\dot\uv}\cConfig = [\dot q_0,\;\dot q_1,\;0]\cConfig\tp$global velocity vector of mass point', 'Acceleration':'$\LU{0}{\av}\cConfig = \LU{0}{\ddot\uv}\cConfig = [\ddot q_0,\;\ddot q_1,\;0]\cConfig\tp$global acceleration vector of mass point', 'RotationMatrix':'identity matrix (only for completeness)', 'Rotation':'$[0,0,0]$ (only for completeness)', 'AngularVelocity':'$[0,0,0]$ (only for completeness)', 'AngularVelocityLocal':'$[0,0,0]$ (only for completeness)'}"
 classType = Object
 objectType = Body
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1261,6 +1263,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'MassPoint2D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -1361,6 +1364,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'Mass1D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return 1;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -1465,6 +1469,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'RotationalMass1D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return 1;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -1676,6 +1681,7 @@ Fv,     C,      ComputeRigidBodyMarkerData,     ,               ,       void,   
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'RigidBody';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE2} coordinates; depends on node" 
@@ -1724,7 +1730,7 @@ equations =
     \finishTable
     %
     \mysubsubsubsection{Equations of motion}
-    The equations of motion in case that \texttt{physicsCenterOfMass=\Null} read:
+    The equations of motion in case that \texttt{physicsCenterOfMass}=$\Null$ read:
     \be 
       \mr{m}{0}{0} {0}{m}{0} {0}{0}{J} \vr{\ddot q_0}{\ddot q_1}{\ddot \psi_0} = \vr{f_0}{f_1}{\tau_2} = \fv.
     \ee
@@ -1816,6 +1822,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'RigidBody2D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -2054,6 +2061,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'GenericODE2';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return parameters.nodeNumbers.NumberOfItems();",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::_None;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -2221,6 +2229,7 @@ Fv,     C,      GetOutputVariable,              ,               ,       void,   
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'GenericODE1';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return parameters.nodeNumbers.NumberOfItems();",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE1Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE1} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::_None;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -2560,7 +2569,7 @@ V,      CP,     gravity,                        ,               ,       Vector3D
 V,      CP,     baseOffset,                     ,               ,       Vector3D,    "Vector3D({0.,0.,0.})",  ,       I,      "$\LU{0}{\pv_b} \in \Rcal^{3}$offset vector for base, in global coordinates"
 #not needed, because every link has preTransformation! V,      CP,     baseTransformation,             ,               ,       Matrix3D,    "EXUmath::unitMatrix3D", ,       I,      "$\Tm_b \in \Rcal^{3 \times 3}$transformation of base"
 #per link:
-V,      CP,     jointTypes,                     ,               ,       JointTypeList,"JointTypeList()",,I, "$\jv_T \in \Ncal^{n}$joint types of kinematic Tree joints; must be always set"
+V,      CP,     jointTypes,                     ,               ,       JointTypeList,"JointTypeList()",,I, "$\jv_T \in \Ncal^{n}$joint types of kinematic Tree joints, using exu.JointType, like exu.JointType.RevoluteZ; must be always set"
 V,      CP,     linkParents,                    ,               ,       ArrayIndex,  "ArrayIndex()",          ,       I,      "$\iv_p = [p_0,\, p_1,\, \ldots] \in \Ncal^{n}$index of parent joint/link; if no parent exists, the value is $-1$; by default, $p_0=-1$ because the $i$th parent index must always fulfill $p_i<i$; must be always set"
 V,      CP,     jointTransformations,           ,               ,       Matrix3DList,"Matrix3DList()",    ,       I,      "$\Tm = [\LU{p_0,j_0}{\Tm_0},\, \LU{p_1,j_1}{\Tm_1},\, \ldots ] \in [\Rcal^{3 \times 3}, ...]$list of constant joint transformations from parent joint coordinates $p_0$ to this joint coordinates $j_0$; this allows to adjust the orientation of the joint axes (but it does not affect the joint offset); if no parent exists ($-1$), the base coordinate system $0$ is used; must be always set"
 V,      CP,     jointOffsets,                   ,               ,       Vector3DList,"Vector3DList()",    ,       I,      "$\Vm = [\LU{p_0}{o_0},\, \LU{p_1}{o_1},\, \ldots ] \in [\Rcal^{3}, ...]$list of constant joint offsets from parent joint to this joint; $p_0$, $p_1$, $\ldots$ denote the parent coordinate systems; this means that the joint offset is added prior to performing the joint transformation; if no parent exists ($-1$), the base coordinate system $0$ is used; must be always set"
@@ -2619,7 +2628,8 @@ F,      C,      GetAngularAccelerationKinematicTree,,           ,       Vector3D
 #not needed without loadmassproportional: F,      C,      GetLocalCenterOfMassKinematicTree,           ,               3,      Vector3D,   ,                           "Index linkNumber", CI, "return the local position of the center of mass, used for massProportionalLoad" 
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'KinematicTree';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
-Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return parameters.jointTransformations.NumberOfItems();",                ,       CI,     "number of \hac{ODE2} coordinates" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericODE2;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -2664,7 +2674,7 @@ V,      V,      color,                          ,               4,      Float4, 
 V,      V,      triangleMesh,                   ,               ,       NumpyMatrixI,"MatrixI()",               ,       ,      "unused in KinematicTree"
 V,      V,      showNodes,                      ,               ,       Bool,       "false",                    ,       ,      "unused in KinematicTree"
 Fv,     V,      HasUserFunction,                ,               ,       Bool,         "return false;", "", CI,  "return true, if object has a user function to be called during redraw"  
-V,      V,      graphicsDataList,           ,               ,       BodyGraphicsDataList, ,                 ,       IO,      "Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links"
+V,      V,      graphicsDataList,           ,               ,       BodyGraphicsDataList, ,                 ,       IO,      "Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links"
 #
 Fv,     V,      UpdateGraphics,                 ,               ,       void,       ,                       "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
 #could be used to visualize nodes: V,      V,      graphicsData,                   ,               ,       BodyGraphicsData, ,                     ,       IO,      "Structure contains data for body visualization; data is defined in special list / dictionary structure"
@@ -2819,7 +2829,7 @@ equations =
     Note that \eq{eq:ObjectFFRF:Leq} is given in global coordinates for the translational part, in terms of rotation parameters
     for the rotation part and in body-fixed coordinates for the flexible part of the equations.
     
-    In case that \texttt{computeFFRFterms = True}, the equations \ref{eq:ObjectFFRF:Leq} can be transformed into the equations of motion,
+    In case that \texttt{computeFFRFterms = True}, \eqs{eq:ObjectFFRF:Leq} can be transformed into the equations of motion,
     \be \label{eq:ObjectFFRF:eom}
         \left(\Mm_{user}(mbs, t, i_N, \qv,\dot \qv) + \mr{\Mm\indtt}{\Mm\indtr}{\Mm\indtf} {}{\Mm\indrr}{\Mm\indrf} 
                     {\mathrm{sym.}}{}{\LU{b}{\Mm}} \right) \ddot \qv + 
@@ -2959,6 +2969,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'FFRF';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return parameters.nodeNumbers.NumberOfItems();",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE2} coordinates; needed for object?" 
 #Fv,     C,      GetAlgebraicEquationsSize,      ,               ,       Index,      ,                ,       CDI,     "number of \hac{AE} coordinates; depends on node" 
@@ -3375,6 +3386,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'FFRFreducedOrder';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return parameters.nodeNumbers.NumberOfItems();",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE2} coordinates; needed for object?" 
 #Fv,     C,      GetAlgebraicEquationsSize,      ,               ,       Index,      ,                ,       CDI,     "number of \hac{AE} coordinates; depends on node" 
@@ -3513,6 +3525,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'ANCFCable';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position + Node::PointSlope1);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -3933,6 +3946,7 @@ Fv,     C,      GetAvailableJacobians,          ,               ,       Jacobian
 #Fv,     C,      GetAngularVelocity,             ,               3,      Vector3D,   ,                           "const Vector3D& localPosition, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent angular velocity of node; returns always a 3D Vector, independent of 2D or 3D object; for rigid bodies, the argument localPosition has no effect" 
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'ANCFCable2D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position2D + Node::Orientation2D + Node::Point2DSlope1);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -4037,6 +4051,7 @@ Fv,     C,      GetVelocity,                    ,               ,       Vector3D
 #Fv,     C,      GetAngularVelocity,             ,               3,      Vector3D,   ,                           "const Vector3D& localPosition, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent angular velocity of node; returns always a 3D Vector, independent of 2D or 3D object; for rigid bodies, the argument localPosition has no effect" 
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'ALEANCFCable2D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 2, __EXUDYN_invalid_local_node2);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 3;",                ,       CI,     "number of nodes; needed for every object" 
 #Fv,     C,      GetODE2LocalToGlobalCoordinates,,               ,       Index,      ,                ,       CDI,     "local to global coordinates of body --> not needed" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates+1;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -4116,6 +4131,7 @@ Fv,     C,      GetRotationMatrix,              ,               9,      Matrix3D
 Fv,     C,      GetAngularVelocity,             ,               3,      Vector3D,   ,                           "const Vector3D& localPosition, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent angular velocity of node; returns always a 3D Vector, independent of 2D or 3D object; for rigid bodies, the argument localPosition has no effect" 
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'ObjectANCFBeam3D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return nNodes;",           ,       CI,    "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;", ,       CI,    "number of \hac{ODE2} coordinates"
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position + Node::Orientation + Node::PointSlope23);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -4208,6 +4224,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'BeamGeometricallyExact2D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position2D + Node::Orientation2D);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -4285,6 +4302,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'BeamGeometricallyExact3D';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,    "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      ,                           ,       CDI,   "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position + Node::Orientation);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -4361,6 +4379,7 @@ Fv,     C,      GetLocalCenterOfMass,           ,               3,      Vector3D
 #
 Fv,     M,      GetTypeName,                    ,               ,       const char*,      "return 'ANCFCable';" ,    ,       CI,     "Get type name of object; could also be realized via a string -> type conversion?" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return nODE2coordinates;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return (Node::Type)(Node::Position + Node::PointSlope1);", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
@@ -4622,7 +4641,8 @@ V,      CP,     activeConnector,                ,               ,       Bool,   
 V,      CP,     springForceUserFunction,        ,               ,       PyFunctionMbsScalarIndexScalar5, 0,                     ,       IO,     "$\mathrm{UF} \in \Rcal$A Python function which defines the spring force with parameters; the Python function will only be evaluated, if activeConnector is true, otherwise the SpringDamper is inactive; see description below"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "EXUmath::MatrixContainer& jacobianODE2, JacobianTemp& temp, Real factorODE2, Real factorODE2_t, Index objectNumber, const ArrayIndex& ltg, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} \ac{LHS} equations w.r.t. ODE2 coordinates and ODE2 velocities; write either dense local jacobian into dense matrix of MatrixContainer or ADD sparse triplets INCLUDING ltg mapping to sparse matrix of MatrixContainer"
@@ -4810,7 +4830,8 @@ V,      CP,     springForceUserFunction,        ,               ,       PyFuncti
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,      "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "EXUmath::MatrixContainer& jacobianODE2, JacobianTemp& temp, Real factorODE2, Real factorODE2_t, Index objectNumber, const ArrayIndex& ltg, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} \ac{LHS} equations w.r.t. ODE2 coordinates and ODE2 velocities; write either dense local jacobian into dense matrix of MatrixContainer or ADD sparse triplets INCLUDING ltg mapping to sparse matrix of MatrixContainer"
@@ -5002,8 +5023,10 @@ V,      CP,     springForceTorqueUserFunction,  ,               ,       PyFuncti
 V,      CP,     postNewtonStepUserFunction,     ,               ,       PyFunctionVectorMbsScalarIndex4VectorVector3D2Matrix6D2Matrix3DVector6D, 0, , IO,"$\mathrm{UF}_{PN} \in \Rcal$A Python function which computes the error of the PostNewtonStep; see description below"
 #
 #++++++++++++++ for discontinuities:
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return (parameters.postNewtonStepUserFunction!=0);",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
 #unused: Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return parameters.numberOfContactSegments;",                 ,       CI,     "Needs a data variable for every contact segment (tells if this segment is in contact or not)" 
@@ -5161,7 +5184,8 @@ V,      CP,     springForceUserFunction,        ,               ,       PyFuncti
 #
 #++++++++++++++ for discontinuities:
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 #++++++++++++++
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
@@ -5321,8 +5345,10 @@ V,      CP,     springTorqueUserFunction,       ,               ,       PyFuncti
 #
 #++++++++++++++ for discontinuities:
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springTorqueUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return (Index)(parameters.nodeNumber != EXUstd::InvalidIndex);",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
 #unused: Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return parameters.numberOfContactSegments;",                 ,       CI,     "Needs a data variable for every contact segment (tells if this segment is in contact or not)" 
@@ -5478,7 +5504,8 @@ V,      CP,     activeConnector,                ,               ,       Bool,   
 V,      CP,     springForceUserFunction,        ,               ,       PyFunctionMbsScalarIndexScalar5, 0,,       IO,     "$\mathrm{UF} \in \Rcal$A Python function which defines the spring force with 8 parameters, see equations section / see description below"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,            ,               ,        Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 Fv,     C,      GetAvailableJacobians,          ,               ,       JacobianType::Type, ,                    ,          CDI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
@@ -5703,12 +5730,14 @@ V,      CP,     activeConnector,                ,               ,       Bool,   
 V,      CP,     springForceUserFunction,        ,               ,       PyFunctionMbsScalarIndexScalar11, 0,,IO,"$\mathrm{UF} \in \Rcal$A Python function which defines the spring force with 8 parameters, see equations section / see description below"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return (parameters.nodeNumber==EXUstd::InvalidIndex) ? 0 : 1;",              ,       CI,     "number of nodes depending on configuration; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 3;",                 ,       CI,     "needed in order to create ltg-lists for data variable of connector" 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,            ,               ,        Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 Fv,     C,      GetAvailableJacobians,          ,               ,       JacobianType::Type, ,                    ,          CDI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
@@ -5855,7 +5884,8 @@ V,      CP,     minDistanceRegularization,      ,               ,       UReal,  
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return false;", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 #Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "EXUmath::MatrixContainer& jacobianODE2, JacobianTemp& temp, Real factorODE2, Real factorODE2_t, Index objectNumber, const ArrayIndex& ltg, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} \ac{LHS} equations w.r.t. ODE2 coordinates and ODE2 velocities; write either dense local jacobian into dense matrix of MatrixContainer or ADD sparse triplets INCLUDING ltg mapping to sparse matrix of MatrixContainer"
@@ -6034,7 +6064,8 @@ V,      CP,     activeConnector,                ,               ,       Bool,   
 #V,      CP,     springForceUserFunction,        ,               ,       PyFunctionMbsScalarIndexScalar5, 0,                     ,       IO,     "$\mathrm{UF} \in \Rcal$A Python function which defines the spring force with parameters; the Python function will only be evaluated, if activeConnector is true, otherwise the SpringDamper is inactive; see description below"
 #
 #Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.springForceUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
 Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
 Fv,     C,      ComputeODE1RHS,                 ,               ,       void,       ,                           "Vector& ode1Rhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,    "Computational function: compute right-hand-side (RHS) of first order ordinary differential equations (ODE) to 'ode1Rhs'" 
@@ -6049,6 +6080,7 @@ Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,   
 #
 #NEEDS also data node?
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return parameters.nodeNumbers.NumberOfItems();",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetODE1Size,                    ,               ,       Index,      ,                ,       CDI,     "number of \hac{ODE1} coordinates; needed for object?" 
 #
@@ -6241,7 +6273,8 @@ V,      CP,     activeConnector,                ,               ,       Bool,   
 #
 #++++++++++++++ for discontinuities:
 V,      C,      tempPositionsList,              ,               ,       Vector3DList,"Vector3DList()",        ,       U,      "temporary list of vectors representing the rope local positions"
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      RequestedNumberOfMarkers,       ,               ,       Index,      "return 0;",                      ,       CI,     "number of markers; 0 means no requirements"  
 #Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 #Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return (parameters.postNewtonStepUserFunction!=0);",                ,       CI,     "number of nodes; needed for every object" 
@@ -6355,7 +6388,8 @@ V,      CP,     markerNumbers,                  ,               ,       ArrayMar
 V,      CP,     distance,                       ,               ,       PReal,      0.,                          ,       I,      "$d_0$prescribed distance [SI:m] of the used markers; must by greater than zero"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -6533,7 +6567,8 @@ V,      CP,     offsetUserFunction_t,           ,               ,       PyFuncti
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.offsetUserFunction!=0) || (parameters.offsetUserFunction_t!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 Fv,     C,      IsTimeDependent,                ,               ,       Bool,       "return (parameters.offsetUserFunction != 0 || parameters.offsetUserFunction_t != 0);", ,      CI,    "connector is time dependent if user functions are defined" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
@@ -6700,7 +6735,8 @@ V,      CP,     jacobianUserFunction,           ,               ,       PyFuncti
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.constraintUserFunction!=0) || (parameters.jacobianUserFunction!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 Fv,     C,      IsTimeDependent,                ,               ,       Bool,       "return false;", ,      CI,    "connector is time dependent if user functions are defined" 
 #Fv,     C,      IsTimeDependent,                ,               ,       Bool,       "return (parameters.offsetUserFunction != 0 || parameters.offsetUserFunction_t != 0);", ,      CI,    "connector is time dependent if user functions are defined" 
@@ -6916,8 +6952,10 @@ V,      CP,     rollingFrictionViscous,         ,               ,       Real,   
 V,      CP,     useLinearProportionalZone,      ,               ,       Bool,       "false",                    ,       IO,     "if True, a linear proportional zone is used; the linear zone performs better in implicit time integration as the Jacobian has a constant tangent in the sticking case"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariables;",                 ,       CI,     "data (history) variable simplifies contact switching for implicit time integration and Newton method" 
 #
@@ -7082,8 +7120,10 @@ V,      C,      pContact,                       ,               ,       Vector3D
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #V,      CP,     planeNormal,                    ,               ,       Vector3D,   "Vector3D({0,0,1})",        ,       IO,     "$\LU{0}{\vv_{PN}}, \;\; |\LU{0}{\vv_{PN}}| = 1$normal to the contact / rolling plane (ground); Currently, this is not co-rotating with the ground body, but will do so in the future"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariables;",                 ,       CI,     "data (history) variable simplifies contact switching for implicit time integration and Newton method" 
 #
@@ -7146,8 +7186,10 @@ V,      CP,     contactDamping,                 ,               ,       UReal,  
 V,      CP,     offset,                         ,               ,       Real,       0.,                          ,       I,      "offset [SI:m] of contact"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 1;",                 ,       CI,     "needed in order to create ltg-lists for data variable of connector" 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -7207,8 +7249,10 @@ V,      CP,     circleRadius,                   ,               ,       UReal,  
 V,      CP,     offset,                         ,               ,       Real,       0.,                          ,       I,      "offset [SI:m] of contact, e.g. to include thickness of cable element"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return parameters.numberOfContactSegments;",                 ,       CI,     "Needs a data variable for every contact segment (tells if this segment is in contact or not)" 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -7653,8 +7697,10 @@ V,      CP,     useSegmentNormals,              ,               ,       Bool,   
 #now moved to MarkerBodyCable2DShape: #V,      CP,     offset,                         ,               ,       Real,       0.,                          ,       I,      "$h_o$offset [SI:m] of contact, e.g. to include thickness of cable element"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 3*parameters.numberOfContactSegments;",                 ,       CI,     "Needs a data variable for every contact segment (tells if this segment is in contact or not), every friction condition (stick = 1, slip = 0), and the last sticking position in tangential direction in terms of an angle $\varphi$ in the local circle coordinates ($\varphi = 0$, if the vector to the contact position is aligned with the x-axis)" 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -7690,12 +7736,12 @@ writeFile = True
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class = ObjectContactSphereSphere
-classDescription = "[UNDER CONSTRUCTION] A simple contact connector between two spheres. The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search."
+classDescription = "A simple contact connector between two spheres, using various contact models and the option for contact of sphere inside hollow sphere (marker1). The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search."
 cParentClass = CObjectConnector
 mainParentClass = MainObjectConnector
 visuParentClass = VisualizationObject
 addProtectedC = "    static constexpr Index nDataVariables = 4; //number of data variables for tangential and normal contact\n    static constexpr Index dataIndexGap = 0; //!< index in data node representing gap\n    static constexpr Index dataIndexVtangent = 1; //!< index in data node representing tangent velocity\n    static constexpr Index dataIndexImpactVel = 2; //!< index in data node representing last impact velocity\n    static constexpr Index dataIndexDeltaPlastic = 3; //!< index in data node representing plastic deformation, according to elasto-plastic adhesion model\n"
-outputVariables = "{'Director3':'contains normalized vector from marker 0 to marker 1', 'Displacement':'global displacement vector between the two spheres midpoints', 'DisplacementLocal':'3D Vector, containing only gap (Z-component)', 'Velocity':'global relative velocity between the two spheres midpoints', 'Force':'global contact force vector', 'Torque':'global torque due to friction on marker 0; to obetain torque on marker 1, multiply the torque with the factor $\frac{r_1+g/2}{r_0+g/2}$'}"
+outputVariables = "{'Position':'contact center point (also given for positive gap, when no contact occurs)', 'Displacement':'global displacement vector between the two spheres midpoints', 'DisplacementLocal':'1D Vector, containing only gap', 'Velocity':'global relative velocity between the two spheres midpoints', 'Force':'global contact force vector', 'Director1':'contains normalized vector from marker 0 to marker 1', 'Torque':'global torque due to friction on marker 0; to obetain torque on marker 1, multiply the torque with the factor $\frac{r_1+g/2}{r_0+g/2}$'}"
 author = Gerstmayr Johannes, Weyrer Sebastian
 classType = Object
 objectType = Connector
@@ -7736,98 +7782,101 @@ equations =
 
        Two spheres that are in contact, showing a force on marker 1 in normal direction due to overlap; forces on marker 0 act in opposite direction.
     }
+    Calculations reflect the case for outer contact of two spheres using $h_1=1$. 
+    In case that isHollowSphere1=True, we set $h_1=-1$ while the remaining formulas remain unchanged.
+    
     For the following, the gap $g$ between the two spheres is computed as
     \be
-        g = || \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} || - (r_0 + r_1)
+      g = h_1 || \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} || - (r_0 + h_1 r_1)
     \ee
-    and the overlap $\delta$ is the negated gap: $\delta=-g$. In the contact case, the overlap $\delta$ is positive. The normal vector $\LU{0}{\nv}$ points from marker 0 to marker 1 and is computed with
+    and the overlap $\delta$ is the negated gap: $\delta=-g$. In the contact case, the overlap $\delta$ is positive. 
+    The normal vector $\LU{0}{\nv}$ points from marker 0 to the contact point,
     \be
-        \LU{0}{\nv} = \frac{\LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0}}{|| \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} ||} \eqDot
+      \LU{0}{\nv} = h_1 \frac{\LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0}}{|| \LU{0}{\pv}_{m1} - \LU{0}{\pv}_{m0} ||} \eqDot
     \ee
+    which in case of sphere-sphere contact, $\LU{0}{\nv}$ points from marker 0 to marker 1, and 
+    in case of sphere-hollowsphere contact, $\LU{0}{\nv}$ points from marker 1 to marker 0.
+    
     The scalar normal (gap) velocity $v_\mathrm{\delta,n}$ is computed with the velocities $\LU{0}{\vv}_{m0}=\LU{0}{\dot{\pv}}_{m0}$ and $\LU{0}{\vv}_{m1}=\LU{0}{\dot{\pv}}_{m1}$
     \be
-        v_\mathrm{\delta,n} = \left(\LU{0}{\vv}_{m1} - \LU{0}{\vv}_{m0}\right)\cdot \LU{0}{\nv}
+      v_\mathrm{\delta,n} = \left(\LU{0}{\vv}_{m1} - \LU{0}{\vv}_{m0}\right)\cdot \LU{0}{\nv}
     \ee
     and the tangential (gap) velocity $\LU{0}{\vv}_\mathrm{\delta,t}$ at the contact point, that is needed for the friction model, reads
     \be \label{eq:OSSCTangentialVelocity}
-        \LU{0}{\vv}_\mathrm{\delta,t} = \left(\LU{0}{\vv}_{a1} - \LU{0}{\vv}_{a0}\right) - v_\mathrm{\delta,n} \cdot \LU{0}{\nv}, \qquad v_\mathrm{rel} = || \LU{0}{\vv}_\mathrm{\delta,t} || \eqDot
+      \LU{0}{\vv}_\mathrm{\delta,t} = \left(\LU{0}{\vv}_{a1} - \LU{0}{\vv}_{a0}\right) - v_\mathrm{\delta,n} \cdot \LU{0}{\nv}, \qquad v_\mathrm{rel} = || \LU{0}{\vv}_\mathrm{\delta,t} || \eqDot
     \ee
     To take the angular velocity of the spheres into account, the velocities $\LU{0}{\vv}_{a0}$ and $\LU{0}{\vv}_{a1}$ at the contact point are computed using Euler's theorem for kinematics:
     \be
-        \LU{0}{\vv}_{a0} = \LU{0}{\vv}_{m0} + \LU{0}{\tomega}_{m0} \times \left(\LU{0}{\nv}\cdot \left(r_0-\frac{\delta}{2}\right)\right)
-        , \qquad
-        \LU{0}{\vv}_{a1} = \LU{0}{\vv}_{m1} + \LU{0}{\tomega}_{m1} \times \left(-\LU{0}{\nv}\cdot \left(r_1-\frac{\delta}{2}\right)\right) \eqDot
+      \LU{0}{\vv}_{a0} = \LU{0}{\vv}_{m0} + \LU{0}{\tomega}_{m0} \times \left(\LU{0}{\nv}\cdot \left(r_0-\frac{\delta}{2}\right)\right)
+      , \qquad
+      \LU{0}{\vv}_{a1} = \LU{0}{\vv}_{m1} + h_1 \LU{0}{\tomega}_{m1} \times \left(-\LU{0}{\nv}\cdot \left(r_1-h_1 \frac{\delta}{2}\right)\right) \eqDot
     \ee
     The normal force acting on marker 1 is generally written as
     \be
-        \LU{0}{\fv}_\mathrm{1,n} = \underbrace{(f_c + f_d)}_{f_\mathrm{1,n}} \cdot \LU{0}{\nv} \eqComma
+      \LU{0}{\fv}_\mathrm{1,n} = \underbrace{(f_c + f_d)}_{f_\mathrm{1,n}} \cdot \LU{0}{\nv} \eqComma
     \ee
     where $f_c$ is the elastic and $f_d$ the damping part. The damping $f_d$ is always computed the same, independent of the chosen impact model:
     \be
-        f_d = - d_c v_\mathrm{\delta,n} \eqDot
+      f_d = - d_c v_\mathrm{\delta,n} \eqDot
     \ee
     The negative sign is because of the damping acting against the gap velocity: in the case of a positive normal (gap) velocity, the damping acts against $\LU{0}{\nv}$ for marker 1. The elastic force $f_c$ is computed depending on the chosen impact model.
-    \bi
-      \item $m_\mathrm{impact}=0$: the Adhesive Elasto-Plastic model described in \cite{Morrissey2014} is used. This model captures the key bulk behavior of cohesive powders and granular soils. For the impact model, the plastic overlap $\delta_p$ is needed. It is computed with
-      \be
-          \delta_p=\lambda_\mathrm{p}^{\frac{1}{n_\mathrm{exp}}}\delta \eqDot
-      \ee
-      The Adhesive Elasto-Plastic model distinguishes three different cases, modeling the loading and unloading behavior of the spheres:
-      \be
-          f_c=
-          \begin{cases}
-              -f_\mathrm{adh} + k_c \delta^{n_\mathrm{exp}} & \text{if } k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) \geq k_c\delta^{n_\mathrm{exp}} \\
-              -f_\mathrm{adh} + k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) & \text{if } k_c\delta^{n_\mathrm{exp}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}}\right) > -k_\mathrm{adh}\delta^{n_\mathrm{adh}} \\
-              -f_\mathrm{adh}-k_\mathrm{adh}\delta^{n_\mathrm{adh}} & \text{if } -k_\mathrm{adh}\delta^{n_\mathrm{adh}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right)
-          \end{cases}
-          \eqDot
-      \ee
+
+    CASE $m_\mathrm{impact}=0$: the Adhesive Elasto-Plastic model described in \cite{Morrissey2014} is used. This model captures the key bulk behavior of cohesive powders and granular soils. For the impact model, the plastic overlap $\delta_p$ is needed. It is computed with
+    \be
+      \delta_p=\lambda_\mathrm{p}^{\frac{1}{n_\mathrm{exp}}}\delta \eqDot
+    \ee
+    The Adhesive Elasto-Plastic model distinguishes three different cases, modeling the loading and unloading behavior of the spheres:
+    \be
+      f_c=
+      \begin{cases}
+        -f_\mathrm{adh} + k_c \delta^{n_\mathrm{exp}} & \text{if } k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) \geq k_c\delta^{n_\mathrm{exp}} \\
+        -f_\mathrm{adh} + k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right) & \text{if } k_c\delta^{n_\mathrm{exp}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}}\right) > -k_\mathrm{adh}\delta^{n_\mathrm{adh}} \\
+        -f_\mathrm{adh}-k_\mathrm{adh}\delta^{n_\mathrm{adh}} & \text{if } -k_\mathrm{adh}\delta^{n_\mathrm{adh}} > k_2 \left(\delta^{n_\mathrm{exp}}-\delta_p^{n_\mathrm{exp}} \right)
+      \end{cases}\eqDot
+    \ee
     Note that $k_2$ is computed with $k_2 = k_c/(1-\lambda_\mathrm{P})$. The terms with the stiffness $k_c$ and $k_2$ have a positive sign, since they act in the direction of $\LU{0}{\nv}$ for marker 1. The constant adhesion force $f_\mathrm{adh}$ and the stiffness $k_\mathrm{adh}$ act against $\LU{0}{\nv}$, which corresponds to a force sticking the spheres together.
 
-      \item $m_\mathrm{impact}=1$: the restitution model proposed by Hunt and Crossley in \cite{Hunt1975} is used to simulate the energy loss of the spheres during contact:
-      \be
-          f_c=k_c \delta^{n_\mathrm{exp}} + \lambda \delta^{n_\mathrm{exp}} v_\mathrm{\delta,n}
-      \ee
-      with
-      \be
-          \lambda = \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1) \eqDot
-      \ee
-      The restitution coefficient $e_\mathrm{res}$ describes the ration of the normal (gap) velocity before and after the impact of the spheres. In the case of $e_\mathrm{res}<1$, the impact has a plastic portion, resulting in a force acting against $\LU{0}{\nv}$ for marker 1, which is why $\lambda$ must be negative in that case. $\dot\delta_\mathrm{-}$ is the initial relative velocity, which is either the minimum impact velocity or the normal (negated gap) velocity:
-      \be
-          \dot\delta_\mathrm{-} = \max{\left(\dot\delta_\mathrm{-,min}; -v_\mathrm{\delta,n} \right)}
-      \ee
+    CASE $m_\mathrm{impact}=1$: the restitution model proposed by Hunt and Crossley in \cite{Hunt1975} is used to simulate the energy loss of the spheres during contact:
+    \be
+      f_c=k_c \delta^{n_\mathrm{exp}} + \lambda \delta^{n_\mathrm{exp}} v_\mathrm{\delta,n}
+    \ee
+    with
+    \be
+      \lambda = \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1) \eqDot
+    \ee
+    The restitution coefficient $e_\mathrm{res}$ describes the ration of the normal (gap) velocity before and after the impact of the spheres. In the case of $e_\mathrm{res}<1$, the impact has a plastic portion, resulting in a force acting against $\LU{0}{\nv}$ for marker 1, which is why $\lambda$ must be negative in that case. $\dot\delta_\mathrm{-}$ is the initial relative velocity, which is either the minimum impact velocity or the normal (negated gap) velocity:
+    \be
+      \dot\delta_\mathrm{-} = \max{\left(\dot\delta_\mathrm{-,min}; -v_\mathrm{\delta,n} \right)}
+    \ee
     Note that the Hunt-Crossley restitution is valid for a very small energy loss ($e_\mathrm{res}\approx1$) \cite{Carvalho2019}.
 
-      \item $m_\mathrm{impact}=2$: a generalization of the Hunt-Crossley restitution proposed by Carvalho and Martins in \cite{Carvalho2019} is used for $e_\mathrm{res} > \frac{1}{3}$ and a model proposed by Gonthier et al. in \cite{Gonthier2004} is used for impacts with a high plastic proportion, $e_\mathrm{res} < \frac{1}{3}$. Note that the two models are identical at $e_\mathrm{res} = \frac{1}{3}$. $\lambda$ is therefore computed as follows:
-      \be
-          \lambda=
-          \begin{cases}
-              \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1)\frac{11-e_\mathrm{res}}{1+9e_\mathrm{res}} & \text{if } e_\mathrm{res} > \frac{1}{3} \\
-              \frac{k_c}{\dot\delta_\mathrm{-}}\frac{e_\mathrm{rep}^2-1}{e_\mathrm{rep}} & \text{if } e_\mathrm{res} > 0 \\
-          \end{cases}
-          \eqDot
-      \ee
-    \ei
+    CASE $m_\mathrm{impact}=2$: a generalization of the Hunt-Crossley restitution proposed by Carvalho and Martins in \cite{Carvalho2019} is used for $e_\mathrm{res} > \frac{1}{3}$ and a model proposed by Gonthier et al. in \cite{Gonthier2004} is used for impacts with a high plastic proportion, $e_\mathrm{res} < \frac{1}{3}$. Note that the two models are identical at $e_\mathrm{res} = \frac{1}{3}$. $\lambda$ is therefore computed as follows:
+    \be
+      \lambda=
+      \begin{cases}
+        \frac{k_c}{\dot\delta_\mathrm{-}}\frac{3}{2}(e_\mathrm{res}-1)\frac{11-e_\mathrm{res}}{1+9e_\mathrm{res}} & \text{if } e_\mathrm{res} > \frac{1}{3} \\
+        \frac{k_c}{\dot\delta_\mathrm{-}}\frac{e_\mathrm{rep}^2-1}{e_\mathrm{rep}} & \text{if } e_\mathrm{res} > 0 \\
+      \end{cases}\eqDot
+    \ee
     The tangential force acting on marker 1 due to the friction model acts against the tangential velocity $\vv_\mathrm{\delta,t}$, see the computation of $\vv_\mathrm{\delta,t}$ in Equation \eqref{eq:OSSCTangentialVelocity}. Thus, the tangential force for marker 1 is computed as
     \be
-        \LU{0}{\fv}_\mathrm{1,t} = -\LU{0}{\vv}_\mathrm{\delta,t} \cdot
-        \begin{cases}
-            \frac{\mu_d f_\mathrm{1,n}}{v_{reg}} & \text{if } v_{rel} < v_{reg} \\
-            \frac{\mu_d f_\mathrm{1,n}}{v_{rel}} & \text{else}\\
-        \end{cases}
-        \eqDot
+      \LU{0}{\fv}_\mathrm{1,t} = -\LU{0}{\vv}_\mathrm{\delta,t} \cdot
+      \begin{cases}
+        \frac{\mu_d f_\mathrm{1,n}}{v_{reg}} & \text{if } v_{rel} < v_{reg} \\
+        \frac{\mu_d f_\mathrm{1,n}}{v_{rel}} & \text{else}\\
+      \end{cases} \eqDot
     \ee
     Note that the case distinction above is made to ensure that for very small relative velocities the friction force does not become implausibly high. Taken together, the force acting on marker 1 due to the connector is computed as
     \be
-        \LU{0}{\fv}_{m1}=\LU{0}{\fv}_\mathrm{1,n}+\LU{0}{\fv}_\mathrm{1,t} \eqComma
+      \LU{0}{\fv}_{m1}=\LU{0}{\fv}_\mathrm{1,n}+\LU{0}{\fv}_\mathrm{1,t} \eqComma
     \ee
     the force acting on marker 0 is $\LU{0}{\fv}_{m0}=-\LU{0}{\fv}_{m1}$. The global torque $\LU{0}{\ttau}_{m1}$ acting on marker 1 due to the connector is computed as
     \be
-        \LU{0}{\ttau}_{m1}=-\LU{0}{\nv}\left( r_1-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m1} \eqComma
+      \LU{0}{\ttau}_{m1}=-h_1 \LU{0}{\nv}\left( r_1-h_1 \frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m1} \eqComma
     \ee
     and on marker 0 as
     \be
-        \LU{0}{\ttau}_{m0}=\LU{0}{\nv} \left(r_0-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m0}= \LU{0}{\nv}\left( r_0-\frac{1}{2}\delta \right) \times -\LU{0}{\fv}_{m1} \eqDot
+      \LU{0}{\ttau}_{m0}=\LU{0}{\nv} \left(r_0-\frac{1}{2}\delta \right) \times \LU{0}{\fv}_{m0}= \LU{0}{\nv}\left( r_0-\frac{1}{2}\delta \right) \times \left( -\LU{0}{\fv}_{m1} \right) \eqDot
     \ee
     It can be seen that the torque due to the connector is the same for both spheres, if $r_0=r_1$ applies.
     %%RSTCOMPATIBLE
@@ -7838,7 +7887,8 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     markerNumbers,                  ,               2,      ArrayMarkerIndex, "ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[m0,m1]\tp$list of markers representing centers of spheres, used in connector"
 V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",     ,       I,      "$n_d$node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is the plastic overlap of the Edinburgh Adhesive Elasto-Plastic Model, initialized usually with 0 and set back to 0 in case that spheres have been separated."
 #
-V,      CP,     spheresRadii,                   ,               2,      Vector2D,   "Vector2D({-1.,-1.})",     ,       I,      "$[r_0,r_1]\tp$Vector containing radius of sphere 0 and radius of sphere 1 [SI:m]"
+V,      CP,     spheresRadii,                   ,               2,      Vector2D,   "Vector2D({-1.,-1.})",     ,       I,      "$[r_0,r_1]\tp$list containing radius of sphere 0 and radius of sphere 1 [SI:m]."
+V,      CP,     isHollowSphere1,                ,               ,       Bool,       "false",                     ,       IO,     "flag, which determines, if sphere attached to marker 1 (radius 1) is a hollow sphere."
 #friction model:
 V,      CP,     dynamicFriction,                ,               ,       UReal,      "0.",                       ,       IO,     "$\mu_d$dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}"
 #V,      CP,     staticFrictionOffset,           ,               ,       UReal,      "0.",                       ,       IO,     "$\mu_{s_off}$static friction offset for friction model (static friction = dynamic friction + static offset), see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}"
@@ -7857,12 +7907,14 @@ V,      CP,     adhesionExponent,               ,               ,       UReal,  
 #coefficient of restitution
 V,      CP,     restitutionCoefficient,         ,               ,       PReal,      "1.",                       ,       IO,     "$e_\mathrm{res}$coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)"
 V,      CP,     minimumImpactVelocity,          ,               ,       UReal,      "0.",                       ,       IO,     "$\dot\delta_\mathrm{-,min}$minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)"
-V,      CP,     impactModel,                    ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{impact}$ number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping still added, if not set to zero!"
+V,      CP,     impactModel,                    ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{impact}$ number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!"
 #
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariables;",                 ,       CI,     "data (history) variable simplifies contact switching for implicit time integration and Newton method" 
 #
@@ -7880,7 +7932,191 @@ F,      C,      ComputeContactForces,           ,               ,       "templat
 F,      C,      ComputeConnectorProperties,     ,               ,       void,       , "const MarkerDataStructure& markerData, Index itemIndex, const LinkedDataVector& data, Real& frictionCoeff, Real& gap, Vector3D& deltaP, Vector3D& deltaV, Vector3D& fVec, Vector3D& fFriction, Vector3D& n0, bool contactFromData = true", CDI,    "main function to compute contact kinematics and forces" 
 #
 # helper functions: 
-#F,      C,      InitializeObject,               ,               ,       void,       , "const MainObjectContactSphereSphere& parameters",          DI,    "initialize parameters for contact check"  
+#Fv,     C,      PostAssemble,                   ,               ,       void,       "InitializeObject(this->parameters);",      ,     I,    "operations done after Assemble()" 
+#
+Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
+#
+Fv,     C,      GetRequestedMarkerType,         ,               ,       Marker::Type, "return (Marker::Type)((Index)Marker::Position + (Index)Marker::Orientation);", ,   CI,     "provide requested markerType for connector" 
+Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,      CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
+Fv,     C,      GetType,                        ,               ,       CObjectType,"return CObjectType::Connector;", , CI,    "return object type (for node treatment in computation)" 
+Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'ContactSphereSphere';", , CI,     "Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?" 
+Fv,     C,      IsActive,                       ,               ,       Bool,       "return parameters.activeConnector;", , CI,    "return if connector is active-->speeds up computation" 
+#VISUALIZATION:
+Fv,     V,      UpdateGraphics,                 ,               ,       void,       ,                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
+Fv,     V,      IsConnector,                    ,               ,       Bool,       "return true;",             ,       CI,    "this function is needed to distinguish connector objects from body objects"
+Vp,     V,      show,                           ,               ,       Bool,       "false",                     ,       IO,    "set true, if item is shown in visualization and false if it is not shown; draws spheres by given radii"
+V,      V,      color,                          ,               ,       Float4,     "Float4({0.7f,0.7f,0.7f,1.f})",,IO,    "RGBA connector color; if R==-1, use default color" 
+#file names automatically determined from class name
+writeFile = True
+
+
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class = ObjectContactSphereTorus
+classDescription = "[UNDER DEVELOPMENT] A simple contact connector between a sphere (marker0) and a torus (marker1). The sphere is assumed to be placed inside of the torus (outer contact of sphere with torus currently not implemented!)."
+cParentClass = CObjectConnector
+mainParentClass = MainObjectConnector
+visuParentClass = VisualizationObject
+addProtectedC = "    static constexpr Index nDataVariables = 4; //number of data variables for tangential and normal contact\n    static constexpr Index dataIndexGap = 0; //!< index in data node representing gap\n    static constexpr Index dataIndexVtangent = 1; //!< index in data node representing tangent velocity\n    static constexpr Index dataIndexImpactVel = 2; //!< index in data node representing last impact velocity\n    static constexpr Index dataIndexDeltaPlastic = 3; //!< index in data node representing plastic deformation, according to elasto-plastic adhesion model\n"
+outputVariables = "{'Position':'contact center point (also given for positive gap, when no contact occurs)', 'Displacement':'global displacement vector between the two spheres midpoints', 'DisplacementLocal':'1D Vector, containing only gap', 'Director1':'normalized vector from marker 0 to marker 1', 'Director2':'the normalized vector from marker 0 to marker 1 projected into the plane of the torus major circle', 'Director3':'normalized vector from the projected point on the major circle (center of the minor circle) to marker 1, being in direction of the contact and normal to the surface', 'Force':'global contact force vector', 'Torque':'global torque due to friction on marker 0'}"
+author = Gerstmayr Johannes
+classType = Object
+objectType = Connector
+#add equations
+equations =
+    \mysubsubsubsection{Definition of quantities}
+    \startTable{intermediate variables}{symbol}{description}
+    \rowTable{marker m0 position}{$\LU{0}{\pv}_{m0}$}{global position of torus 0 center as provided by marker m0}
+    \rowTable{marker m0 orientation}{$\LU{0,m0}{\Rot}$}{current rotation matrix provided by marker m0}
+    \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{global position of sphere 1 center as provided by marker m1}
+    \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
+    \rowTable{data coordinates}{$\xv=[x_0,\,x_1,\,x_2,\,x_3]\tp$}{hold the current gap (0), the (norm of the) tangential velocity (1), the impact velocity (2), and (3) which is undefined }
+    \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
+    \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{current global velocity which is provided by marker m1}
+    \rowTable{marker m0 angular velocity}{$\LU{0}{\tomega}_{m0}$}{current angular velocity vector provided by marker m0}
+    \rowTable{marker m1 angular velocity}{$\LU{0}{\tomega}_{m1}$}{current angular velocity vector provided by marker m1}
+    \finishTable
+    \mysubsubsubsection{Connector Forces}
+    TBD
+    %%RSTCOMPATIBLE
+/end
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
+Vp,     M,      name,                           ,               ,       String,     "",                         ,       I,      "constraints's unique name"
+V,      CP,     markerNumbers,                  ,               2,      ArrayMarkerIndex, "ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[m0,m1]\tp$list of markers representing centers of sphere (marker 0) and center of torus (marker 1)"
+V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",     ,       I,      "$n_d$node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is unused."
+#
+V,      CP,     radiusSphere,                   ,               ,       PReal,      "0.",                       ,       IO,     "$r_S$ radius of sphere [SI:m]"
+V,      CP,     torusMajorRadius,               ,               ,       PReal,      "0.",                       ,       IO,     "$r_{M}$ major radius of torus [SI:m], representing center of rotated circle"
+V,      CP,     torusMinorRadius,               ,               ,       PReal,      "0.",                       ,       IO,     "$r_{m}$ minor radius of torus [SI:m], representing radius of circle of ring"
+V,      CP,     torusAxis,                      ,               3,      Vector3D,   "Vector3D({0,0,0})",        ,       I,      "$\vv_{axis}$Vector containing rotation axis of torus; must be a unit vector."
+#friction model:
+V,      CP,     dynamicFriction,                ,               ,       UReal,      "0.",                       ,       IO,     "$\mu_d$dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}"
+V,      CP,     frictionProportionalZone,       ,               ,       UReal,      "1e-3",                     ,       IO,     "$v_{reg}$limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}"
+#normal contact model
+V,      CP,     contactStiffness,               ,               ,       UReal,      "0.",                       ,       I,      "$k_c$normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)"
+V,      CP,     contactDamping,                 ,               ,       UReal,      "0.",                       ,       IO,     "$d_c$linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior."
+V,      CP,     contactStiffnessExponent,       ,               ,       PReal,      "1.",                       ,       IO,     "$n_\mathrm{exp}$exponent in normal contact model [SI:1]"
+#coefficient of restitution
+V,      CP,     restitutionCoefficient,         ,               ,       PReal,      "1.",                       ,       IO,     "$e_\mathrm{res}$coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)"
+V,      CP,     minimumImpactVelocity,          ,               ,       UReal,      "0.",                       ,       IO,     "$\dot\delta_\mathrm{-,min}$minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)"
+V,      CP,     impactModel,                    ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{impact}$ number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!"
+#
+V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
+#
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
+Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
+Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariables;",                 ,       CI,     "data (history) variable simplifies contact switching for implicit time integration and Newton method" 
+#
+#Fv,     C,      GetAvailableJacobians,         ,               ,       JacobianType::Type, "return (JacobianType::Type)(JacobianType::AE_ODE2);",                    ,          CI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
+Fv,     C,      HasDiscontinuousIteration,      ,               ,       Bool,       "return true;",             ,       CI,     "flag to be set for connectors, which use DiscontinuousIteration" 
+Fv,     C,      PostNewtonStep,                 ,               ,       Real,       ,"const MarkerDataStructure& markerDataCurrent, Index itemIndex, PostNewtonFlags::Type& flags, Real& recommendedStepSize",       DI,      "function called after Newton method; returns a residual error (force)" 
+Fv,     C,      PostDiscontinuousIterationStep, ,               ,       void,       ,                             ,       DI,      "function called after discontinuous iterations have been completed for one step (e.g. to finalize history variables and set initial values for next step)" 
+#
+Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,      CI,     "connector uses penalty formulation" 
+Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
+#Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "ResizableMatrix& jacobian, ResizableMatrix& jacobian_ODE2_t, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} LHS equations w.r.t. ODE coordinates (jacobian) and if JacobianType::ODE2_ODE2_t flag is set in GetAvailableJacobians() compute jacobian w.r.t. ODE_t coordinates"
+Fv,     C,      GetAvailableJacobians,          ,               ,       JacobianType::Type, "return (JacobianType::Type)(JacobianType::ODE2_ODE2 + JacobianType::ODE2_ODE2_t);",                    ,          CI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
+Fv,     C,      GetOutputVariableConnector,     ,               ,       void,       ,                           "OutputVariableType variableType, const MarkerDataStructure& markerData, Index itemIndex, Vector& value",          DC, "provide according output variable in 'value'" 
+F,      C,      ComputeContactForces,           ,               ,       "template<typename TReal> TReal", , "TReal gap, const SlimVectorBase<TReal, 3>& n0, TReal deltaVnormal, const SlimVectorBase<TReal, 3>& deltaVji, TReal dryFriction, bool frictionRegularizedRegion, SlimVectorBase<TReal, 3>& fVec, SlimVectorBase<TReal, 3>& fFriction, bool forceFrictionMode = true", CDI,    "unique function to compute contact forces" 
+F,      C,      ComputeConnectorProperties,     ,               ,       void,       , "const MarkerDataStructure& markerData, Index itemIndex, const LinkedDataVector& data, Real& frictionCoeff, Real& gap, Vector3D& deltaP, Vector3D& deltaV, Vector3D& pCircle1, Vector3D& contactPoint, Vector3D& fVec, Vector3D& fFriction, Vector3D& n0, bool contactFromData = true", CDI,    "main function to compute contact kinematics and forces" 
+#
+# helper functions: 
+#Fv,     C,      PostAssemble,                   ,               ,       void,       "InitializeObject(this->parameters);",      ,     I,    "operations done after Assemble()" 
+#
+Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
+#
+Fv,     C,      GetRequestedMarkerType,         ,               ,       Marker::Type, "return (Marker::Type)((Index)Marker::Position + (Index)Marker::Orientation);", ,   CI,     "provide requested markerType for connector" 
+Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,      CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
+Fv,     C,      GetType,                        ,               ,       CObjectType,"return CObjectType::Connector;", , CI,    "return object type (for node treatment in computation)" 
+Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'ContactSphereSphere';", , CI,     "Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?" 
+Fv,     C,      IsActive,                       ,               ,       Bool,       "return parameters.activeConnector;", , CI,    "return if connector is active-->speeds up computation" 
+#VISUALIZATION:
+Fv,     V,      UpdateGraphics,                 ,               ,       void,       ,                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
+Fv,     V,      IsConnector,                    ,               ,       Bool,       "return true;",             ,       CI,    "this function is needed to distinguish connector objects from body objects"
+Vp,     V,      show,                           ,               ,       Bool,       "false",                     ,       IO,    "set true, if item is shown in visualization and false if it is not shown; draws spheres by given radii"
+V,      V,      color,                          ,               ,       Float4,     "Float4({0.7f,0.7f,0.7f,1.f})",,IO,    "RGBA connector color; if R==-1, use default color" 
+#file names automatically determined from class name
+writeFile = True
+
+
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class = ObjectContactSphereTriangle
+classDescription = "[UNDER DEVELOPMENT] A simple contact connector between a sphere (marker0) and a triangle (marker1). Penalty-based contact is computed from penetration of the sphere with the triangle, including contact with edges if desired."
+cParentClass = CObjectConnector
+mainParentClass = MainObjectConnector
+visuParentClass = VisualizationObject
+addProtectedC = "    static constexpr Index nDataVariables = 4; //number of data variables for tangential and normal contact\n    static constexpr Index dataIndexGap = 0; //!< index in data node representing gap\n    static constexpr Index dataIndexVtangent = 1; //!< index in data node representing tangent velocity\n    static constexpr Index dataIndexImpactVel = 2; //!< index in data node representing last impact velocity\n    static constexpr Index dataIndexDeltaPlastic = 3; //!< index in data node representing plastic deformation, according to elasto-plastic adhesion model\n"
+outputVariables = "{'Position':'contact center point (also given for positive gap, when no contact occurs)', 'Displacement':'global displacement vector between the two spheres midpoints', 'DisplacementLocal':'1D Vector, containing only gap', 'Director1':'normalized vector from sphere midpoint (marker 0) to triangle contact point', 'Force':'global contact force vector', 'Torque':'global torque due to friction on marker 0'}"
+author = Gerstmayr Johannes
+classType = Object
+objectType = Connector
+#add equations
+equations =
+    \mysubsubsubsection{Definition of quantities}
+    \startTable{intermediate variables}{symbol}{description}
+    \rowTable{marker m0 position}{$\LU{0}{\pv}_{m0}$}{global position of torus 0 center as provided by marker m0}
+    \rowTable{marker m0 orientation}{$\LU{0,m0}{\Rot}$}{current rotation matrix provided by marker m0}
+    \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{global position of sphere 1 center as provided by marker m1}
+    \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
+    \rowTable{data coordinates}{$\xv=[x_0,\,x_1,\,x_2,\,x_3]\tp$}{hold the current gap (0), the (norm of the) tangential velocity (1), the impact velocity (2), and (3) which is undefined }
+    \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
+    \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{current global velocity which is provided by marker m1}
+    \rowTable{marker m0 angular velocity}{$\LU{0}{\tomega}_{m0}$}{current angular velocity vector provided by marker m0}
+    \rowTable{marker m1 angular velocity}{$\LU{0}{\tomega}_{m1}$}{current angular velocity vector provided by marker m1}
+    \finishTable
+    \mysubsubsubsection{Connector Forces}
+    TBD
+    %%RSTCOMPATIBLE
+/end
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
+Vp,     M,      name,                           ,               ,       String,     "",                         ,       I,      "constraints's unique name"
+V,      CP,     markerNumbers,                  ,               2,      ArrayMarkerIndex, "ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[m0,m1]\tp$list of markers representing the center of the sphere (marker 0) and the reference point of the triangle (marker 1), where triangle nodal positions are defined in the local coordinates of marker 1."
+V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",     ,       I,      "$n_d$node number of a NodeGenericData with numberOfDataCoordinates = 4 dataCoordinates, needed for discontinuous iteration (friction and contact); data variables contain values from last PostNewton iteration: data[0] is the  gap, data[1] is the norm of the tangential velocity (and thus contains information if it is stick or slip); data[2] is the impact velocity; data[3] is unused."
+#
+V,      CP,     radiusSphere,                   ,               ,       PReal,      "0.",                       ,       IO,     "$r_S$ radius of sphere [SI:m]"
+V,      CP,     trianglePoints,                 ,               ,       Vector3DList, "Vector3DList()",         ,       IO,     "$[\LU{m_1}{\pv}_0,\LU{m_1}{\pv}_1,\LU{m_1}{\pv}_2]$ triangle points, defined in marker 1 local coordinates"
+V,      CP,     includeEdges,                   ,               ,       UInt,       "7",                        ,       IO,     "Binary flag, where 1 defines contact with edges 0, 2 with edge 1 and 4 with edge 2; 7 means that contact with all edges is included; edge 0 is the edge between node 0 and node 1"
+#friction model:
+V,      CP,     dynamicFriction,                ,               ,       UReal,      "0.",                       ,       IO,     "$\mu_d$dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}"
+V,      CP,     frictionProportionalZone,       ,               ,       UReal,      "1e-3",                     ,       IO,     "$v_{reg}$limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}"
+#normal contact model
+V,      CP,     contactStiffness,               ,               ,       UReal,       "0.",                      ,       I,      "$k_c$normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)"
+V,      CP,     contactDamping,                 ,               ,       UReal,       "0.",                      ,       IO,     "$d_c$linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior."
+V,      CP,     contactStiffnessExponent,       ,               ,       PReal,      "1.",                       ,       IO,     "$n_\mathrm{exp}$exponent in normal contact model [SI:1]"
+#coefficient of restitution
+V,      CP,     restitutionCoefficient,         ,               ,       PReal,      "1.",                       ,       IO,     "$e_\mathrm{res}$coefficient of restitution [SI:1]; used in particular for impact mechanics; different models available within parameter impactModel; the coefficient must be > 0, but can become arbitrarily small to emulate plastic impact (however very small values may lead to numerical problems)"
+V,      CP,     minimumImpactVelocity,          ,               ,       UReal,      "0.",                       ,       IO,     "$\dot\delta_\mathrm{-,min}$minimal impact velocity for coefficient of restitution [SI:1]; this value adds a lower bound for impact velocities for calculation of viscous impact force; it can be used to apply a larger damping behavior for low impact velocities (or permanent contact)"
+V,      CP,     impactModel,                    ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{impact}$ number of impact model: 0) linear model (only linear damping is used); 1) Hunt-Crossley model; 2) Gonthier/EtAl-Carvalho/Martins mixed model; model 2 is much more accurate regarding the coefficient of restitution, in the full range [0,1] except for 0; NOTE: in all models, the linear contactDamping is added, if not set to zero!"
+#
+V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
+#
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
+Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
+Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariables;",                 ,       CI,     "data (history) variable simplifies contact switching for implicit time integration and Newton method" 
+#
+#Fv,     C,      GetAvailableJacobians,         ,               ,       JacobianType::Type, "return (JacobianType::Type)(JacobianType::AE_ODE2);",                    ,          CI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
+Fv,     C,      HasDiscontinuousIteration,      ,               ,       Bool,       "return true;",             ,       CI,     "flag to be set for connectors, which use DiscontinuousIteration" 
+Fv,     C,      PostNewtonStep,                 ,               ,       Real,       ,"const MarkerDataStructure& markerDataCurrent, Index itemIndex, PostNewtonFlags::Type& flags, Real& recommendedStepSize",       DI,      "function called after Newton method; returns a residual error (force)" 
+Fv,     C,      PostDiscontinuousIterationStep, ,               ,       void,       ,                             ,       DI,      "function called after discontinuous iterations have been completed for one step (e.g. to finalize history variables and set initial values for next step)" 
+#
+Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return true;",             ,      CI,     "connector uses penalty formulation" 
+Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
+#Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "ResizableMatrix& jacobian, ResizableMatrix& jacobian_ODE2_t, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} LHS equations w.r.t. ODE coordinates (jacobian) and if JacobianType::ODE2_ODE2_t flag is set in GetAvailableJacobians() compute jacobian w.r.t. ODE_t coordinates"
+Fv,     C,      GetAvailableJacobians,          ,               ,       JacobianType::Type, "return (JacobianType::Type)(JacobianType::ODE2_ODE2 + JacobianType::ODE2_ODE2_t);",                    ,          CI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
+Fv,     C,      GetOutputVariableConnector,     ,               ,       void,       ,                           "OutputVariableType variableType, const MarkerDataStructure& markerData, Index itemIndex, Vector& value",          DC, "provide according output variable in 'value'" 
+F,      C,      ComputeContactForces,           ,               ,       "template<typename TReal> TReal", , "TReal gap, const SlimVectorBase<TReal, 3>& n0, TReal deltaVnormal, const SlimVectorBase<TReal, 3>& deltaVji, TReal dryFriction, bool frictionRegularizedRegion, SlimVectorBase<TReal, 3>& fVec, SlimVectorBase<TReal, 3>& fFriction, bool forceFrictionMode = true", CDI,    "unique function to compute contact forces" 
+F,      C,      ComputeConnectorProperties,     ,               ,       void,       , "const MarkerDataStructure& markerData, Index itemIndex, const LinkedDataVector& data, Real& frictionCoeff, Real& gap, Vector3D& deltaP, Vector3D& deltaV, Vector3D& fVec, Vector3D& fFriction, Vector3D& n0, bool contactFromData = true", CDI,    "main function to compute contact kinematics and forces" 
+#
+# helper functions: 
 #Fv,     C,      PostAssemble,                   ,               ,       void,       "InitializeObject(this->parameters);",      ,     I,    "operations done after Assemble()" 
 #
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -7902,13 +8138,13 @@ writeFile = True
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class = ObjectContactCurveCircles
-classDescription = "[UNDER CONSTRUCTION] A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. Note that there is a limit of 100 circle markes above which computation becomes slower as it requires memory allocation."
+classDescription = "A contact model between a curve defined by piecewise segments and a set of circles. The 2D curve may corotate in 3D with the underlying marker and also defines the plane of action for the circles. [REQUIRES FURTHER TESTING; friction not yet available]"
 cParentClass = CObjectConnector
 mainParentClass = MainObjectConnector
 visuParentClass = VisualizationObject
 addIncludesC = '#include "Pymodules/PyMatrixContainer.h"//for data matrices\nconstexpr Index CObjectContactCurveCirclesMaxConstSize = 100; //maximum number of markers upon which arrays do not require memory allocation\n'
-addProtectedC = "    static constexpr Index nDataVariablesPerSegment = 3; //number of data variables per circle marker\n    static constexpr Index dataIndexCircle = 0; //!< index in data node (per segment) representing circle number\n    static constexpr Index dataIndexGap = 1; //!< index in data node (per segment) representing gap\n    static constexpr Index dataIndexVtangent = 2; //!< index in data node (per segment) representing tangent velocity\n"
-pythonShortName = CamFollower
+addPublicC = "    static constexpr Index nDataVariablesPerSegment = 3; //number of data variables per circle marker\n    static constexpr Index dataIndexCircle = 0; //!< index in data node (per segment) representing circle number\n    static constexpr Index dataIndexGap = 1; //!< index in data node (per segment) representing gap\n    static constexpr Index dataIndexVtangent = 2; //!< index in data node (per segment) representing tangent velocity\n"
+pythonShortName = CamFollowerContactPlanar
 outputVariables = "{'DisplacementLocal':'vector containing the minimum distance to segments per circle midpoint (< 0 in case of contact, and -1 if not computed: if not in according vicinity in search tree)', 'VelocityLocal':'vector containing relative (normal) velocity per circle midpoint (or NaN if not computed)', 'ForceLocal':'pairs of normal and tangential forces per circle or (Nan,Nan) if not computed'}"
 classType = Object
 objectType = Connector
@@ -7936,22 +8172,29 @@ V,      CP,     nodeNumber,                     ,               ,       NodeInde
 #
 V,      CP,     circlesRadii,                   ,               ,       NumpyVector,"Vector()",                 ,       I,      "$[r_{c0},r_{c1}, \ldots]\tp \in \Rcal^{n_c}$Vector containing radii of $n_c$ circles [SI:m]; number according to size of markerNumbers-1"
 V,      CP,     segmentsData,                   ,               ,       PyMatrixContainer,"PyMatrixContainer()", ,      I,      "$\Dm \in \Rcal^{n_s \times 4}$matrix containing a set of two planar point coordinates in each row, representing segments attached to marker $m0$ and undergoing contact with the circles; for segment $s0$ row 0 reads $[p_{0x,s0},\,p_{0y,s0},\,p_{1x,s0},\,p_{1y,s0}]$; note that the segments must be ordered such that going from $\pv_0$ to $\pv_1$, the exterior lies on the right (positive) side. MatrixContainer has to be provided in dense mode!"
-V,      CP,     polynomialData,                 ,               ,       PyMatrixContainer,"PyMatrixContainer()", ,      I,      "$\Pm \in \Rcal^{n_s \times n_p}$matrix containing coefficients for polynomial enhancements of the linear segments; each row contains polynomial coefficients for the according segment; the polynomial coefficients may contain quadratic, cubic, etc. coefficients, while constant and linear coefficients are automatically selected such that the end points of the polynomial match the segment's endpoints; the local coordinate $x$ of the polynomial runs from 0 to 1 and positive values represent concave geometries (enlarging the curve). MatrixContainer has to be provided in dense mode!"
+V,      CP,     polynomialData,                 ,               ,       PyMatrixContainer,"PyMatrixContainer()", ,      I,      "$\Pm \in \Rcal^{n_s \times n_p}$matrix containing coefficients for special polynomial enhancements of the linear segments; each row contains coefficients for polynomials for the according segment, prescribing slopes at beginning and end of segment as well as curvature at beginning and end of segment; slopes and curvatures are defined in a local x/y coordinate system where x is the segment axis (start: x=0; x-axis points towards end point) and the segment normal is in y-direction; MatrixContainer has to be provided in dense mode!"
 #V,      CP,     testVector,                     ,               ,       NumpyVector,"Vector()",                 ,       I,      "$\fv \in \Rcal^{n}$a vector"
 V,      CP,     rotationMarker0,                ,               ,       Matrix3D,   "EXUmath::unitMatrix3D",    ,       I,      "local rotation matrix for marker 0; used to rotate marker coordinates such that the curve lies in the $x-y$-plane"
 #friction model:
 V,      CP,     dynamicFriction,                ,               ,       UReal,      "0.",                       ,       IO,     "$\mu_d$dynamic friction coefficient for friction model, see StribeckFunction in exudyn.physics, \refSection{sec:module:physics}"
 V,      CP,     frictionProportionalZone,       ,               ,       UReal,      "1e-3",                     ,       IO,     "$v_{reg}$limit velocity [m/s] up to which the friction is proportional to velocity (for regularization / avoid numerical oscillations), see StribeckFunction in exudyn.physics (named regVel there!), \refSection{sec:module:physics}"
 #normal contact model
-V,      CP,     contactStiffness,               ,               ,       Real,       "0.",                       ,       I,      "$k_c$normal contact stiffness [SI:N/m] (units in case that $n_\mathrm{exp}=1$)"
-V,      CP,     contactDamping,                 ,               ,       Real,       "0.",                       ,       IO,     "$d_c$linear normal contact damping [SI:N/(m s)]; this damping should be used (!=0) if the restitution coefficient is < 1, as it changes its behavior."
-V,      CP,     contactModel,                   ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{contact}$number of contact model: 0) linear model for stiffness and damping, only proportional to penetration; 1) model taking contact geometry, in particular curvature of circle and curve into account, giving nonlinear normal force model"
+V,      CP,     contactStiffness,               ,               ,       Real,       "0.",                       ,       I,      "$k_c$normal contact stiffness [SI:N/(m*m)]"
+V,      CP,     contactDamping,                 ,               ,       Real,       "0.",                       ,       IO,     "$d_c$linear normal contact damping [SI:N/(m s)]; this damping is a simplification of real contact dissipation and should be used with care."
+V,      CP,     contactModel,                   ,               ,       UInt,       "0",                        ,       IO,     "$m_\mathrm{contact}$number of contact model: 0) linear model for stiffness and damping, only proportional to penetration; contact force is computed from $l_\mathrm{seg}\left(p \cdot  \cdot k_c + \dot p \cdot d_c \right)$ as long as $p>0$; while this is numerically more stable, it gives jumps in forces when sliding over contact geometry 1) contact force proportional to integral over penetration area of circle with segments, giving a smoother contact force when sliding over geometry;"
 #
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
+#temporary quantities for C-object, to avoid memory allocation:
+V,      C,      gapPerSegment,                  ,               ,       NumpyVector,"Vector()",                 ,       IUR,    "temporary vector for computed gap"
+V,      C,      gapPerSegment_t,                ,               ,       NumpyVector,"Vector()",                 ,       IUR,    "temporary vector for computed gap velocity"
+V,      C,      segmentsForceLocalX,            ,               ,       NumpyVector,"Vector()",                 ,       IUR,    "temporary vector for contact force per segment in local X-direction"
+V,      C,      segmentsForceLocalY,            ,               ,       NumpyVector,"Vector()",                 ,       IUR,    "temporary vector for contact force per segment in local Y-direction"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      RequestedNumberOfMarkers,       ,               ,       Index,      "return 0;",                      ,       CI,     "number of markers; 0 means no requirements (standard would be 2; would fail in pre-checks!)"
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return nDataVariablesPerSegment*GetNumberOfSegments();", , CI, "data variables in total" 
 #
@@ -7969,7 +8212,8 @@ Fv,     C,      GetOutputVariableConnector,     ,               ,       void,   
 F,      C,      GetNumberOfCircles,             ,               ,       Index,      "return parameters.markerNumbers.NumberOfItems()-1;", , CI,    "returns number of circles, needed by other functions"
 F,      C,      GetNumberOfSegments,            ,               ,       Index,      "return parameters.segmentsData.NumberOfRows();", , CI, "number of segments determined by segmentsData" 
 #F,      C,      ComputeContactForces,           ,               ,       "template<typename TReal> TReal", , "TReal gap, const SlimVectorBase<TReal, 3>& n0, TReal deltaVnormal, const SlimVectorBase<TReal, 3>& deltaVji, TReal dryFriction, bool frictionRegularizedRegion, SlimVectorBase<TReal, 3>& fVec, SlimVectorBase<TReal, 3>& fFriction, bool forceFrictionMode = true", CDI,    "unique function to compute contact forces" 
-F,      C,      ComputeConnectorProperties,     ,               ,       void,       , "const MarkerDataStructure& markerData, Index itemIndex, LinkedDataVector& data, bool useDataStates, Vector2D& forceMarker0, Real& torqueMarker0, ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment, ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& gapPerSegment_t, ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalX, ResizableConstVectorBase<Real, CObjectContactCurveCirclesMaxConstSize>& segmentsForceLocalY", CDI,    "main function to compute contact kinematics and forces" 
+F,      C,      ComputeConnectorProperties,     ,               ,       void,       , "const MarkerDataStructure& markerData, Index itemIndex, LinkedDataVector& data, bool useDataStates, Vector2D& forceMarker0, Real& torqueMarker0, Vector& gapPerSegment, Vector& gapPerSegment_t, Vector& segmentsForceLocalX, Vector& segmentsForceLocalY", CDI,    "main function to compute contact kinematics and forces" 
+F,      C,      ComputePolynomials,             ,               ,       Real,       , "Real x, Real c, Index segNum, const ResizableMatrix& polyCoeffs", CDI,    "compute sum of polynomials at x, with segment length c, segment number and polyCoeffs; implemented for 0, 2 or 4 coefficients" 
 #
 # helper functions: 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -7977,7 +8221,7 @@ Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,   
 Fv,     C,      GetRequestedMarkerType,         ,               ,       Marker::Type, "return (Marker::Type)((Index)Marker::Position + (Index)Marker::Orientation);", ,   CI,     "provide requested markerType for connector" 
 Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,      CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
 Fv,     C,      GetType,                        ,               ,       CObjectType,"return CObjectType::Connector;", , CI,    "return object type (for node treatment in computation)" 
-Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'ContactSphereSphere';", , CI,     "Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?" 
+Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'ContactCurveCircles';", , CI,     "Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?" 
 Fv,     C,      IsActive,                       ,               ,       Bool,       "return parameters.activeConnector;", , CI,    "return if connector is active-->speeds up computation" 
 #VISUALIZATION:
 Fv,     V,      UpdateGraphics,                 ,               ,       void,       ,                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
@@ -8186,7 +8430,8 @@ V,      CP,     offsetUserFunction_t,           ,               ,       PyFuncti
 V,      CP,     alternativeConstraints,         ,               ,       Bool,       "false",                      ,       IO,     "this is an experimental flag, may change in future: if uses alternative contraint equations for rotations, currently in case of 3 locked rotations: $\LU{0}{\tv}_{x0}\tp (\LU{0}{\tv}_{y1} \times \LU{0}{\tv}_{z0})$, $\LU{0}{\tv}_{y0}\tp (\LU{0}{\tv}_{z1} \times \LU{0}{\tv}_{x0})$, $\LU{0}{\tv}_{z0}\tp (\LU{0}{\tv}_{x1} \times \LU{0}{\tv}_{y0})$; this avoids 180\textdegree flips of the standard configuration in static computations, but leads to different values in Lagrange multipliers"
 #
 Fv,     C,      HasUserFunction,                ,               ,       Bool,         "return (parameters.offsetUserFunction!=0) || (parameters.offsetUserFunction_t!=0);", "", CI,  "return true, if object has a computation user function"  
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8236,7 +8481,7 @@ equations =
     \rowTable{marker m1 position}{$\LU{0}{\pv}_{m1}$}{accordingly}
     \rowTable{marker m1 orientation}{$\LU{0,m1}{\Rot}$}{current rotation matrix provided by marker m1}
     \rowTable{joint J1 orientation}{$\LU{0,J1}{\Rot} = \LU{0,m1}{\Rot} \LU{m1,J1}{\Rot}$}{joint $J1$ rotation matrix}
-    \rowTable{joint J1 orientation vectors}{$\LU{0,J1}{\Rot} = [\LU{0}{\tv_{x1}},\,\LU{0}{\tv_{y1}},\,v\tv_{z1}]\tp$}{orientation vectors (represent local $x$, $y$, and $z$ axes) in global coordinates, used for definition of constraint equations}
+    \rowTable{joint J1 orientation vectors}{$\LU{0,J1}{\Rot} = [\LU{0}{\tv_{x1}},\,\LU{0}{\tv_{y1}},\,\LU{0}{\tv_{z1}}]\tp$}{orientation vectors (represent local $x$, $y$, and $z$ axes) in global coordinates, used for definition of constraint equations}
     %
     \rowTable{marker m0 velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity which is provided by marker m0}
     \rowTable{marker m1 velocity}{$\LU{0}{\vv}_{m1}$}{accordingly}
@@ -8311,7 +8556,8 @@ V,      CP,     rotationMarker0,                ,               ,       Matrix3D
 V,      CP,     rotationMarker1,                ,               ,       Matrix3D,   "EXUmath::unitMatrix3D",       ,       I,      "$\LU{m1,J1}{\Rot}$local rotation matrix for marker $m1$; translation and rotation axes for marker $m1$ are defined in the local body coordinate system and additionally transformed by rotationMarker1"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8416,7 +8662,8 @@ V,      CP,     rotationMarker0,                ,               ,       Matrix3D
 V,      CP,     rotationMarker1,                ,               ,       Matrix3D,   "EXUmath::unitMatrix3D",       ,       I,      "$\LU{m1,J1}{\Rot}$local rotation matrix for marker $m1$; translation and rotation axes for marker $m1$ are defined in the local body coordinate system and additionally transformed by rotationMarker1"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8541,7 +8788,8 @@ V,      CP,     markerNumbers,                  ,               2,      ArrayMar
 V,      CP,     constrainedAxes,                ,               3,      ArrayIndex, "ArrayIndex({1,1,1})",      ,       IO,     "$\jv=[j_0,\,\ldots,\,j_2]$flag, which determines which translation (0,1,2) and rotation (3,4,5) axes are constrained; for $j_i$, two values are possible: 0=free axis, 1=constrained axis"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,       CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,       CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8671,7 +8919,8 @@ V,      CP,     discRadius,                     ,               ,       PReal,  
 V,      CP,     discAxis,                       ,               ,       Vector3D,   "Vector3D({1,0,0})",        ,       IO,     "$\LU{m1}{\wv_{1}}, \;\; |\LU{m1}{\wv_{1}}| = 1$axis of disc defined in marker $m1$ frame"
 V,      CP,     planeNormal,                    ,               ,       Vector3D,   "Vector3D({0,0,1})",        ,       IO,     "$\LU{m0}{\vv_{PN}}$normal to the contact / rolling plane defined in marker $m0$ coordinates"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8713,7 +8962,8 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     markerNumbers,                  ,               ,       ArrayMarkerIndex,"ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "list of markers used in connector"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8754,7 +9004,8 @@ V,      CP,     normalMarker1,                  ,               ,       Vector3D
 V,      CP,     constrainRotation,              ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector also constrains the relative rotation of the two objects; if set to false, the constraint will keep an algebraic equation set equal zero"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      IsPenaltyConnector,             ,               ,       Bool,       "return false;",            ,      CI,     "constraints uses Lagrance multiplier formulation" 
 #Fv,     C,      HasVelocityEquations,           ,               ,       Bool,       "return true;",             ,      CI,     "constraint also implements velocity level equations" 
 Fv,     C,      ComputeAlgebraicEquations,      ,               ,       void,       ,                           "Vector& algebraicEquations, const MarkerDataStructure& markerData, Real t, Index itemIndex, bool velocityLevel = false",          CDI,     "Computational function: compute algebraic equations and write residual into 'algebraicEquations'; velocityLevel: equation provided at velocity level" 
@@ -8930,8 +9181,10 @@ V,      CP,     constrainRotation,              ,               ,       Bool,   
 V,      CP,     axialForce,                     ,               ,       Real,       "0",                         ,       IO,     "$f_\mathrm{ax}$ONLY APPLIES if classicalFormulation==True; axialForce represents an additional sliding force acting between beam and marker m0 body in axial (beam) direction; this force can be used to drive a body on a beam, but can only be changed with user functions."
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 2;",                 ,       CI,     "data variables: [0] showing the current (local) index in slidingMarkerNumber list --> providing the cable element active in sliding; coordinate [1] stores the previous sliding coordinate" 
 Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
@@ -8972,7 +9225,7 @@ cParentClass = CObjectConstraint
 mainParentClass = MainObjectConnector
 visuParentClass = VisualizationObject
 pythonShortName = ALEMovingJoint2D
-outputVariables = "{'Position':'$\LU{0}{\pv}_{m0}$current global position of position marker $m0$', 'Velocity':'$\LU{0}{\vv}_{m0}$current global velocity of position marker $m0$', 'SlidingCoordinate':'$s_g = q_{ALE} + s_{off}$current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!', 'Coordinates':'$[x_{data0},\,q_{ALE}]\tp$provides two values: [0] = current sliding marker index, [1] = ALE sliding coordinate', 'Coordinates_t':'$[\dot q_{ALE}]\tp$provides ALE sliding velocity', 'Force':'$\fv$joint force vector (3D)'}"
+outputVariables = "{'Position':'$\LU{0}{\pv}_{m0}$current global position of position marker $m0$', 'Velocity':'$\LU{0}{\vv}_{m0}$current global velocity of position marker $m0$', 'SlidingCoordinate':'$s_g = q_{ALE} + s_\mathrm{off}$current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!', 'Coordinates':'$[x_{data0},\,q_{ALE}]\tp$provides two values: [0] = current sliding marker index, [1] = ALE sliding coordinate', 'Coordinates_t':'$[\dot q_{ALE}]\tp$provides ALE sliding velocity', 'Force':'$\fv$joint force vector (3D)'}"
 classType = Object
 objectType = Joint
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -9000,7 +9253,7 @@ equations =
     %\startTable{output variables}{symbol}{formula}
     %\rowTable{Position}{$\LU{0}{\pv}_{m0}$}{current global position of position marker $m0$}
     %\rowTable{Velocity}{$\LU{0}{\vv}_{m0}$}{current global velocity of position marker $m0$}
-    %\rowTable{SlidingCoordinate}{$s_g = q_{ALE} + s_{off}$}{current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!}
+    %\rowTable{SlidingCoordinate}{$s_g = q_{ALE} + s_\mathrm{off}$}{current value of the global sliding ALE coordinate, including offset; note that reference coordinate of $q_{ALE}$ is ignored!}
     %\rowTable{Coordinates}{$[x_{data0},\,q_{ALE}]\tp$}{}
     %\rowTable{Coordinates\_t}{$[\dot q_{ALE}]\tp$}{}
     %\rowTable{Force}{$\fv$}{see below}
@@ -9009,7 +9262,7 @@ equations =
     \mysubsubsubsection{Geometric relations}
     The element sliding coordinate (in the local coordinates of the current sliding element) is computed from the ALE coordinate
     \be
-      s_{el} = q_{ALE} + s_{off} - d_{m1} = s_g - d_{m1}.
+      s_{el} = q_{ALE} + s_\mathrm{off} - d_{m1} = s_g - d_{m1}.
     \ee
     For the description of the according quantities, see the description above. The distance $d_{m1}$ is obtained from the \texttt{slidingMarkerOffsets} list, using the current (local) index $x_{data0}$.
     The vector (=difference; error) between the marker $m0$ and the marker $m1$ (=$\rv_{ANCF}$) positions reads
@@ -9087,14 +9340,16 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     markerNumbers,                  ,               ,       ArrayMarkerIndex, "ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[m0,\,m1]\tp$marker m0: position-marker of mass point or rigid body; marker m1: updated marker to ANCF Cable2D element, where the sliding joint currently is attached to; must be initialized with an appropriate (global) marker number according to the starting position of the sliding object; this marker changes with time (PostNewtonStep)"
 V,      CP,     slidingMarkerNumbers,           ,               ,       ArrayMarkerIndex, "ArrayIndex()",             ,       I,      "$[m_{s0}, \ldots, m_{sn}]\tp$a list of sn (global) marker numbers which are are used to update marker1"
 V,      CP,     slidingMarkerOffsets,           ,               ,       Vector,     "Vector()",                 ,       I,      "$[d_{s0}, \ldots, d_{sn}]$this list contains the offsets of every sliding object (given by slidingMarkerNumbers) w.r.t. to the initial position (0): marker0: offset=0, marker1: offset=Length(cable0), marker2: offset=Length(cable0)+Length(cable1), ..."
-V,      CP,     slidingOffset,                  ,               ,       Real,       0.,                         ,       I,      "$s_{off}$sliding offset list [SI:m]: a list of sn scalar offsets, which represent the (reference arc) length of all previous sliding cable elements"
+V,      CP,     slidingOffset,                  ,               ,       Real,       0.,                         ,       I,      "$s_\mathrm{off}$sliding offset [SI:m]: a scalar offset, which represents the (reference arc) length of all previous sliding cable elements"
 V,      CP,     nodeNumbers,                    ,               ,       ArrayNodeIndex, "ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[n_{GD}, n_{ALE}]$node number of NodeGenericData (GD) with one data coordinate and of NodeGenericODE2 (ALE) with one \hac{ODE2} coordinate"
 V,      CP,     usePenaltyFormulation,          ,               ,       Bool,       "false",                    ,       IO,     "flag, which determines, if the connector is formulated with penalty, but still using algebraic equations (IsPenaltyConnector() still false)"
 V,      CP,     penaltyStiffness,               ,               ,       Real,       0.,                         ,       I,      "$k$penalty stiffness [SI:N/m] used if usePenaltyFormulation=True"
 V,      CP,     activeConnector,                ,               ,       Bool,       "true",                     ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
 #
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
+Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default (read) function to return Marker numbers"
+Fv,     C,      GetMarkerNumbers,               ,               ,       "ArrayIndex&",       "return parameters.markerNumbers;",, I,     "default (write) function to return Marker numbers" 
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex <= 1, __EXUDYN_invalid_local_node1);\n        return parameters.nodeNumbers[localIndex];",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumbers[localIndex]=nodeNumber;",       "Index localIndex, Index nodeNumber",        I,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
 Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 2;",                ,       CI,     "number of nodes; needed for every object" 
 Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 1;",                 ,       CI,     "data variables: [0] showing the current (local) index in slidingMarkerNumber list --> providing the cable element active in sliding; coordinate [1] stores the previous sliding coordinate" 
 #Done automatically? Fv,     C,      GetODE2Size,                    ,               ,       Index,      "return 1;",                ,       CI,     "number of \hac{ODE2} coordinates; needed for object?" 
@@ -9144,7 +9399,9 @@ classType = Marker
 Vp,     M,      name,                           ,               ,       String,     "",                       ,       I,      "marker's unique name"
 V,      CP,     bodyNumber,                     ,               ,       ObjectIndex,"EXUstd::InvalidIndex",       ,       I,      "body number to which marker is attached to"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::BodyMass);", ,       CI,     "return marker type (for body treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker at local position (0,0,0) of the body" 
@@ -9206,7 +9463,9 @@ V,      CP,     bodyNumber,                     ,               ,       ObjectIn
 V,      CP,     localPosition,                  ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\pLocB$local body position of marker; e.g. local (body-fixed) position where force is applied to"
 #V,      CP,     bodyFixed,                      ,               ,       Bool,       "false",                    ,       IO,      "if bodyFixed is true, the force/sensor is using body-fixed coordinates (orientation); otherwise, it uses global coordinates"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Position + Marker::JacobianDerivativeAvailable + Marker::JacobianDerivativeNonZero);", ,       CI,     "return marker type (for body treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,      void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
@@ -9235,7 +9494,9 @@ V,      CP,     localPosition,                  ,               3,      Vector3D
 #V,      CP,     localOrientation,                  ,            3,      Matrix3D,   "Matrix3D({1.,0.,0., 0.,1.,0., 0.,0.,1.})", , , "local body orientation of marker; used e.g. to measure according direction or to define according rotation axes, etc."
 #V,      CP,     bodyFixed,                      ,               ,       Bool,       "false",                    ,       IO,      "if bodyFixed is true, the load or sensor is using body-fixed coordinates (orientation); this option is usually not be available in connectors; if false: global coordinates are used for sensors, loads, etc."
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Position + Marker::Orientation + Marker::JacobianDerivativeAvailable + Marker::JacobianDerivativeNonZero);", ,       CI,     "return marker type (for body treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
@@ -9285,6 +9546,7 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",       ,       I,      "node number to which marker is attached to"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "general access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Position + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
@@ -9334,6 +9596,7 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",       ,       I,      "node number to which marker is attached to"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "general access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Position+ Marker::Orientation + Marker::JacobianDerivativeAvailable + Marker::JacobianDerivativeNonZero);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,      void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
@@ -9351,35 +9614,6 @@ Fv,     V,      UpdateGraphics,                 ,               ,      void,    
 #file names automatically determined from class name
 writeFile = True
 
-# #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# class = MarkerNodeCoordinate
-# classDescription = "A node-Marker attached to a \hac{ODE2} coordinate of a node; for other coordinates (\hac{ODE1},...) other markers need to be defined."
-# cParentClass = CMarker
-# mainParentClass = MainMarker
-# visuParentClass = VisualizationMarker
-# classType = Marker
-# #V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
-# #CObjectMarkerBodyPosition* automatically inserted!
-# Vp,     M,      name,                           ,               ,       String,     "",                       ,       I,      "marker's unique name"
-# V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",       ,       I,      "node number to which marker is attached to"
-# V,      CP,     coordinate,                     ,               ,       UInt,       "EXUstd::InvalidIndex",       ,       I,      "coordinate of node to which marker is attached to"
-# #remove: velocities are often needed together with position (cf. MarkerNodePosition) ==> velocities are measured using according flags; V,      CP,     useVelocity,                    ,               ,       Bool,       "false",                    ,       I,      "Flag: true, if marker is attached to \hac{ODE2} velocity coordinate (e.g. to constrain or measure velocities)"
-# #
-# Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
-# Fv,     C,      GetCoordinateNumber,            ,               ,       Index,      "return parameters.coordinate;", ,  CI,     "access to coordinate index" 
-# Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Coordinate);", ,       CI,     "return marker type (for node treatment in computation)" 
-# Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
-# Fv,     C,      GetPosition,                    ,               3,      void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
-# #Fv,     C,      GetVelocity,                    ,               3,      void,   ,                               "const CSystemData& cSystemData, Vector3D& velocity, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return velocity of marker" 
-# Fv,     C,      ComputeMarkerData,              ,               ,       void,       ,  "const CSystemData& cSystemData, bool computeJacobian, MarkerData& markerData", CDI,     "Compute marker data (e.g. position and positionJacobian) for a marker" 
-# Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'NodeCoordinate';",   ,       CI,     "Get type name of marker (without keyword 'Marker'...!); could also be realized via a string -> type conversion?" 
-# Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
-# #VISUALIZATION:
-# Vp,     V,      show,                           ,               ,      Bool,   "true",                          ,       IO,      "set true, if item is shown in visualization and false if it is not shown"
-# Fv,     V,      UpdateGraphics,                 ,               ,      void,        ";",                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", I,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
-# #file names automatically determined from class name
-# writeFile = True
-
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class = MarkerNodeCoordinate
 classDescription = "A node-Marker attached to a \hac{ODE2} coordinate of a node; this marker allows to connect a coordinate-based constraint or connector to a nodal coordinate (also NodeGround); for \hac{ODE1} coordinates use MarkerNodeODE1Coordinate."
@@ -9395,6 +9629,7 @@ V,      CP,     coordinate,                     ,               ,       UInt,   
 #remove: velocities are often needed together with position (cf. MarkerNodePosition) ==> velocities are measured using according flags; V,      CP,     useVelocity,                    ,               ,       Bool,       "false",                    ,       I,      "Flag: true, if marker is attached to \hac{ODE2} velocity coordinate (e.g. to constrain or measure velocities)"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 Fv,     C,      GetCoordinateNumber,            ,               ,       Index,      "return parameters.coordinate;", ,  CI,     "access to coordinate index" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Coordinate + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
@@ -9423,6 +9658,7 @@ Vp,     M,      name,                           ,               ,       String, 
 V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",       ,       I,      "node number to which marker is attached to"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Coordinates + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return cSystemData.GetCNodes()[parameters.nodeNumber]->GetNumberOfODE2Coordinates();",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               3,      void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
@@ -9451,6 +9687,7 @@ V,      CP,     nodeNumber,                     ,               ,       NodeInde
 V,      CP,     coordinate,                     ,               ,       UInt,       "EXUstd::InvalidIndex",       ,       I,      "coordinate of node to which marker is attached to"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 Fv,     C,      GetCoordinateNumber,            ,               ,       Index,      "return parameters.coordinate;", ,  CI,     "access to coordinate index" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Coordinate + Marker::ODE1 + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
@@ -9480,6 +9717,7 @@ V,      CP,     nodeNumber,                     ,               ,       NodeInde
 V,      CP,     rotationCoordinate,             ,               ,       UInt,       "EXUstd::InvalidIndex",     ,       I,      "rotation coordinate: 0=x, 1=y, 2=z"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
 F,      C,      GetRotationCoordinateNumber,    ,               ,       Index,      "return parameters.rotationCoordinate;", ,  CI, "access to coordinate index" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Node + Marker::Coordinate);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
@@ -9490,6 +9728,138 @@ Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,   
 #VISUALIZATION:
 Vp,     V,      show,                           ,               ,      Bool,        "true",                     ,       IO,      "set true, if item is shown in visualization and false if it is not shown"
 Fv,     V,      UpdateGraphics,                 ,               ,      void,        ";","const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", I,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
+#file names automatically determined from class name
+writeFile = True
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class = MarkerBodiesRelativeTranslationCoordinate
+classDescription = "A coordinate-based Marker attached to two rigid bodies or beams which computes the relative translation between the bodies according to the given axis; this marker can be used together with coordinate-based constraints and connectors (e.g., CoordinateSpringDamper and CoordinateConstraint). Note that it is assumed that the two bodies can only move along the given axis (e.g., constrained by a prismatic joint) -- otherwise results may be unexpected. Note that this approach is not compatible with FFRF-based flexible bodies and currently requires and intermediate rigid body."
+cParentClass = CMarker
+mainParentClass = MainMarker
+visuParentClass = VisualizationMarker
+classType = Marker
+equations =
+    The marker consists of two bodies, body $b_0$ and body $b_1$ with respective global marker positions $\LU{0}{\pv}_{m0}$ and $\LU{0}{\pv}_{m1}$,
+    depending on local positions $\LU{m_0}{\pv}_0$ and $\LU{m_1}{\pv}_1$, 
+    and marker orientations $\LU{0,m_0}{\Rot}_{m0}$ and $\LU{0,m_1}{\Rot}_{m1}$.
+    The global axis is computed as 
+    \be
+      \LU{0}{\av}_0 = \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\av}_0
+    \ee
+    The relative translation marker computes the relative translation from the equation
+    \be
+      t =  \LU{0}{\av}_0\tp (\pv_{m1} - \pv_{m0}) - x_\mathrm{off}
+    \ee
+    The translational velocity, which may be used in coordinate spring-dampers or for velocity-level constraints, is computed as
+    \be
+      \dot t = \LU{0}{\av}_0\tp (\dot \pv_{m1} - \dot \pv_{m0}) + \LU{0}{\dot \av}_0\tp (\pv_{m1} - \pv_{m0})
+    \ee
+    Jacobians are computed according to the relative translational velocity, ignoring the $\dot \av_0$ part.
+    Using this approach, coordinate constraints can be added to mechanisms to purely add internal drives, not affecting global momenta.
+    Furthermore, coupling to a relative rotation marker MarkerBodiesRelativeRotationCoordinate can be used to 
+    create advanced mechanisms and gears.
+    %%RSTCOMPATIBLE
+/end
+#V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
+#CObjectMarkerBodyPosition* automatically inserted!
+Vp,     M,      name,                           ,               ,       String,     "",                         ,       I,      "marker's unique name"
+V,      CP,     bodyNumbers,                    ,               ,       ArrayObjectIndex,"ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })",     ,       I,   "$[b_0,b_1]\tp$list of body numbers for which relative coordinate is computed"
+V,      CP,     localPosition0,                 ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\LU{m_0}{\pv}_0$local position on body 0; i.e. local (body-fixed) position where position is measured and force is applied to"
+V,      CP,     localPosition1,                 ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\LU{m_1}{\pv}_1$local position on body 1; i.e. local (body-fixed) position where position is measured and force is applied to"
+V,      CP,     axis0,                          ,               3,      Vector3D,   "Vector3D({1.,0.,0.})",     ,       I,      "$\LU{m_0}{\av}_0$axis defined in body 0, along which the relative translation is measured"
+V,      CP,     offset,                         ,               ,       Real,       0.,                         ,       I,      "$x_\mathrm{off}$translation offset [SI:m] subtracted from the translation; can be used to change the zero position"
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumbers[localIndex];", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumbers[localIndex] = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 2;",                ,       CI,     "general access to object number" 
+Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Coordinate + Marker::Position + Marker::Orientation\n        //+ Marker::JacobianDerivativeAvailable + Marker::JacobianDerivativeNonZero//neglected for now\n            );", ,       CI,     "return marker type (for body treatment in computation)" 
+Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
+Fv,     C,      GetPosition,                    ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
+Fv,     C,      GetVelocity,                    ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& velocity, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return velocity of marker" 
+Fv,     C,      GetRotationMatrix,              ,               ,       void,       ,                           "const CSystemData& cSystemData, Matrix3D& rotationMatrix, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent rotation matrix of node; returns always a 3D Matrix" 
+Fv,     C,      GetAngularVelocity,             ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& angularVelocity, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent angular velocity of node; returns always a 3D Vector" 
+Fv,     C,      GetAngularVelocityLocal,        ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& angularVelocity, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent local (=body-fixed) angular velocity of node; returns always a 3D Vector" 
+Fv,     C,      ComputeMarkerData,              ,               ,       void,       ,  "const CSystemData& cSystemData, bool computeJacobian, MarkerData& markerData", CDI,     "Compute marker data (e.g. position and positionJacobian) for a marker" 
+Fv,     C,      ComputeMarkerDataJacobianDerivative, ,          ,       void,       ,  "const CSystemData& cSystemData, const Vector6D& v6D, MarkerData& markerData", CDI,     "fill in according data for derivative of jacobian times vector v6D, e.g.: d(Jpos.T @ v6D[0:3])/dq; v6D represents 3 force components and 3 torque components in global coordinates!" 
+Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'BodiesRelativeTranslationCoordinate';",   ,       CI,     "Get type name of marker (without keyword 'Marker'...!); could also be realized via a string -> type conversion?" 
+Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
+#VISUALIZATION:
+Vp,     V,      show,                           ,               ,      Bool,   "true",                          ,       IO,      "set true, if item is shown in visualization and false if it is not shown"
+Fv,     V,      UpdateGraphics,                 ,               ,      void,        ";",                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
+#file names automatically determined from class name
+writeFile = True
+
+
+#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class = MarkerBodiesRelativeRotationCoordinate
+classDescription = "A coordinate-based Marker attached to two rigid bodies or beams which computes the relative rotation between the bodies according to the given axis; this marker can be used together with coordinate-based constraints and connectors (e.g., CoordinateSpringDamper and CoordinateConstraint). Note that it is assumed that the two bodies can only rotate about the given axis (e.g., constrained by a revolute joint) -- otherwise results may be unexpected. Note that this approach is not compatible with FFRF-based flexible bodies and currently requires and intermediate rigid body."
+cParentClass = CMarker
+mainParentClass = MainMarker
+visuParentClass = VisualizationMarker
+classType = Marker
+equations =
+    The marker consists of two bodies, body $b_0$ and body $b_1$ with respective global marker positions $\LU{0}{\pv}_{m0}$ and $\LU{0}{\pv}_{m1}$,
+    depending on local positions $\LU{m_0}{\pv}_0$ and $\LU{m_1}{\pv}_1$, 
+    and marker orientations $\LU{0,m_0}{\Rot}_{m0}$ and $\LU{0,m_1}{\Rot}_{m1}$.
+    From the given axis \texttt{axis0}, we compute an orthonormal basis (orthonormal to axis0) relative to marker $m_0$,
+    \be
+      \LU{m_0,b}{\Rot}_b = \left[\LU{m_0}{\xv}_b, \LU{m_0}{\yv}_b, \LU{m_0}{\av}_0\right]
+    \ee
+    The relative rotation marker computes the relative rotation according to
+    \be
+      \LU{m_0,m_1}{\Rot}_{rel} = \LU{m_0,0}{\Rot}_{m0} \LU{0,m_1}{\Rot}_{m1}
+    \ee
+    This relative rotation, which represents a rotation about axis $\LU{m_0}{\av}_0$ is then transformed into the orthonormal basis,
+    \be
+      \LU{b}{\Rot}_{rel} = \LU{b,m_0}{\Rot}_b \LU{m_0,m_1}{\Rot}_{rel} \LU{m_0,b}{\Rot}_b
+    \ee
+    and contains the desired rotation about the z-axis, which can be extracted as
+    \be
+      \varphi = \mathrm{atan2}(\LU{b}{\Rot}_{rel}[1,0],\LU{b}{\Rot}_{rel}[0,0]) - x_\mathrm{off}
+    \ee
+    The global axis is computed as 
+    \be
+      \LU{0}{\av}_0 = \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\av}_0
+    \ee    
+    Using the angular velocities at the two bodies, $\LU{m_0}{\tomega_0}$ and  $\LU{m_1}{\tomega_1}$, the relative angular velocity, which may be used in coordinate spring-dampers or for velocity-level constraints, 
+    is simply computed as
+    \be
+      \dot \varphi = \LU{0}{\av}_0\tp \left( \LU{0,m_1}{\Rot}_{m1} \LU{m_1}{\tomega_1} - 
+                        \LU{0,m_0}{\Rot}_{m0} \LU{m_0}{\tomega_0} \right)
+    \ee
+    Jacobians are computed according to the relative rotation velocity.
+    Using this approach, coordinate constraints can be added to mechanisms to purely add internal drives, not affecting global momenta.
+    Furthermore, coupling to a relative translation can be used to create advanced mechanisms and gears.
+    %%RSTCOMPATIBLE
+/end
+#V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
+#CObjectMarkerBodyPosition* automatically inserted!
+Vp,     M,      name,                           ,               ,       String,     "",                         ,       I,      "marker's unique name"
+V,      CP,     bodyNumbers,                    ,               ,       ArrayObjectIndex,"ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })",     ,       I,   "$[b_0,b_1]\tp$list of body numbers for which relative coordinate is computed"
+V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",     ,       I,  "node number of NodeGenericData with 1 coordinate which contains previous angle for continuation of angles (initialize accordingly if needed); if node is not supplied, angles will have jump outside $\pm \pi$"
+V,      CP,     localPosition0,                 ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\LU{m_0}{\pv}_0$local position on body 0; i.e. local (body-fixed) position where position is measured and force is applied to"
+V,      CP,     localPosition1,                 ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\LU{m_1}{\pv}_1$local position on body 1; i.e. local (body-fixed) position where position is measured and force is applied to"
+V,      CP,     axis0,                          ,               3,      Vector3D,   "Vector3D({1.,0.,0.})",     ,       I,      "$\LU{m_0}{\av}_0$axis defined in body 0, along which the relative rotation is measured"
+V,      CP,     offset,                         ,               ,       Real,       0.,                         ,       I,      "$x_\mathrm{off}$rotation offset [SI:1] subtracted from the measured rotation; can be used to change the zero rotation"
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumbers[localIndex];", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumbers[localIndex] = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 2;",                ,       CI,     "general access to object number" 
+Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change bodyNumber"
+Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Node + Marker::Coordinate + Marker::Position + Marker::Orientation + Marker::HasPostNewton\n        //+ Marker::JacobianDerivativeAvailable + Marker::JacobianDerivativeNonZero//neglected for now\n            );", ,       CI,     "return marker type (for body treatment in computation)" 
+Fv,     C,      GetDimension,                   ,               ,       Index,      "return 1;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
+Fv,     C,      GetPosition,                    ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker" 
+Fv,     C,      GetVelocity,                    ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& velocity, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return velocity of marker" 
+Fv,     C,      GetRotationMatrix,              ,               ,       void,       ,                           "const CSystemData& cSystemData, Matrix3D& rotationMatrix, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent rotation matrix of node; returns always a 3D Matrix" 
+Fv,     C,      GetAngularVelocity,             ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& angularVelocity, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent angular velocity of node; returns always a 3D Vector" 
+Fv,     C,      GetAngularVelocityLocal,        ,               ,       void,       ,                           "const CSystemData& cSystemData, Vector3D& angularVelocity, ConfigurationType configuration = ConfigurationType::Current",       CDI,    "return configuration dependent local (=body-fixed) angular velocity of node; returns always a 3D Vector" 
+Fv,     C,      ComputeMarkerData,              ,               ,       void,       ,  "const CSystemData& cSystemData, bool computeJacobian, MarkerData& markerData", CDI,     "Compute marker data (e.g. position and positionJacobian) for a marker" 
+Fv,     C,      ComputeMarkerDataJacobianDerivative, ,          ,       void,       ,  "const CSystemData& cSystemData, const Vector6D& v6D, MarkerData& markerData", CDI,     "fill in according data for derivative of jacobian times vector v6D, e.g.: d(Jpos.T @ v6D[0:3])/dq; v6D represents 3 force components and 3 torque components in global coordinates!" 
+Fv,     C,      PostNewtonStep,                 ,               ,       void,       ,  "CSystemData& cSystemData, const MarkerData& markerData",      DI,     "Perform PostNewtonStep for marker (enable continuous rotation)" 
+Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'BodiesRelativeTranslationCoordinate';",   ,       CI,     "Get type name of marker (without keyword 'Marker'...!); could also be realized via a string -> type conversion?" 
+Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
+#VISUALIZATION:
+Vp,     V,      show,                           ,               ,      Bool,   "true",                          ,       IO,     "set true, if item is shown in visualization and false if it is not shown"
+Fv,     V,      UpdateGraphics,                 ,               ,      void,        ";",                        "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
 #file names automatically determined from class name
 writeFile = True
 
@@ -9576,7 +9946,9 @@ V,      CP,     meshNodeNumbers,                ,               ,       ArrayInd
 V,      CP,     weightingFactors,               ,               ,       Vector,     "Vector()",                 ,       I,      "$[w_{0},\,\ldots,\,w_{n_m-1}]\tp$a list of $n_m$ weighting factors per node to compute the final local position; the sum of these weights shall be 1, such that a summation of all nodal positions times weights gives the average position of the marker"
 #V,      CP,     bodyFixed,                      ,               ,       Bool,       "false",                    ,       IO,      "if bodyFixed is true, the force/sensor is using body-fixed coordinates (orientation); otherwise, it uses global coordinates"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 #Fv,     C,      GetNodeNumbers,                 ,               ,       ArrayIndex, "return parameters.nodeNumbers;", ,  CI,    "access to node numbers" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Position + Marker::SuperElement);", ,       CI,     "return marker type (for node treatment in computation)" 
 #Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                ,       CI,     "return dimension of connector, which an attached connector would have" 
@@ -9808,7 +10180,9 @@ V,      CP,     weightingFactors,               ,               ,       Vector, 
 V,      CP,     useAlternativeApproach,         ,               ,       Bool,       "true",                     ,       I,      "this flag switches between two versions for the computation of the rotation and angular velocity of the marker; alternative approach uses skew symmetric matrix of reference position; follows the inertia concept"
 V,      CP,     rotationsExponentialMap,        ,               ,       Index,      "2",                        ,       I,      "Experimental flag (2 is the correct value and will be used in future, removing this flag): This value switches different behavior for computation of rotations and angular velocities: 0 uses linearized rotations and angular velocities, 1 uses the exponential map for rotations but linear angular velocities, 2 uses the exponential map for rotations and the according tangent map for angular velocities"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 #Fv,     C,      GetNodeNumbers,                 ,               ,       ArrayIndex, "return parameters.nodeNumbers;", ,  CI,    "access to node numbers" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Position + Marker::Orientation + Marker::SuperElement);", ,       CI,     "return marker type (for node treatment in computation)" 
 #Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                ,       CI,     "return dimension of connector, which an attached connector would have" 
@@ -9892,7 +10266,9 @@ V,      CP,     objectNumber,                   ,               ,       ObjectIn
 V,      CP,     linkNumber,                     ,               ,       UInt,       "EXUstd::InvalidIndex",     ,       I,      "$n_l$number of link in KinematicTree to which marker is attached to"
 V,      CP,     localPosition,                  ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "$\LU{l}{\bv}$local (link-fixed) position of marker at link $n_l$, using the link ($n_l$) coordinate system"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.objectNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 #Fv,     C,      GetNodeNumbers,                 ,               ,       ArrayIndex, "return parameters.nodeNumbers;", ,  CI,    "access to node numbers" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Position + Marker::Orientation + Marker::KinematicTree);", ,       CI,     "return marker type (for node treatment in computation)" 
 #Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                ,       CI,     "return dimension of connector, which an attached connector would have" 
@@ -9930,7 +10306,9 @@ classType = Marker
 Vp,     M,      name,                           ,               ,       String,     "",                         ,       I,      "marker's unique name"
 V,      CP,     objectNumber,                   ,               ,       ObjectIndex,      "EXUstd::InvalidIndex",     ,       I,      "body number to which marker is attached to"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.objectNumber = objectNumber;", "Index objectNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Coordinates + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      ,  "const CSystemData& cSystemData", CDI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,       "position = Vector3D({0,0,0});",  "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CI,   "return position of marker" 
@@ -10000,7 +10378,9 @@ V,      CP,     numberOfSegments,               ,               ,       PInt,   
 V,      CP,     verticalOffset,                 ,               ,       Real,       "0.",                        ,       I,      "vertical offset from beam axis in positive (local) Y-direction; this offset accounts for consistent computation of positions and velocities at the surface of the beam"
 #V,      CP,     localPosition,                  ,               3,      Vector3D,   "Vector3D({0.,0.,0.})",     ,       I,      "local body position of marker; e.g. local (body-fixed) position where force is applied to"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = bodyNumber;", "Index bodyNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Coordinate + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 2;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker -> axis-midpoint of ANCF cable" 
@@ -10026,7 +10406,9 @@ classType = Marker
 Vp,     M,      name,                           ,               ,       String,     "",                       ,       I,      "marker's unique name"
 V,      CP,     bodyNumber,                     ,               ,       ObjectIndex,"EXUstd::InvalidIndex",       ,       I,      "body number to which marker is attached to"
 #
-Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", "Index localIndex = 0",  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = bodyNumber;", "Index bodyNumber, Index localIndex = 0",  I,     "change bodyNumber"
+Fv,     C,      GetNumberOfObjects,             ,               ,       Index,      "return 1;",                ,       CI,     "general access to object number" 
 Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Coordinate + Marker::JacobianDerivativeAvailable);", ,       CI,     "return marker type (for node treatment in computation)" 
 Fv,     C,      GetDimension,                   ,               ,       Index,      "return 2;",                "const CSystemData& cSystemData", CI,   "return dimension of connector, which an attached connector would have; for coordinate markers, it gives the number of coordinates used by the marker"
 Fv,     C,      GetPosition,                    ,               ,       void,   ,                               "const CSystemData& cSystemData, Vector3D& position, ConfigurationType configuration = ConfigurationType::Current", CDI,   "return position of marker -> axis-midpoint of ANCF cable" 
@@ -10057,6 +10439,7 @@ writeFile = True
 #V,      CP,     cableNumbers,                   ,               ,       ArrayIndex, "ArrayIndex()",             ,       I,      "a list of Cable2D beam elements; the cable elements must be in a sequence, such that at beam(i),x=L the beam(i+1),x=0 needs to start"
 ##
 #Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+#Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = bodyNumber;", "Index bodyNumber",  I,     "change bodyNumber"
 #Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "general access to node number" 
 #Fv,     C,      GetType,                        ,               ,       "Marker::Type", "return (Marker::Type)(Marker::Body + Marker::Object + Marker::Node + Marker::Position);", ,       CI,     "return marker type (for node treatment in computation)" 
 #Fv,     C,      GetDimension,                   ,               ,       Index,      "return 3;",                ,       CI,     "return dimension of connector, which an attached connector would have" 
@@ -10344,6 +10727,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "return parameters.nodeNumber;", ,  CI,     "general access to node number" 
+Fv,     C,      SetNodeNumber,                  ,               ,       void,       "parameters.nodeNumber = nodeNumber;", "Index nodeNumber",  I,     "change nodeNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::Node;", ,     CI,     "return sensor type" 
 #
 Fv,     C,      GetWriteToFileFlag,             ,               ,       Bool,        "return parameters.writeToFile;", , CI,    "get writeToFile flag" 
@@ -10376,6 +10760,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.objectNumber = objectNumber;", "Index objectNumber",  I,     "change objectNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::Object;", ,     CI,     "return sensor type" 
 #
 Fv,     C,      GetWriteToFileFlag,             ,               ,       Bool,        "return parameters.writeToFile;", , CI,    "get writeToFile flag" 
@@ -10409,6 +10794,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = bodyNumber;", "Index bodyNumber",  I,     "change bodyNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::Body;", ,     CI,     "return sensor type" 
 #
 F,      C,      GetBodyLocalPosition,           ,               ,       Vector3D,    "return parameters.localPosition;", , CI,  "get local position" 
@@ -10443,6 +10829,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.bodyNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.bodyNumber = bodyNumber;", "Index bodyNumber",  I,     "change bodyNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::SuperElement;", ,     CI,     "return sensor type" 
 #
 F,      C,      GetMeshNodeNumber,              ,               ,       Index,      "return parameters.meshNodeNumber;", , CI,  "get local position" 
@@ -10478,6 +10865,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetObjectNumber,                ,               ,       Index,      "return parameters.objectNumber;", ,  CI,     "general access to object number" 
+Fv,     C,      SetObjectNumber,                ,               ,       void,       "parameters.objectNumber = objectNumber;", "Index objectNumber",  I,     "change objectNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::KinematicTree;", , CI,"return sensor type" 
 #
 F,      C,      GetBodyLocalPosition,           ,               ,       Vector3D,    "return parameters.localPosition;", , CI,  "get local position" 
@@ -10512,6 +10900,7 @@ V,      CP,     outputVariableType,             ,               ,       OutputVa
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetMarkerNumber,                ,               ,       Index,      "return parameters.markerNumber;", ,  CI,     "general access to marker number" 
+Fv,     C,      SetMarkerNumber,                ,               ,       void,       "parameters.markerNumber = markerNumber;", "Index markerNumber",  I,     "change markerNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::Marker;", ,     CI,     "return sensor type" 
 #
 Fv,     C,      GetWriteToFileFlag,             ,               ,       Bool,        "return parameters.writeToFile;", , CI,    "get writeToFile flag" 
@@ -10545,6 +10934,7 @@ V,      CP,     fileName,                       ,               ,       String, 
 V,      CP,     storeInternal,                  ,               ,       Bool,       false,                       ,       I,     "true: store sensor data in memory (faster, but may consume large amounts of memory); false: internal storage not available"
 #
 Fv,     C,      GetLoadNumber,                  ,               ,       Index,      "return parameters.loadNumber;", ,  CI,     "general access to load number" 
+Fv,     C,      SetLoadNumber,                  ,               ,       void,       "parameters.loadNumber = loadNumber;", "Index loadNumber",  I,     "change loadNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::Load;", ,     CI,     "return sensor type" 
 #
 Fv,     C,      GetWriteToFileFlag,             ,               ,       Bool,        "return parameters.writeToFile;", , CI,    "get writeToFile flag" 
@@ -10636,6 +11026,7 @@ V,      CP,     storeInternal,                  ,               ,       Bool,   
 #
 Fv,     C,      GetSensorNumber,                ,               ,       Index,      "return parameters.sensorNumbers[localIndex];",  "Index localIndex",  CI,     "general access to sensor number" 
 Fv,     C,      GetNumberOfSensors,             ,               ,       Index,      "return parameters.sensorNumbers.NumberOfItems();",  ,  CI,     "total number of dependent sensors"
+Fv,     C,      SetSensorNumber,                ,               ,       void,       "parameters.sensorNumbers[localIndex] = sensorNumber;", "Index localIndex, Index sensorNumber",  I,     "change sensorNumber"
 Fv,     C,      GetType,                        ,               ,       "SensorType", "return SensorType::UserFunction;", ,     CI,     "return sensor type" 
 #
 Fv,     C,      GetWriteToFileFlag,             ,               ,       Bool,        "return parameters.writeToFile;", , CI,    "get writeToFile flag" 
@@ -10674,73 +11065,4 @@ writeFile = True
 
 
 
-
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD 
-#DEPRECTADED - WILL BE DELETED     DEPRECTADED - WILL BE DELETED     DEPRECTADED - WILL BE DELETED
-
-
-#%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class = ObjectContactFrictionCircleCable2DOld
-classDescription = "A very specialized penalty-based contact/friction condition between a 2D circle in the local x/y plane (=marker0, a Rigid-Body Marker) on a body and an ANCFCable2DShape (=marker1, Marker: BodyCable2DShape), in xy-plane; a node NodeGenericData is required with 3$\times$(number of contact segments) -- containing per segment: [contact gap, stick/slip (stick=1), last friction position]; Note that friction can be only considered in the dynamic case where velocities are available, while it is inactive in the static case."
-cParentClass = CObjectConnector
-mainParentClass = MainObjectConnector
-visuParentClass = VisualizationObject
-addIncludesC = 'constexpr Index CObjectContactFrictionCircleCable2DOldmaxNumberOfSegments = 12; //maximum number of contact segments\nconstexpr Index CObjectContactFrictionCircleCable2DOldmaxObject0Coordinates = 12; //this is a non-optimal solution; used for a constsizevector in the computation of the action on the body of marker0\n'
-#addPublicC = "    static constexpr Index maxNumberOfSegments = 12; //maximum number of contact segments\n    static constexpr Index maxObject0Coordinates = 12; //this is a non-optimal solution; used for a constsizevector in the computation of the action on the body of marker0//problems with older compilers (linux, MacOS)\n"
-classType = Object
-objectType = Connector
-excludeFromTheDoc = True
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#V|F,   Dest,   pythonName,                   cplusplusName,     size,   type,       (default)Value,             Args,   cFlags, parameterDescription
-#CObjectMarkerBodyPosition* automatically inserted!
-Vp,     M,      name,                           ,               ,       String,     "",                       ,       I,      "connector's unique name"
-V,      CP,     markerNumbers,                  ,               ,       ArrayMarkerIndex,"ArrayIndex({ EXUstd::InvalidIndex, EXUstd::InvalidIndex })", ,       I,      "$[m0,m1]\tp$markers define contact gap"
-V,      CP,     nodeNumber,                     ,               ,       NodeIndex,      "EXUstd::InvalidIndex",  ,       I,      "$n_g$node number of a NodeGenericData with 3 $\times n_{cs}$  dataCoordinates (used for active set strategy $\ra$ hold the gap of the last discontinuous iteration and the friction state)"
-V,      CP,     numberOfContactSegments,        ,               ,       PInt,       "3",                         ,       I,      "$n_{cs}$number of linear contact segments to determine contact; each segment is a line and is associated to a data (history) variable; must be same as in according marker"
-V,      CP,     contactStiffness,               ,               ,       UReal,      0.,                          ,       I,      "$k_c$contact (penalty) stiffness [SI:N/m/(contact segment)]; the stiffness is per contact segment; specific contact forces (per length) $f_n$ act in contact normal direction only upon penetration"
-V,      CP,     contactDamping,                 ,               ,       UReal,      0.,                          ,       I,      "$d_c$contact damping [SI:N/(m s)/(contact segment)]; the damping is per contact segment; acts in contact normal direction only upon penetration"
-V,      CP,     frictionVelocityPenalty,        ,               ,       UReal,      0.,                          ,       I,      "$\mu_v$velocity dependent penalty coefficient for friction [SI:N/(m s)/(contact segment)]; the coefficient causes tangential (contact) forces against relative tangential velocities in the contact area"
-V,      CP,     frictionStiffness,              ,               ,       UReal,      0.,                          ,       I,      "$\mu_k$CURRENTLY NOT IMPLEMENTED: displacement dependent penalty/stiffness coefficient for friction [SI:N/m/(contact segment)]; the coefficient causes tangential (contact) forces against relative tangential displacements in the contact area"
-V,      CP,     frictionCoefficient,            ,               ,       UReal,      0.,                          ,       I,      "$\mu$friction coefficient [SI: 1]; tangential specific friction forces (per length) $f_t$ must fulfill the condition $f_t \le \mu f_n$"
-V,      CP,     circleRadius,                   ,               ,       UReal,      0.,                          ,       I,      "$r$radius [SI:m] of contact circle"
-#delete: this is done by position marker! V,      CP,     circleMidpoint,                 ,               ,       Vector2D,   "Vector2D({0.,0.})",         ,       I,      "2D point [SI:m] of contact circle"
-V,      CP,     offset,                         ,               ,       Real,       0.,                          ,       I,      "$h_o$offset [SI:m] of contact, e.g. to include thickness of cable element"
-V,      CP,     activeConnector,                ,               ,       Bool,       "true",                      ,       IO,     "flag, which determines, if the connector is active; used to deactivate (temporarily) a connector or constraint"
-#
-Fv,     C,      GetMarkerNumbers,               ,               ,       "const ArrayIndex&", "return parameters.markerNumbers;",,CI,     "default function to return Marker numbers" 
-Fv,     C,      GetNodeNumber,                  ,               ,       Index,      "CHECKandTHROW(localIndex == 0, __EXUDYN_invalid_local_node);\n        return parameters.nodeNumber;",       "Index localIndex",       CI,     "Get global node number (with local node index); needed for every object ==> does local mapping" 
-Fv,     C,      GetNumberOfNodes,               ,               ,       Index,      "return 1;",                ,       CI,     "number of nodes; needed for every object" 
-Fv,     C,      GetDataVariablesSize,           ,               ,       Index,      "return 3*parameters.numberOfContactSegments;",                 ,       CI,     "Needs a data variable for every contact segment (tells if this segment is in contact or not), every friction condition (stick = 1, slip = 0), and the last sticking position in tangential direction in terms of an angle $\varphi$ in the local circle coordinates ($\varphi = 0$, if the vector to the contact position is aligned with the x-axis)" 
-Fv,     M,      CheckPreAssembleConsistency,    ,               ,       Bool,       ,                           "const MainSystem& mainSystem, STDstring& errorString", CDI,     "Check consistency prior to CSystem::Assemble(); needs to find all possible violations such that Assemble() would fail" 
-#computation functions:
-F,      C,      ComputeGap,                     ,               ,       void,       ,           "const MarkerDataStructure& markerData, ConstSizeVector<CObjectContactFrictionCircleCable2DOldmaxNumberOfSegments>& gapPerSegment, ConstSizeVector<CObjectContactFrictionCircleCable2DOldmaxNumberOfSegments>& referenceCoordinatePerSegment, ConstSizeVector<CObjectContactFrictionCircleCable2DOldmaxNumberOfSegments>& xDirectionGap, ConstSizeVector<CObjectContactFrictionCircleCable2DOldmaxNumberOfSegments>& yDirectionGap",       CDI,     "compute gap for given MarkerData; done for every contact point (numberOfSegments+1) --> in order to decide contact state for every segment; in case of positive gap, the area is distance*segment_length" 
-Fv,     C,      ComputeODE2LHS,                 ,               ,       void,       ,                           "Vector& ode2Lhs, const MarkerDataStructure& markerData, Index objectNumber",          CDI,     "Computational function: compute left-hand-side (LHS) of second order ordinary differential equations (ODE) to 'ode2Lhs'" 
-#Fv,     C,      ComputeJacobianODE2_ODE2,       ,               ,       void,       ,                           "ResizableMatrix& jacobian, ResizableMatrix& jacobian_ODE2_t, const MarkerDataStructure& markerData",              CDI,      "Computational function: compute Jacobian of \hac{ODE2} LHS equations w.r.t. ODE coordinates (jacobian) and if JacobianType::ODE2_ODE2_t flag is set in GetAvailableJacobians() compute jacobian w.r.t. ODE_t coordinates"
-Fv,     C,      GetAvailableJacobians,          ,               ,       JacobianType::Type, "return (JacobianType::Type)(JacobianType::ODE2_ODE2 + JacobianType::ODE2_ODE2_t);",                    ,          CI, "return the available jacobian dependencies and the jacobians which are available as a function; if jacobian dependencies exist but are not available as a function, it is computed numerically; can be combined with 2^i enum flags"
-Fv,     C,      HasDiscontinuousIteration,        ,               ,       Bool,       "return true;",             ,       CI,     "flag to be set for connectors, which use DiscontinuousIteration" 
-Fv,     C,      PostNewtonStep,                    ,               ,       Real,       ,"const MarkerDataStructure& markerDataCurrent, Index itemIndex, PostNewtonFlags::Type& flags, Real& recommendedStepSize",       DI,      "function called after Newton method; returns a residual error (force)" 
-Fv,     C,      PostDiscontinuousIterationStep, ,               ,       void,       ,                             ,       DI,      "function called after discontinuous iterations have been completed for one step (e.g. to finalize history variables and set initial values for next step)" 
-#TYPES and ACCESS:
-Fv,     C,      IsPenaltyConnector,                ,               ,       Bool,       "return true;",             ,       CI,     "connector uses penalty formulation" 
-Fv,     C,      GetOutputVariableTypes,         ,               ,       OutputVariableType,,                    ,       CDI, "Flags to determine, which output variables are available (displacment, velocity, stress, ...)" 
-Fv,     C,      GetOutputVariableConnector,              ,               ,       void,       ,                           "OutputVariableType variableType, const MarkerDataStructure& markerData, Index itemIndex, Vector& value",          DC, "provide according output variable in 'value'" 
-Fv,     C,      GetRequestedMarkerType,         ,               ,       Marker::Type, "return Marker::_None;", ,   CI,     "provide requested markerType for connector; for different markerTypes in marker0/1 => set to ::\_None" 
-Fv,     M,      GetRequestedNodeType,           ,               ,       Node::Type, "return Node::GenericData;", ,         CI,     "provide requested nodeType for objects; used for automatic checks in CheckSystemIntegrity()" 
-Fv,     C,      GetType,                        ,               ,       CObjectType,"return CObjectType::Connector;", , CI,     "return object type (for node treatment in computation)" 
-Fv,     M,      GetTypeName,                    ,               ,       const char*,"return 'ContactFrictionCircleCable2DOld';", ,    CI,     "Get type name of node (without keyword 'Object'...!); could also be realized via a string -> type conversion?" 
-Fv,     C,      IsActive,                       ,               ,       Bool,       "return parameters.activeConnector;", , CI,    "return if connector is active-->speeds up computation" 
-#specific function
-F,      C,      IsContactActive,                ,               ,       Bool,       , , CDI,    "return if contact is active-->avoids computation of ODE2LHS, speeds up computation" 
-#VISUALIZATION:
-Fv,     V,      UpdateGraphics,                 ,               ,       void,        ,                          "const VisualizationSettings& visualizationSettings, VisualizationSystem* vSystem, Index itemNumber", DI,  "Update visualizationSystem -> graphicsData for item; index shows item Number in CData" 
-Fv,     V,      IsConnector,                    ,               ,       Bool,   "return true;",                  ,       CI,    "this function is needed to distinguish connector objects from body objects"
-Vp,     V,      show,                           ,               ,       Bool,   "true",                          ,       IO,    "set true, if item is shown in visualization and false if it is not shown"
-V,      V,      drawSize,                       ,               ,       float,  "-1.f",                          ,       IO,    "drawing size = diameter of spring; size == -1.f means that default connector size is used"
-V,      V,      color,                          ,               ,       Float4,        "Float4({-1.f,-1.f,-1.f,-1.f})",, IO,    "RGBA connector color; if R==-1, use default color" 
-#file names automatically determined from class name
-writeFile = True
 

@@ -176,7 +176,7 @@ nCCRigid2 = mbs.AddObject(CoordinateConstraint(markerNumbers=[mGlobalGround,mnRi
 mbs.Assemble()
 #exu.Print(mbs)
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # Simualtion settings:
@@ -198,12 +198,12 @@ SC.visualizationSettings.connectors.showContact = True
 
 
 if useGraphics: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 #get initial velocities
 vInit = mbs.systemData.GetODE2Coordinates_t(configuration = exu.ConfigurationType.Initial)
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 
 mbs.SolveStatic(simulationSettings) 
 
@@ -221,7 +221,7 @@ sol = mbs.systemData.GetODE2Coordinates();
 u = sol[int(ncables/4)*4+1]; #y-displacement of node at midpoint of rope
      
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 
 mbs.SetObjectParameter(aleSlidingJoint, 'activeConnector', True)
 mbs.SetObjectParameter(nCCRigid0, 'activeConnector', False)
@@ -254,8 +254,8 @@ if solveDynamic:
     
 
 if useGraphics: 
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 #compute error for test suite:
 ncables = len(suspensionCableNodeList)

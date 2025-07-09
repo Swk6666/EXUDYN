@@ -18,7 +18,7 @@ import exudyn.graphics as graphics #only import if it does not conflict
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 useGraphics=True
 useFriction = False
 
@@ -81,13 +81,13 @@ simulationSettings.timeIntegration.endTime = tEnd
 simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 1 #SHOULD work with 0.9 as well
 
 if useGraphics: 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 u = mbs.GetNodeOutput(n1, exu.OutputVariableType.Position)

@@ -109,7 +109,11 @@ namespace EXUvis {
 	//! draw cube with midpoint and size in x,y and z direction
 	void DrawOrthoCube(const Vector3D& midPoint, const Vector3D& size, const Float4& color, GraphicsData& graphicsData, 
 		Index itemID, bool showFaces=true, bool showEdges=false);
-		
+
+	//! add a 3D circle to graphicsData with reference point (pMid) and rotation matrix rot, which serves as a transformation;
+	//! points for circles are computed in x/y plane and hereafter rotated by rotation matrix rot
+	void DrawCircle(const Vector3D& pMid, const Matrix3D& rot, Real radius, const Float4& color, GraphicsData& graphicsData, Index itemID, Index nTiles);
+
 	//! add a cylinder to graphicsData with reference point (pAxis0), axis vector (vAxis) and radius using triangle representation
 	//! angleRange is used to draw only part of the cylinder; 
 	//! if lastFace=true, a closing face is drawn in case of limited angle; 

@@ -123,15 +123,15 @@ simulationSettings.timeIntegration.newton.useModifiedNewton = True
 simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.5
 
 
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 
 #++++++++++++++++++++++++++++++++++++++++++
 #solve generalized alpha / index3:
 mbs.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 
 u = mbs.GetNodeOutput(nMass, exu.OutputVariableType.Position) #tip node

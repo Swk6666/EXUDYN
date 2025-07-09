@@ -122,8 +122,8 @@ simulationSettings.displayComputationTime = False
 
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)#, experimentalNewSolver=True)
 
@@ -143,6 +143,6 @@ exudynTestGlobals.testResult = u
 
 
 if useGraphics:
-    #SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    #SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 

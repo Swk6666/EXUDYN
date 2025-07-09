@@ -197,8 +197,8 @@ mbs.Assemble()
 
 if useGraphics: #only start graphics once, but after background is set
     ## start renderer
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
     
 tEnd = 10
 # h = 2e-5 #RK44
@@ -249,8 +249,8 @@ mbs.SolveDynamic(simulationSettings,
 
 if useGraphics: #only start graphics once, but after background is set
     ## wait for user to quit, then stop visualization
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 ## print relevant results
 # result = mbs.GetNodeOutput(2,exu.OutputVariableType.Velocity)[1] #y-velocity of bar

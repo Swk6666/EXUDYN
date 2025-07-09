@@ -18,6 +18,8 @@ import sys
 import time
 from copy import deepcopy #, copy 
 import os
+
+import exudyn
 from exudyn.advancedUtilities import IsInteger, IsEmptyList
 
 #%%+++++++++++++++++++++++++++++++++++++++++++
@@ -27,9 +29,8 @@ from exudyn.advancedUtilities import IsInteger, IsEmptyList
 def GetVersionPlatformString():
     sReturn = ''
     try:
-        import exudyn
         sReturn += 'Exudyn version = '
-        sReturn += exudyn.GetVersionString(True)
+        sReturn += exudyn.config.Version(True)
     except:
         import sys
         #the micro version may be different!
@@ -48,7 +49,7 @@ def GetVersionPlatformString():
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
 #*function: internal function; convert single index i into subindices based on given list of ranges in subIndexRanges; return list of subindices for sub ranges; ordering is according to way computed in ParameterVariation
-# try following to see effects: for i in range(100): print(SingleIndex2SubIndices(i,[10,2,3,2]))
+# try following to see effects: for i in range(100): exudyn.Print(SingleIndex2SubIndices(i,[10,2,3,2]))
 def SingleIndex2SubIndices(i, subIndexRanges):
     nr = len(subIndexRanges)
     iRanges=[]
@@ -56,10 +57,10 @@ def SingleIndex2SubIndices(i, subIndexRanges):
         rem = 1
         for j in range(k+1,nr):
             rem *= subIndexRanges[j]
-        # print('k=',k,'rem=',rem)
+
         kk = int(i/rem)%subIndexRanges[k]
         iRanges += [kk]
-    # print('iRanges=',iRanges)
+
     return iRanges
     
 
@@ -79,7 +80,7 @@ def AddComputationIndexAndFunctionData(ind, cnt, addComputationIndex, parameterF
 # write header or values to output file and increase counter
 def WriteToFile(resultsFile, parameters, currentGeneration, values, globalCnt, writeHeader = False, fileType='genetic optimization', multiProcessingMode=''):
     if resultsFile != '':
-        #print('write to file')
+
         if writeHeader:
             try:
                 #check only added in case of writeHeader to reduce overheads; may fail, if no header is written (but why...?)
@@ -121,14 +122,13 @@ def WriteToFile(resultsFile, parameters, currentGeneration, values, globalCnt, w
             s += str(globalCnt) + ', '
             s += str(values[i])
             for (key,value) in currentGeneration[i].items():
-                #print(currentGeneration[i])
                 if key != 'functionData':
                     s += ', ' + str(value)
             file.write(s+'\n')
             globalCnt += 1 #for every line of values
             
         file.close()
-        #print('... done')
+
     return globalCnt
     
 
@@ -162,7 +162,7 @@ def WriteToFile(resultsFile, parameters, currentGeneration, values, globalCnt, w
 def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, clusterHostNames=[], **kwargs):
     values = [] #create empty list
     nVariations = len(parameterList)
-    #print("pl=",parameterList)
+
     showProgress = False
     if 'showProgress' in kwargs: 
         showProgress = kwargs['showProgress']
@@ -180,7 +180,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
         try:
             import dispy
         except:
-            print('WARNING: ProcessParameterList: dispy is not installed (try: pip install dispy); switching to multiprocessing mode instead')
+            exudyn.Print('WARNING: ProcessParameterList: dispy is not installed (try: pip install dispy); switching to multiprocessing mode instead')
             useCluster = False
 
     useMPI = False
@@ -190,7 +190,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
             try:
                 from mpi4py.futures import MPIPoolExecutor
             except:
-                print('WARNING: ProcessParameterList: mpi4py is not installed or mpi4py.futures not available (try: conda install mpi4py); switching to multiprocessing mode instead')
+                exudyn.Print('WARNING: ProcessParameterList: mpi4py is not installed or mpi4py.futures not available (try: conda install mpi4py); switching to multiprocessing mode instead')
                 useMPI = False
 
     useTQDM = False
@@ -204,7 +204,6 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
             useTQDM = True
         except:
             pass
-            #print("module 'tqdm' not available (use pip to install); progress bar not shown")
 
     resultsFileCnt = 0 #counter for results file; used in several if branches
 
@@ -227,14 +226,14 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
                     else:
                         printStr += ": parameters=" + str(currentParameters)
                     
-                    print("\rrun ", i+1, "/", nVariations, printStr, '                ', end='', flush=True)
+                    exudyn.Print("\rrun ", i+1, "/", nVariations, printStr, '                ', end='', flush=True)
                 if resultsFile != '':
                     resultsFileCnt = WriteToFile(resultsFile, parameters, [parameterList[resultsFileCnt]], 
                                               [v], resultsFileCnt, writeHeader = (resultsFileCnt == 0), 
                                               fileType='parameter variation',
                                               multiProcessingMode='serial')
             if showProgress:
-                print("", flush=True) #newline after tqdm progress bar output....
+                exudyn.Print("", flush=True) #newline after tqdm progress bar output....
         else:
             from multiprocessing import Pool, cpu_count #parallelization of computation
            
@@ -254,7 +253,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
                                                       [v], resultsFileCnt, writeHeader = (resultsFileCnt == 0), 
                                                       fileType='parameter variation',
                                                       multiProcessingMode='multiprocessing.Pool, numberOfThreads='+str(numberOfThreads))
-                print("", flush=True) #newline after tqdm progress bar output....
+                exudyn.Print("", flush=True) #newline after tqdm progress bar output....
             else:
                 #simpler approach without tqdm:
                 # with Pool(processes=numberOfThreads) as p:
@@ -267,7 +266,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
                                                       [v], resultsFileCnt, writeHeader = (resultsFileCnt == 0), 
                                                       fileType='parameter variation',
                                                       multiProcessingMode='multiprocessing.Pool, numberOfThreads='+str(numberOfThreads))
-                            #print("value=",i)
+
     elif useCluster: 
         
         # form cluster and submit jobs
@@ -278,7 +277,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
         http_server = None
         if 'useDispyWebMonitor' in kwargs: #showProgress: #True:
             if showProgress:
-                print('open http monitor')
+                exudyn.Print('open http monitor')
             import dispy.httpd
             import socket
             clientHostname = socket.gethostname()
@@ -311,10 +310,10 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
             if showProgress:
                 #show return values only in case that they are of float type
                 if (type(job.result) == float) or (type(job.result) == int):
-                    print('executed job '+str(job.id) + ' / ' + str(nVariations) +
+                    exudyn.Print('executed job '+str(job.id) + ' / ' + str(nVariations) +
                           ' with return value ' + str(job.result))
                 else:
-                    print('executed job ' + str(job.id) + ' / ' + str(nVariations))
+                    exudyn.Print('executed job ' + str(job.id) + ' / ' + str(nVariations))
         
         # close cluster
         cluster.wait()
@@ -346,7 +345,7 @@ def ProcessParameterList(parameterFunction, parameterList, useMultiProcessing, c
                                                   [v], resultsFileCnt, writeHeader = (resultsFileCnt == 0), 
                                                   fileType='parameter variation',
                                                   multiProcessingMode='mpi4py, numberOfWorkers='+str(nprocs))
-            print("", flush=True) #newline after tqdm progress bar output....
+            exudyn.Print("", flush=True) #newline after tqdm progress bar output....
         else:
             #simpler approach without tqdm:
             # with Pool(processes=numberOfThreads) as p:
@@ -400,9 +399,9 @@ def ParameterVariation(parameterFunction, parameters,
             numberOfThreads = cpu_count() #cpu_count in fact gives number of threads ...
         if debugMode:
             if IsEmptyList(clusterHostNames):
-                print("using", numberOfThreads, "cpus")
+                exudyn.Print("using", numberOfThreads, "cpus")
             else:
-                print("using cluster")
+                exudyn.Print("using cluster")
     if numberOfThreads == None:
         numberOfThreads = 8 #just some default, if no other value available
 
@@ -422,11 +421,11 @@ def ParameterVariation(parameterFunction, parameters,
         
     nVariations = np.array(nParams).prod() #product of all ranges gives total count
     if nVariations == 0:
-        print("WARNING: number of variations =", nVariations)
+        exudyn.Print("WARNING: number of variations =", nVariations)
         return []
 
     if debugMode:
-        print("number of variations =", nVariations)
+        exudyn.Print("number of variations =", nVariations)
 
     cnt = 0
     isIntType = [False] * dim # true if corresponding parameter ranges/list is all int type
@@ -466,14 +465,12 @@ def ParameterVariation(parameterFunction, parameters,
             range1 = 1 #otherwise kronecker product won't work
         if range2 == 0:
             range2 = 1 #otherwise kronecker product won't work
-            
-        #print("space=",space)
         
         parameterDict[key] = np.kron(np.kron([1]*range1, space), [1]*range2)
         cnt+=1 #counts the dimensionality
 
     if debugMode:
-        print("parameterDict =", parameterDict)
+        exudyn.Print("parameterDict =", parameterDict)
 
     if addComputationIndex:
         parameterDict['computationIndex'] = np.linspace(0,nVariations-1,nVariations,dtype=int)
@@ -584,9 +581,9 @@ def GeneticOptimization(objectiveFunction, parameters,
 
     if useMultiProcessing:
         if clusterHostNames==[]:
-            print("number of threads used =", numberOfThreads,flush=True) #very useful information
+            exudyn.Print("number of threads used =", numberOfThreads,flush=True) #very useful information
         else:
-            print("using cluster",flush=True) 
+            exudyn.Print("using cluster",flush=True) 
             
 
     useDispyWebMonitor = False
@@ -605,13 +602,13 @@ def GeneticOptimization(objectiveFunction, parameters,
     #+++++++++++++++++++++++++++++++++++++++++++++++
     #delete this in future:
     if 'numberOfChildren' in kwargs: 
-        print("GeneticOptimization: deprecated and unused parameter; use population size a and elitistRatio instead\n")
+        exudyn.Print("GeneticOptimization: deprecated and unused parameter; use population size a and elitistRatio instead\n")
     
     #old value: survivingIndividuals=8
     survivingIndividuals = int(elitistRatio*populationSize)
     if 'survivingIndividuals' in kwargs: 
         survivingIndividuals = kwargs['survivingIndividuals']
-        print("GeneticOptimization: survivingIndividuals: deprecated parameter; use population size a and elitistRatio instead\n")
+        exudyn.Print("GeneticOptimization: survivingIndividuals: deprecated parameter; use population size a and elitistRatio instead\n")
 
 
     if 'randomizerInitialization' in kwargs: 
@@ -627,11 +624,11 @@ def GeneticOptimization(objectiveFunction, parameters,
     if survivingIndividuals < 1:
         elitistRatio = 1/populationSize
         survivingIndividuals = 1
-        print("WARNING: elitistRatio*populationSize < 1. Setting elitistRatio=", elitistRatio,'\n')
+        exudyn.Print("WARNING: elitistRatio*populationSize < 1. Setting elitistRatio=", elitistRatio,'\n')
 
     if distanceFactor >= 1:
         distanceFactor = 0.5
-        print("WARNING: distanceFactor >= 1, setting distanceFactor = 0.5\n")
+        exudyn.Print("WARNING: distanceFactor >= 1, setting distanceFactor = 0.5\n")
 
     if distanceFactorGenerations < 0:
         distanceFactorGenerations = numberOfGenerations+1 #will be never active
@@ -657,14 +654,13 @@ def GeneticOptimization(objectiveFunction, parameters,
             pEnd = value[1]
             value = np.random.uniform(pBegin, pEnd)
             ind[key] = value
-        AddComputationIndexAndFunctionData(ind, i, addComputationIndex, parameterFunctionData)
         currentGeneration += [ind]
     #+++++++++++++++++++++++++++++++++++++++++++++++
 
     if debugMode:
         if initialPopulationSize <= 50:
-            print("initial population =", currentGeneration)
-        print("rangesDict =", rangesDict)
+            exudyn.Print("initial population =", currentGeneration)
+        exudyn.Print("rangesDict =", rangesDict)
 
     parametersAll = []
     valueList = []
@@ -676,14 +672,19 @@ def GeneticOptimization(objectiveFunction, parameters,
 
     for popCnt in range(numberOfGenerations):
         if debugMode:
-            print("===============\nevaluate population", popCnt, ":")
+            exudyn.Print("===============\nevaluate population", popCnt, ":")
+
+        #always before processing, add computation index and parameterFunctionData
+        for cntInd, ind in enumerate(currentGeneration):
+            AddComputationIndexAndFunctionData(ind, cntInd, addComputationIndex, parameterFunctionData)
 
         totalEvaluations += len(currentGeneration)
         values = ProcessParameterList(objectiveFunction, currentGeneration, useMultiProcessing, showProgress = showProgress, numberOfThreads=numberOfThreads,
                                       clusterHostNames=clusterHostNames, useDispyWebMonitor=useDispyWebMonitor)
 
-        if (showProgress and useMultiProcessing and popCnt < numberOfGenerations-1): print("            #"+str(popCnt+1), end='')
-        #print("values=",values)
+        if (showProgress and useMultiProcessing and popCnt < numberOfGenerations-1): 
+            exudyn.Print("            #"+str(popCnt+1), end='')
+
         multiProcessingMode = ''
         if useMultiProcessing:
             multiProcessingMode = 'multiprocessing.Pool, numberOfThreads='+str(numberOfThreads)
@@ -719,18 +720,16 @@ def GeneticOptimization(objectiveFunction, parameters,
         scalarValues = np.array(scalarValues, dtype = valuesDtype)
 
         sortedValues = np.sort(scalarValues, order='value') #sort for item values
-        #print("scalarValues=",scalarValues)
-        #print("sortedValues=",sortedValues)
 
         if popCnt < numberOfGenerations-1: #go on for next population
             relativeRange = rangeReductionFactor**(popCnt+1) #this is the relative range for the next population
 
             if debugMode:
-                print("Child ranges in population",popCnt)
+                exudyn.Print("Child ranges in population",popCnt)
                 for (key,value) in parameters.items():
                     r = value[1]-value[0]
                     r *= relativeRange #reduce range
-                    print('  '+key+':', r)
+                    exudyn.Print('  '+key+':', r)
             
             #selection: chose best surviving individuals
             newGeneration = []
@@ -740,8 +739,6 @@ def GeneticOptimization(objectiveFunction, parameters,
             if distanceFactor == 0 or popCnt >= distanceFactorGenerations: #distance not important
                 for i in range(min(survivingIndividuals,len(sortedValues))):
                     ind = currentGeneration[int(sortedValues[i][1])] #dictionary for individual
-                    if addComputationIndex:
-                        ind['computationIndex'] = cnt #unique index for one set of computations
                     newGeneration += [ind]
                     newGenerationValues += [values[int(sortedValues[i][1])]]
                     cnt += 1
@@ -752,22 +749,16 @@ def GeneticOptimization(objectiveFunction, parameters,
                 i = 0 #counter for surviving individuals to be found
                 distanceList = [1]*nGen #initialize with one, saying that all distances large enough #relativeRange*np.reshape(ranges*dim,(nGen, dim)) #these are the maximum distances
                 
-                #print("nSurviving=",nSurviving)
-                #print("len(sortedValues)=",len(sortedValues))
                 #find indices which have sallest objective function value, but obey distanceFactor
                 while i < nSurviving and j < len(sortedValues):
                     iInd = int(sortedValues[j][1]) #index for individual in currentGeneration
                     ind = currentGeneration[iInd] #dictionary for individual
                     j += 1
                     if distanceList[iInd] > distanceFactor:
-                        if addComputationIndex:
-                            ind['computationIndex'] = cnt #unique index for one set of computations
                         newGeneration += [ind]
                         newGenerationValues += [values[iInd]]
                         cnt += 1 #computation index counter
                         i += 1   #counts the surviving individuals
-                        #print("\nadd individual", ind)
-                        #print("currentGeneration", currentGeneration)
                         
                         #update distances for added individual:
                         for k in range(nGen):
@@ -776,17 +767,12 @@ def GeneticOptimization(objectiveFunction, parameters,
                                 if key != 'computationIndex' and key in parameters.keys(): # only manipulate values from given parameters
                                     d += (ind[key] - currentGeneration[k][key])**2/(rangesDict[key])**2
                             d = np.sqrt(d/dim) #number of parameters shall not influence distanceFactor
-                            #print("d=",d,":",ind,"-",currentGeneration[k])
+
                             if d < distanceList[k]:
                                 distanceList[k] = d
-                    # else:
-                    #     print("\nindiv.",ind," ignored due to small distance:", distanceList[iInd])
-                        
-                    #print("distanceList=",distanceList)
             
-            #print("survivingIndividuals=",newGeneration)
             if debugMode:
-                print("\nbest values=",sortedValues[0:min(survivingIndividuals,4)])
+                exudyn.Print("\nbest values=",sortedValues[0:min(survivingIndividuals,4)])
             
             #prolongate best individuals:
             currentGeneration = []
@@ -796,7 +782,7 @@ def GeneticOptimization(objectiveFunction, parameters,
             #modification of parents
             genSize = len(newGeneration)
             if genSize == 0:
-                print("WARNING: size of generation = 0, terminating (check your optimization parameters...)\n")
+                exudyn.Print("WARNING: size of generation = 0, terminating (check your optimization parameters...)\n")
                 
             p = 0 #current population size
             while p < populationSize and genSize != 0:
@@ -819,7 +805,6 @@ def GeneticOptimization(objectiveFunction, parameters,
                                 if r < crossoverAmount: #usually 50% gene cross over
                                     indList[0][key] = p1[key] #uniform gene crossing
                                     indList[1][key] = p0[key]
-                            # print('indList=',indList)
 
                     #one or two individuals
                     for pi in range(len(parents)):
@@ -827,14 +812,13 @@ def GeneticOptimization(objectiveFunction, parameters,
                         for (key,value) in parameters.items():
                             r = value[1]-value[0]
                             r *= relativeRange #reduce range
-                            #print("range=",r)
+
                             pBegin = item[key]-0.5*r #minimum value
                             pEnd = item[key]+0.5*r 
                             #obej ranges: ==> this may give more values at boundary
                             if pBegin < value[0]: pBegin = value[0]
                             if pEnd > value[1]: pEnd = value[1]
     
-                            #print("new range=",pBegin,pEnd)
                             #value = np.random.uniform(pBegin, pEnd)
                             newValue = RandomNumber(childDistribution, 
                                                  pBegin, pEnd, 
@@ -845,23 +829,21 @@ def GeneticOptimization(objectiveFunction, parameters,
                             newGen = {}
                             for (key,value) in parameters.items(): #sort according to parameters, for output file!
                                 newGen[key] = indList[pi][key]
-                            if addComputationIndex:
-                                newGen['computationIndex'] = cnt #unique index for one set of computations
+
                             currentGeneration += [newGen]
                             #currentGeneration += [indList[pi]] #gives wrong sorting in dict ..., destroys output file order
                             p += 1
                         indList[-1]['functionData'] = parameterFunctionData # add function data
                         cnt += 1 #computation count ... for every parameter variation within one generation
-            # print("pop", popCnt, ": currentGeneration=\n",currentGeneration)
         else:
             #select final best individual
             optimumParameter = currentGeneration[int(sortedValues[0][1])]
             optimumValue = sortedValues[0][0]
             if debugMode:
-                print("opt par=", optimumParameter, ", opt val=", optimumValue)
+                exudyn.Print("opt par=", optimumParameter, ", opt val=", optimumValue)
 
     if debugMode:
-        print("===============\ntotal evaluations=", totalEvaluations)
+        exudyn.Print("===============\ntotal evaluations=", totalEvaluations)
 
     #now make dict of parameter lists instead list of dicts
     parameterList = {}
@@ -991,7 +973,6 @@ def Minimize(objectiveFunction, parameters, initialGuess=[], method='Nelder-Mead
     # callback: needed to get parameters after each iteration for file writing and post processing
     def StoreParameterFunctionValues(parametersAtIteration, convergence=0, lastTime=False):
         #global timePrintLast
-        # print(parametersAtIteration2)
         for i in range(nParameters):
             parameterValueLst[i].append(parametersAtIteration[i])
         
@@ -1021,10 +1002,10 @@ def Minimize(objectiveFunction, parameters, initialGuess=[], method='Nelder-Mead
         if showProgress: 
             if currentTime - timePrintLast[0] > 1 or lastTime:
                 timePrintLast[0] = currentTime
-                print('iteration ' + str(itCtr[0]) + ' / ' + str(maxiter), end='')
-                print(', time = '+str(round(timeSpent,2)), 's / ',end='')
-                print(str(round(timeToGo,2)) + 's',end='')
-                print(', loss:', ("{:.0"+str(3)+"g}").format(valuesAtIteration))
+                exudyn.Print('iteration ' + str(itCtr[0]) + ' / ' + str(maxiter), end='')
+                exudyn.Print(', time = '+str(round(timeSpent,2)), 's / ',end='')
+                exudyn.Print(str(round(timeToGo,2)) + 's',end='')
+                exudyn.Print(', loss:', ("{:.0"+str(3)+"g}").format(valuesAtIteration))
             
 
 
@@ -1063,10 +1044,10 @@ def Minimize(objectiveFunction, parameters, initialGuess=[], method='Nelder-Mead
     StoreParameterFunctionValues(optimizeResult['x'], lastTime=True)
     
     if debugMode: # show solver informations (e.g. number of function evaluations etc.)
-        print('---------------------------------------\n')
-        print('solver output:\n')
-        print(optimizeResult, '\n')
-        print('---------------------------------------\n')
+        exudyn.Print('---------------------------------------\n')
+        exudyn.Print('solver output:\n')
+        exudyn.Print(optimizeResult, '\n')
+        exudyn.Print('---------------------------------------\n')
 
     # iteration ctr of optimize.minimize is one-based! --> add first (0th) iteration to itCtr
     itCtr = itCtr[0] + 1  
@@ -1112,7 +1093,7 @@ def ComputeSensitivities(parameterFunction, parameters, scaledByReference=False,
         from multiprocessing import cpu_count
         numberOfThreads = cpu_count() #cpu_count gives number of threads
         if debugMode:
-            print("using", numberOfThreads, "cpus")
+            exudyn.Print("using", numberOfThreads, "cpus")
     else:
         numberOfThreads = 8
     if 'numberOfThreads' in kwargs: 
@@ -1146,7 +1127,7 @@ def ComputeSensitivities(parameterFunction, parameters, scaledByReference=False,
         fVal = parameters[iKey][1]
         # except 
         if debugMode: 
-            print('Variate {} by {} each in {} steps'.format(iKey, fVal, nVar[i]))
+            exudyn.Print('Variate {} by {} each in {} steps'.format(iKey, fVal, nVar[i]))
         
         if nVar[i] == 0: # use forward difference
             parameterList += [deepcopy(parameterList[0])]
@@ -1224,7 +1205,7 @@ def PlotOptimizationResults2D(parameterList, valueList, xLogScale=False, yLogSca
 
     n = len(valueList) #length of data
     if  n == 0:
-        print('WARNING: PlotOptimizationResults: parameterList has zero length and therefore terminates!')
+        exudyn.Print('WARNING: PlotOptimizationResults: parameterList has zero length and therefore terminates!')
     
     figList = []
     axList = []

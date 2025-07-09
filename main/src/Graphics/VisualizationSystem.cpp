@@ -306,27 +306,28 @@ void VisualizationSystem::UpdateGraphicsData(VisualizationSystemContainer& visua
 			graphicsData.GetContourCurrentMinValue() = minVal;
 			graphicsData.GetContourCurrentMaxValue() = maxVal;
 
+			float alphaTransparency = visualizationSystemContainer.settings.contour.alphaTransparency;
 			//now recompute color as given in the colorbar
 			for (auto& item : graphicsData.glLines)
 			{
 				if (item.color1[3] == contourPlotFlag)
 				{
-					item.color1 = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color1[0]);
-					item.color2 = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color2[0]);
+					item.color1 = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color1[0], alphaTransparency);
+					item.color2 = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color2[0], alphaTransparency);
 				}
 			}
 			for (auto& item : graphicsData.glCirclesXY)
 			{
 				if (item.color[3] == contourPlotFlag)
 				{
-					item.color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color[0]);
+					item.color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color[0], alphaTransparency);
 				}
 			}
 			for (auto& item : graphicsData.glSpheres)
 			{
 				if (item.color[3] == contourPlotFlag)
 				{
-					item.color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color[0]);
+					item.color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, item.color[0], alphaTransparency);
 				}
 			}
 			for (auto& item : graphicsData.glTriangles)
@@ -335,7 +336,7 @@ void VisualizationSystem::UpdateGraphicsData(VisualizationSystemContainer& visua
 				{
 					for (Float4& color : item.colors)
 					{
-						color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, color[0]);
+						color = VisualizationSystemContainerBase::ColorBarColor(minVal, maxVal, color[0], alphaTransparency);
 					}
 				}
 			}

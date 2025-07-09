@@ -24,6 +24,8 @@
 #include <functional>					//for std::invoke
 #include "Main/CSystemData.h"			//Basics, Vector/Array, OutputVariable, CData, Material, Body, Node, Marker, Load
 #include "Main/CSystem.h"	
+#include "Utilities/AdvancedStuff.h"
+
 
 #include "Main/MainSystem.h"
 #include "Main/SystemContainer.h"
@@ -40,6 +42,28 @@
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void PostProcessData::Reset()
+{
+	postProcessDataReady = false;
+	updateCounter = 1;				// must be larger than recordImageCounter, in order to avoid hang up in first UpdatePostProcessData(...) in CSystem
+	recordImageCounter = 0;
+	simulationFinished = false;
+	stopSimulation = false;
+	forceQuitSimulation = false;
+	simulationPaused = false;
+	visualizationTime = 0;
+	systemHasChanged = true; // used to compute maxSceneSize at beginning
+
+	visualizationStateUpdateAvailable = false;
+	requestUserFunctionDrawing = false;
+
+	solverMessage = "";
+	solutionMessage = "";
+
+	EXUstd::ReleaseSemaphore(accessState);
+	EXUstd::ReleaseSemaphore(requestUserFunctionDrawingAtomicFlag);
+	EXUstd::ReleaseSemaphore(accessMessage);
+}
 
 //! this function is used in Pyton to send a signal that the scene shall be redrawn (e.g.,  because the visualization state has been updated)
 void PostProcessData::SendRedrawSignal()
@@ -68,24 +92,58 @@ void PostProcessData::WaitForUserToContinue(bool printMessage)
 				pout << "Computation paused... (press SPACE in render window to continue / Q to quit)\n";
 			}
 
-			while (visualizationSystem->GetMainSystemBacklink()->GetMainSystemContainer().GetVisualizationSystemContainer().DoIdleOperations() && simulationPaused)
+			while (visualizationSystem->GetMainSystemBacklink()->GetMainSystemContainer().GetVisualizationSystemContainer().DoSingleIdleOperation() && simulationPaused)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(20)); //give thread time to finish the stop simulation command
 			}
 
 			simulationPaused = false; //in case that visualization system was closed in the meantime
-			SetSolverMessage(strSolver);
+			SetSolverMessage(strSolver); //restore solver message
 		}
 	}
 	else
 	{
-		pout << "WaitForUserToContinue: ignored, because no SystemContainer is linked to MainSystem.\n";
+		pout << "DoIdleTasks(): ignored, because no SystemContainer is linked to MainSystem.\n";
 	}
 }
 
 bool PostProcessData::VisualizationIsRunning() const
 {
 	return visualizationSystem->GetMainSystemBacklink()->HasMainSystemContainer() && visualizationSystem->GetMainSystemBacklink()->GetMainSystemContainer().GetVisualizationSystemContainer().RendererIsRunning();
+}
+
+//! set a visualization message into openGL window
+void PostProcessData::SetSolverMessage(const std::string& solverMessageInit)
+{
+	//add separate semaphore for PostProcessData.accessMessages
+	EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
+	solverMessage = solverMessageInit;
+	EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
+}
+
+void PostProcessData::SetSolutionMessage(const std::string& solutionMessageInit)
+{
+	EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
+	solutionMessage = solutionMessageInit;
+	EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
+}
+
+//! get the current solver message string
+std::string PostProcessData::GetSolverMessage()
+{
+	EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
+	std::string message = solverMessage; 		//copy message
+	EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
+	return message; //now safely return message
+}
+
+//! get the current solution message string
+std::string PostProcessData::GetSolutionMessage()
+{
+	EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
+	std::string message = solutionMessage; 		//copy message
+	EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
+	return message; //now safely return message
 }
 
 

@@ -58,13 +58,16 @@ Furthermore, there are a couple of commands available directly in the \texttt{ex
 #  import exudyn module:
 import exudyn as exu
 #  print detailed exudyn version, Python version (at which it is compiled):
-exu.GetVersionString(addDetails = True)
+exu.config.Version(addDetails = True)
 #  set precision of C++ output to console
-exu.SetOutputPrecision(numberOfDigits)
+exu.config.precision = numberOfDigits
 #  turn on/off output to console
-exu.SetWriteToConsole(False)
+exu.config.printToConsole = False
 #  invalid index, may depend on compilation settings:
 nInvalid = exu.InvalidIndex() #the invalid index, depends on architecture and version
+#  run basic demos (without/with graphics):
+exu.demos.Demo1()
+exu.demos.Demo2()
 \end{lstlisting}
 
 
@@ -152,16 +155,16 @@ del SC                             #references to SystemContainer deleted
 \label{sec:cinterface:exceptions}
 There are several levels of type and argument checks, leading to different types of errors and exceptions. The according error messages are non-unique, because they may be raised in Python modules or in C++, and they may be raised on different levels of the code. Error messages depend on Python version and on your iPython console. Very often the exception may be called \texttt{ValueError}, but it mustnot mean that it is a wrong error, but it could also be, e.g., a wrong order of function calls.
 
-As an example, a type conversion error is raised when providing wrong argument types, e.g., try \texttt{exu.GetVersionString('abc')}:
+As an example, a type conversion error is raised when providing wrong argument types, e.g., try \texttt{exu.config.Version('abc')}:
 \pythonstyle
 \begin{lstlisting}[language=Python, firstnumber=1]
 
 Traceback (most recent call last):
 
 File "C:\Users\username\AppData\Local\Temp\ipykernel_24988\2212168679.py", line 1, in <module>
-    exu.GetVersionString('abc')
+    exu.config.Version('abc')
 
-TypeError: GetVersionString(): incompatible function arguments. The following argument types are supported:
+TypeError: Version(): incompatible function arguments. The following argument types are supported:
     1. (addDetails: bool = False) -> str
 
 Invoked with: 'abc'
@@ -223,43 +226,39 @@ mbs = SC.AddSystem()
 \begin{longtable}{| p{8cm} | p{8cm} |} 
 \hline
 {\bf function/structure name} & {\bf description}\\ \hline
-  GetVersionString(addDetails = False) & Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.; the Python micro version may differ from that you are working with; AVX2 shows that you are running a AVX2 compiled version)\\ \hline 
   Help() & Show basic help information\\ \hline 
   RequireVersion(requiredVersionString) & Checks if the installed version is according to the required version. Major, micro and minor version must agree the required level. This function is defined in the \texttt{\_\_init\_\_.py} file\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{exu.RequireVersion("1.0.31")}}\\ \hline 
-  StartRenderer(verbose = 0) & Start OpenGL rendering engine (in separate thread) for visualization of rigid or flexible multibody system; use verbose=1 to output information during OpenGL window creation; verbose=2 produces more output and verbose=3 gives a debug level; some of the information will only be seen in windows command (powershell) windows or linux shell, but not inside iPython of e.g. Spyder\\ \hline 
-  StopRenderer() & Stop OpenGL rendering engine\\ \hline 
-  IsRendererActive() & returns True if GLFW renderer is available and running; otherwise False\\ \hline 
-  DoRendererIdleTasks(waitSeconds = 0) & Call this function in order to interact with Renderer window; use waitSeconds in order to run this idle tasks while animating a model (e.g. waitSeconds=0.04), use waitSeconds=0 without waiting, or use waitSeconds=-1 to wait until window is closed\\ \hline 
-  SolveStatic(mbs, simulationSettings = exudyn.SimulationSettings(), updateInitialValues = False, storeSolver = True) & Static solver function, mapped from module \texttt{solver}, to solve static equations (without inertia terms) of constrained rigid or flexible multibody system; for details on the Python interface see \refSection{sec:mainsystemextensions:SolveStatic}; for background on solvers, see \refSection{sec:solvers}\\ \hline 
-  SolveDynamic(mbs, simulationSettings = exudyn.SimulationSettings(), solverType = exudyn.DynamicSolverType.GeneralizedAlpha, updateInitialValues = False, storeSolver = True) & Dynamic solver function, mapped from module \texttt{solver}, to solve equations of motion of constrained rigid or flexible multibody system; for details on the Python interface see \refSection{sec:mainsystemextensions:SolveDynamic}; for background on solvers, see \refSection{sec:solvers}\\ \hline 
-  ComputeODE2Eigenvalues(mbs, simulationSettings = exudyn.SimulationSettings(), useSparseSolver = False, numberOfEigenvalues = -1, setInitialValues = True, convert2Frequencies = False) & Simple interface to scipy eigenvalue solver for eigenvalue analysis of the second order differential equations part in mbs, mapped from module \texttt{solver}; for details on the Python interface see \refSection{sec:mainsystemextensions:ComputeODE2Eigenvalues}\\ \hline 
-  SetOutputPrecision(numberOfDigits) & Set the precision (integer) for floating point numbers written to console (reset when simulation is started!); NOTE: this affects only floats converted to strings inside C++ exudyn; if you print a float from Python, it is usually printed with 16 digits; if printing numpy arrays, 8 digits are used as standard, to be changed with numpy.set\_printoptions(precision=16); alternatively convert into a list\\ \hline 
-  SetLinalgOutputFormatPython(flagPythonFormat) & True: use Python format for output of vectors and matrices; False: use matlab format\\ \hline 
-  SetWriteToConsole(flag) & set flag to write (True) or not write to console; default = True\\ \hline 
-  SetWriteToFile(filename, flagWriteToFile = True, flagAppend = False, flagFlushAlways = False) & set flag to write (True) or not write to console; default value of flagWriteToFile = False; flagAppend appends output to file, if set True; in order to finalize the file, write \texttt{exu.SetWriteToFile('', False)} to close the output file; in case of flagFlushAlways=True, file will be finalized immediately in every print command;\tabnewline 
+  SetWriteToFile(filename, flagWriteToFile = True, flagAppend = False, flagFlushAlways = False) & set flag to write (True) or not write to console; default value of flagWriteToFile = False; flagAppend appends output to file, if set True; in order to finalize the file, write \texttt{exu.SetWriteToFile('', False)} to close the output file; in case of flagFlushAlways=True, file will be finalized immediately in every print command, but may be slower;\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
-    \texttt{exu.SetWriteToConsole(False) \#no output to console\tabnewline
-    exu.SetWriteToFile(filename={\textquotesingle}testOutput.log{\textquotesingle}, flagWriteToFile=True, flagAppend=False)\tabnewline
+    \texttt{exudyn.config.printToConsole = False \#no output to console\tabnewline
+    exu.SetWriteToFile(filename={\textquotesingle}testOutput.log{\textquotesingle}, flagWriteToFile=True, flagAppend=False, flagFlushAlways=False)\tabnewline
     exu.Print({\textquotesingle}print this to file{\textquotesingle})\tabnewline
     exu.SetWriteToFile({\textquotesingle}{\textquotesingle}, False) \#terminate writing to file which closes the file}}\\ \hline 
-  SetPrintDelayMilliSeconds(delayMilliSeconds) & add some delay (in milliSeconds) to printing to console, in order to let Spyder process the output; default = 0\\ \hline 
-  Print(*args) & this allows printing via exudyn with similar syntax as in Python print(args) except for keyword arguments: print('test=',42); allows to redirect all output to file given by SetWriteToFile(...); does not output in case that SetWriteToConsole is set to False\\ \hline 
-  SuppressWarnings(flag) & set flag to suppress (=True) or enable (=False) warnings\\ \hline 
-  InfoStat(writeOutput = True) & Retrieve list of global information on memory allocation and other counts as list:[array\_new\_counts, array\_delete\_counts, vector\_new\_counts, vector\_delete\_counts, matrix\_new\_counts, matrix\_delete\_counts, linkedDataVectorCast\_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with \_\_FAST\_EXUDYN\_LINALG flag\\ \hline 
-  Go() & Creates a SystemContainer SC and a main multibody system mbs\\ \hline 
-  Demo1(showAll) & Run simple demo without graphics to check functionality, see exudyn/demos.py\\ \hline 
-  Demo2(showAll) & Run advanced demo without graphics to check functionality, see exudyn/demos.py\\ \hline 
+  Print() & this allows printing via exudyn with similar syntax as in Python print(args) except for keyword arguments: exu.Print('test=',42,sep=' ',end='',flush=True); allows to redirect all output to file given by SetWriteToFile(...); does not print to console in case that exudyn.config.printToConsole eis set to False\\ \hline 
   InvalidIndex() & This function provides the invalid index, which may depend on the kind of 32-bit, 64-bit signed or unsigned integer; e.g. node index or item index in list; currently, the InvalidIndex() gives -1, but it may be changed in future versions, therefore you should use this function\\ \hline 
-  \_\_version\_\_ & stores the current version of the Exudyn package\\ \hline  
+  \_\_version\_\_ & contains the current version of the Exudyn package\\ \hline  
   symbolic & the symbolic submodule for creating symbolic variables in Python, see documentation of Symbolic; For details, see Section Symbolic.\\ \hline  
+  config & global config settings, like precision, print behavior, warnings, etc.\\ \hline  
+  config.suppressWarnings & flag to suppress all warnings (default=False)\\ \hline  
+  config.outputPrecision & change precision (number of digits) in C++ and Python output\\ \hline  
+  config.linalgOutputFormatPython & True (default): use Python format for output of vectors and matrices; False: use Matlab format\\ \hline  
+  config.printDelayMilliSeconds & add some delay (in milliSeconds) to printing to console (exudyn.Print), in order to let console (e.g. Spyder) process the output; default = 0\\ \hline  
+  config.printFlushAlways & flush always buffers when using exudyn.Print(...) to write to file or console; this is needed if you are streaming text or showing counters in parameter variation; default=False\\ \hline  
+  config.printToConsole & enables or disables writing to console with exudyn.Print(...); default=True\\ \hline  
+  config.printToFile & flag that shows if writing to file with exudyn.Print(...) is enabled; flag is readonly\\ \hline  
+  config.printFileName & file name for writing to file with exudyn.Print(...); flag is readonly\\ \hline  
+  config.printToFileAppend & flag that shows if append mode is used for writing to file with exudyn.Print(...); flag is readonly\\ \hline  
+  config.Version(addDetails = False) & Get Exudyn built version as string (if addDetails=True, adds more information on compilation Python version, platform, etc.; the Python micro version may differ from that you are working with; AVX2 shows that you are running a AVX2 compiled version)\\ \hline 
   experimental & Experimental features, not intended for regular users; for available features, see the C++ code class PyExperimental\\ \hline  
   special & special attributes and functions, such as global (solver) flags or helper functions; not intended for regular users; for available features, see the C++ code class PySpecial\\ \hline  
+  special.InfoStat(writeOutput = True) & Retrieve list of global information on memory allocation and other counts as list:[array\_new\_counts, array\_delete\_counts, vector\_new\_counts, vector\_delete\_counts, matrix\_new\_counts, matrix\_delete\_counts, linkedDataVectorCast\_counts]; May be extended in future; if writeOutput==True, it additionally prints the statistics; counts for new vectors and matrices should not depend on numberOfSteps, except for some objects such as ObjectGenericODE2 and for (sensor) output to files; Not available if code is compiled with \_\_FAST\_EXUDYN\_LINALG flag\\ \hline 
   special.solver & special solver attributes and functions; not intended for regular users; for available features, see the C++ code class PySpecialSolver\\ \hline  
   special.solver.timeout & if >= 0, the solver stops after reaching accoring CPU time specified with timeout; makes sense for parameter variation, automatic testing or for long-running simulations; default=-1 (no timeout)\\ \hline  
-  variables & this dictionary may be used by the user to store exudyn-wide data in order to avoid global Python variables; usage: exu.variables["myvar"] = 42 \\ \hline  
-  sys & this dictionary is used and reserved by the system, e.g. for testsuite, graphics or system function to store module-wide data in order to avoid global Python variables; the variable exu.sys['renderState'] contains the last render state after exu.StopRenderer() and can be used for subsequent simulations \\ \hline  
+  special.solver.multiThreadingLoadBalancing & if True (=default), multithreaded code parts (in particular solver and raytracing) use load balancing, which may give better performance in case of non-equilibrated loads; (mobile) Intel CPUs may perform significantly better without load balancing\\ \hline  
+  variables & this dictionary may be used by the user to store exudyn-wide data in order to avoid global Python variables; usage: exu.variables["myvar"] = 42; can be used in particular to exchange data between different mbs or between packages by importing exudyn.variables wherever needed.\\ \hline  
+  sys & this dictionary is used and reserved by the system, e.g. for testsuite, graphics or system function to store module-wide data in order to avoid global Python variables; the variable exu.sys['renderState'] contains the last render state after SC.renderer.Stop() and can be used for subsequent simulations \\ \hline  
 \end{longtable}
 \end{center}
 
@@ -268,7 +267,7 @@ mbs = SC.AddSystem()
 
 
 
-The SystemContainer is the top level of structures in \codeName. The container holds all (multibody) systems, solvers and all other data structures for computation. A SystemContainer is created by \texttt{SC = exu.SystemContainer()}, understanding \texttt{exu.SystemContainer} as a class like Python's internal list class, creating a list instance with \texttt{x=list()}. Currently, only one container shall be used. In future, multiple containers might be usable at the same time. Regarding the \mybold{(basic) module access}, functions are related to the \texttt{exudyn = exu} module, see also the introduction of this chapter and this example:
+The SystemContainer is the top level of structures in \codeName. The container holds all (multibody) systems, solvers and all other data structures for computation and it is the hub for the OpenGL renderer. A SystemContainer is created by \texttt{SC = exu.SystemContainer()}, understanding \texttt{exu.SystemContainer} as a class like Python's internal list class, creating a list instance with \texttt{x=list()}. Currently, only one container shall be used, while multiple containers are possible -- e.g. for reasons of different behavior. The SystemContainer contains visualizationSettings, see \refSection{sec:VisualizationSettingsMain}, which can be edited when pressing the key V in the render window and it holds the renderer substructure to start and stop the renderer, and to interact with the renderer. Regarding the \mybold{(basic) module access}, functions are related to the \texttt{exudyn = exu} module, see also the introduction of this chapter and this example:
 \pythonstyle
 \begin{lstlisting}[language=Python, firstnumber=1]
 
@@ -284,7 +283,7 @@ mbs = SC.AddSystem()
 \begin{longtable}{| p{8cm} | p{8cm} |} 
 \hline
 {\bf function/structure name} & {\bf description}\\ \hline
-  Reset() & delete all multibody systems and reset SystemContainer (including graphics); this also releases SystemContainer from the renderer, which requires SC.AttachToRenderEngine() to be called in order to reconnect to rendering; a safer way is to delete the current SystemContainer and create a new one (SC=SystemContainer() )\\ \hline 
+  Reset() & delete all multibody systems and reset SystemContainer (including graphics); this also releases SystemContainer from the renderer, which requires SC.renderer.Attach() to be called in order to reconnect to rendering; a safer way is to delete the current SystemContainer and create a new one (SC=SystemContainer() )\\ \hline 
   AddSystem() & add a new computational system\\ \hline 
   Append(mainSystem) & append an exsiting computational system to the system container; returns the number of MainSystem in system container\\ \hline 
   NumberOfSystems() & obtain number of multibody systems available in system container\\ \hline 
@@ -295,22 +294,65 @@ mbs = SC.AddSystem()
     SC.visualizationSettings.autoFitScene=False  \\ \hline  
   GetDictionary() & [UNDER DEVELOPMENT]: return the dictionary of the system container data, e.g., to copy the system or for pickling\\ \hline 
   SetDictionary(systemDict) & [UNDER DEVELOPMENT]: set system container data from given dictionary; used for pickling\\ \hline 
-  GetRenderState() & Get dictionary with current render state (openGL zoom, modelview, etc.); will have no effect if GLFW\_GRAPHICS is deactivated\tabnewline 
+  renderer & The substructure in SystemContainer responsible for rendering (except visualizationSettings)\\ \hline  
+  visualizationSettings & Structure representing the settings for renderer; for details of visualizationSettings see Section Structures and Settings\\ \hline  
+\end{longtable}
+\end{center}
+
+%++++++++++++++++++++
+\mysubsection{Renderer}
+\label{sec:SC:renderer}
+
+
+
+This is the substructure of SystemContainer that collects rendering and visualization interaction. Rendering is done for a SystemContainer, which may include several MainSystems. Note that visualizationSettings are directly accessible from the SystemContainer.
+\pythonstyle
+\begin{lstlisting}[language=Python, firstnumber=1]
+
+import exudyn as exu
+from exudyn.utilities import *
+import exudyn.graphics as graphics
+SC = exu.SystemContainer()
+mbs = SC.AddSystem()
+mbs.CreateMassPoint(physicsMass=1)
+
+mbs.Assemble()
+SC.visualizationSettings.general.drawWorldBasis = True
+SC.renderer.Start()
+SC.renderer.DoIdleTasks() #wait until user presses space, etc.
+mbs.SolveDynamic()
+SC.renderer.Stop()
+\end{lstlisting}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{| p{8cm} | p{8cm} |} 
+\hline
+{\bf function/structure name} & {\bf description}\\ \hline
+  Start(verbose = 0) & Start OpenGL rendering engine (in separate thread) for visualization of rigid or flexible multibody system; use verbose=1 to output information during OpenGL window creation; verbose=2 produces more output and verbose=3 gives a debug level; some of the information will only be seen in windows command (powershell) windows or linux shell, but not inside iPython of e.g. Spyder\\ \hline 
+  Stop() & Stop OpenGL rendering engine; uses timeout in multithreading.\\ \hline 
+  IsActive() & returns True if GLFW renderer is available and running; otherwise False\\ \hline 
+  Attach() & Links the SystemContainer to the render engine, such that the changes in the graphics structure drawn upon updates, etc.; done automatically on creation of SystemContainer; return False, if no renderer exists (e.g., compiled without GLFW) or cannot be linked (if other SystemContainer already linked)\\ \hline 
+  Detach() & DEPRECATED; Releases the SystemContainer from the render engine; return True if successfully released, False if no GLFW available or detaching failed\\ \hline 
+  DoIdleTasks(waitSeconds = -1., printPauseMessage = True) & Interrupt further computation until user input (Space, 'Q', Escape-key), representing a PAUSE function; this command runs a loop in the background to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; replaces former SC.WaitForRenderEngineStopFlag() and mbs.WaitForUserToContinue(); call this function in order to interact with Renderer window; use waitSeconds in order to run this idle tasks while animating a model (e.g. waitSeconds=0.04), use waitSeconds=0 without waiting, or use waitSeconds=-1 (default) to wait until window is closed\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
-    \texttt{SC = exu.SystemContainer()\tabnewline
-    renderState = SC.GetRenderState() \tabnewline
-    print(renderState[{\textquotesingle}zoom{\textquotesingle}])}}\\ \hline 
-  SetRenderState(renderState) & Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState; will have no effect if GLFW\_GRAPHICS is deactivated\tabnewline 
-    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
-    \texttt{SC = exu.SystemContainer()\tabnewline
-    SC.SetRenderState(renderState)}}\\ \hline 
+    \texttt{SC.renderer.DoIdleTasks()}}\\ \hline 
+  ZoomAll() & Send zoom all signal, which will perform zoom all at next redraw request\\ \hline 
   RedrawAndSaveImage() & Redraw openGL scene and save image (command waits until process is finished)\\ \hline 
-  WaitForRenderEngineStopFlag() & Wait for user to stop render engine (Press 'Q' or Escape-key); this command is used to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; behaves similar as mbs.WaitForUserToContinue()\\ \hline 
-  RenderEngineZoomAll() & Send zoom all signal, which will perform zoom all at next redraw request\\ \hline 
-  AttachToRenderEngine() & Links the SystemContainer to the render engine, such that the changes in the graphics structure drawn upon updates, etc.; done automatically on creation of SystemContainer; return False, if no renderer exists (e.g., compiled without GLFW) or cannot be linked (if other SystemContainer already linked)\\ \hline 
-  DetachFromRenderEngine() & Releases the SystemContainer from the render engine; return True if successfully released, False if no GLFW available or detaching failed\\ \hline 
   SendRedrawSignal() & This function is used to send a signal to the renderer that all MainSystems (mbs) shall be redrawn\\ \hline 
-  GetCurrentMouseCoordinates(useOpenGLcoordinates = False) & Get current mouse coordinates as list [x, y]; x and y being floats, as returned by GLFW, measured from top left corner of window; use GetCurrentMouseCoordinates(useOpenGLcoordinates=True) to obtain OpenGLcoordinates of projected plane\\ \hline 
+  GetRenderCount() & Returns the number of rendered OpenGL images; can be used to determine if image has been drawn by comparing to previous counter; also shows that first image has been drawn (needed for zoom all)\\ \hline 
+  GetState() & Get dictionary with current render state (openGL zoom, modelview, etc.); will have no effect if GLFW\_GRAPHICS is deactivated\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{SC = exu.SystemContainer()\tabnewline
+    renderState = SC.renderer.GetState() \tabnewline
+    print(renderState[{\textquotesingle}zoom{\textquotesingle}])}}\\ \hline 
+  SetState(renderState, waitForRendererFullStartup = True) & Set current render state (openGL zoom, modelview, etc.) with given dictionary; usually, this dictionary has been obtained with GetRenderState; waitForRendererFullStartup is used to wait at startup for the first frame to be drawn (and zoom all to be set), but be be set False in case of performance issues; will have no effect if GLFW\_GRAPHICS is deactivated\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{SC = exu.SystemContainer()\tabnewline
+    SC.renderer.SetState(renderState)}}\\ \hline 
+  GetMouseCoordinates(useOpenGLcoordinates = False) & Get current mouse coordinates as list [x, y]; x and y being floats, as returned by GLFW, measured from top left corner of window; use GetCurrentMouseCoordinates(useOpenGLcoordinates=True) to obtain OpenGLcoordinates of projected plane\\ \hline 
+  GetItemSelection(resetSelection = True) & Get selected item in render state; option to reset selected item afterwards; item is selected in render window by clicking left mouse button; returns [mbs number, ItemType, ItemIndex, depth] where depth is the Z-depth in the current view; note that only items of the categories activated in visualizationSettings.interactive.selectionLeftMouseItemTypes are returned; if itemType == 0 if no item has been selected\\ \hline 
+  materials & GraphicsMaterialList used for raytracer (possibly for OpenGL in future); list can be accessed with [] operator, reset and extended. Note that after Reset() there are at least 10 materials available, which are copied from visualizationSettings.raytracer.materials which are synced continuously\\ \hline  
 \end{longtable}
 \end{center}
 
@@ -340,7 +382,6 @@ mbs = SC.AddSystem()
   AssembleSystemInitialize() & initialize some system data, e.g., generalContact objects (searchTree, etc.)\\ \hline 
   Reset() & reset all lists of items (nodes, bodies, markers, loads, ...) and temporary vectors; deallocate memory\\ \hline 
   GetSystemContainer() & return the systemContainer where the mainSystem (mbs) was created\\ \hline 
-  WaitForUserToContinue(printMessage = True) & interrupt further computation until user input --> 'pause' function; this command runs a loop in the background to have active response of the render window, e.g., to open the visualization dialog or use the right-mouse-button; behaves similar as SC.WaitForRenderEngineStopFlag()\\ \hline 
   SendRedrawSignal() & this function is used to send a signal to the renderer that the scene shall be redrawn because the visualization state has been updated\\ \hline 
   GetRenderEngineStopFlag() & get the current stop simulation flag; True=user wants to stop simulation\\ \hline 
   SetRenderEngineStopFlag(stopFlag) & set the current stop simulation flag; set to False, in order to continue a previously user-interrupted simulation\\ \hline 
@@ -484,6 +525,9 @@ nMP = mbs.AddNode(NodePoint2D(referenceCoordinates=[0,0]))
     {\textquotesingle}initialCoordinates{\textquotesingle}: [0.0, 2.0, 0.0], \tabnewline
     {\textquotesingle}name{\textquotesingle}: {\textquotesingle}example node{\textquotesingle}\} \tabnewline
     mbs.AddNode(nodeDict)}}\\ \hline 
+  DeleteNode(nodeNumber, suppressWarnings = False) & delete the node with nodeNumber in MainSystem; consistently renames nodes according to their new node numbers; adapts node numbers in sensors and in markers; items using deleted nodeNumber obtain invalid nodeNumber\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{mbs.DeleteNode(nodeNumber=42)}}\\ \hline 
   GetNodeNumber(nodeName) & get node's number by name (string)\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{n = mbs.GetNodeNumber({\textquotesingle}example node{\textquotesingle})}}\\ \hline 
@@ -550,6 +594,9 @@ mbs.AddObject(ObjectMassPoint2D(physicsMass=10, nodeNumber=nMP ))
     {\textquotesingle}nodeNumber{\textquotesingle}: 0, \tabnewline
     {\textquotesingle}name{\textquotesingle}: {\textquotesingle}example object{\textquotesingle}\} \tabnewline
     mbs.AddObject(objectDict)}}\\ \hline 
+  DeleteObject(objectNumber, deleteDependentItems = True, suppressWarnings = False) & delete the object with objectNumber in MainSystem; consistently renames objects according to their new object numbers; adapts object numbers in sensors and in markers; items using deleted objectNumber obtain invalid objectNumber; with the option deleteDependentItems (default=True) the function also delete nodes and markers which are used by the object\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{mbs.DeleteObject(objectNumber=42)}}\\ \hline 
   GetObjectNumber(objectName) & get object's number by name (string)\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{n = mbs.GetObjectNumber({\textquotesingle}heavy object{\textquotesingle})}}\\ \hline 
@@ -611,6 +658,9 @@ mMP = mbs.AddMarker(MarkerNodePosition(nodeNumber = nMP))
       {\textquotesingle}nodeNumber{\textquotesingle}: 0, \tabnewline
       {\textquotesingle}name{\textquotesingle}: {\textquotesingle}position0{\textquotesingle}\}\tabnewline
     mbs.AddMarker(markerDict)}}\\ \hline 
+  DeleteMarker(markerNumber, suppressWarnings = False) & delete the marker with markerNumber in MainSystem; consistently renames markers according to their new marker numbers; adapts marker numbers in objects, loads and sensors; items using deleted markerNumber obtain invalid markerNumber\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{mbs.DeleteMarker(markerNumber=42)}}\\ \hline 
   GetMarkerNumber(markerName) & get marker's number by name (string)\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{n = mbs.GetMarkerNumber({\textquotesingle}my marker{\textquotesingle})}}\\ \hline 
@@ -666,6 +716,9 @@ mbs.AddLoad(Force(markerNumber = mMP, loadVector=[0.001,0,0]))
       {\textquotesingle}loadVector{\textquotesingle}: [1.0, 0.0, 0.0],\tabnewline
       {\textquotesingle}name{\textquotesingle}: {\textquotesingle}heavy load{\textquotesingle}\} \tabnewline
     mbs.AddLoad(loadDict)}}\\ \hline 
+  DeleteLoad(loadNumber, deleteDependentMarkers = True, suppressWarnings = False) & delete the load with loadNumber in MainSystem; consistently renames loads according to their new load numbers; deleteDependentMarkers (default=True) also deletes the corresponding marker\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{mbs.DeleteLoad(loadNumber=42)}}\\ \hline 
   GetLoadNumber(loadName) & get load's number by name (string)\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{n = mbs.GetLoadNumber({\textquotesingle}heavy load{\textquotesingle})}}\\ \hline 
@@ -706,7 +759,7 @@ mbs.AddLoad(Force(markerNumber = mMP, loadVector=[2,0,5]))
 sMP = mbs.AddSensor(SensorNode(nodeNumber=nMP, storeInternal=True,
                                outputVariableType=exu.OutputVariableType.Position))
 mbs.Assemble()
-exu.SolveDynamic(mbs, exu.SimulationSettings())
+mbs.SolveDynamic(exu.SimulationSettings())
 from exudyn.plot import PlotSensor
 PlotSensor(mbs, sMP, components=[0,1,2])
 \end{lstlisting}
@@ -725,6 +778,9 @@ PlotSensor(mbs, sMP, components=[0,1,2])
       {\textquotesingle}fileName{\textquotesingle}: {\textquotesingle}sensor.txt{\textquotesingle},\tabnewline
       {\textquotesingle}name{\textquotesingle}: {\textquotesingle}test sensor{\textquotesingle}\} \tabnewline
     mbs.AddSensor(sensorDict)}}\\ \hline 
+  DeleteSensor(sensorNumber, suppressWarnings = False) & delete the marker with sensorNumber in MainSystem; consistently renames sensors according to their new sensor numbers; adapts sensor numbers in sensors; items using deleted sensorNumber obtain invalid sensorNumber\tabnewline 
+    \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
+    \texttt{mbs.DeleteSensor(sensorNumber=42)}}\\ \hline 
   GetSensorNumber(sensorName) & get sensor's number by name (string)\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{n = mbs.GetSensorNumber({\textquotesingle}test sensor{\textquotesingle})}}\\ \hline 
@@ -764,7 +820,7 @@ mbs.AddObject(ObjectMassPoint(physicsMass=10, nodeNumber=nMP ))
 mMP = mbs.AddMarker(MarkerNodePosition(nodeNumber = nMP))
 mbs.AddLoad(Force(markerNumber = mMP, loadVector=[2,0,5]))
 mbs.Assemble()
-exu.SolveDynamic(mbs, exu.SimulationSettings())
+mbs.SolveDynamic(exu.SimulationSettings())
 
 #obtain current ODE2 system vector including reference values:
 uTotal = mbs.systemData.GetODE2CoordinatesTotal()
@@ -1449,11 +1505,15 @@ gContact.SetFrictionPairings(...) #set friction pairings and adjust searchTree i
   frictionProportionalZone & (default=0.001) velocity $v\_\{\mu,reg\}$ upon which the dry friction coefficient is interpolated linearly (regularized friction model); must be greater 0; very small values cause oscillations in friction force \\ \hline  
   excludeOverlappingTrigSphereContacts & (default=True) for consistent, closed meshes, we can exclude overlapping contact triangles (which would cause holes if mesh is overlapping and not consistent!!!) \\ \hline  
   excludeDuplicatedTrigSphereContactPoints & (default=False) run additional checks for double contacts at edges or vertices, being more accurate but can cause additional costs if many contacts \\ \hline  
-  computeExactStaticTriangleBins & if True, search tree bins are computed exactly for static triangles while if False, it uses the overall (=very inaccurate) AABB of each triangle in the search tree\\ \hline  
+  computeExactStaticTriangleBins & (default=True) if True, search tree bins are computed exactly for static triangles while if False, it uses the overall (=very inaccurate) AABB of each triangle in the search tree\\ \hline  
   computeContactForces & (default=False) if True, additional system vector is computed which contains all contact force and torque contributions. In order to recover forces on a single rigid body, the respective LTG-vector has to be used and forces need to be extracted from this system vector; may slow down computations.\\ \hline  
   ancfCableUseExactMethod & (default=True) if True, uses exact computation of intersection of 3rd order polynomials and contacting circles \\ \hline  
   ancfCableNumberOfContactSegments & (default=1) number of segments to be used in case that ancfCableUseExactMethod=False; maximum number of segments=3 \\ \hline  
   ancfCableMeasuringSegments & (default=20) number of segments used to approximate geometry for ANCFCable2D elements for measuring with ShortestDistanceAlongLine; with 20 segments the relative error due to approximation as compared to 10 segments usually stays below 1e-8 \\ \hline  
+  parallelTaskSplit & (default=12) general number of tasks per thread (min)\\ \hline  
+  parallelTaskSplitBoundingBoxes & (default=48) number of tasks per thread for bounding box computations\\ \hline  
+  parallelTaskSplitThreshold & (default=12) general threshold below which only one task per thread is used\\ \hline  
+  parallelTaskSplitBoundingBoxesThreshold & (default=400) threshold below which only one task per thread is used, for bounding box computations\\ \hline  
   SetFrictionPairings(frictionPairings) & set Coulomb friction coefficients for pairings of materials (e.g., use material 0,1, then the entries (0,1) and (1,0) define the friction coefficients for this pairing); matrix should be symmetric!\tabnewline 
     \textcolor{steelblue}{{\bf EXAMPLE}: \tabnewline 
     \texttt{\#set 3 surface friction types, all being 0.1:\tabnewline
@@ -1591,10 +1651,74 @@ print('mc8=',mc)
 \end{center}
 
 %++++++++++++++++++++
+\mysubsubsection{GraphicsMaterialList}
+\label{sec:GraphicsMaterialList}
+The GraphicsMaterialList contains the list of materials (material properties) for visualization; currently, only the raytracer uses materials. Materials can be accessed via the variable materials in renderer of SystemContainer.
+
+\pythonstyle
+\begin{lstlisting}[language=Python, firstnumber=1]
+
+#access material 0:
+mat0 = SC.renderer.materials[0]
+#convert into dictionary for easier processing:
+matDict = mat0.GetDictionary()
+matDict['alpha'] = 0.5
+#change material (e.g. using a data base):
+mat0.SetDictionary(matDict)
+#or directly update material
+mat0.name = 'new name'
+mat0.emission = [0.8,0.6,0.]
+
+#update material in renderer:
+SC.renderer.materials.Set(0,mat0)
+#update material directly with dictionary:
+SC.renderer.materials.Set(0,matDict)
+
+#create new material:
+mat10 = SC.renderer.materials.New()
+mat10.reflectivity = 0.8
+SC.renderer.materials.Append(mat10) #returns index of mat10
+
+#10 default graphics materials in Exudyn
+#listed here with default color and some properties:
+#note the increased computational costs for reflection & transparency
+#the material names are as follows:
+SC.renderer.materials[0].name == "default"    #steel blue
+SC.renderer.materials[1].name == "matt"       #green
+SC.renderer.materials[2].name == "steel"      #grey (reflection)
+SC.renderer.materials[3].name == "plastic"    #red (reflection)
+SC.renderer.materials[4].name == "chrome"     #light grey (reflection)
+SC.renderer.materials[5].name == "shiny"      #orange (reflection)
+SC.renderer.materials[6].name == "transparent"#(transparency,slight refraction)
+SC.renderer.materials[7].name == "glass"      #light grey (reflection,transparency,refraction)
+SC.renderer.materials[8].name == "mirror"     #light grey (reflection)
+SC.renderer.materials[9].name == "emission"   #light yellow
+
+\end{lstlisting}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{| p{8cm} | p{8cm} |} 
+\hline
+{\bf function/structure name} & {\bf description}\\ \hline
+  Reset() & reset materials to 10 default materials\\ \hline 
+  Append(material) & add single material as dict or VSettingsMaterial to list; returns index of newly added material\\ \hline 
+  New() & Get new default material, which can be modified or appended to materials list\\ \hline 
+  Set(indexOrName, material) & set material with index 'materialIndex' as dict or VSettingsMaterial\\ \hline 
+  Get(indexOrName) & get material with index 'materialIndex' as VSettingsMaterial\\ \hline 
+  GetDict(indexOrName) & get material with index 'materialIndex' as dict\\ \hline 
+  len(data) & return length of the Vector3DList, using len(data) where data is the Vector3DList\\ \hline 
+  ... = data[index] & get reference access of material with 'index' as VSettingsMaterial\\ \hline 
+  \_\_repr\_\_() & return the string representation of the GraphicsMaterialList\\ \hline 
+\end{longtable}
+\end{center}
+
+%++++++++++++++++++++
 \mysubsubsection{Vector3DList}
-The Vector3DList is used to represent lists of 3D vectors. This is used to transfer such lists from Python to C++. \\ \\ Usage: \bi
+The Vector3DList is used to represent lists of 3D vectors. This is used to transfer such lists from Python to C++. \\ \\ Usage:
+\bi
   \item Create empty \texttt{Vector3DList} with \texttt{x = Vector3DList()} 
-  \item Create \texttt{Vector3DList} with list of numpy arrays:\\\texttt{x = Vector3DList([ numpy.array([1.,2.,3.]), numpy.array([4.,5.,6.]) ])}
+  \item Create \texttt{Vector3DList} with list of numpy arrays:\texttt{x = Vector3DList([ numpy.array([1.,2.,3.]), numpy.array([4.,5.,6.]) ])}
   \item Create \texttt{Vector3DList} with list of lists \texttt{x = Vector3DList([[1.,2.,3.], [4.,5.,6.]])}
   \item Append item: \texttt{x.Append([0.,2.,4.])}
   \item Convert into list of numpy arrays: \texttt{x.GetPythonObject()}

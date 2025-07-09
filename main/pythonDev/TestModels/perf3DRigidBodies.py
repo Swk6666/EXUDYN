@@ -85,17 +85,10 @@ for i in range(nBodies):
 
     body0 = bodyLast
     body1 = oRB
-    # point = mbs.GetObjectOutputBody(oRB,exu.OutputVariableType.Position,
-    #                                 localPosition=[-0.5*L,0,0],
-    #                                 configuration=exu.ConfigurationType.Reference)
-    #axis = [0,0,1]
     axis = axisList[i]
     mbs.CreateRevoluteJoint(bodyNumbers=[body0, body1], position=[0.5*L,0,0], 
                             axis=Alast.T@axis, useGlobalFrame=False, 
                             axisRadius=0.6*d, axisLength=1.2*d)
-    # OLD:
-    # AddRevoluteJoint(mbs, body0, body1, point, axis, useGlobalFrame=True, 
-    #                   axisRadius=0.6*d, axisLength=1.2*d)
 
     bodyLast = oRB
     
@@ -142,10 +135,10 @@ SC.visualizationSettings.general.drawWorldBasis=True
 
 SC.visualizationSettings.general.autoFitScene = False #use loaded render state
 if useGraphics:
-    exu.StartRenderer()
+    SC.renderer.Start()
     if 'renderState' in exu.sys:
-        SC.SetRenderState(exu.sys[ 'renderState' ])
-    #mbs.WaitForUserToContinue()
+        SC.renderer.SetState(exu.sys[ 'renderState' ])
+    #SC.renderer.DoIdleTasks()
 else:
     simulationSettings.solutionSettings.writeSolutionToFile = False
 
@@ -165,7 +158,7 @@ exudynTestGlobals.testResult = result
 
 #%%+++++++++++++++++++++++++++++
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 

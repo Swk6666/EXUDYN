@@ -177,7 +177,7 @@ elif mode == 'nonlinearFEM':
     [oGenericODE2, femToMbsNodeList] = fem.CreateNonlinearFEMObjectGenericODE2NGsolve(mbs, mesh, density=density, youngsModulus=youngsModulus, 
                                                poissonsRatio=nu, meshOrder= 1, color= graphics.color.red)
 if 'ACF' in mode:
-    print('mode ACF')
+    exu.Print('mode ACF')
     #%%++++++++++++++++++++++++++++++++++++++++
     nodePositionsFlat = nodePositions.flatten()
     
@@ -219,9 +219,9 @@ nodeN2 = femToMbsNodeList[fem.GetNodeAtPoint(point=[0,wy,0])]
 nodesList = [int(nodeN0),int(nodeN1),int(nodeN2)]
 [pRef, Aref] = GetCorotationalFrame(mbs, exu.ConfigurationType.Reference)
 
-print('mbs node numbers for corotational frame:',[nodeN0,nodeN1,nodeN2])
-print('pRef=', pRef)
-print('Aref=', Aref)   
+exu.Print('mbs node numbers for corotational frame:',[nodeN0,nodeN1,nodeN2])
+exu.Print('pRef=', pRef)
+exu.Print('Aref=', Aref)   
 
 #%%++++++++++++++++++++++++++++++++++++++++
 #add constraints:
@@ -372,10 +372,10 @@ if True:
     if useGraphics:
         SC.visualizationSettings.general.autoFitScene=False
 
-        exu.StartRenderer()
-        if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+        SC.renderer.Start()
+        if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
     
-        # mbs.WaitForUserToContinue() #press space to continue
+        # SC.renderer.DoIdleTasks() #press space to continue
 
     if mode == 'nonlinearFEM':
         ngs.SetNumThreads(4)
@@ -388,8 +388,8 @@ if True:
     # print("nModes=", nModes, ", tip displacement=", uTip)
         
     if useGraphics:
-        # SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        # SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
 
 if False: #use this to reload the solution and use SolutionViewer
 #%%+++++++++++++++++

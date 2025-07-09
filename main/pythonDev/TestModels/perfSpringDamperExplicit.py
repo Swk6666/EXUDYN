@@ -72,7 +72,7 @@ tEnd = 500     #end time of simulation
 h = 0.0001    #step size; leads to 1000 steps
 
 simulationSettings = exu.SimulationSettings()
-simulationSettings.timeIntegration.numberOfSteps = int(tEnd/h) #must be integer
+simulationSettings.timeIntegration.numberOfSteps = tEnd/h
 simulationSettings.timeIntegration.endTime = tEnd
 
 simulationSettings.solutionSettings.writeSolutionToFile = False

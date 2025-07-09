@@ -65,10 +65,10 @@ simulationSettings.solutionSettings.solutionInformation = "Rigid pendulum"
 SC.visualizationSettings.openGL.multiSampling = 4
 SC.visualizationSettings.openGL.lineWidth = 2
 
-exu.StartRenderer()
+SC.renderer.Start()
 
 mbs.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 

@@ -20,7 +20,7 @@ from math import sin, cos, pi
 SC = exu.SystemContainer()
 mbs = SC.AddSystem()
 
-print('EXUDYN version='+exu.GetVersionString())
+print('EXUDYN version='+exu.config.Version())
 
 modes = ['100Hz132Xrot', '100Hz132XrotFine', '10Hz132Xrot', '100HzGeneralRotFine']
 iMode = 0
@@ -205,8 +205,8 @@ SC.visualizationSettings.nodes.basisSize=1.25
 SC.visualizationSettings.nodes.show=True
 
 SC.visualizationSettings.general.autoFitScene = 0
-exu.StartRenderer()
-SC.SetRenderState({'centerPoint': [0.0, 0.0, 0.0],
+SC.renderer.Start()
+SC.renderer.SetState({'centerPoint': [0.0, 0.0, 0.0],
  'maxSceneSize': 1.0,
  'zoom': 2.0,
  'currentWindowSize': [1024, 768],
@@ -214,11 +214,11 @@ SC.SetRenderState({'centerPoint': [0.0, 0.0, 0.0],
         [1,0,0],
         [0,1,0]])}) #load last model view
 
-#mbs.WaitForUserToContinue()
+#SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(simulationSettings)
 
-#SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+#SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 
 if False:
     import matplotlib.pyplot as plt

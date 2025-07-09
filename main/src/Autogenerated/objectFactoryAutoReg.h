@@ -621,6 +621,28 @@ bool MainObjectContactSphereSphereIsRegistered = ClassFactoryItemsSystemData<Mai
 		return object;
 	});
 
+bool MainObjectContactSphereTorusIsRegistered = ClassFactoryItemsSystemData<MainObject>::Get().RegisterClass("ContactSphereTorus", [](CSystemData* cSystemData)
+	{ //AUTO: 
+		CObject* cObject = new CObjectContactSphereTorus();
+		cObject->SetCSystemData(cSystemData);
+		MainObject* object = new MainObjectContactSphereTorus(); //new main object
+		object->SetCObject(cObject);
+		VisualizationObjectContactSphereTorus* vObject = new VisualizationObjectContactSphereTorus();
+		object->SetVisualizationObject(vObject);
+		return object;
+	});
+
+bool MainObjectContactSphereTriangleIsRegistered = ClassFactoryItemsSystemData<MainObject>::Get().RegisterClass("ContactSphereTriangle", [](CSystemData* cSystemData)
+	{ //AUTO: 
+		CObject* cObject = new CObjectContactSphereTriangle();
+		cObject->SetCSystemData(cSystemData);
+		MainObject* object = new MainObjectContactSphereTriangle(); //new main object
+		object->SetCObject(cObject);
+		VisualizationObjectContactSphereTriangle* vObject = new VisualizationObjectContactSphereTriangle();
+		object->SetVisualizationObject(vObject);
+		return object;
+	});
+
 bool MainObjectContactCurveCirclesIsRegistered = ClassFactoryItemsSystemData<MainObject>::Get().RegisterClass("ContactCurveCircles", [](CSystemData* cSystemData)
 	{ //AUTO: 
 		CObject* cObject = new CObjectContactCurveCircles();
@@ -731,17 +753,6 @@ bool MainObjectJointALEMoving2DIsRegistered = ClassFactoryItemsSystemData<MainOb
 		return object;
 	});
 
-bool MainObjectContactFrictionCircleCable2DOldIsRegistered = ClassFactoryItemsSystemData<MainObject>::Get().RegisterClass("ContactFrictionCircleCable2DOld", [](CSystemData* cSystemData)
-	{ //AUTO: 
-		CObject* cObject = new CObjectContactFrictionCircleCable2DOld();
-		cObject->SetCSystemData(cSystemData);
-		MainObject* object = new MainObjectContactFrictionCircleCable2DOld(); //new main object
-		object->SetCObject(cObject);
-		VisualizationObjectContactFrictionCircleCable2DOld* vObject = new VisualizationObjectContactFrictionCircleCable2DOld();
-		object->SetVisualizationObject(vObject);
-		return object;
-	});
-
 bool MainMarkerBodyMassIsRegistered = ClassFactoryItem<MainMarker>::Get().RegisterClass("BodyMass", []
 	{ //AUTO: 
 		CMarkerBodyMass* cItem = new CMarkerBodyMass();							//new point Marker
@@ -818,6 +829,26 @@ bool MainMarkerNodeRotationCoordinateIsRegistered = ClassFactoryItem<MainMarker>
 		MainMarker* item = new MainMarkerNodeRotationCoordinate(); //new main item
 		item->SetCMarker(cItem);
 		VisualizationMarkerNodeRotationCoordinate* vItem = new VisualizationMarkerNodeRotationCoordinate();
+		item->SetVisualizationMarker(vItem);
+		return item;
+	});
+
+bool MainMarkerBodiesRelativeTranslationCoordinateIsRegistered = ClassFactoryItem<MainMarker>::Get().RegisterClass("BodiesRelativeTranslationCoordinate", []
+	{ //AUTO: 
+		CMarkerBodiesRelativeTranslationCoordinate* cItem = new CMarkerBodiesRelativeTranslationCoordinate();							//new point Marker
+		MainMarker* item = new MainMarkerBodiesRelativeTranslationCoordinate(); //new main item
+		item->SetCMarker(cItem);
+		VisualizationMarkerBodiesRelativeTranslationCoordinate* vItem = new VisualizationMarkerBodiesRelativeTranslationCoordinate();
+		item->SetVisualizationMarker(vItem);
+		return item;
+	});
+
+bool MainMarkerBodiesRelativeRotationCoordinateIsRegistered = ClassFactoryItem<MainMarker>::Get().RegisterClass("BodiesRelativeRotationCoordinate", []
+	{ //AUTO: 
+		CMarkerBodiesRelativeRotationCoordinate* cItem = new CMarkerBodiesRelativeRotationCoordinate();							//new point Marker
+		MainMarker* item = new MainMarkerBodiesRelativeRotationCoordinate(); //new main item
+		item->SetCMarker(cItem);
+		VisualizationMarkerBodiesRelativeRotationCoordinate* vItem = new VisualizationMarkerBodiesRelativeRotationCoordinate();
 		item->SetVisualizationMarker(vItem);
 		return item;
 	});

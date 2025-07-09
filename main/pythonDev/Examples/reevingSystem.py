@@ -237,8 +237,6 @@ SC.visualizationSettings.loads.show=False
 SC.visualizationSettings.nodes.defaultSize = 0.01
 SC.visualizationSettings.openGL.multiSampling = 4
 
-#exu.SetWriteToConsole(False)
-
 if False:
     SC.visualizationSettings.contour.outputVariableComponent=0
     SC.visualizationSettings.contour.outputVariable=exu.OutputVariableType.ForceLocal
@@ -250,8 +248,8 @@ if False:
     SC.visualizationSettings.contact.showBoundingBoxes = True
 
 if useGraphics: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 doDynamic = True
 if doDynamic :
@@ -268,8 +266,8 @@ if useGraphics and True:
 
 
 if useGraphics: 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
     
     # if True:
     #     

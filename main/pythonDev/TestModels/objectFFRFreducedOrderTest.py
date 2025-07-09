@@ -184,10 +184,10 @@ simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.5 #SHOULD
 #SC.visualizationSettings.exportImages.saveImageFileName = "animation/frame"
 
 if useGraphics:
-    exu.StartRenderer()
-    if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+    SC.renderer.Start()
+    if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
 
-    mbs.WaitForUserToContinue() #press space to continue
+    SC.renderer.DoIdleTasks() #press space to continue
 
 mbs.SolveDynamic(simulationSettings)
     
@@ -203,9 +203,9 @@ exudynTestGlobals.testError = 0.01*(result - (0.5354530110580623)) #2020-05-26(a
 exudynTestGlobals.testResult = 0.01*result
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
-    lastRenderState = SC.GetRenderState() #store model view for next simulation
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
+    lastRenderState = SC.renderer.GetState() #store model view for next simulation
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
 #plot results

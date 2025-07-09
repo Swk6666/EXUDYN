@@ -70,7 +70,7 @@ simulationSettings.timeIntegration.endTime = 10
 simulationSettings.solutionSettings.writeSolutionToFile = True
 simulationSettings.solutionSettings.solutionWritePeriod = 0.01
 
-exu.StartRenderer()
-mbs.WaitForUserToContinue()
+SC.renderer.Start()
+SC.renderer.DoIdleTasks()
 mbs.SolveDynamic(simulationSettings)
-exu.StopRenderer()
+SC.renderer.Stop()

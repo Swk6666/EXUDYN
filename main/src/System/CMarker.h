@@ -39,16 +39,29 @@ public: //
 		return Marker::_None;
 	}
 
-	//! if body marker: get object number (otherwise assertion)
-	virtual Index GetObjectNumber() const {
+	//! if body marker: get object number (otherwise exception)
+	virtual Index GetObjectNumber(Index localIndex = 0) const {
 		CHECKandTHROWstring("Invalid call to CMarker::GetObjectNumber");
 		return EXUstd::InvalidIndex;
 	}
 
-	//! if node marker: get node number (otherwise assertion)
+	//! if body marker: get object number (otherwise exception)
+	virtual void SetObjectNumber(Index objectNumber, Index localIndex = 0) {
+		CHECKandTHROWstring("Invalid call to CMarker::SetObjectNumber");
+	}
+
+	//! if body marker: get object number (otherwise exception)
+	virtual Index GetNumberOfObjects() const { CHECKandTHROWstring("Invalid call to CMarker::GetNumberOfObjects"); return 1; }
+
+	//! if node marker: get node number (otherwise exception)
 	virtual Index GetNodeNumber() const {
 		CHECKandTHROWstring("Invalid call to CMarker::GetNodeNumber");
 		return EXUstd::InvalidIndex;
+	}
+
+	//! if body marker: get object number (otherwise exception)
+	virtual void SetNodeNumber(Index nodeNumber) {
+		CHECKandTHROWstring("Invalid call to CMarker::SetNodeNumber");
 	}
 
 	//! if marker is of coordinate type: return coordinate of node or body
@@ -80,6 +93,10 @@ public: //
 	//! return configuration dependent angular velocity of node; returns always a 3D Vector
 	virtual void GetAngularVelocityLocal(const CSystemData& cSystemData, Vector3D& angularVelocity, ConfigurationType configuration = ConfigurationType::Current) const {
 		CHECKandTHROWstring("Invalid call to CMarker::GetAngularVelocity");
+	}
+
+	virtual void PostNewtonStep(CSystemData& cSystemData, const MarkerData& markerData) {
+		CHECKandTHROWstring("Invalid call to CMarker::PostNewtonStep");
 	}
 
 	//should be filled directly into markerdata

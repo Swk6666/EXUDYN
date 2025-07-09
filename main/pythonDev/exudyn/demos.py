@@ -12,26 +12,26 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 import numpy as np
-import exudyn as exu
+import exudyn
 
 def DemoInfo():
-    print('\n************************************')
-    print('for advanced demos github page:')
-    print('https://github.com/jgerstmayr/EXUDYN')
-    print('look under main/pythonDev/Examples')
-    print('and main/pythonDev/TestModels')
-    print('************************************\n')
+    exudyn.Print('\n************************************')
+    exudyn.Print('for advanced demos github page:')
+    exudyn.Print('https://github.com/jgerstmayr/EXUDYN')
+    exudyn.Print('look under main/pythonDev/Examples')
+    exudyn.Print('and main/pythonDev/TestModels')
+    exudyn.Print('************************************\n')
     
 
 #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #**function: very simple demo to show that exudyn is correctly installed; does not require graphics; similar to Examples/myFirstExample.py
 def Demo1(showAll = True):
     if showAll:
-        print('start demo1: verify that exudyn is running')
+        exudyn.Print('start demo1: verify that exudyn is running')
     import exudyn as exu               #EXUDYN package including C++ core part
     import exudyn.itemInterface as eii #conversion of data to exudyn dictionaries
     
-    SC = exu.SystemContainer()         #container of systems
+    SC = exudyn.SystemContainer()         #container of systems
     mbs = SC.AddSystem()               #add a new system to work with
     
     nMP = mbs.AddNode(eii.NodePoint2D(referenceCoordinates=[0,0]))
@@ -40,13 +40,13 @@ def Demo1(showAll = True):
     mbs.AddLoad(eii.Force(markerNumber = mMP, loadVector=[0.001,0,0]))
     
     mbs.Assemble()                     #assemble system and solve
-    simulationSettings = exu.SimulationSettings()
+    simulationSettings = exudyn.SimulationSettings()
     simulationSettings.timeIntegration.verboseMode=1 #provide some output
     simulationSettings.solutionSettings.coordinatesSolutionFileName = 'solution/demo1.txt'
 
     mbs.SolveDynamic(simulationSettings)
     if showAll:
-        print('results can be found in local directory: solution/demo1.txt')
+        exudyn.Print('results can be found in local directory: solution/demo1.txt')
     
         DemoInfo()
     
@@ -60,11 +60,11 @@ def Demo2(showAll = True):
     from exudyn.utilities import eulerParameters0, AngularVelocity2EulerParameters_t
     import exudyn.graphics as graphics
     
-    SC = exu.SystemContainer()
+    SC = exudyn.SystemContainer()
     mbs = SC.AddSystem()
     
     if showAll:
-        print('EXUDYN version='+exu.GetVersionString())
+        exudyn.Print('EXUDYN version='+exudyn.config.Version())
     
     #%%+++++++++++++++++++++++++++++++++++
     #background
@@ -83,7 +83,7 @@ def Demo2(showAll = True):
     #%%+++++++++++++++++++++++++++++++++++
     #create a chain of 6 bodies:
     for i in range(12):
-        #print("Build Object", i)
+        #exudyn.Print("Build Object", i)
         ep0 = eulerParameters0 #no rotation
         p0 = [sx+i*2*sx,0.,0] #reference position
     
@@ -105,9 +105,9 @@ def Demo2(showAll = True):
     
     #%%+++++++++++++++++++++++++++++++++++
     mbs.Assemble()
-    # print(mbs)
+    # exudyn.Print(mbs)
     
-    simulationSettings = exu.SimulationSettings() #takes currently set values or default values
+    simulationSettings = exudyn.SimulationSettings() #takes currently set values or default values
     
     fact = 2000*(1+9*showAll) #10000
     simulationSettings.timeIntegration.numberOfSteps = 1*fact
@@ -115,7 +115,7 @@ def Demo2(showAll = True):
     simulationSettings.solutionSettings.solutionWritePeriod = simulationSettings.timeIntegration.endTime/fact*20
     simulationSettings.solutionSettings.coordinatesSolutionFileName = 'solution/chain.txt'
     simulationSettings.timeIntegration.verboseMode = 1
-    simulationSettings.linearSolverType = exu.LinearSolverType.EigenSparse
+    simulationSettings.linearSolverType = exudyn.LinearSolverType.EigenSparse
 
     simulationSettings.timeIntegration.newton.useModifiedNewton = True
     simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.6 #0.6 works well 
@@ -131,16 +131,16 @@ def Demo2(showAll = True):
     SC.visualizationSettings.openGL.light0position = [4,4,10,0]
     
     if showAll:
-        exu.StartRenderer()
-        mbs.WaitForUserToContinue()
+        SC.renderer.Start()
+        SC.renderer.DoIdleTasks()
     
     simulationSettings.timeIntegration.numberOfSteps = 1*fact
     simulationSettings.timeIntegration.endTime = 0.001*fact*0.5*4
     mbs.SolveDynamic(simulationSettings)
     
     if showAll:
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
 
     if showAll:
         input("Press Enter to start SolutionViewer...")

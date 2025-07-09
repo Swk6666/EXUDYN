@@ -1,13 +1,13 @@
 /** ***********************************************************************************************
 * @file			Threading.h
 * @brief		This file mainly contains a library for small-scale parallelization ("micro-threading")
-*               Multithreading takes effect for >1000 clock cycles (or even less);
+*               Multithreading takes effect for tasks>1000 clock cycles (or even less);
 *               thanks to Joachim Schöberl!!!
 * @details		Details:
 *               This file adapts / duplicates parts of NGsolve: https://github.com/NGSolve/ngsolve ; see also https://ngsolve.org/ 
 *
 * @author		Gerstmayr Johannes
-* @date			2022-01-13 (created)
+* @date			2022-01-13 (created); 2025-06-16 (extended)
 * @copyright	This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See 'LICENSE.txt' for more details.
 * @note			Bug reports, support and further information:
 * 				- email: johannes.gerstmayr@uibk.ac.at
@@ -26,10 +26,12 @@
 #include "Utilities/BasicDefinitions.h"
 #include "Utilities/ResizableArray.h"
 
-namespace MicroThreading {
+
+namespace ExuThreading {
+
 	typedef Index SizeType;
 	typedef SizeType TotalCosts;
-	extern class TaskManager * task_manager;
+	extern class TaskManager* task_manager;
 
 	class Exception : public std::exception
 	{
@@ -38,19 +40,19 @@ namespace MicroThreading {
 	public:
 		// Exception ();
 		/// string s describes the exception
-		Exception(const std::string & s);
+		Exception(const std::string& s);
 		/// string s describes the exception
-		Exception(const char * s);
+		Exception(const char* s);
 		///
 		virtual ~Exception();
 
 		/// append string to description
-		Exception & Append(const std::string & s);
+		Exception& Append(const std::string& s);
 		/// append string to description
-		Exception & Append(const char * s);
+		Exception& Append(const char* s);
 
 		/// verbal description of exception
-		const std::string & What() const { return m_what; }
+		const std::string& What() const { return m_what; }
 
 		/// implement virtual function of std::exception
 		virtual const char* what() const noexcept override { return m_what.c_str(); }
@@ -61,20 +63,20 @@ namespace MicroThreading {
 		;
 	}
 
-	inline Exception & Exception::Append(const std::string & s)
+	inline Exception& Exception::Append(const std::string& s)
 	{
 		m_what += s;
 		return *this;
 	}
 
-	inline Exception & Exception::Append(const char * s)
+	inline Exception& Exception::Append(const char* s)
 	{
 		m_what += s;
 		return *this;
 	}
 
 	template <typename T>
-	inline Exception & operator<< (Exception & ex, T data)
+	inline Exception& operator<< (Exception& ex, T data)
 	{
 		ex.Append(data);
 		return ex;
@@ -137,62 +139,80 @@ namespace MicroThreading {
 
 	};
 
+	//padding to have sync variables in different cache lines
+	struct PaddedAtomicInt {
+		//alignas(64) std::atomic_int value; // Align to 64 bytes
+		//char padding[64 - sizeof(std::atomic_int)]; // Add padding to fill the cache line
+		std::atomic_int value;
+	};
 
 	class TaskManager
 	{
-		static bool isRunning; //atomic not needed; slightly faster for permanent checks of this variable; this flag is used to stop all additional threads by isRunning=false
-		std::atomic<Index> active_workers; //counts the additional threads running (excl. main thread!); used to wait until all threads started/stopped
-
-		std::atomic<bool> newJob; //this flag is used to initiate new job at all threads
-		std::atomic<bool> restartLoops; //this flag is used to restart waiting loop in all threads
+		static std::atomic<bool> isRunning;
+		std::atomic<Index> active_workers;
+		std::atomic<Index> numberOfTasks;  // number of tasks in current job
 
 		static Index num_threads;
 		static Index max_threads;
-		static thread_local Index thread_id; //this is the thread ID locally accessible in thread ...
+		static thread_local Index thread_id;
 
-		//this is written on CreateJob:
-		static const std::function<void(TaskInfo&)> * func;
+		static const std::function<void(TaskInfo&)>* func;
 
-		Exception * ex;
+		Exception* ex;
+		//ResizableArray<std::atomic_int*> sync;
+		ResizableArray<PaddedAtomicInt*> sync;
 
-		ResizableArray<std::atomic_int*> sync; //is initialized when started up
+		std::atomic<Index> next_task;  // Shared task index for dynamic load balancing
+		static bool loadBalancing;    // Load balancing flag
+
+		std::atomic<Index> completedThreads; // total tasks completed by all threads (except main thread)
 
 	public:
 
 		TaskManager()
 		{
-			//done during initialization:
-			isRunning = true;
+			isRunning.store(true, std::memory_order_relaxed);
 			active_workers = 0;
-			newJob = false;
-			restartLoops = false;
-
+			//newJob = false;
+			//restartLoops = false;
+			next_task.store(0);  // Initialize shared task index
 		}
-		~TaskManager() 
-		{ 
-			if (isRunning) { StopWorkers(); }
-		};
 
+		~TaskManager()
+		{
+			if (isRunning.load(std::memory_order_relaxed) )
+			{
+				StopWorkers();
+			}
+		}
 
 		void StartWorkers();
 		void StopWorkers();
 		static void SuspendWorkers(Index asleep_usecs = 1000) {} //not implemented, for compatibility with NGsolve
 		static void ResumeWorkers() {} //not implemented, for compatibility with NGsolve
 
-		static bool IsRunning() { return isRunning; }
+		static bool IsRunning() { return isRunning.load(std::memory_order_relaxed); }
 		static void SetNumThreads(Index numThreadsInit)
-		{ 
-			CHECKandTHROW(!isRunning, "SetNumThreads: may only be called if threads are not running");
+		{
+			CHECKandTHROW(!isRunning.load(std::memory_order_relaxed), "SetNumThreads: may only be called if threads are not running");
 			num_threads = numThreadsInit;
 		}
 		static Index GetNumThreads() { return num_threads; }
 
-		static Index GetThreadId() { return task_manager ? task_manager->thread_id : 0; }
+		static void SetLoadBalancing(bool flag)
+		{
+			CHECKandTHROW(!isRunning.load(std::memory_order_relaxed), "SetLoadBalancing: may only be called if threads are not running");
+			loadBalancing = flag;
+		}
+		static bool GetLoadBalancing() { return loadBalancing; }
 
-		void CreateJob(const std::function<void(TaskInfo&)> & afunc,
-			Index numberOfJobTasks = task_manager->GetNumThreads());
 
-		void Loop(Index threadID);
+		inline static Index GetThreadId() { return task_manager ? task_manager->thread_id : 0; }
+
+		void CreateJob(const std::function<void(TaskInfo&)>& afunc, Index numberOfJobTasks = task_manager->GetNumThreads());
+
+		inline void Loop(Index threadID);
+
 
 	};
 
@@ -206,16 +226,15 @@ namespace MicroThreading {
 		int tasksTimesThreads = task_manager ? task_manager->GetNumThreads() : 0,
 		TotalCosts costs = 1000)
 	{
-		//CHECKandTHROW(tasksTimesThreads == task_manager->GetNumThreads(), "in TinyThread, tasksTimesThreads must be equal to number of threads");
-		tasksTimesThreads = task_manager->GetNumThreads(); //overwrite for compatibility with ngs lib
+		//DELETE: tasksTimesThreads = task_manager->GetNumThreads(); //overwrite for compatibility with ngs lib
 		if (task_manager && costs >= 1000)
 		{
 			task_manager->CreateJob
-			([r, f](TaskInfo & ti)
-			{
-				auto myrange = r.Split(ti.task_nr, ti.ntasks);
-				for (auto i : myrange) f(i);
-			},
+			([r, f](TaskInfo& ti)
+				{
+					auto myrange = r.Split(ti.task_nr, ti.ntasks);
+					for (auto i : myrange) { f(i); }
+				},
 				tasksTimesThreads);
 		}
 		else
@@ -233,5 +252,7 @@ namespace MicroThreading {
 
 
 };
+
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #endif //MICROTHREADING__H

@@ -6,7 +6,7 @@
 #
 # Author:   Johannes Gerstmayr 
 # Date:     2020-12-02
-# Notes:    Solver functions are included directly in exudyn and can be used with exu.SolveStatic(...)
+# Notes:    Solver functions are included directly in exudyn and can be used with mbs.SolveStatic(...)
 #
 # Copyright:This file is part of Exudyn. Exudyn is free software. You can redistribute it and/or modify it under the terms of the Exudyn license. See 'LICENSE.txt' for more details.
 #
@@ -150,9 +150,9 @@ def SolverErrorMessage(solver, mbs, isStatic=False,
 # simulationSettings = exu.SimulationSettings()
 # simulationSettings.timeIntegration.endTime = 10
 # success = mbs.SolveStatic(simulationSettings, storeSolver = True)
-# print("success =", success)
-# print("iterations = ", mbs.sys['staticSolver'].it)
-# print("pos=", mbs.GetObjectOutputBody(body,localPosition=[0,0,0], 
+# exu.Print("success =", success)
+# exu.Print("iterations = ", mbs.sys['staticSolver'].it)
+# exu.Print("pos=", mbs.GetObjectOutputBody(body,localPosition=[0,0,0], 
 #       variableType=exu.OutputVariableType.Position))
 def SolveStatic(mbs, simulationSettings = exudyn.SimulationSettings(), 
                 updateInitialValues = False,
@@ -162,7 +162,7 @@ def SolveStatic(mbs, simulationSettings = exudyn.SimulationSettings(),
                 autoAssemble = True,
                 ):
     if not mbs.systemIsConsistent and autoAssemble:
-        print('WARNING: SolveStatic: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
+        exudyn.Print('WARNING: SolveStatic: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
         mbs.Assemble()
 
     staticSolver = exudyn.MainSolverStatic()
@@ -217,9 +217,9 @@ def SolveStatic(mbs, simulationSettings = exudyn.SimulationSettings(),
 # simulationSettings = exu.SimulationSettings()
 # simulationSettings.timeIntegration.endTime = 10
 # success = mbs.SolveDynamic(simulationSettings, storeSolver = True)
-# print("success =", success)
-# print("iterations = ", mbs.sys['dynamicSolver'].it)
-# print("pos=", mbs.GetObjectOutputBody(body,localPosition=[0,0,0], 
+# exu.Print("success =", success)
+# exu.Print("iterations = ", mbs.sys['dynamicSolver'].it)
+# exu.Print("pos=", mbs.GetObjectOutputBody(body,localPosition=[0,0,0], 
 #       variableType=exu.OutputVariableType.Position))
 def SolveDynamic(mbs,
                 simulationSettings = exudyn.SimulationSettings(), 
@@ -232,7 +232,7 @@ def SolveDynamic(mbs,
                 ):
     success = False
     if not mbs.systemIsConsistent and autoAssemble:
-        print('WARNING: SolveDynamic: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
+        exudyn.Print('WARNING: SolveDynamic: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
         mbs.Assemble()
         
     if (solverType == exudyn.DynamicSolverType.TrapezoidalIndex2 or solverType == exudyn.DynamicSolverType.GeneralizedAlpha):
@@ -254,7 +254,7 @@ def SolveDynamic(mbs,
             simulationSettings.timeIntegration.generalizedAlpha.useNewmark = True
             simulationSettings.timeIntegration.generalizedAlpha.useIndex2Constraints = True
     
-        stat = exudyn.InfoStat(False)
+        stat = exudyn.special.InfoStat(False)
         success = False
         try:
             success = dynamicSolver.SolveSystem(mbs, simulationSettings)
@@ -286,7 +286,7 @@ def SolveDynamic(mbs,
             mbs.sys['dynamicSolver'] = dynamicSolver #copy solver structure to sys variable
             mbs.sys['simulationSettings'] = simulationSettings #link to last simulation settings
 
-        stat = exudyn.InfoStat(False)
+        stat = exudyn.special.InfoStat(False)
         success = dynamicSolver.SolveSystem(mbs, simulationSettings)
         CheckSolverInfoStatistics(dynamicSolver.GetSolverName(), stat, dynamicSolver.it.currentStepIndex*dynamicSolver.GetNumberOfStages()) #now check if these statistics are ok
     else:
@@ -311,8 +311,8 @@ def SolveDynamic(mbs,
 #      mbs.SolveDynamic(simulationSettings)
 #  except:
 #      [success, msg] = exu.SolverSuccess(mbs.sys['dynamicSolver'])
-#      print('success=',success)
-#      print('error message=',msg)
+#      exu.Print('success=',success)
+#      exu.Print('error message=',msg)
 #
 #  #alternative:
 #  solver=exu.MainSolverImplicitSecondOrder()
@@ -387,7 +387,7 @@ def ComputeLinearizedSystem(mbs,
     store = DeactivateWritingOfSolvers(simulationSettings)
 
     if not mbs.systemIsConsistent and autoAssemble:
-        print('WARNING: ComputeLinearizedSystem: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
+        exudyn.Print('WARNING: ComputeLinearizedSystem: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
         mbs.Assemble()
 
     #use static solver, as it does not include factors from time integration (and no velocity derivatives) in the jacobian
@@ -524,7 +524,7 @@ def ComputeODE2Eigenvalues(mbs,
     store = DeactivateWritingOfSolvers(simulationSettings)
 
     if not mbs.systemIsConsistent and autoAssemble:
-        print('WARNING: ComputeODE2Eigenvalues: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
+        exudyn.Print('WARNING: ComputeODE2Eigenvalues: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
         mbs.Assemble()
 
     try:
@@ -747,7 +747,7 @@ def ComputeSystemDegreeOfFreedom(mbs,
     store = DeactivateWritingOfSolvers(simulationSettings)
 
     if not mbs.systemIsConsistent and autoAssemble:
-        print('WARNING: ComputeSystemDegreeOfFreedom: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
+        exudyn.Print('WARNING: ComputeSystemDegreeOfFreedom: mbs.systemIsConsistent=False, therefore calling mbs.Assemble() before solving; to avoid this, set autoAssemble=False')
         mbs.Assemble()
 
     staticSolver = exudyn.MainSolverStatic()
@@ -829,9 +829,9 @@ def ComputeSystemDegreeOfFreedom(mbs,
     
 #**function: helper function for solvers to check e.g. if high number of memory allocations happened during simulation
 #            This can happen, if large amount of sensors are attached and output is written in every time step
-#**input: stat=exudyn.InfoStat() from previous step, numberOfEvaluations is a counter which is proportional to number of RHS evaluations in method
+#**input: stat=exudyn.special.InfoStat() from previous step, numberOfEvaluations is a counter which is proportional to number of RHS evaluations in method
 def CheckSolverInfoStatistics(solverName, infoStat, numberOfEvaluations):
-    stat = np.array(exudyn.InfoStat(False)) - np.array(infoStat)
+    stat = np.array(exudyn.special.InfoStat(False)) - np.array(infoStat)
 
     newCnt = max(stat[0],stat[2],stat[4]) #array, vector, matrix new counts
 
@@ -845,16 +845,16 @@ if __name__ == '__main__':
     if True:
         [mbs, SC] = demos.Demo1(False)
         res = exudyn.ComputeSystemDegreeOfFreedom(mbs, verbose=True)
-        print('Demo1 dof=',res['degreeOfFreedom'],'\n') #2 DOF (2D mass point freely moving)
+        exudyn.Print('Demo1 dof=',res['degreeOfFreedom'],'\n') #2 DOF (2D mass point freely moving)
 
     #takes some seconds to compute:
     if True:
         [mbs, SC] = demos.Demo2(False)
         res = exudyn.ComputeSystemDegreeOfFreedom(mbs)
-        print('Demo2=',res,'\n') #12*3=36 (12 bodies with 12 spherical joints)
+        exudyn.Print('Demo2=',res,'\n') #12*3=36 (12 bodies with 12 spherical joints)
     
         res = exudyn.ComputeSystemDegreeOfFreedom(mbs, verbose=True, useSVD=True)
-        print('Demo2 using SVD=',res) #12*3=36 (12 bodies with 12 spherical joints)
+        exudyn.Print('Demo2 using SVD=',res) #12*3=36 (12 bodies with 12 spherical joints)
 
 
     #3D rigid-body with revolute joint and spring, same as in TestModels/ComputeODE2AEeigenvaluesTest.py
@@ -906,7 +906,7 @@ if __name__ == '__main__':
         thetaZZ=inertiaCuboid.Translated([-beamL/2,0,0]).Inertia()[2,2]
         evAnalytical = np.sqrt( springK*beamL**2/thetaZZ ) / (2*np.pi)
 
-        print('numerical eigenvalues in Hz:',evNumerical)
-        print('analytical eigenvalues in Hz:',evAnalytical)
-        print('error eigenvalues:', (evAnalytical-evNumerical)/evAnalytical)
+        exudyn.Print('numerical eigenvalues in Hz:',evNumerical)
+        exudyn.Print('analytical eigenvalues in Hz:',evAnalytical)
+        exudyn.Print('error eigenvalues:', (evAnalytical-evNumerical)/evAnalytical)
 

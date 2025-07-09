@@ -200,10 +200,10 @@ if True: #now import mesh as mechanical model to EXUDYN
 
     if True:
         if useGraphics:
-            exu.StartRenderer()
-            if 'renderState' in exu.sys: SC.SetRenderState(exu.sys['renderState']) #load last model view
+            SC.renderer.Start()
+            if 'renderState' in exu.sys: SC.renderer.SetState(exu.sys['renderState']) #load last model view
         
-            mbs.WaitForUserToContinue() #press space to continue
+            SC.renderer.DoIdleTasks() #press space to continue
         
         mbs.SolveDynamic(solverType=exu.DynamicSolverType.TrapezoidalIndex2, 
                          simulationSettings=simulationSettings)
@@ -211,8 +211,8 @@ if True: #now import mesh as mechanical model to EXUDYN
         
             
         if useGraphics:
-            SC.WaitForRenderEngineStopFlag()
-            exu.StopRenderer() #safely close rendering window!
-            lastRenderState = SC.GetRenderState() #store model view for next simulation
+            SC.renderer.DoIdleTasks()
+            SC.renderer.Stop() #safely close rendering window!
+            lastRenderState = SC.renderer.GetState() #store model view for next simulation
     
 

@@ -338,7 +338,7 @@ if False:
         #simulationSettings.solutionSettings.recordImagesInterval = 0.0002
         #SC.visualizationSettings.exportImages.saveImageFileName = "animation/frame"
         
-        exu.StartRenderer()
+        SC.renderer.Start()
         lastRenderState = {'centerPoint': [-0.10326996445655823, -0.06658822298049927, 0.0],
                               'maxSceneSize': 0.10000000149011612,
                               'zoom': 0.11565303057432175,
@@ -346,15 +346,15 @@ if False:
                               'modelRotation': np.array([[ 0.5591929 ,  0.        ,  0.82903755],
                                     [-0.37637517,  0.8910065 ,  0.25386825],
                                     [-0.73867786, -0.4539905 ,  0.49824452]])}
-        SC.SetRenderState(lastRenderState) #load last model view
+        SC.renderer.SetState(lastRenderState) #load last model view
     
-        mbs.WaitForUserToContinue() #press space to continue
+        SC.renderer.DoIdleTasks() #press space to continue
         
         mbs.SolveDynamic(simulationSettings)
         
-        SC.WaitForRenderEngineStopFlag()
-        exu.StopRenderer() #safely close rendering window!
-        lastRenderState = SC.GetRenderState() #store model view for next simulation
+        SC.renderer.DoIdleTasks()
+        SC.renderer.Stop() #safely close rendering window!
+        lastRenderState = SC.renderer.GetState() #store model view for next simulation
     
 
 

@@ -138,13 +138,13 @@ simulationSettings.timeIntegration.newton.useModifiedNewton = True
 
 
 if useGraphics:
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
 mbs.SolveDynamic(simulationSettings)
 
 if useGraphics:
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 
     mbs.PlotSensor([sBody1,sBody2], components=[1,1])
@@ -173,8 +173,8 @@ exudynTestGlobals.testResult = u
 
 
 if useGraphics:
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 
 

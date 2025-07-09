@@ -58,28 +58,7 @@ public:
 	}
 
 	//! reset data according to MainSystem.Reset()
-	void Reset()
-	{
-		postProcessDataReady = false;
-		updateCounter = 1;				// must be larger than recordImageCounter, in order to avoid hang up in first UpdatePostProcessData(...) in CSystem
-		recordImageCounter = 0;
-		simulationFinished = false;
-		stopSimulation = false;
-		forceQuitSimulation = false;
-		simulationPaused = false;
-		visualizationTime = 0;
-		systemHasChanged = true; // used to compute maxSceneSize at beginning
-
-		visualizationStateUpdateAvailable = false;
-		requestUserFunctionDrawing = false;
-
-		solverMessage = "";
-		solutionMessage = "";
-
-		EXUstd::ReleaseSemaphore(accessState);
-		EXUstd::ReleaseSemaphore(requestUserFunctionDrawingAtomicFlag);
-		EXUstd::ReleaseSemaphore(accessMessage);
-	}
+	void Reset();
 
 	//! access to private visualizationStateUpdate, may be changed in future
 	const CSystemState& GetVisualizationStateUpdate() const { return visualizationStateUpdate; }
@@ -99,38 +78,15 @@ public:
 	bool VisualizationIsRunning() const; 
 
 	//! set a visualization message into openGL window
-	void SetSolverMessage(const std::string& solverMessageInit)
-	{
-		//add separate semaphore for PostProcessData.accessMessages
-		EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
-		solverMessage = solverMessageInit;
-		EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
-	}
+	void SetSolverMessage(const std::string& solverMessageInit);
 
-	void SetSolutionMessage(const std::string& solutionMessageInit)
-	{
-		EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
-		solutionMessage = solutionMessageInit;
-		EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
-	}
+	void SetSolutionMessage(const std::string& solutionMessageInit);
 
 	//! get the current solver message string
-	std::string GetSolverMessage()
-	{
-		EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
-		std::string message = solverMessage; 		//copy message
-		EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
-		return message; //now safely return message
-	}
+	std::string GetSolverMessage();
 
 	//! get the current solution message string
-	std::string GetSolutionMessage()
-	{
-		EXUstd::WaitAndLockSemaphore(accessMessage); //lock PostProcessData
-		std::string message = solutionMessage; 		//copy message
-		EXUstd::ReleaseSemaphore(accessMessage); //clear PostProcessData
-		return message; //now safely return message
-	}
+	std::string GetSolutionMessage();
 
 	void ProcessUserFunctionDrawing();
 

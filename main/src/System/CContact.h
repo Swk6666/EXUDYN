@@ -26,6 +26,7 @@
 #define USE_STATICDYNAMIC_SEARCHTREE //for higher performance
 
 #include "Linalg/BasicLinalg.h"		//includes basic classes, all basic arrays and vectors
+#include "Utilities/AdvancedStuff.h"
 #include "Linalg/SearchTree.h"
 #include "Main/TemporaryComputationData.h"
 
@@ -256,6 +257,10 @@ public:
 	//contact behaviour
 	Matrix frictionPairings;						//!< contains pairing coefficients between two materials; if rows=columns=1, it only uses one pairing for all materials
 
+	Index parallelTaskSplit;						//!< general number of tasks per thread (min)
+	Index parallelTaskSplitBoundingBoxes;           //!< number of tasks per thread for bounding box computations
+	Index parallelTaskSplitThreshold;               //!< general threshold below which only one task per thread is used
+	Index parallelTaskSplitBoundingBoxesThreshold;  //!< threshold below which only one task per thread is used, for bounding box computations
 public:
 	GeneralContactSettings() { Reset(); }
 	void Reset()
@@ -284,6 +289,21 @@ public:
 		ancfCableMeasuringSegments = 20;
 
 		frictionPairings = Matrix();
+
+		//parallel
+		parallelTaskSplit = 12;				//split min into 12*nThreads tasks; in case of threshold*32 => will use 144*nThreads
+		parallelTaskSplitThreshold = 48;	//split above 48*nThreads tasks
+		parallelTaskSplitBoundingBoxes = 12;//in case of threshold*8 => will use 96
+		parallelTaskSplitBoundingBoxesThreshold = 400;
+		//DELETE:
+		// original for marker-based spheres:
+		//Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
+		//if ((Index)nItems >= 32 * nThreads)
+		//{
+		//	if ((Index)nItems < 128 * nThreads) { taskSplit = 16 * nThreads; }
+		//	else { taskSplit = 128 * nThreads; }
+		//}
+
 	}
 };
 
@@ -427,6 +447,28 @@ public:
 
 	//! perform operations in case that number of threads have been changed or initialize arrays
 	void SetNumberOfThreads(Index nThreads);
+
+	//! compute task split for bounding boxes
+	inline Index TaskSplitBoundingBoxes(Index nThreads, Index nItems) const
+	{
+		Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
+		if (nItems > settings.parallelTaskSplitBoundingBoxesThreshold * nThreads) { 
+			taskSplit = settings.parallelTaskSplitBoundingBoxes * nThreads;
+			if (nItems > settings.parallelTaskSplitBoundingBoxesThreshold * nThreads * 16) { taskSplit *= 8; }
+		}
+		return taskSplit;
+	}
+
+	//! compute task split for general computations
+	inline Index TaskSplit(Index nThreads, Index nItems) const
+	{
+		Index taskSplit = nThreads; //shall be multiple of number of treads (Default=nThreads), but better 8*nThreads or larger for large problems
+		if (nItems > settings.parallelTaskSplitThreshold * nThreads) {
+			taskSplit = settings.parallelTaskSplit * nThreads;
+			if (nItems > settings.parallelTaskSplitThreshold * nThreads * 32) { taskSplit *= 12; }
+		}
+		return taskSplit;
+	}
 
 	//! get total number of contact objects; only available after FinalizeContact!
 	Index TotalContactObjects() const { return globalContactIndexOffsets.Last(); }

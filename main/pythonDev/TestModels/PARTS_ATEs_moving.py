@@ -494,10 +494,10 @@ SC.visualizationSettings.window.renderWindowSize=[1600,1024]
 #simulationSettings.solutionSettings.recordImagesInterval=endTime/200
 
 if useGraphics: #only start graphics once, but after background is set
-    exu.StartRenderer()
+    SC.renderer.Start()
     
     if displaySimulation:
-        mbs.WaitForUserToContinue()
+        SC.renderer.DoIdleTasks()
 
 #SC.visualizationSettings.nodes.show = False
 
@@ -530,9 +530,9 @@ if computeDynamic:
     
 if useGraphics: #only start graphics once, but after background is set
     if displaySimulation:
-        SC.WaitForRenderEngineStopFlag()
+        SC.renderer.DoIdleTasks()
         
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.Stop() #safely close rendering window!
 
 nLast = mbs.systemData.NumberOfNodes()-1#just take last node-1 (last node is ground)
 

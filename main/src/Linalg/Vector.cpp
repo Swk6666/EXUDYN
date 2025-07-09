@@ -119,7 +119,7 @@ VectorBase<Real> VectorBase<Real>::Append(const VectorBase<Real>& vector) const
 
 void ParallelPRealCopyFrom(Index nAVX, PReal* ptrData, PReal* ptrVector)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](ParallelSizeType i)
 	{
 		ptrData[i] = ptrVector[i]; //AVX operation, gives ~4 time speedup for AVX2 in chached operations
 	}); //"antasks": for numberOfItems=400.000, ideal factor=32*nThreads, numberOfItems=100.000, ideal factor=8*nThreads;
@@ -127,7 +127,7 @@ void ParallelPRealCopyFrom(Index nAVX, PReal* ptrData, PReal* ptrVector)
 
 void ParallelPRealAdd(Index nAVX, PReal* ptrData, PReal* ptrVector)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](ParallelSizeType i)
 	{
 		ptrData[i] += ptrVector[i]; //AVX operation, gives ~4 time speedup for AVX2 in chached operations
 	});
@@ -135,14 +135,14 @@ void ParallelPRealAdd(Index nAVX, PReal* ptrData, PReal* ptrVector)
 
 void ParallelPRealSub(Index nAVX, PReal* ptrData, PReal* ptrVector)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector](ParallelSizeType i)
 	{
 		ptrData[i] -= ptrVector[i]; //AVX operation, gives ~4 time speedup for AVX2 in chached operations
 	});
 }
 void ParallelPRealMult(Index nAVX, PReal* ptrData, const PReal& scalarPD)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &scalarPD](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &scalarPD](ParallelSizeType i)
 	{
 		ptrData[i] *= scalarPD;
 	});
@@ -150,14 +150,14 @@ void ParallelPRealMult(Index nAVX, PReal* ptrData, const PReal& scalarPD)
 
 void ParallelPRealDiv(Index nAVX, PReal* ptrData, const PReal& scalarPD)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &scalarPD](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &scalarPD](ParallelSizeType i)
 	{
 		ptrData[i] /= scalarPD;
 	});
 }
 void ParallelPRealMultAdd(Index nAVX, PReal* ptrData, PReal* ptrVector, const PReal& scalarPD)
 {
-	exuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector, &scalarPD](NGSsizeType i)
+	ExuThreading::ParallelFor((int)(nAVX), [&nAVX, &ptrData, &ptrVector, &scalarPD](ParallelSizeType i)
 	{
 		ptrData[i] = _mm_fmadd_(scalarPD, ptrVector[i], ptrData[i]);
 	});
@@ -165,7 +165,7 @@ void ParallelPRealMultAdd(Index nAVX, PReal* ptrData, PReal* ptrVector, const PR
 
 Index ParallelGetNumThreads()
 {
-	return exuThreading::TaskManager::GetNumThreads();
+	return ExuThreading::TaskManager::GetNumThreads();
 }
 
 

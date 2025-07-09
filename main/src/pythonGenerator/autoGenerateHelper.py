@@ -143,6 +143,29 @@ def GetTypesStringLatex(s, itemType, possibleTypesList, separator = ','):
 
     return returnStr
 
+#cut the first 'numberOfCutLines' lines in a string (in order to ignore the header date in comparison of files)
+def CutLinesFromString(theString, numberOfCutLines):
+    pos = 0
+    for i in range(numberOfCutLines):
+        pos = theString.find('\n', pos) + 1
+
+    return theString[pos:]
+
+#cut the first 'numberOfCutLines' lines in a string (in order to ignore the header date in comparison of files)
+def IsEqualIgnoringDateStrings(str1, str2):
+    str1list = str1.split('\n')
+    str2list = str2.split('\n')
+    if len(str1list) !=len(str2list):
+        return False
+    for i in range(len(str1list)):
+        if str1list[i].startswith('* @date') or str1list[i].startswith('// AUTO:  last modified'):
+            continue
+        if str1list[i] != str2list[i]:
+            return False
+
+    return True
+
+
 #replace '_', certain default values (e.g. Matix() --> []) and other symbols to fit into python itemInterface and for latex
 def DefaultValue2Python(s): 
 
@@ -789,7 +812,8 @@ def ReplaceLatexCommands(s, conversionDict, sectionMarkerText=''): #replace stri
             if found != -1:
                 [preString, innerString, innerString2, postString] = found
                 s = preString
-                if ('\\refSection' in key or key == '\\label' or key == '\\fig' or key == '\\ref'
+                if ('\\refSection' in key or '\\refChapter' in key 
+                    or key == '\\label' or key == '\\fig' or key == '\\ref'
                     or key == '\\eq' or key == '\\eqref' or key == '\\eqs' or key == '\\eqq'):
                     innerString=Latex2RSTlabel(innerString)
                 elif (value[1] == '_USE' and key != '\\exuUrl' and key != '\\url' 
@@ -825,8 +849,12 @@ def ReplaceLatexCommands(s, conversionDict, sectionMarkerText=''): #replace stri
                         print('PROBLEM with rowTable: ',innerString2)
                 elif '\\LatexRSTfigure' in key:
                     # print(innerString2)
+                    figureName=innerString2[0]
+                    if (not figureName.lower().endswith('.png') 
+                        and not figureName.lower().endswith('.jpg')):
+                        figureName += '.png'
                     text =  '\n\n.. _'+Latex2RSTlabel(innerString2[1])+':\n'
-                    text += '.. figure:: docs/theDoc/'+innerString2[0]+'.png\n'
+                    text += '.. figure:: docs/theDoc/'+figureName+'\n'
                     text += '   :width: '+innerString2[3]+'\n'
                     text += '\n'+'   '+LatexString2RST(innerString2[4]) + '\n\n'
                     s += text
@@ -1172,7 +1200,7 @@ class PyLatexRST:
     #isLambdaFunction = True: cName is intepreted as lambda function and copied into pybind definition
     def DefPyFunctionAccess(self, cClass, pyName, cName, description, argList=[], defaultArgs=[], 
                             example='', options='', isLambdaFunction = False, 
-                            argTypes=[], returnType = ''): 
+                            argTypes=[], returnType = '', addDocu=True): 
         
         if pyName not in localListFunctionNames:
             localListFunctionNames.append(pyName)
@@ -1225,7 +1253,7 @@ class PyLatexRST:
         self.sPy += '"' + description +'"'
         if (options != ''):
             self.sPy += ', ' + options
-        
+       
         sLadd = '  ' + Str2Latex(pyNameLatex)
         sRadd = '* | ' + '**'+Str2Latex(pyNameLatex)+'**\\ '
         if addBraces: 
@@ -1246,13 +1274,6 @@ class PyLatexRST:
                     sRadd += ' = ' + ReplaceDefaultArgsLatex(defaultArgs[i])
                 sSep = ', '
 
-        self.sLatex += sLadd
-        self.sRST += sRadd
-        
-        if addBraces: 
-            self.sLatex += ')'
-            self.sRST += ')'
-    
         self.sPy += ')'
                 
         if (cClass == ''):
@@ -1260,47 +1281,56 @@ class PyLatexRST:
         
         self.sPy += '\n'
 
-        self.sLatex += ' & ' + description.replace('_','\\_')
-        #self.sRST += ': \n' +  RemoveIndentation(description.replace('_','\_'), '  | ') + '\n'
-        self.sRST += ': \n' +  RemoveIndentation(LatexString2RST(description), '  | ') + '\n'
-        if example != '':
-            exampleRST = example
-            example = Str2Latex(example)
-            example = example.replace('\\\\','\\tabnewline\n    ').replace('#','\\#')
-
-            example = example.replace('\\TAB','\\phantom{XXXX}') #phantom spaces, not visible
-            self.sLatex += '\\tabnewline \n    \\textcolor{steelblue}{{\\bf EXAMPLE}: \\tabnewline \n    \\texttt{' + example.replace("'","{\\textquotesingle}") + '}}'
-            exampleRST = exampleRST.replace('\\\\','\n').replace('\\#','#')
+        if addDocu:
+            self.sLatex += sLadd
+            self.sRST += sRadd
             
-            self.sRST += '  | *Example*:\n\n'
-            self.sRST += '  '+RSTcodeBlock(RemoveIndentation(exampleRST,'   '+'  ', False).replace('\\TAB','  '), 'python') + '\n' #TAB=2 spaces +2 spaces surrounding
-        self.sLatex += '\\\\ \\hline \n'
-
-        pyiIndent = ''
-        if cClass != '': #in case of basic module, stubs are not needed => information 
-            pyiIndent = ' '*4
-        if returnType != '':
-            hasTypes = (len(argTypes) == len(argList)) and (len(argList) != 0)
-            # if len(argTypes) != len(argList):
-            #     raise ValueError('DefPyFunctionAccess: inconsistent argList / argTypes')
-
-            argString = 'self'*(cClass!='')
-            if len(argList):
-                sepArg = ', '*(argString!='')
-                for i in range(len(argList)):
-                    argString += sepArg + argList[i]
-                    if hasTypes and argTypes[i]!='':
-                        argString += ': '+argTypes[i]
-                    if i < len(defaultArgs):
-                        defaultArgClean = defaultArgs[i].replace('exu.','')
-                        if defaultArgClean != '':
-                            argString += '='+ReplaceDefaultArgsLatex(defaultArgClean)
-                    sepArg = ', '
-            # if pyName=='ODE1Size': #*** check if this works! check .pyi file!
-            #     print(pyName+':'+argString+'; ',defaultArgs[i])
-
-            self.sPyi += pyiIndent+'@overload\n'
-            self.sPyi += pyiIndent+'def ' + pyName + '(' + argString.replace('\\_','_') + ') -> '+returnType+': ...\n'
+            if addBraces: 
+                self.sLatex += ')'
+                self.sRST += ')'
+        
+    
+            self.sLatex += ' & ' + description.replace('_','\\_')
+            #self.sRST += ': \n' +  RemoveIndentation(description.replace('_','\_'), '  | ') + '\n'
+            self.sRST += ': \n' +  RemoveIndentation(LatexString2RST(description), '  | ') + '\n'
+            if example != '':
+                exampleRST = example
+                example = Str2Latex(example)
+                example = example.replace('\\\\','\\tabnewline\n    ').replace('#','\\#')
+    
+                example = example.replace('\\TAB','\\phantom{XXXX}') #phantom spaces, not visible
+                self.sLatex += '\\tabnewline \n    \\textcolor{steelblue}{{\\bf EXAMPLE}: \\tabnewline \n    \\texttt{' + example.replace("'","{\\textquotesingle}") + '}}'
+                exampleRST = exampleRST.replace('\\\\','\n').replace('\\#','#')
+                
+                self.sRST += '  | *Example*:\n\n'
+                self.sRST += '  '+RSTcodeBlock(RemoveIndentation(exampleRST,'   '+'  ', False).replace('\\TAB','  '), 'python') + '\n' #TAB=2 spaces +2 spaces surrounding
+            self.sLatex += '\\\\ \\hline \n'
+    
+            pyiIndent = ''
+            if cClass != '': #in case of basic module, stubs are not needed => information 
+                pyiIndent = ' '*4
+            if returnType != '':
+                hasTypes = (len(argTypes) == len(argList)) and (len(argList) != 0)
+                # if len(argTypes) != len(argList):
+                #     raise ValueError('DefPyFunctionAccess: inconsistent argList / argTypes')
+    
+                argString = 'self'*(cClass!='')
+                if len(argList):
+                    sepArg = ', '*(argString!='')
+                    for i in range(len(argList)):
+                        argString += sepArg + argList[i]
+                        if hasTypes and argTypes[i]!='':
+                            argString += ': '+argTypes[i]
+                        if i < len(defaultArgs):
+                            defaultArgClean = defaultArgs[i].replace('exu.','')
+                            if defaultArgClean != '':
+                                argString += '='+ReplaceDefaultArgsLatex(defaultArgClean)
+                        sepArg = ', '
+                # if pyName=='ODE1Size': #*** check if this works! check .pyi file!
+                #     print(pyName+':'+argString+'; ',defaultArgs[i])
+    
+                self.sPyi += pyiIndent+'@overload\n'
+                self.sPyi += pyiIndent+'def ' + pyName + '(' + argString.replace('\\_','_') + ') -> '+returnType+': ...\n'
 
 
     #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1752,7 +1782,8 @@ def RemoveIndentation(text, addSpaces = '', removeAllSpaces = True, removeIndent
 #the following functions were originally in pythonAutoGenerateObjects.py
     
 #get list of filenames in folder dirPath which contain keyword (to find examples with specific items)
-def ExtractExamplesWithKeyword(keyword, dirPath):
+#checkPreString: check in particular, if as letter 'a-zA-Z' or '0-9'
+def ExtractExamplesWithKeyword(keyword, dirPath, checkPreString=True):
     from os import listdir
     from os.path import isfile, join
     
@@ -1765,7 +1796,14 @@ def ExtractExamplesWithKeyword(keyword, dirPath):
             #print("extract example:",fileName)
             file = open(dirPath+'/'+fileName)
             text = file.read()
-            if text.find(keyword) != -1:
+
+            keywordPos = text.find(keyword)
+            found = keywordPos
+            if checkPreString and found > 0: #exclude keywords that do not fully match (e.g. MassPoint and CreateMassPoint)
+                if (text[found-1].isalpha() or text[found-1].isdecimal()):
+                    #print('found invalid example for "'+keyword+'": '+text[max(0,found-10):(found+len(keyword))])
+                    found = -1
+            if found != -1:
                 filesWithKeyword += [fileName]
             file.close()
     return filesWithKeyword
@@ -1793,6 +1831,7 @@ def GenerateLatexStrKeywordExamples(itemType, itemName, itemShortName, useLatex 
         if itemName == 'ObjectFFRFreducedOrder':
             keywords += ['AddObjectFFRFreducedOrderWithUserFunctions('] #additional keyword
 
+        #too often:
         # if itemName == 'ObjectGround':
             # keywords += ['CreateGround('] #additional keyword
         # if itemName == 'ObjectMassPoint':
@@ -1801,18 +1840,40 @@ def GenerateLatexStrKeywordExamples(itemType, itemName, itemShortName, useLatex 
         if itemName == 'ObjectRigidBody' or itemName == 'NodeRigidBodyEP':
             keywords += ['CreateRigidBody('] #additional keyword
 
-        if itemName == 'ObjectJointRevoluteZ':
-            keywords += ['CreateRevoluteJoint('] #additional keyword
-        if itemName == 'ObjectPrismaticJointX':
-            keywords += ['CreatePrismaticJoint('] #additional keyword
-        if itemName == 'ObjectJointGeneric':
-            keywords += ['CreateGenericJoint('] #additional keyword
         if itemName == 'ObjectConnectorSpringDamper':
             keywords += ['CreateSpringDamper('] #additional keyword
         if itemName == 'ObjectConnectorCartesianSpringDamper':
             keywords += ['CreateCartesianSpringDamper('] #additional keyword
         if itemName == 'ObjectConnectorRigidBodySpringDamper':
             keywords += ['CreateRigidBodySpringDamper('] #additional keyword
+        if itemName == 'ObjectConnectorTorsionalSpringDamper':
+            keywords += ['CreateTorsionalSpringDamper('] #additional keyword
+        if itemName == 'ObjectJointRevoluteZ':
+            keywords += ['CreateRevoluteJoint('] #additional keyword
+        if itemName == 'ObjectPrismaticJointX':
+            keywords += ['CreatePrismaticJoint('] #additional keyword
+        if itemName == 'ObjectJointSpherical':
+            keywords += ['CreateSphericalJoint('] #additional keyword
+        if itemName == 'ObjectJointGeneric':
+            keywords += ['CreateGenericJoint('] #additional keyword
+        if itemName == 'ObjectConnectorDistance':
+            keywords += ['CreateDistanceConstraint('] #additional keyword
+        if itemName == 'ObjectConnectorCoordinate':
+            keywords += ['CreateCoordinateConstraint('] #additional keyword
+        if itemName == 'ObjectJointRollingDisc':
+            keywords += ['CreateRollingDisc('] #additional keyword
+        if itemName == 'ObjectConnectorRollingDiscPenalty':
+            keywords += ['CreateRollingDiscPenalty('] #additional keyword
+
+        if itemName == 'ObjectKinematicTree':
+            keywords += ['mbs.CreateKinematicTree('] #avoid ambiguation with robot.CreateKinematicTree
+
+        if itemName == 'LoadForceVector':
+            keywords += ['CreateForce('] #additional keyword
+        if itemName == 'LoadTorqueVector':
+            keywords += ['CreateTorque('] #additional keyword
+
+
 
     else:
         testModelString = ' (TM)'

@@ -443,17 +443,17 @@ simulationSettings.timeIntegration.generalizedAlpha.useNewmark = True
 
 #simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.6 #SHOULD work with 0.9 as well
 
-exu.StartRenderer()
+SC.renderer.Start()
 if 'lastRenderState' in vars():
-    SC.SetRenderState(lastRenderState) #load last model view
+    SC.renderer.SetState(lastRenderState) #load last model view
 
-#    mbs.WaitForUserToContinue() #press space to continue
+#    SC.renderer.DoIdleTasks() #press space to continue
 
 mbs.SolveDynamic(simulationSettings)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
-lastRenderState = SC.GetRenderState() #store model view for next simulation
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
+lastRenderState = SC.renderer.GetState() #store model view for next simulation
 
 ##++++++++++++++++++++++++++++++++++++++++++++++q+++++++
 #plot results

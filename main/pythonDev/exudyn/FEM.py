@@ -16,10 +16,10 @@
 import exudyn as exu
 import exudyn.itemInterface as eii
 #from exudyn.utilities import 
-from exudyn.advancedUtilities import IsListOrArray, RoundMatrix, PlotLineCode
+from exudyn.advancedUtilities import IsListOrArray, RoundMatrix, PlotLineCode, IsValidURealInt
 from exudyn.rigidBodyUtilities import GetRigidBodyNode, AngularVelocity2EulerParameters_t, EulerParameters2GLocal, \
              RotationVector2GLocal, RotXYZ2GLocal, RotXYZ2GLocal_t, ComputeSkewMatrix, Skew, eulerParameters0, \
-             StrNodeType2NodeType
+             StrNodeType2NodeType, RigidBodyInertia
 
 from exudyn.graphicsDataUtilities import ComputeTriangleArea
 
@@ -42,7 +42,7 @@ def WarnNumpy2():
     if int(np.__version__.split('.')[0]) > 1:
         exu.Print('*******************************')
         exu.Print('WARNING: You have installed NumPy version '+np.__version__+
-                  ' which is > 1.x and may cause problems with some Exudyn functionality!')
+                  ' which is > 1.x and may cause problems with some Exudyn functionality, particularly Numpy does not offer backwards compatibility to .npy files!')
         exu.Print('*******************************')
         return True
     return False
@@ -93,7 +93,6 @@ def MapSparseMatrixIndices(matrix, sorting):
 def VectorDiadicUnitMatrix3D(v):
     return np.kron(np.array(v), np.eye(3)).T
 
-#print("diadicTest=", VectorDiadicUnitMatrix3D(np.array([1,2,3,4,5,6])))
 
 #+++++++++++++++++++++++++++
 #**function: compare cyclic two lists, reverse second list; return True, if any cyclic shifted lists are same, False otherwise
@@ -109,14 +108,13 @@ def CyclicCompareReversed(list1, list2):
 def AddEntryToCompressedRowSparseArray(sparseData, row, column, value):
     if IsListOrArray(sparseData):
         n = len(sparseData[:,0])
-        #print("AddEntryToCompressedRowSparseArray:",row,column,value, ", n=", n)
+
         for i in range(n):
             if int(sparseData[i,0]) == row and int(sparseData[i,1]) == column:
                 sparseData[i,2] += value
-                #print("AddEntryToCompressedRowSparseArray, value added")
+
                 return sparseData
     
-        #print("AddEntryToCompressedRowSparseArray, row added at end")
         np.insert(sparseData, n, np.array((row, column, value)), 0)
         return sparseData
     else:
@@ -232,6 +230,38 @@ def ResortIndicesExudyn2NGvector(vXYZXYZ):
 
     return vNew
     
+#internal function: convert fileName and mode to unique filename, extension and mode
+def FileNameToMode(fileName, mode):
+    if mode not in ['NPZ','NPY','PKL','HDF5',None]:
+        raise ValueError('FEM.FileNameToMode: Load/Save: legal values for file mode in FEM module are "NPZ", "NPY", "PKL" and "HDF5"')
+
+    if fileName.lower().endswith('.npz'):
+        fileExtension = '.npz'
+    if fileName.lower().endswith('.npy'):
+        fileExtension = '.npy'
+    elif fileName.lower().endswith('.hdf5'):
+        fileExtension = '.hdf5'
+    elif fileName.lower().endswith('.pkl'):
+        fileExtension = '.pkl'
+    else:
+        if mode == None: #default!
+            fileExtension = '.npz'
+            mode = 'NPZ'
+        else:
+            fileExtension = '.'+mode.lower()
+    if mode is not None:
+        if fileExtension != '.'+mode.lower():
+            raise ValueError('FEM.FileNameToMode: Load/Save: inconsistent file extension and mode!')
+    else:
+        mode = fileExtension[1:].upper()
+    if fileName.endswith(fileExtension):
+        fileName = fileName[:-len(fileExtension)]
+
+    if mode=='NPY':
+        if WarnNumpy2():
+            exu.Print('FEM.FileNameToMode: Load/Save: NPY format does not work with NumPy 2.x => switch to NPZ or other formats!')
+
+    return [fileName, fileExtension, mode]
 
 
 
@@ -681,7 +711,7 @@ def ReadElementsFromAnsysTxt(fileName, verbose=False):
 
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
-#**class: material base class, e.g., for FiniteElement
+#**class: INTERNAL material base class, e.g., for FiniteElement
 class MaterialBaseClass:
     def __init__(self, youngsModulus, poissonsRatio, density):
         self.youngsModulus = youngsModulus
@@ -691,34 +721,82 @@ class MaterialBaseClass:
 #**class: class for representation of Kirchhoff (linear elastic, 3D and 2D) material
 #**notes: use planeStress=False for plane strain
 class KirchhoffMaterial(MaterialBaseClass):
-    def __init__(self, youngsModulus, poissonsRatio, density = 0, planeStress = True):
+    #**classFunction: add according nodes, objects and constraints for FFRF object to MainSystem mbs; only implemented for Euler parameters
+    #**input:
+    #  youngsModulus: Young's modulus for single domain and material; in case of multi-domain, it must be None
+    #  poissonsRatio: Poisson's ratio for single domain and material; in case of multi-domain, it must be None
+    #  density: density for for single domain and material; in case of multi-domain, it must be 0 or None
+    #  materials: dictionary of material dictionaries according to names in NGsolve mesh, containing youngsModulus, poissonsRatio and density per material, see ImportMeshFromNGsolve
+    #  fes: in case of materials dictionary, fes (as returned by ImportMeshFromNGsolve) has to be provided
+    #  planeStress: set True for 2D materials (currently not used)
+    def __init__(self, youngsModulus=None, poissonsRatio=None, density = 0, 
+                 materials = None, fes = None,
+                 planeStress = True):
         super().__init__(youngsModulus, poissonsRatio, density)
         self.planeStress = planeStress
+
+        self.useMaterials = materials is not None            
+        if self.useMaterials:
+            if (self.density is not None and density!=0) or self.youngsModulus is not None or self.poissonsRatio is not None:
+                raise ValueError('KirchhoffMaterial: if arg "materials" is used, then density, youngsModulus and poissonsRatio must be None')
+            if fes is None:
+                raise ValueError('KirchhoffMaterial: if arg "materials" is used, then fes has to be provided as returned by ImportMeshFromNGsolve')
+                
+        elif not (IsValidURealInt(self.youngsModulus) 
+                  and IsValidURealInt(self.poissonsRatio) 
+                  and IsValidURealInt(self.density) ):
+            raise ValueError('KirchhoffMaterial: if arg "materials" is None, density, youngsModulus and poissonsRatio must be valid positive float values')
+
+        if self.useMaterials:
+            self.materials = materials
+            self.fes = fes
+            import ngsolve as ngs
+            #convert materials into single dicts
+            densityDict = {}
+            youngsModulusDict = {}
+            poissonsRatioDict = {}
+            for mat in fes.mesh.GetMaterials():
+                if mat not in materials:
+                    raise ValueError('KirchhoffMaterial: mesh contains material "'+mat+'" which could not be found in arg materials')
+        
+            for key, value in materials.items():
+                densityDict[key] = value['density']
+                youngsModulusDict[key] = value['youngsModulus']
+                poissonsRatioDict[key] = value['poissonsRatio']
+        
+            #at this point, instead of parameters, we have coefficient functions for the mechanical parameters
+            #they represent the correct parameter in each material region
+            self.density = ngs.CoefficientFunction([densityDict[mat] for mat in fes.mesh.GetMaterials()])
+            self.youngsModulus = ngs.CoefficientFunction([youngsModulusDict[mat] for mat in fes.mesh.GetMaterials()])
+            self.poissonsRatio = ngs.CoefficientFunction([poissonsRatioDict[mat] for mat in fes.mesh.GetMaterials()])
 
         Em = self.youngsModulus
         nu = self.poissonsRatio
 
-        lam = nu*Em / ((1 + nu) * (1 - 2*nu))
-        mu = Em / (2*(1 + nu))
-        self.elasticityTensor = np.array([[lam + 2*mu, lam, lam, 0, 0, 0],
-                              [lam, lam + 2*mu, lam, 0, 0, 0],
-                              [lam, lam, lam + 2*mu, 0, 0, 0],
-                              [0, 0, 0, mu, 0, 0],
-                              [0, 0, 0, 0, mu, 0],
-                              [0, 0, 0, 0, 0, mu]])
-
-        if self.planeStress:
-            self.elasticityTensor2D = Em/(1-nu**2)*np.array([[1, nu, 0],
-                                                            [nu, 1, 0],
-                                                            [0, 0, (1-nu)/2]])
-        else:
-            self.elasticityTensor2D = np.array([[lam + 2*mu, lam, 0],
-                                                [lam, lam + 2*mu, 0],
-                                                [0, 0, mu]])
+        if not self.useMaterials: #not available in case of materials!
+            lam = nu*Em / ((1 + nu) * (1 - 2*nu))
+            mu = Em / (2*(1 + nu))
+            self.elasticityTensor = np.array([[lam + 2*mu, lam, lam, 0, 0, 0],
+                                  [lam, lam + 2*mu, lam, 0, 0, 0],
+                                  [lam, lam, lam + 2*mu, 0, 0, 0],
+                                  [0, 0, 0, mu, 0, 0],
+                                  [0, 0, 0, 0, mu, 0],
+                                  [0, 0, 0, 0, 0, mu]])
+    
+            if self.planeStress:
+                self.elasticityTensor2D = Em/(1-nu**2)*np.array([[1, nu, 0],
+                                                                [nu, 1, 0],
+                                                                [0, 0, (1-nu)/2]])
+            else:
+                self.elasticityTensor2D = np.array([[lam + 2*mu, lam, 0],
+                                                    [lam, lam + 2*mu, 0],
+                                                    [0, 0, mu]])
 
 
     #**classFunction: convert strain tensor into stress tensor using elasticity tensor
     def Strain2Stress(self, strain):
+        if self.useMaterials:
+            raise ValueError('KirchhoffMaterial: Strain2Stress is not callable in case of multi-domain materials')
         E = strain
         strainVector = np.array([  E[0,0],   E[1,1],   E[2,2],
                                  2*E[1,2], 2*E[0,2], 2*E[0,1]])
@@ -730,10 +808,14 @@ class KirchhoffMaterial(MaterialBaseClass):
 
     #**classFunction: convert strain vector into stress vector
     def StrainVector2StressVector(self, strainVector):
+        if self.useMaterials:
+            raise ValueError('KirchhoffMaterial: StrainVector2StressVector is not callable in case of multi-domain materials')
         return self.elasticityTensor @ strainVector
 
     #**classFunction: compute 2D stress vector from strain vector
     def StrainVector2StressVector2D(self, strainVector2D):
+        if self.useMaterials:
+            raise ValueError('KirchhoffMaterial: StrainVector2StressVector2D is not callable in case of multi-domain materials')
         #E=strain
         #strainVector2D = np.array([E[0,0], E[1,1], 2*E[0,1]])
         SV = self.elasticityTensor2D @ strainVector2D
@@ -748,6 +830,12 @@ class KirchhoffMaterial(MaterialBaseClass):
         mu  = E / 2 / (1+nu) #Lame parameters
         lam = E * nu / ((1+nu)*(1-2*nu))
         return [mu, lam]
+
+
+
+
+
+
 
 #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++
 #**class: finite element base class for lateron implementations of other finite elements
@@ -1180,98 +1268,197 @@ class ObjectFFRFreducedOrderInterface:
             #FillInSubMatrix(self.massMatrixReduced, self.massMatrixFFRFreduced, self.nODE2rigid, self.nODE2rigid)
             self.massMatrixFFRFreduced[self.nODE2rigid:,self.nODE2rigid:] = self.massMatrixReduced
 
+    #internal function
+    def GetDictionary(self):
+        data = {
+                'modeBasis': self.modeBasis,
+                'trigList': np.array(self.trigList),
+                'postProcessingModes': self.postProcessingModes,
+                'massMatrixReduced': self.massMatrixReduced,
+                'stiffnessMatrixReduced': self.stiffnessMatrixReduced,
+                'infoList': np.array([
+                    self.nModes,
+                    self.nNodes,
+                    self.dim3D,
+                    self.nODE2rot,
+                    self.nODE2rigid,
+                    self.nODE2FFRFreduced
+                ]),
+                'rigidBodyNodeType': str(self.rigidBodyNodeType),
+                'xRef': self.xRef,
+                'inertiaLocal': self.inertiaLocal,
+                'Mtt': self.Mtt,
+                'totalMass': self.totalMass,
+                'chiU': self.chiU,
+                'chiUtilde': self.chiUtilde,
+                'mPsiTildePsi': self.mPsiTildePsi,
+                'mPsiTildePsiTilde': self.mPsiTildePsiTilde,
+                'mPhitTPsi': self.mPhitTPsi,
+                'mPhitTPsiTilde': self.mPhitTPsiTilde,
+                'mXRefTildePsi': self.mXRefTildePsi,
+                'mXRefTildePsiTilde': self.mXRefTildePsiTilde
+            }
+        return data
+    
+    #internal function
+    def SetWithDictionary(self, data):
+        fileVersion = 1 if 'fileVersion' not in data else int(data['fileVersion'])
+
+        if fileVersion == 1:
+            self.modeBasis = data['modeBasis']
+            self.trigList = data['trigList']
+            self.postProcessingModes = data['postProcessingModes']
+            self.massMatrixReduced = data['massMatrixReduced']
+            self.stiffnessMatrixReduced = data['stiffnessMatrixReduced']
+
+            infoList = data['infoList']
+            [self.nModes, self.nNodes, self.dim3D,
+             self.nODE2rot, self.nODE2rigid, self.nODE2FFRFreduced] = infoList
+            
+            if isinstance(data['rigidBodyNodeType'], str):
+                self.rigidBodyNodeType = StrNodeType2NodeType(data['rigidBodyNodeType'])
+            else:
+                self.rigidBodyNodeType = StrNodeType2NodeType(data['rigidBodyNodeType'].item())
+
+            self.xRef = data['xRef']
+            self.inertiaLocal = data['inertiaLocal']
+            self.Mtt = data['Mtt']
+            self.totalMass = data['totalMass']
+            self.chiU = data['chiU']
+            self.chiUtilde = data['chiUtilde']
+            self.mPsiTildePsi = data['mPsiTildePsi']
+            self.mPsiTildePsiTilde = data['mPsiTildePsiTilde']
+            self.mPhitTPsi = data['mPhitTPsi']
+            self.mPhitTPsiTilde = data['mPhitTPsiTilde']
+            self.mXRefTildePsi = data['mXRefTildePsi']
+            self.mXRefTildePsiTilde = data['mXRefTildePsiTilde']
+
+        else:
+            raise ValueError(f"Unsupported fileVersion in ObjectFFRFreducedOrderInterface.LoadFromFile (NPZ): {fileVersion}")
+
+        if not isinstance(self.postProcessingModes,dict): #NPZ
+            self.postProcessingModes = self.postProcessingModes.item()
+
+        if not isinstance(self.trigList,list): #NPZ
+            self.trigList = self.trigList.tolist()
+
     #**classFunction: save all data to a data filename; can be used to avoid loading femInterface and FE data
     #**input: 
     #  fileName: string for path and file name without ending ==> ".npy" will be added
     #  fileVersion: FOR EXPERTS: this allows to store in older format, will be recovered when loading; must be integer; version must by > 0; the default value will change in future!
     #**output: stores file
     def SaveToFile(self, fileName, fileVersion = 1 ):
-        WarnNumpy2()
-        fileExtension = ''
-        if len(fileName) < 4 or fileName[-4:]!='.npy':
-            fileExtension = '.npy'
+
+        [fileName, fileExtension, mode] = FileNameToMode(fileName, None)
 
         try:
             os.makedirs(os.path.dirname(fileName+fileExtension), exist_ok=True)
         except:
             pass #makedirs may fail on some systems, but we keep going
 
-        with open(fileName+fileExtension, 'wb') as f:
-            np.save(f, np.array([int(fileVersion)])) #array allows to add more data in future
-
-            np.save(f, self.modeBasis)
-            np.save(f, self.trigList, allow_pickle=True)
-            np.save(f, self.postProcessingModes, allow_pickle=True)
-            np.save(f, self.massMatrixReduced)
-            np.save(f, self.stiffnessMatrixReduced)
-            
-            infoList = np.array([self.nModes, self.nNodes, self.dim3D, self.nODE2rot, self.nODE2rigid, self.nODE2FFRFreduced])
-            np.save(f, infoList)
-            np.save(f, str(self.rigidBodyNodeType), allow_pickle=True)
-
-            np.save(f, self.xRef)
-
-            np.save(f, self.inertiaLocal)
-            np.save(f, self.Mtt)
-            np.save(f, self.totalMass)
-            np.save(f, self.chiU)
-            np.save(f, self.chiUtilde)
-            np.save(f, self.mPsiTildePsi)
-            np.save(f, self.mPsiTildePsiTilde)
-            np.save(f, self.mPhitTPsi)
-            np.save(f, self.mPhitTPsiTilde)
-            np.save(f, self.mXRefTildePsi)
-            np.save(f, self.mXRefTildePsiTilde)
+        if mode == 'NPY':
+            with open(fileName+fileExtension, 'wb') as f:
+                np.save(f, np.array([int(fileVersion)])) #array allows to add more data in future
     
-            #np.save(f, self.PsiTilde) #large (3 x modeBasis)!, not needed
-            #np.save(f, self.Phit)
-            #np.save(f, self.PhitTM)
-            #np.save(f, self.xRefTilde)
-            #np.save(f, self.massMatrixFFRFreduced) #created when loaded; only needed for user functions
-
+                np.save(f, self.modeBasis)
+                np.save(f, self.trigList, allow_pickle=True)
+                np.save(f, self.postProcessingModes, allow_pickle=True)
+                np.save(f, self.massMatrixReduced)
+                np.save(f, self.stiffnessMatrixReduced)
+                
+                infoList = np.array([self.nModes, self.nNodes, self.dim3D, self.nODE2rot, self.nODE2rigid, self.nODE2FFRFreduced])
+                np.save(f, infoList)
+                np.save(f, str(self.rigidBodyNodeType), allow_pickle=True)
+    
+                np.save(f, self.xRef)
+    
+                np.save(f, self.inertiaLocal)
+                np.save(f, self.Mtt)
+                np.save(f, self.totalMass)
+                np.save(f, self.chiU)
+                np.save(f, self.chiUtilde)
+                np.save(f, self.mPsiTildePsi)
+                np.save(f, self.mPsiTildePsiTilde)
+                np.save(f, self.mPhitTPsi)
+                np.save(f, self.mPhitTPsiTilde)
+                np.save(f, self.mXRefTildePsi)
+                np.save(f, self.mXRefTildePsiTilde)
+                #np.save(f, self.PsiTilde) #large (3 x modeBasis)!, not needed
+                #np.save(f, self.Phit)
+                #np.save(f, self.PhitTM)
+                #np.save(f, self.xRefTilde)
+                #np.save(f, self.massMatrixFFRFreduced) #created when loaded; only needed for user functions
+        else:
+            data = self.GetDictionary()
+            data['fileVersion'] = int(fileVersion)
+            data['type'] = 'ObjectFFRFreducedOrderInterface'
+            if mode == 'NPZ':
+                np.savez(fileName + fileExtension, **data)
+            if mode == 'PKL':
+                import pickle
+                with open(fileName+fileExtension, 'wb') as f:
+                    pickle.dump(data, f) #not good: pickle.HIGHEST_PROTOCOL => switches always to newest protocol
+            elif mode == 'HDF5':
+                from exudyn.advancedUtilities import SaveDictToHDF5
+                SaveDictToHDF5(fileName+fileExtension, data)
+                
     #**classFunction: load all data (nodes, elements, ...) from a data filename previously stored with SaveToFile(...). 
     #this function is much faster than the text-based import functions
     #**input: 
     #  fileName: string for path and file name without ending ==> ".npy" will be added
+    #  mode: choose between different file formats (NPY and NPZ); Note: NPY only works for Numpy 1.x, not for Numpy >= 2.0
     #**output: loads data into fem (note that existing values are not overwritten!)
-    def LoadFromFile(self, fileName):
-        WarnNumpy2()
-        fileExtension = ''
-        fileVersion = None
-        if len(fileName) < 4 or fileName[-4:]!='.npy':
-            fileExtension = '.npy'
-        with open(fileName+fileExtension, 'rb') as f:
-            fileVersion = int(np.load(f)[0])
-            self.modeBasis = np.load(f)
-            self.trigList = np.load(f, allow_pickle=True).tolist()
-            self.postProcessingModes = np.load(f, allow_pickle=True)
-            self.massMatrixReduced = np.load(f)
-            self.stiffnessMatrixReduced = np.load(f)
-
-            infoList = list(np.load(f))
-            #exu.Print('list=',infoList)
-            [self.nModes, self.nNodes, self.dim3D, self.nODE2rot, self.nODE2rigid, self.nODE2FFRFreduced] = infoList
-
-            self.rigidBodyNodeType = StrNodeType2NodeType(np.load(f, allow_pickle=True))
-
-            #this term is large, but currently needed for markers / constraints!
-            self.xRef = np.load(f)
-
-            #reduced inertia terms
-            self.inertiaLocal = np.load(f)
-            self.Mtt = np.load(f)
-            self.totalMass = np.load(f)
-            self.chiU = np.load(f)
-            self.chiUtilde = np.load(f)
-            self.mPsiTildePsi = np.load(f)
-            self.mPsiTildePsiTilde = np.load(f)
-            self.mPhitTPsi = np.load(f)
-            self.mPhitTPsiTilde = np.load(f)
-            self.mXRefTildePsi = np.load(f)
-            self.mXRefTildePsiTilde = np.load(f)
+    def LoadFromFile(self, fileName, mode=None):
+        [fileName, fileExtension, mode] = FileNameToMode(fileName, mode)
+        
             
-            # if fileVersion>1:
-            #     #do things here for higher versions in future
+        
+        fileVersion = None
+        if mode == 'NPY': 
+            with open(fileName+fileExtension, 'rb') as f:
+                fileVersion = int(np.load(f)[0])
+                if fileVersion == 1:
+                    self.modeBasis = np.load(f)
+                    self.trigList = np.load(f, allow_pickle=True).tolist()
+                    self.postProcessingModes = np.load(f, allow_pickle=True).item()
+                    self.massMatrixReduced = np.load(f)
+                    self.stiffnessMatrixReduced = np.load(f)
+        
+                    infoList = list(np.load(f))
+                    #exu.Print('list=',infoList)
+                    [self.nModes, self.nNodes, self.dim3D, self.nODE2rot, self.nODE2rigid, self.nODE2FFRFreduced] = infoList
+        
+                    self.rigidBodyNodeType = StrNodeType2NodeType(np.load(f, allow_pickle=True))
+        
+                    #this term is large, but currently needed for markers / constraints!
+                    self.xRef = np.load(f)
+        
+                    #reduced inertia terms
+                    self.inertiaLocal = np.load(f)
+                    self.Mtt = np.load(f)
+                    self.totalMass = np.load(f)
+                    self.chiU = np.load(f)
+                    self.chiUtilde = np.load(f)
+                    self.mPsiTildePsi = np.load(f)
+                    self.mPsiTildePsiTilde = np.load(f)
+                    self.mPhitTPsi = np.load(f)
+                    self.mPhitTPsiTilde = np.load(f)
+                    self.mXRefTildePsi = np.load(f)
+                    self.mXRefTildePsiTilde = np.load(f)
+                else:
+                    raise ValueError(f"Unsupported fileVersion in ObjectFFRFreducedOrderInterface.LoadFromFile (NPY): {fileVersion}")
+        elif mode == 'NPZ':
+            with np.load(fileName+fileExtension, allow_pickle=True) as dictData:
+                self.SetWithDictionary(dictData)
+        elif mode == 'PKL':
+            import pickle
+            with open(fileName+fileExtension, 'rb') as f:
+                dictData = pickle.load(f)
+            self.SetWithDictionary(dictData)
+        elif mode == 'HDF5':
+            from exudyn.advancedUtilities import LoadDictFromHDF5
+            dictData = LoadDictFromHDF5(fileName+fileExtension)
+            self.SetWithDictionary(dictData)
 
         self.massMatrixFFRFreduced = np.zeros((self.nODE2FFRFreduced,self.nODE2FFRFreduced)) #create larger FFRF mass matrix
         #fill already parts of the mass matrix in order to avoid copying this constant data during user function calls:
@@ -1715,8 +1902,8 @@ class FEMinterface:
                 }
         return data
 
-    #**classFunction: set dictionary containing current data for FEMinterface
-    def SetWithDictionary(self, dictData, warn=True):
+    #**classFunction: set dictionary containing current data for FEMinterface; used internally
+    def SetWithDictionary(self, dictData, warn=True, fromNPZ=False):
         # for item in dictData['surface']:
         #     if 'Trigs' in item:
         #         if isinstance(item['Trigs'], np.ndarray):
@@ -1725,59 +1912,41 @@ class FEMinterface:
         #         if isinstance(item['Quads'], np.ndarray):
         #             item['Quads'] = item['Quads'].tolist()
 
+        fileVersion = 1 if 'fileVersion' not in dictData else int(dictData['fileVersion'])
+        #... fileVersion may be used in future
+
         attrlist = ['nodes', 'elements', 'massMatrix', 'stiffnessMatrix',
                     'surface', 'nodeSets', 'elementSets', 'modeBasis',
                     'eigenValues', 'postProcessingModes']
+        listTypes = ['elements', 'surface', 'nodeSets', 'elementSets']
+        itemTypes = ['nodes', 'massMatrix', 'stiffnessMatrix', 'modeBasis', 'postProcessingModes'] #can be converted with .item()
+        
         for item in attrlist:
             if item in dictData: 
-                self.__setattr__(item, dictData[item])
+                data = dictData[item]
+                if fromNPZ: #do some conversion, otherwise does not work!
+                    if item in listTypes:
+                        data = data.tolist()
+                    if item in itemTypes:
+                        data = data.item()
+                self.__setattr__(item, data)
             elif warn:
                 exu.Print('WARNING: FEMinterface.SetDictionary: key '+item+' not found in dictionary')
         
         self.ConvertElementsLists2Numpy() #if loading old format
         self.ConvertSurfaceLists2Numpy()  #if loading old format
         
-    #internal: convert to unique filename, extension and mode
-    def FileNameToMode(self, fileName, mode):
-        if fileName.lower().endswith('.npy'):
-            fileExtension = '.npy'
-        elif fileName.lower().endswith('.hdf5'):
-            fileExtension = '.hdf5'
-        elif fileName.lower().endswith('.pkl'):
-            fileExtension = '.pkl'
-        else:
-            if mode == None: #default!
-                fileExtension = '.npy'
-                mode = 'NPY'
-            else:
-                fileExtension = '.'+mode.lower()
-        if mode is not None:
-            if fileExtension != '.'+mode.lower():
-                raise ValueError('FEMinterface: Load/Save: inconsistent file extension and mode!')
-        else:
-            mode = fileExtension[1:].upper()
-        if fileName.endswith(fileExtension):
-            fileName = fileName[:-len(fileExtension)]
-    
-        return [fileName, fileExtension, mode]
         
     #**classFunction: save all data (nodes, elements, ...) to a data filename; this function is much faster than the text-based import functions; note that HDF5 and PKL formats lead to smaller files
     #**input: 
     #  fileName: string for path and file name; if no ending is provided ==> ".npy" will be added and NumPy format will be used; alternatives: '.pkl' ending uses Python's pickle method (smaller files) and '.hdf5' uses the HDF5 file format, but requires the python package h5py to be installed!
     #  fileVersion: FOR EXPERTS: this allows to store in older format, will be recovered when loading; must be integer; version must by > 0
-    #  mode: default: numpy format ('NPY'); alternatives: 'HDF5' (requires h5py package) and 'PKL' (pickle)
+    #  mode: default: numpy format ('NPZ'); alternatives: 'HDF5' (requires h5py package) and 'PKL' (pickle); NPY (deprecated, under Numpy 1.x)
     #**output: stores file
     #**nodes: test with 10-node tets and 86154 nodes, 50752 elements and 20 modes (incl. stress modes) gives the timings for save+load: [NPY: 2.10s, PKL: 0.76s, HDF5: 0.69s] and file sizes [NPY: 1032MB, PKL: 580MB, HDF5: 581MB]
     def SaveToFile(self, fileName, fileVersion = 3, mode=None):
-        if mode not in ['NPY','PKL','HDF5',None]:
-            raise ValueError('FEMinterface.SaveToFile: legal values for mode are "NPY", "PKL" and "HDF5"')
+        [fileName, fileExtension, mode] = FileNameToMode(fileName, mode)
 
-        [fileName, fileExtension, mode] = self.FileNameToMode(fileName, mode)
-
-        if mode=='NPY':
-            if WarnNumpy2():
-                exu.Print('FEMinterface.SaveToFile(...) does not work properly with NumPy 2.x!')
-                    
         try:
             os.makedirs(os.path.dirname(fileName+fileExtension), exist_ok=True)
         except:
@@ -1807,13 +1976,16 @@ class FEMinterface:
                 np.save(f, self.postProcessingModes, allow_pickle=True)
         else:
             data = self.GetDictionary()
-            data['version'] = fileVersion
+            data['fileVersion'] = fileVersion
             data['type']  = 'FEMinterface'
+
+            if mode == 'NPZ':
+                np.savez(fileName + fileExtension, **data)
             if mode == 'PKL':
                 import pickle
                 with open(fileName+fileExtension, 'wb') as f:
                     pickle.dump(data, f) #not good: pickle.HIGHEST_PROTOCOL => switches always to newest protocol
-            else: # mode == 'HDF5':
+            elif mode == 'HDF5':
                 from exudyn.advancedUtilities import SaveDictToHDF5
                 SaveDictToHDF5(fileName+fileExtension, data)
 
@@ -1823,23 +1995,12 @@ class FEMinterface:
     #**classFunction: load all data (nodes, elements, ...) from a data filename previously stored with SaveToFile(...). 
     #this function is much faster than the text-based import functions
     #**input: 
-    #  fileName: string for path and file name; if no ending is provided ==> ".npy" will be added and NumPy format will be assumed; alternatives: '.pkl' ending uses Python's pickle method and '.hdf5' uses the HDF5 file format, but requires the python package h5py to be installed!
+    #  fileName: string for path and file name; if no ending is provided ==> ".npz" will be added and NumPy format will be assumed; alternatives: '.pkl' ending uses Python's pickle method and '.hdf5' uses the HDF5 file format, but requires the python package h5py to be installed!
     #  forceVersion: FOR EXPERTS: this allows to store in older format, will be recovered when loading; must be integer; for old files, use forceVersion=0
     #**output: loads data into fem (note that existing values are not overwritten!); returns file version or None if version is not available
     def LoadFromFile(self, fileName, forceVersion=None, mode=None):
-        if mode not in ['NPY','PKL','HDF5',None]:
-            raise ValueError('FEMinterface.LoadFromFile: legal values for mode are "NPY", "PKL" and "HDF5"')
+        [fileName, fileExtension, mode] = FileNameToMode(fileName, mode)
 
-        if mode not in ['NPY','PKL','HDF5',None]:
-            raise ValueError('FEMinterface.SaveToFile: legal values for mode are "NPY", "PKL" and "HDF5"')
-
-        [fileName, fileExtension, mode] = self.FileNameToMode(fileName, mode)
-
-        if mode=='NPY':
-            if WarnNumpy2():
-                exu.Print('FEMinterface.LoadFromFile(...) does not work properly with NumPy 2.x!')
-
-            
         fileVersion = None
         try:
             if mode == 'NPY':
@@ -1866,16 +2027,18 @@ class FEMinterface:
                     self.modeBasis = np.load(f, allow_pickle=True).all()
                     self.eigenValues = np.array(list(np.load(f, allow_pickle=True))) #load as numpy array!
                     self.postProcessingModes = np.load(f, allow_pickle=True).all()
-            else:
-                if mode == 'PKL':
-                    import pickle
-                    with open(fileName+fileExtension, 'rb') as f:
-                        dictData = pickle.load(f)
-                    self.SetWithDictionary(dictData)
-                else: # mode == 'HDF5':
-                    from exudyn.advancedUtilities import LoadDictFromHDF5
-                    dictData = LoadDictFromHDF5(fileName+fileExtension)
-                    self.SetWithDictionary(dictData)
+            elif mode == 'NPZ':
+                with np.load(fileName+fileExtension, allow_pickle=True) as dictData:
+                    self.SetWithDictionary(dictData,fromNPZ=True)
+            elif mode == 'PKL':
+                import pickle
+                with open(fileName+fileExtension, 'rb') as f:
+                    dictData = pickle.load(f)
+                self.SetWithDictionary(dictData)
+            elif mode == 'HDF5':
+                from exudyn.advancedUtilities import LoadDictFromHDF5
+                dictData = LoadDictFromHDF5(fileName+fileExtension)
+                self.SetWithDictionary(dictData)
 
             self.ConvertElementsLists2Numpy() #in case that old format is loaded
             self.ConvertSurfaceLists2Numpy()  #in case that old format is loaded
@@ -2093,6 +2256,64 @@ class FEMinterface:
 
     #%%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #**classFunction: internal function to get ngsolve mesh nodes of boundary with name boundaryName
+    def GetNodesOfNGsolveBoundary(self, mesh, boundaryName):
+        ngMesh = mesh.ngmesh
+        bcList = mesh.GetBoundaries()
+        #node2BC = np.zeros(mesh.nv, dtype=np.int32) #0 is default
+        boundaryNodes = set()  #use a set to avoid duplicates
+        for i, el in enumerate(ngMesh.Elements2D()):
+            if bcList[el.index - 1] == boundaryName:
+                for node in el.points:
+                    #node2BC[node] = ...
+                    boundaryNodes.add(node.nr - 1)  #convert netgen point ID (1-based) to int;
+        return list(boundaryNodes)  #convert to list before returning
+
+    #**classFunction: create node sets for given (or all) boundaries in NGsolve; node sets are added to existing node sets
+    #**input:
+    #    mesh: a previously created \texttt{ngs.mesh} (NGsolve mesh, see examples)
+    #    boundaryNamesList: a List of boundary names used to define mesh boundaries or None; if given, node sets are only created for the given boundary names
+    #**output: list of nodeSets according to FEMinterface nodeSets structure, a dictionary with 'Name', 'NodeNumbers' and 'NodeWeights'
+    def CreateNGsolveBoundaryNodeSets(self, mesh, boundaryNamesList=None, warnNodeSets=True):
+        nodeSets = []
+        try:
+            ngMesh = mesh.ngmesh
+            bcList = mesh.GetBoundaries()
+            if boundaryNamesList == None:
+                boundaryNamesList = []
+                for name in bcList:
+                    if name not in boundaryNamesList:
+                        boundaryNamesList.append(name)
+            
+            boundaryNodesDict = {}
+            for name in boundaryNamesList:
+                boundaryNodesDict[name] = set()
+    
+            for i, el in enumerate(ngMesh.Elements2D()):
+                if (el.index > 0 
+                    and (len(bcList) > (el.index-1) )
+                    and bcList[el.index - 1] in boundaryNamesList):
+                    for node in el.points:
+                        boundaryNodesDict[bcList[el.index - 1]].add(node.nr - 1)  #convert netgen point ID (1-based) to int;
+        
+            for name in boundaryNamesList:
+                nodeList = np.array(list(boundaryNodesDict[name]))
+                nNodesBC = len(nodeList)
+                try:
+                    weights = self.GetNodeWeightsFromSurfaceAreas(nodeList)
+                except Exception as e:
+                    if warnNodeSets: 
+                        exu.Print('Warning: CreateNGsolveBoundaryNodeSets: could not compute correct node weights for boundary "'+name+'"')
+                    weights = 1/nNodesBC*np.ones(nNodesBC)
+                    
+                bcDict = {'Name':name, 'NodeNumbers':nodeList, 'NodeWeights':weights}
+                nodeSets.append(bcDict)
+        except Exception as e:
+            if warnNodeSets: 
+                exu.Print('Warning: CreateNGsolveBoundaryNodeSets: could not compute node sets for boundaries')
+
+        return nodeSets
+
     #**classFunction: import mesh from NETGEN/NGsolve and setup mechanical problem
     #**notes: The interface to NETGEN/NGsolve has been created together with Joachim Sch\"oberl, main developer 
     #  of NETGEN/NGsolve \cite{Schoeberl1997,NGsolve2014}; Thank's a lot!
@@ -2101,22 +2322,31 @@ class FEMinterface:
     #  note that node/element indices in the NGsolve mesh are 1-based and need to be converted to 0-base!
     #**input:
     #    mesh: a previously created \texttt{ngs.mesh} (NGsolve mesh, see examples)
-    #    youngsModulus: Young's modulus used for mechanical model
-    #    poissonsRatio: Poisson's ratio used for mechanical model
-    #    density: density used for mechanical model
+    #    youngsModulus: In case of single material: Young's modulus used for mechanical model
+    #    poissonsRatio: In case of single material: Poisson's ratio used for mechanical model
+    #    density: In case of single material: density used for mechanical model
+    #    materials: dictionary of material dictionaries according to names in NGsolve mesh, containing youngsModulus, poissonsRatio and density per material, see example
+    #    createBoundaryNodeSets: if True, during import named boundaries conditions of the mesh are transformed into node sets for further use during mode creation, etc.
+    #    boundaryNamesList: given as list of boundary names to be used for boundary node sets or None (creating node sets for all boundaries)
     #    meshOrder: use 1 for linear elements and 2 for second order elements (recommended to use 2 for much higher accuracy!)
     #    verbose: set True to print out some status information
     #**notes: setting ngsolve.SetNumThreads(nt) you can select the number of treads that are used for assemble or other functionality with NGsolve functionality 
     #**output: creates according nodes, elements, in FEM and returns [bfM, bfK, fes] which are the (mass matrix M, stiffness matrix K) bilinear forms and the finite element space fes
     #**author: Johannes Gerstmayr, Joachim Sch\"oberl
-    def ImportMeshFromNGsolve(self, mesh, density, youngsModulus, poissonsRatio, verbose = False, 
-                              computeEigenmodes = False, meshOrder = 1, **kwargs):
-        #OLD, DELETE 2022-01-01:
-        #    computeEigenmodes: set True to use NGsolve for eigenmode computation instead of ComputeEigenmodes
-        #    numberOfModes: if computeEigenmodes==True: number of eigen modes computed with NGsolve; default=10
-        #    maxEigensolveIterations: if computeEigenmodes==True: maximum number of iterations for iterative eigensolver; default=40
-        #    excludeRigidBodyModes: if computeEigenmodes==True: if rigid body modes are expected (in case of free-free modes), then this number specifies the number of eigenmodes to be excluded in the stored basis (usually 6 modes in 3D)
+    #**example: 
+    # ... #assume you have a FEMinterface fem and a NGsolve mesh
+    # #we have to define specific materials and (if still in the mesh), the default material
+    # materials = {'default':{'youngsModulus':2.1e11, 'poissonsRatio':0.3, 'density':7800},
+    #              'steel':{'youngsModulus':2.1e11, 'poissonsRatio':0.3, 'density':7800},
+    #              'aluminum':{'youngsModulus':7e10, 'poissonsRatio':0.35, 'density':2700}, 
+    #              }
+    # fem.ImportMeshFromNGsolve(self, mesh, materials)
+    # #==> fem has now nodes, elements, node sets, etc. set according to mesh
+    def ImportMeshFromNGsolve(self, mesh, density=None, youngsModulus=None, poissonsRatio=None, 
+                              materials = None, createBoundaryNodeSets = True, boundaryNamesList=None,
+                              verbose = False, meshOrder = 1, **kwargs):
         import ngsolve as ngs
+
         if meshOrder < 1 or meshOrder > 2:
             raise ValueError('mesh order > 1 or mesh order < 2 not supported!')
             
@@ -2128,26 +2358,47 @@ class FEMinterface:
             fes = ngs.VectorH1(mesh, order=meshOrder) #add interleaved = True to get xyzxyz sorting
         else:
             fes = ngs.NodalFESpace(mesh, order=meshOrder)**3
-            
+        
+        useMaterials = materials is not None
+        if useMaterials:
+            if density is not None or youngsModulus is not None or poissonsRatio is not None:
+                raise ValueError('ImportMeshFromNGsolve: if arg "materials" is defined, then density, youngsModulus and poissonsRatio must be None')
+        
+        if useMaterials:
+            #convert into single dicts
+            densityDict = {}
+            youngsModulusDict = {}
+            poissonsRatioDict = {}
+            for mat in mesh.GetMaterials():
+                if mat not in materials:
+                    raise ValueError('ImportMeshFromNGsolve: mesh contains material "'+mat+'" which could not be found in arg materials')
+        
+            for key, value in materials.items():
+                densityDict[key] = value['density']
+                youngsModulusDict[key] = value['youngsModulus']
+                poissonsRatioDict[key] = value['poissonsRatio']
+        
+            #at this point, instead of parameters, we have coefficient functions for the mechanical parameters
+            #they represent the correct parameter in each material region
+            density = ngs.CoefficientFunction([densityDict[mat] for mat in mesh.GetMaterials()])
+            youngsModulus = ngs.CoefficientFunction([youngsModulusDict[mat] for mat in mesh.GetMaterials()])
+            poissonsRatio = ngs.CoefficientFunction([poissonsRatioDict[mat] for mat in mesh.GetMaterials()])
+        
         #create finite element spaces for mass matrix and stiffness matrix    
         u = fes.TrialFunction()
         v = fes.TestFunction()
         bfK = ngs.BilinearForm(fes)
         bfM = ngs.BilinearForm(fes)
 
-        def sigma(eps, mu, lam):
+        def StressFromStrain(eps, mu, lam):
             return 2*mu*eps + lam*ngs.Trace(eps) * ngs.Id(eps.dims[0])
 
-        E = youngsModulus
-        nu = poissonsRatio
-        rho = density
-
-        mu  = E / 2 / (1+nu) #Lame parameters
-        lam = E * nu / ((1+nu)*(1-2*nu))
+        mu  = youngsModulus / 2 / (1+poissonsRatio) #Lame parameters
+        lam = youngsModulus * poissonsRatio / ((1+poissonsRatio)*(1-2*poissonsRatio))
 
         #setup (linear) mechanical FE-space
-        bfK += ngs.InnerProduct(sigma(ngs.Sym(ngs.Grad(u)),mu,lam), ngs.Sym(ngs.Grad(v)))*ngs.dx
-        bfM += rho*u*v * ngs.dx
+        bfK += ngs.InnerProduct(StressFromStrain(ngs.Sym(ngs.Grad(u)),mu,lam), ngs.Sym(ngs.Grad(v)))*ngs.dx
+        bfM += density*u*v * ngs.dx
 
         with ngs.TaskManager():
             if verbose: print ("NGsolve assemble M and K")
@@ -2244,44 +2495,12 @@ class FEMinterface:
         self.surface = [{'Name':'meshSurface','Trigs':trigList}]
         self.ConvertSurfaceLists2Numpy() #avoid lists of lists
 
-        #+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        if computeEigenmodes:
-            exu.Print('**********\nWARNING!**********\nNGsolve eigenmode computation deprecated: USE FEM.ComputeEigenmodesNGsolve(...)')
-            if verbose: print ("NGsolve: compute eigenmodes")
-            excludeRigidBodyModes = 0
-            if 'excludeRigidBodyModes' in kwargs:
-                excludeRigidBodyModes = kwargs['excludeRigidBodyModes']
-
-            nModes = 10
-            if 'numberOfModes' in kwargs: 
-                nModes = kwargs['numberOfModes'] 
-            maxIt = 40
-            if 'maxEigensolveIterations' in kwargs: 
-                maxIt = kwargs['maxEigensolveIterations']
-
-            from ngsolve.eigenvalues import PINVIT
-
-            with ngs.TaskManager():
-                KM = bfK.mat.CreateMatrix()
-                KM.AsVector().data = bfK.mat.AsVector() + 1e6* bfM.mat.AsVector()
+        if createBoundaryNodeSets:
+            self.nodeSets = self.CreateNGsolveBoundaryNodeSets(mesh, boundaryNamesList=boundaryNamesList)
             
-                inv = KM.Inverse(inverse='sparsecholesky')
-                res = PINVIT(bfK.mat, bfM.mat, inv, num=nModes+excludeRigidBodyModes, maxit=maxIt, \
-                                printrates=verbose, GramSchmidt=True)
-
-            #self.res = res
-            nDOF = K.shape[0]
-            eigVecs = np.zeros((nDOF, nModes))
-            for i in range(nModes):
-                #eigVecs[:,i] = np.array(res[1][excludeRigidBodyModes+i])
-                eigVecs[:,i] = ResortIndicesOfNGvector(np.array(res[1][excludeRigidBodyModes+i]))
-            
-            self.modeBasis = {'matrix':eigVecs, 'type':'NormalModes'}
-            self.eigenValues = np.abs(res[0][excludeRigidBodyModes:excludeRigidBodyModes + nModes])
-                             
-            if verbose: print ("eigenfrequencies (Hz) =",(0.5/np.pi)*np.sqrt(np.abs(res[0][excludeRigidBodyModes:excludeRigidBodyModes + nModes])))
 
         return [bfM, bfK, fes]
+
 
 
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2886,8 +3105,26 @@ class FEMinterface:
         self.ConvertSurfaceLists2Numpy()
         
         
-        
-        
+    #**classFunction: get rigid body inertia parameters according to Exudyn's internal RigidBodyInertia class, to be used e.g. for CreateRigidBody
+    def GetRigidBodyInertia(self):
+        # get nodes position array and the number of nodes
+        nodeArray = self.GetNodePositionsAsArray() # fem interface class function
+        nNodes = len(nodeArray)
+        # compute inertia via nodes positions and mass matrix (can also be combinations of different materials)
+        xRef = nodeArray.flatten()
+        xRefTilde = ComputeSkewMatrix(xRef)
+        massMatrixSparse = self.GetMassMatrix(sparse=True) # fem interface class function
+        inertiaLocal = xRefTilde.T @ massMatrixSparse @ xRefTilde # LARGE MATRIX COMPUTATION
+        # compute total mass via FFRFreduced constant matrices
+        Phit = np.kron(np.ones(nNodes),np.eye(3)).T
+        PhitTM = Phit.T @ massMatrixSparse # LARGE MATRIX COMPUTATION
+        Mtt = PhitTM @ Phit
+        totalMass = Mtt[0,0] # Mtt must be diagonal matrix with mass in diagonal
+        # compute COM
+        chiU = 1./totalMass*(PhitTM @ xRef)
+        # make rigid body inertia object and return
+        return RigidBodyInertia(mass=totalMass, inertiaTensor=inertiaLocal, 
+                                com=chiU, inertiaTensorAtCOM=False)        
         
         
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

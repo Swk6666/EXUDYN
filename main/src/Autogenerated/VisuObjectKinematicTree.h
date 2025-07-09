@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes
 * @date         2019-07-01 (generated)
-* @date         2024-02-03  15:27:06 (last modified)
+* @date         2025-06-07  20:45:48 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -30,7 +30,7 @@ protected: // AUTO:
     Float4 color;                                 //!< AUTO: RGBA color for object; 4th value is alpha-transparency; R=-1.f means, that default color is used
     MatrixI triangleMesh;                         //!< AUTO: unused in KinematicTree
     bool showNodes;                               //!< AUTO: unused in KinematicTree
-    BodyGraphicsDataList graphicsDataList;        //!< AUTO: Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
+    BodyGraphicsDataList graphicsDataList;        //!< AUTO: Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
 
 public: // AUTO: 
     //! AUTO: default constructor with parameter initialization
@@ -86,11 +86,11 @@ public: // AUTO:
         return false;
     }
 
-    //! AUTO:  Write (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
+    //! AUTO:  Write (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
     void SetGraphicsDataList(const BodyGraphicsDataList& value) { graphicsDataList = value; }
-    //! AUTO:  Read (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
+    //! AUTO:  Read (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
     const BodyGraphicsDataList& GetGraphicsDataList() const { return graphicsDataList; }
-    //! AUTO:  Read (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicdData where every BodyGraphicdData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
+    //! AUTO:  Read (Reference) access to:Structure contains data for link/joint visualization; data is defined as list of BodyGraphicsData where every BodyGraphicsData corresponds to one link/joint; must either be emtpy list or length must agree with number of links
     BodyGraphicsDataList& GetGraphicsDataList() { return graphicsDataList; }
 
     //! AUTO:  Update visualizationSystem -> graphicsData for item; index shows item Number in CData

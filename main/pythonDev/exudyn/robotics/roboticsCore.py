@@ -405,7 +405,7 @@ class Robot:
     def Jacobian(self, HT, toolPosition=[], mode='all', linkIndex=None):
         n = len(HT)
         if n > len(self.links):
-            print("ERROR: number of homogeneous transformations (HT) greater than number of links")
+            exudyn.Print("ERROR: number of homogeneous transformations (HT) greater than number of links")
 
         #link index is usually the last link contained in HT (all subsequent columns in jacobian would be anyway zero):
         if linkIndex == None:
@@ -974,7 +974,7 @@ class Robot:
         global buildFromDictionaryWarned
         if not buildFromDictionaryWarned:
             buildFromDictionaryWarned = True
-            print("WARNING: function BuildFromDictionary in class Robot is DEPRECATED; DO NOT USE")
+            exudyn.Print("WARNING: function BuildFromDictionary in class Robot is DEPRECATED; DO NOT USE")
 
         if 'base' in robotDict:
             self.base.HT = np.array(robotDict['base']['HT'])
@@ -998,7 +998,7 @@ class Robot:
             elif 'modDHcraig' in link: #according to Craig (1986) and modified DH parameters in Corke's toolbox (2017)
                 if not warnedModDH:
                     warnedModDH = True
-                    print('WARNING: BuildFromDictionary untested for modDH; missing transformation for inertia and COM?')
+                    exudyn.Print('WARNING: BuildFromDictionary untested for modDH; missing transformation for inertia and COM?')
                 [theta, d, a, alpha] = link['modDHcraig']
                 a1 = 0 #if no succeeding link follows
                 alpha1 = 0
@@ -1041,7 +1041,7 @@ def StdDH2HT(DHparameters):
 #                                                        {0             & \sin \alpha_j               & \cos \alpha_j               & d_j }
 #                                                        {0 & 0 & 0 & 1}
 #Test (compared with Robotcs, Vision and Control book of P. Corke:
-#print("std. DH =\n", DH2HT([0.5, 0.1, 0.2, np.pi/2]).round(4))
+#exudyn.Print("std. DH =\n", DH2HT([0.5, 0.1, 0.2, np.pi/2]).round(4))
 
 #**function: compute pre- and post- homogeneous transformation matrices from modified Denavit-Hartenberg DHparameters=[alpha, d, theta, r]; returns [HTpre, HTpost]; HTpre is transformation before axis rotation, HTpost includes axis rotation and everything hereafter; modified DH-Parameters according to Khalil and Kleinfinger, 1986
 def ModDHKK2HT(DHparameters):
@@ -1239,7 +1239,7 @@ class InverseKinematicsNumerical():
             [q, success] = self.Solve(Ti, q)
             if not success: 
                 if self.flagDebug: 
-                    print('WARNING: InverseKinematics: SolveSafe failed to solve')
+                    exudyn.Print('WARNING: InverseKinematics: SolveSafe failed to solve')
                 break
 
         if success:
@@ -1249,9 +1249,9 @@ class InverseKinematicsNumerical():
     
         if ((TSol-T) >= self.epsSolution).any(): #*JG: 1e-12; try once again with even finer discretization ...
             if self.flagDebug:
-                print('WARNING: InverseKinematics: SolveSafe refine')
+                exudyn.Print('WARNING: InverseKinematics: SolveSafe refine')
                 if success:
-                    print(' at err = \n', (np.round((TSol-T), 10)) ) # round for better readability
+                    exudyn.Print(' at err = \n', (np.round((TSol-T), 10)) ) # round for better readability
 
             TInterp = self.InterpolateHTs(T0, T, rotStep = np.pi/20, minSteps=4) #*JG:2023-03-29: changed from TSol to T0
             q = q0
@@ -1264,7 +1264,7 @@ class InverseKinematicsNumerical():
                 TSol = self.GetCurrentRobotHT()
                 if (np.abs(TSol-T) >= 1e-8).any(): 
                     if self.flagDebug: 
-                        print('WARNING: InverseKinematics: SolveSafe refinement failed: err = ', (np.round((TSol-T), 10))) # round for better readability
+                        exudyn.Print('WARNING: InverseKinematics: SolveSafe refinement failed: err = ', (np.round((TSol-T), 10))) # round for better readability
                     success = False
 
         if not success:
@@ -1306,7 +1306,7 @@ class InverseKinematicsNumerical():
         
         try: 
             if self.useRenderer: 
-                exudyn.StartRenderer()
+                SC.renderer.Start()
                 self.mbsIK.WaitForUserToContinue() #stop before simulating
 
             success = self.staticSolver.SolveSystem(self.mbsIK, self.simulationSettings)
@@ -1317,7 +1317,7 @@ class InverseKinematicsNumerical():
             
         except:
             if self.flagDebug: 
-                print('WARNING: InverseKinematics: Solve: static solver failed')
+                exudyn.Print('WARNING: InverseKinematics: Solve: static solver failed')
             [q, success] = None, False
             
         if success:
@@ -1330,521 +1330,27 @@ class InverseKinematicsNumerical():
                 # forwards kinematics deviates from desired HT; happens when desired TCP is outside of the robot's working space
                 # or when the orientation is not set correctly; can happen because of current implementation of generic joint 
                 if self.flagDebug: 
-                    print('\n'*1)
-                    print('WARNING: InverseKinematics: solution incorrect:') 
+                    exudyn.Print('\n'*1)
+                    exudyn.Print('WARNING: InverseKinematics: solution incorrect:') 
                     p1 = erb.HT2translation(self.fKineSolved)
                     p2 = erb.HT2translation(T)
-                    print('pos error: ', np.round(p1-p2, 17)) # if TF is in the workspace then the position works
+                    exudyn.Print('pos error: ', np.round(p1-p2, 17)) # if TF is in the workspace then the position works
                     # rotation may still be wrong
                     R1 = self.fKineSolved[0:3,0:3]
                     R2 = T[0:3,0:3]
                     rot1 = erb.RotationMatrix2RotXYZ(R1)
                     rot2 = erb.RotationMatrix2RotXYZ(R2) 
-                    print('rot1 = {}, rot2 = {}'.format(rot1, rot2))
-                    print('R1:\n{}, \nR2:\n{}'.format(R1, R2))
-                    print('\n'*1)
+                    exudyn.Print('rot1 = {}, rot2 = {}'.format(rot1, rot2))
+                    exudyn.Print('R1:\n{}, \nR2:\n{}'.format(R1, R2))
+                    exudyn.Print('\n'*1)
                     # raise ValueError('no valid solution found for inverse kinematics')
         else:
             q = None
 
         if self.useRenderer:    
             self.simulationSettings.solutionSettings.solutionInformation = 'success = {}\nq={}'.format(success, np.round(q, 3))
-            self.SC.WaitForRenderEngineStopFlag() # stop before closing
-            exudyn.StopRenderer() # close rendering window! 
+            self.SC.renderer.DoIdleTasks() # stop before closing
+            self.SC.renderer.Stop() # close rendering window! 
 
         return [q, success]
-
-
-
-
-# ## delete everything after that 
-# MOTION PLANNING and TRAJECTORIES preserved in Experimental/motionPlanningTest.py
-# #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #+++  MOTION PLANNING and TRAJECTORIES  +++++++++++++++++++++++++++++++++++++++++++++
-# #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #**function: Compute parameters for optimal trajectory using given duration and distance
-# #**notes: DEPRECATED, DO NOT USE - moved to robotics.motion
-# #**input: duration in seconds and distance in meters or radians
-# #**output: returns [vMax, accMax] with maximum velocity and maximum acceleration to achieve given trajectory
-# def ConstantAccelerationParameters(duration, distance):
-#     accMax = 4*distance/duration**2
-#     vMax = (accMax * distance)**0.5
-#     return [vMax, accMax]
-
-# #**function: Compute angle / displacement s, velocity v and acceleration a
-# #**input: 
-# #  t: current time to compute values
-# #  tStart: start time of profile
-# #  sStart: start offset of path
-# #  duration: duration of profile
-# #  distance: total distance (of path) of profile
-# #**notes: DEPRECATED, DO NOT USE - moved to robotics.motion
-# #**output: [s, v, a] with path s, velocity v and acceleration a for constant acceleration profile; before tStart, solution is [0,0,0] while after duration, solution is [sStart+distance, 0, 0]
-# def ConstantAccelerationProfile(t, tStart, sStart, duration, distance):
-#     [vMax, accMax] = ConstantAccelerationParameters(duration, distance)
-    
-#     s = sStart
-#     v = 0
-#     a = 0
-    
-#     x = t-tStart
-#     if x < 0:
-#         s=0
-#     elif x < 0.5*duration:
-#         s = sStart + 0.5*accMax*x**2
-#         v = x*accMax
-#         a = accMax
-#     elif x < duration:
-#         s = sStart + distance - 0.5*accMax * (duration-x)**2
-#         v = (duration - x)*accMax
-#         a = -accMax
-#     else:
-#         s = sStart + distance
-    
-#     return [s, v, a]
-
-# motionInterpolatorWarned = False
-# #**function: Compute joint value, velocity and acceleration for given robotTrajectory['PTP'] of point-to-point type, evaluated for current time t and joint number
-# #**input:
-# #  t: time to evaluate trajectory
-# #  robotTrajectory: dictionary to describe trajectory; in PTP case, either use 'time' points, or 'time' and 'duration', or 'time' and 'maxVelocity' and 'maxAccelerations' in all consecutive points; 'maxVelocities' and 'maxAccelerations' must be positive nonzero values that limit velocities and accelerations; 
-# #  joint: joint number for which the trajectory shall be evaluated
-# #**output: for current time t it returns [s, v, a] with path s, velocity v and acceleration a for current acceleration profile; outside of profile, it returns [0,0,0] !
-# #**notes: DEPRECATED, DO NOT USE - moved to robotics.motion
-# #**example:
-# # q0 = [0,0,0,0,0,0] #initial configuration
-# # q1 = [8,5,2,0,2,1] #other configuration
-# # PTP =[]
-# # PTP+=[{'q':q0, 
-# #        'time':0}]
-# # PTP+=[{'q':q1,
-# #        'time':0.5}]
-# # PTP+=[{'q':q1, 
-# #        'time':1e6}] #forever
-# # RT={'PTP':PTP}
-# # [u,v,a] = MotionInterpolator(t=0.5, robotTrajectory=RT, joint=1)
-# def MotionInterpolator(t, robotTrajectory, joint):
-#     global motionInterpolatorWarned
-#     if not motionInterpolatorWarned:
-#         motionInterpolatorWarned = True
-#         print('MotionInterpolator: deprecated - use Trajectory class from robotics.trajectory instead')
-#     n = len(robotTrajectory['PTP'])
-#     if n < 2:
-#         print("ERROR in MotionInterpolator: trajectory must have at least 2 points!")
-    
-#     i = 0
-#     while (i < n) and (t >= robotTrajectory['PTP'][i]['time']):
-#         i += 1
-
-#     if (i==0) or (i==n):
-#         return [0,0,0] #outside of trajectory
-    
-#     #i must be > 0 and < n now!
-#     q0 = robotTrajectory['PTP'][i-1] #must always exist
-#     q1 = robotTrajectory['PTP'][i] #must always exist
-    
-#     return ConstantAccelerationProfile(t, q0['time'], q0['q'][joint], 
-#                                        q1['time'] - q0['time'], 
-#                                        q1['q'][joint] - q0['q'][joint])
-
-
-
-
-
-
-
-
-
-# serialRobot2MBSwarned=False
-# #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #+++  create a SERIAL ROBOT from DH-parameters in the mbs +++++++++++++++++++++++++++
-# #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #**function: DEPRECATED function, use Robot.CreateRedundantCoordinateMBS(...); add items to existing mbs from the robot structure, a baseMarker (can be ground object or body)
-# #            and the user function list for the joints; there are options that can be passed as args / kwargs, which can contains options as described below. For details, see the python file and \texttt{serialRobotTest.py} in TestModels
-# #**input: 
-# #   mbs: the multibody system, which will be extended
-# #   robot: the robot model as dictionary, described in function ComputeJointHT
-# #   jointLoadUserFunctionList: a list of user functions for actuation of joints according to a LoadTorqueVector userFunction, see serialRobotTest.py as an example; can be empty list
-# #   baseMarker: a rigid body marker, at which the robot will be placed (usually ground); note that the local coordinate system of the base must be in accordance with the DH-parameters, i.e., the z-axis must be the first rotation axis. For correction of the base coordinate system, use rotationMarkerBase
-# #   rotationMarkerBase: used in Generic joint between first joint and base; note, that for moving base, the static compensation does not work (base rotation must be updated)
-# #   showCOM: a scalar d, which if nonzero it causes to draw the center of mass (COM) as rectangular block with size [d,d,d]
-# #   bodyAlpha: a float value in range [0..1], adds transparency to links if value < 1
-# #   toolGraphicsSize: list of 3 floats [sx,sy,sz], giving the size of the tool for graphics representation; set sx=0 to disable tool drawing or do not provide this optional variable
-# #   drawLinkSize: draw parameters for links as list of 3 floats [r,w,0], r=radius of joint, w=radius of link, set r=0 to disable link drawing
-# #   rotationMarkerBase: add a numpy 3x3 matrix for rotation of the base, in order that the robot can be attached to any rotated base marker; the rotationMarkerBase is according to the definition in GenericJoint
-# #**output: the function returns a dictionary containing information on nodes, bodies, joints, markers, torques, for every joint
-# def SerialRobot2MBS(mbs, robot, jointLoadUserFunctionList, baseMarker, *args, **kwargs):
-#     global serialRobot2MBSwarned
-#     if not serialRobot2MBSwarned:
-#         serialRobot2MBSwarned = True
-#         print('function SerialRobot2MBS(...) is deprecated, use Robot.CreateRedundantCoordinateMBS(...) of class Robot instead')
-#     #build robot model:
-#     nodeList = []           #node number or rigid node for link
-#     bodyList = []           #body number or rigid body for link
-#     jointList = []          #joint which links to previous link or base
-#     markerList0 = [] #contains n marker numbers per link which connect to previous body
-#     markerList1 = [] #contains n marker numbers per link which connect to next body
-#     jointTorque0List = []  #load number of joint torque at previous link (negative)
-#     jointTorque1List = []  #load number of joint torque at next link (positive)
-    
-#     Tcurrent = robot['base']['HT']
-    
-#     lastMarker = baseMarker
-    
-#     bodyAlpha = 1 #default value; no transparency
-#     if 'bodyAlpha' in kwargs:
-#         bodyAlpha = kwargs['bodyAlpha']
-
-
-#     toolSize = [0.05,0.02,0.06] #default values
-#     if 'toolGraphicsSize' in kwargs:
-#         toolSize = kwargs['toolGraphicsSize']
-
-        
-#     drawLinkSize=[0.06,0.05] #default values
-#     if 'drawLinkSize' in kwargs:
-#         drawLinkSize = kwargs['drawLinkSize']
-
-#     #create robot nodes and bodies:
-#     for i in range(len(robot['links'])):
-#         link = robot['links'][i]
-    
-#         DHparam = np.zeros(4)
-#         DHparam[0:4] = link['stdDH'][0:4] #copy content!
-#         if robot['jointType'][i] == 1: #1==revolute, 0==prismatic
-#             DHparam[0] = robot['referenceConfiguration'][i] #add reference angle
-#         else:
-#             DHparam[1] = robot['referenceConfiguration'][i] #add reference displacement
-            
-#         T01 = StdDH2HT(DHparam) #transformation from last link to this link; it defines the orientation of the body
-    
-#         Tcurrent = Tcurrent @ T01
-        
-#         #the next (distal) joint (joint1) is aligned with the z-axis of the body's frame:
-#         p1 = np.array([0,0,0.])
-#         axis1 = np.array([0,0,1.])
-    
-#         #the previous joint (joint0) axis is rotated back with alpha and translated along -x with a
-#         d = link['stdDH'][1]
-#         a = link['stdDH'][2]
-#         alpha = link['stdDH'][3]
-#         A0T = erb.RotationMatrixX(-alpha) #rotation matrix transforms back to joint0
-#         p0 = A0T @ np.array([-a,0,-d])
-#         axis0 = A0T @ np.array([0,0,1.])
-        
-#         #rigid body parameters:
-#         com = link['COM']
-#         # com4 = np.array(com+[1])
-    
-#         inertiaLink = erb.RigidBodyInertia(mass=link['mass'], 
-#                                        inertiaTensor=link['inertia'])
-#         inertiaLink = inertiaLink.Translated(com)#needs to be recomputed, because inertia is w.r.t. COM
-        
-#         color = list(np.array(graphics.colorList[i]))
-#         color[3] = bodyAlpha #transparency of bodies
-#         graphicsList = []
-
-#         #draw COM:
-#         if 'showCOM' in args:
-#             dd=args['showCOM']
-#             graphicsList += [exudyn.graphics.Brick(com, [dd,dd,dd], graphics.colorList[i])]
-
-#         #draw links:
-#         r = drawLinkSize[0]
-#         w = drawLinkSize[1]
-#         if r != 0:
-#             h0 = w   #height of half axis, first joint
-#             h1 = w   #height of half axis, second joint
-            
-#             if i == 0: #draw full cylinder for first joint
-#                 h0 = w*2
-            
-#             graphicsList += [exudyn.graphics.Cylinder(pAxis=p0, vAxis=-h0*axis0, 
-#                                                  radius=r, color=color)]
-#             graphicsList += [exudyn.graphics.Cylinder(pAxis=p1, vAxis= h1*axis1, 
-#                                                       radius=r, color=color)]
-
-#             #draw body as cylinder:
-#             if ebu.NormL2(ebu.VSub(p1,p0)) > 1e-15:
-#                 graphicsList += [exudyn.graphics.Cylinder(pAxis=p1, vAxis=ebu.VSub(p0,p1), 
-#                                                       radius=w, color=color)]
-        
-#         if i==len(robot['links']): #tool
-#             pTool = erb.HT2translation(robot['tool']['HT'])
-#             if toolSize[0] != 0:
-#                 colorTool = graphics.color.steelblue
-#                 colorTool[3] = bodyAlpha #transparency of bodies
-                    
-#                 if ebu.NormL2(pTool) != 0:
-#                     graphicsList += [exudyn.graphics.Cylinder(pAxis=p1, vAxis= ebu.VSub(pTool,p1), 
-#                                                           radius=r*0.75, color=colorTool)]
-                    
-#                 #add some simplified drawing for gripper, may be removed in future
-#                 ty = toolSize[0]
-#                 tz = toolSize[0]
-#                 graphicsList += [exudyn.graphics.Brick(pTool+[0,ty,0.5*tz], toolSize, colorTool)]
-#                 graphicsList += [exudyn.graphics.Brick(pTool+[0,-ty,0.5*tz], toolSize, colorTool)]
-                
-        
-#         #++++++++++++++++++++++++
-#         #now add body for link:
-#         dictLink = mbs.CreateRigidBody(referencePosition=erb.HT2translation(Tcurrent),  
-#                                        referenceRotationMatrix=erb.HT2rotationMatrix(Tcurrent),  
-#                                        inertia=inertiaLink,  
-#                                        gravity=self.gravity,  
-#                                        graphicsDataList=graphicsList,  
-#                                        returnDict=True)  
-#         nLink = dictLink['nodeNumber']  
-#         bLink = dictLink['bodyNumber']
-#         nodeList+=[nLink]
-#         bodyList+=[bLink]
-#         #print(mbs.GetObject(bLink))
-    
-#         #++++++++++++++++++++++++
-#         #add markers and joints
-#         mLink0 = mbs.AddMarker(eii.MarkerBodyRigid(bodyNumber=bLink, localPosition=p0))
-#         mLink1 = mbs.AddMarker(eii.MarkerBodyRigid(bodyNumber=bLink, localPosition=[0,0,0]))
-#         markerList0+=[mLink0]
-#         markerList1+=[mLink1]
-        
-#         rotation1 = np.identity(3) #only used for base rotation
-#         if i == 0: #only for base we can add a transformation
-#             if 'rotationMarkerBase' in kwargs:
-#                 rotation1 = kwargs['rotationMarkerBase']
-            
-#         #this configuration is less optimal for larger joint values:
-#     #    jointLink = mbs.AddObject(GenericJoint(markerNumbers=[lastMarker, mLink0],
-#     #                                           constrainedAxes=[1,1,1,1,1,0],
-#     #                                           rotationMarker1=A0T,
-#     #                                           visualization=VObjectJointGeneric(axesRadius = 0.01,axesLength=0.1, color=graphics.color.red)))
-#         jointLink = mbs.AddObject(eii.GenericJoint(markerNumbers=[mLink0, lastMarker],
-#                                                constrainedAxes=[1,1,1,1,1,0],
-#                                                rotationMarker0=A0T,
-#                                                rotationMarker1=rotation1,
-#                                                visualization=eii.VObjectJointGeneric(axesRadius = 0.01,axesLength=0.1, color=graphics.color.red)))
-                
-#         #load on previous body, negative sign
-#         loadSize = 1
-#         torque1 = A0T @ np.array([0,0, loadSize]) #rotated torque vector for current link, it is not the z-axis
-#         #print("torque1=", torque1)
-#         if i < len(jointLoadUserFunctionList):
-#             load0 = mbs.AddLoad(eii.LoadTorqueVector(markerNumber=lastMarker, loadVector=[0,0,-loadSize], 
-#                                                             bodyFixed=True, loadVectorUserFunction=jointLoadUserFunctionList[i]))
-#             load1 = mbs.AddLoad(eii.LoadTorqueVector(markerNumber=mLink0, loadVector=torque1, 
-#                                                             bodyFixed=True, loadVectorUserFunction=jointLoadUserFunctionList[i]))
-    
-#             jointTorque0List += [load0]
-#             jointTorque1List += [load1]
-    
-#         jointList+=[jointLink]
-
-#         lastMarker = mLink1
-#         #end loop over links
-#         #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-#     d = {'nodeList': nodeList,'bodyList': bodyList,'jointList': jointList,
-#          'markerList0': markerList0,'markerList1': markerList1,
-#          'jointTorque0List': jointTorque0List,'jointTorque1List': jointTorque1List}
-#     return d
-
-
-
-
-# #%%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# #DEPRECATED functionality:
-# dh2HTwarned = False
-# def DH2HT(DHparameters):
-#     global dh2HTwarned 
-#     if not dh2HTwarned:
-#         dh2HTwarned = True
-#         print('function DH2HT(...) is deprecated, use StdDH2HT instead')
-#     return StdDH2HT(DHparameters)
-
-# computeJointHTwarned = False
-# #compute HT for every joint, using given configuration
-# #**function: DEPRECATED: compute list of  homogeneous transformations HT from base to every joint (more precisely of every link!) for given configuration
-# #**example:
-# #link0={'stdDH':[0,0,0,np.pi/2], 
-# #         'mass':20,  #not needed!
-# #         'inertia':np.diag([1e-8,0.35,1e-8]), #w.r.t. COM!
-# #         'COM':[0,0,0]}
-# #link1={'stdDH':[0,0,0.4318,0],
-# #         'mass':17.4, 
-# #         'inertia':np.diag([0.13,0.524,0.539]), #w.r.t. COM!
-# #         'COM':[-0.3638, 0.006, 0.2275]}
-# #robot={'links':[link0, link1],
-# #         'jointType':[1,1], #1=revolute, 0=prismatic
-# #         'base':{'HT':HT0()},
-# #         'tool':{'HT':HTtranslate([0,0,0.1])},
-# #         'gravity':[0,0,9.81],
-# #         'referenceConfiguration':[0]*2 #reference configuration for bodies; at which the robot is built
-# #         } 
-# #HTlist = ComputeJointHT(robot, [np.pi/8]*2)
-# def ComputeJointHT(robot, configuration):
-#     global computeJointHTwarned
-#     if not computeJointHTwarned:
-#         computeJointHTwarned = True
-#         print('function ComputeJointHT(robot, configuration) is deprecated, use Robot.JointHT(...) of class Robot instead')
-
-#     Tcurrent = robot['base']['HT']
-#     HT = []
-    
-#     for i in range(len(robot['links'])):
-#         link = robot['links'][i]
-#         DHparam = np.zeros(4)
-#         DHparam[0:4] = link['stdDH'][0:4] #copys content!
-#         if robot['jointType'][i] == 1: #1==revolute, 0==prismatic
-#             DHparam[0] = configuration[i] #add current angle
-#         else:
-#             DHparam[1] = configuration[i] #add current displacement
-            
-#         T01 = DH2HT(DHparam) #transformation from last link to this link; it defines the orientation of the body
-#         Tcurrent = Tcurrent @ T01
-#         HT += [Tcurrent]
-    
-#     return HT
-
-
-# computeCOMHTwarned = False
-# #compute HT for every link's COM; takes current jointHT as input
-# #**function: DEPRECATED: compute list of  homogeneous transformations HT from base to every COM using HT list from ComputeJointHT
-# def ComputeCOMHT(robot, HT):
-#     global computeCOMHTwarned
-#     if not computeCOMHTwarned:
-#         computeCOMHTwarned = True
-#         print('function ComputeCOMHT(robot, HT) is deprecated, use Robot.COMHT(...) of class Robot instead')
-#     HTCOM = []
-    
-#     #HTCOM += [robot['base']['HT']]
-#     for i in range(len(robot['links'])):
-#         link = robot['links'][i]
-#         HTCOM += [HT[i] @ erb.HTtranslate(link['COM'])]
-    
-#     return HTCOM
-
-# computeStaticTorqueswarned=False
-# #compute static torques for robot defined by DH-parameters and for given HT
-# #**function: DEPRECATED: compute list joint torques for serial robot under gravity (gravity and mass as given in robot)
-# def ComputeStaticTorques(robot,HT):
-#     global computeStaticTorqueswarned
-#     if not computeStaticTorqueswarned:
-#         computeStaticTorqueswarned = True
-#         print('function ComputeStaticTorques(robot, HT) is deprecated, use Robot.StaticTorques(...) of class Robot instead')
-#     jointTorques = np.zeros(np.size(robot['links']))
-#     #old, limited to 6 joints: jointTorques = np.zeros(6)
-
-#     #compute HTs for COM
-#     HTcom=ComputeCOMHT(robot, HT)
-#     grav = np.array(robot['gravity'])
-    
-#     #sum up the torques of all gravity loads:
-#     for i in range(len(HTcom)):
-#         p = erb.HT2translation(HTcom[i])
-#         Jcom=Jacobian(robot,HT[0:i+1],toolPosition=p,mode='trans')
-#         #print(erb.HT2translation(HTcom[i]))
-#         fG = robot['links'][i]['mass'] * grav
-#         #print(fG)
-#         tau = Jcom.T @ fG
-#         jointTorques[0:i+1] += tau
-#     return jointTorques
-
-
-# computeJacobianwarned=False
-# #compute jacobian, needs per-link HT in current configuration
-# #runs over number of HTs given in HT (may be less than number of links)
-# #modes are: 'all', 'trans'...only translation part, 'rot': only rotation part
-# #**function: DEPRECATED: compute jacobian for translation and rotation at toolPosition using joint HT
-# def Jacobian(robot,HT,toolPosition=[],mode='all'):
-#     global computeJacobianwarned
-#     if not computeJacobianwarned:
-#         computeJacobianwarned = True
-#         print('function Jacobian(robot, HT,...) is deprecated, use Robot.Jacobian(...) of class Robot instead')
-#     n = len(HT)
-#     if n > len(robot['links']):
-#         print("ERROR: number of homogeneous transformations (HT) greater than number of links")
-
-#     Jomega = np.zeros((3,n))#rotation part of jacobian
-#     Jvel = np.zeros((3,n))  #translation part of jacobian
-#     A = erb.HT2rotationMatrix(robot['base']['HT'])
-#     rotAxis = np.array([0,0,1]) #robot axis in local coordinates
-#     vPrevious = erb.HT2translation(robot['base']['HT'])
-#     vn = toolPosition
-#     if len(vn) == 0:
-#         vn = erb.HT2translation(HT[-1]) #tool position, for jacobian (could include tool itself)
-    
-#     #create robot nodes and bodies:
-#     for i in range(n):
-        
-#         if i > 0:
-#             A = erb.HT2rotationMatrix(HT[i-1]) #rotation of joint i
-#         axis = A @ rotAxis #axis in global coordinates
-#         Jomega[0:3,i] = robot['jointType'][i] * axis #only considered, if revolute joint
-        
-#         if i > 0:
-#             vPrevious = erb.HT2translation(HT[i-1])
-         
-#         #revolute joint:
-#         if robot['jointType'][i] == 1: #revolute joint
-#             Jvel[0:3,i]   = erb.Skew(axis) @ (vn - vPrevious) #only considered, if revolute joint
-#         else: #prismatic joint
-#             Jvel[0:3,i]   = axis #NOT TESTED!!!
-    
-#     if mode == 'all':
-#         J = np.zeros((6,n))
-#     else:
-#         J = np.zeros((3,n))
-    
-#     if mode == 'rot':
-#         J[0:3,0:n] = Jomega
-#     elif mode == 'trans':
-#         J[0:3,0:n] = Jvel
-#     elif mode == 'all':
-#         J[0:3,0:n] = Jvel
-#         J[3:6,0:n] = Jomega
-
-#     return J
-
-
-
-# #the following functions use a structure for the description of the robot according to:
-# # link0={'stdDH':[0,0,0,np.pi/2], #theta, d, a, alpha
-#        # 'mass':20,  #not needed!
-#        # 'inertia':np.diag([1e-8,0.35,1e-8]), #w.r.t. COM!
-#        # 'COM':[0,0,0]}
-
-# # link1={'stdDH':[0,0,0.4318,0],
-#        # 'mass':17.4, 
-#        # 'inertia':np.diag([0.13,0.524,0.539]), #w.r.t. COM!
-#        # 'COM':[-0.3638, 0.006, 0.2275]}
-
-# # link2={'stdDH':[0,0.15,0.0203,-np.pi/2], 
-#        # 'mass':4.8, 
-#        # 'inertia':np.diag([0.066,0.086,0.0125]), #w.r.t. COM!
-#        # 'COM':[-0.0203,-0.0141,0.07]}
-
-# # link3={'stdDH':[0,0.4318,0,np.pi/2], 
-#        # 'mass':0.82, 
-#        # 'inertia':np.diag([0.0018,0.0013,0.0018]), #w.r.t. COM!
-#        # 'COM':[0,0.019,0]}
-
-# # link4={'stdDH':[0,0,0,-np.pi/2], 
-#        # 'mass':0.34, 
-#        # 'inertia':np.diag([0.0003,0.0004,0.0003]), #w.r.t. COM!
-#        # 'COM':[0,0,0]}
-
-# # link5={'stdDH':[0,0,0,0], 
-#        # 'mass':0.09, 
-#        # 'inertia':np.diag([0.00015,0.00015,4e-5]), #w.r.t. COM!
-#        # 'COM':[0,0,0.032]}
-
-# # #this is the global robot structure
-# # robot={'links':[link0, link1, link2, link3, link4, link5],
-#        # 'jointType':[1,1,1,1,1,1], #1=revolute, 0=prismatic
-#        # 'base':{'HT':erb.HT0()},
-#        # 'tool':{'HT':erb.HTtranslate([0,0,0.1])},
-#        # 'gravity':[0,0,9.81],
-#        # 'referenceConfiguration':[0]*6 #reference configuration for bodies; at which the robot is built
-#        # } 
 

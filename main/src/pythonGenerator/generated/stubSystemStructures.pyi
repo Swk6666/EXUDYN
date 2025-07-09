@@ -119,7 +119,7 @@ class TimeIntegrationSettings:
     endTime: float
     initialStepSize: float
     minimumStepSize: float
-    numberOfSteps: int
+    numberOfSteps: float
     realtimeFactor: float
     realtimeWaitMicroseconds: int
     relativeTolerance: float
@@ -171,6 +171,7 @@ class Parallel:
     numberOfThreads: int
     taskSplitMinItems: int
     taskSplitTasksPerThread: int
+    useLoadBalancing: bool
 
 #information for SimulationSettings
 class SimulationSettings:
@@ -224,6 +225,7 @@ class VSettingsGeneral:
 
 #information for VSettingsContour
 class VSettingsContour:
+    alphaTransparency: float
     automaticRange: bool
     colorBarPrecision: int
     colorBarTiling: int
@@ -311,8 +313,8 @@ class VSettingsLoads:
     show: bool
     showNumbers: bool
 
-#information for VSettingsSensorTraces
-class VSettingsSensorTraces:
+#information for VSettingsTraces
+class VSettingsTraces:
     lineWidth: float
     listOfPositionSensors: ArrayIndex
     listOfTriadSensors: ArrayIndex
@@ -325,6 +327,7 @@ class VSettingsSensorTraces:
     showPositionTrace: bool
     showTriads: bool
     showVectors: bool
+    timeSpan: float
     traceColors: ArrayFloat
     triadSize: float
     triadsShowEvery: int
@@ -333,7 +336,7 @@ class VSettingsSensorTraces:
 
 #information for VSettingsSensors
 class VSettingsSensors:
-    traces: VSettingsSensorTraces
+    traces: VSettingsTraces
     defaultColor: Tuple[float,float,float,float]
     defaultSize: float
     drawSimplified: bool
@@ -345,6 +348,7 @@ class VSettingsContact:
     colorBoundingBoxes: Tuple[float,float,float,float]
     colorSearchTree: Tuple[float,float,float,float]
     colorSpheres: Tuple[float,float,float,float]
+    colorTori: Tuple[float,float,float,float]
     colorTriangles: Tuple[float,float,float,float]
     contactForcesFactor: float
     contactPointsDefaultSize: float
@@ -354,7 +358,9 @@ class VSettingsContact:
     showSearchTree: bool
     showSearchTreeCells: bool
     showSpheres: bool
+    showTori: bool
     showTriangles: bool
+    tilingCurves: int
     tilingSpheres: int
 
 #information for VSettingsWindow
@@ -380,10 +386,53 @@ class VSettingsDialogs:
     multiThreadedDialogs: bool
     openTreeView: bool
 
+#information for VSettingsMaterial
+class VSettingsMaterial:
+    alpha: float
+    baseColor: Tuple[float,float,float]
+    emission: Tuple[float,float,float]
+    ior: float
+    name: str
+    reflectivity: float
+    shininess: float
+    specular: Tuple[float,float,float]
+
+#information for VSettingsRaytracer
+class VSettingsRaytracer:
+    material0: VSettingsMaterial
+    material1: VSettingsMaterial
+    material2: VSettingsMaterial
+    material3: VSettingsMaterial
+    material4: VSettingsMaterial
+    material5: VSettingsMaterial
+    material6: VSettingsMaterial
+    material7: VSettingsMaterial
+    material8: VSettingsMaterial
+    material9: VSettingsMaterial
+    ambientLightColor: Tuple[float,float,float,float]
+    backgroundColorReflections: Tuple[float,float,float,float]
+    enable: bool
+    globalFogColor: Tuple[float,float,float,float]
+    globalFogDensity: float
+    imageSizeFactor: int
+    keepWindowActive: bool
+    lightRadius: float
+    lightRadiusVariations: int
+    maxReflectionDepth: int
+    maxTransparencyDepth: int
+    numberOfThreads: int
+    searchTreeFactor: int
+    tilesPerThread: int
+    verbose: bool
+    zBiasLines: float
+    zOffsetCamera: float
+
 #information for VSettingsOpenGL
 class VSettingsOpenGL:
+    clippingPlaneColor: Tuple[float,float,float,float]
     clippingPlaneDistance: float
     clippingPlaneNormal: Tuple[float,float,float]
+    depthSorting: bool
     drawFaceNormals: bool
     drawNormalsLength: float
     drawVertexNormals: bool
@@ -392,6 +441,7 @@ class VSettingsOpenGL:
     enableLighting: bool
     faceEdgesColor: Tuple[float,float,float,float]
     facesTransparent: bool
+    faceTransparencyGlobal: float
     initialCenterPoint: Tuple[float,float,float]
     initialMaxSceneSize: float
     initialModelRotation: ArrayLike
@@ -413,6 +463,7 @@ class VSettingsOpenGL:
     lightModelAmbient: Tuple[float,float,float,float]
     lightModelLocalViewer: bool
     lightModelTwoSide: bool
+    lightPositionsInCameraFrame: bool
     lineSmooth: bool
     lineWidth: float
     materialAmbientAndDiffuse: Tuple[float,float,float,float]
@@ -470,6 +521,7 @@ class VSettingsInteractive:
     pauseWithSpacebar: bool
     selectionHighlights: bool
     selectionLeftMouse: bool
+    selectionLeftMouseItemTypes: int
     selectionRightMouse: bool
     selectionRightMouseGraphicsData: bool
     trackMarker: int
@@ -493,6 +545,7 @@ class VisualizationSettings:
     markers: VSettingsMarkers
     nodes: VSettingsNodes
     openGL: VSettingsOpenGL
+    raytracer: VSettingsRaytracer
     sensors: VSettingsSensors
     window: VSettingsWindow
 
@@ -514,6 +567,7 @@ class CSolverTimer:
     postNewton: float
     python: float
     reactionForces: float
+    realtimeIdleCPU: float
     @overload
     def Reset(useSolverTimer) -> None: ...
     @overload

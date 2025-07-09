@@ -76,6 +76,8 @@ public:
     ResizableArray<Index> listOfLoadsNoUF;				//!< list of loads without user functions (can be processes multithreaded)
 	ResizableArray<Index> listOfLoadsUF;				//!< list of loads WITH user functions (must be processed serially)
 
+	ResizableArray<Index> listOfMarkersPostNewton;		//!< list of markers with PostNewtonFunction
+
 	ResizableArray<Index> objectsBodyWithAE;			//!< list of objects that are bodies and have AE
 	ResizableArray<Index> nodesODE2WithAE;				//!< list of nodes that have AE (Euler parameters)
 	ResizableArray<Index> objectsWithAlgebraicEquations;//!< list of objects that have algebraic equations (AE)
@@ -358,14 +360,34 @@ inline void CSystemData::ComputeMarkerODE2LTGarray(Index markerNumber, ArrayInde
 	CMarker* marker = GetCMarkers()[markerNumber];
 	if (marker->GetType() & Marker::Object) //was before::Object
 	{
-		Index objectNumber = marker->GetObjectNumber();
-		const CObject& object = *(GetCObjects()[objectNumber]);
-
-		//object2 can't be a connector, so must have nodes
-		for (Index j = 0; j < object.GetNumberOfNodes(); j++)
+		for (Index iLocal = 0; iLocal < marker->GetNumberOfObjects(); iLocal++)
 		{
-			const CNode* node = object.GetCNode(j);
-			//pout << "  node ODE2=" << node->GetNumberOfODE2Coordinates() << "\n";
+			Index objectNumber = marker->GetObjectNumber(iLocal);
+			const CObject& object = *(GetCObjects()[objectNumber]);
+
+			//object2 can't be a connector, so must have nodes
+			for (Index j = 0; j < object.GetNumberOfNodes(); j++)
+			{
+				const CNode* node = object.GetCNode(j);
+				//pout << "  node ODE2=" << node->GetNumberOfODE2Coordinates() << "\n";
+				if (node->GetNumberOfODE2Coordinates())
+				{
+					Index gIndex = node->GetGlobalODE2CoordinateIndex();
+					for (Index i = 0; i < node->GetNumberOfODE2Coordinates(); i++)
+					{
+						ltgListODE2.Append(gIndex + i);
+					}
+				}
+			}
+		}
+	}
+	if (marker->GetType() & Marker::Node) //marker can be object + node ==> sliding joint / MarkerBodiesRelative...Coordinate
+	{
+		Index nodeNumber = marker->GetNodeNumber();
+		if (nodeNumber != EXUstd::InvalidIndex) //node number can be invalid
+		{
+			CNode* node = GetCNodes()[nodeNumber];
+
 			if (node->GetNumberOfODE2Coordinates())
 			{
 				Index gIndex = node->GetGlobalODE2CoordinateIndex();
@@ -373,20 +395,6 @@ inline void CSystemData::ComputeMarkerODE2LTGarray(Index markerNumber, ArrayInde
 				{
 					ltgListODE2.Append(gIndex + i);
 				}
-			}
-		}
-	}
-	if (marker->GetType() & Marker::Node) //marker can be object + node ==> sliding joing
-	{
-		Index nodeNumber = marker->GetNodeNumber();
-		CNode* node = GetCNodes()[nodeNumber];
-
-		if (node->GetNumberOfODE2Coordinates())
-		{
-			Index gIndex = node->GetGlobalODE2CoordinateIndex();
-			for (Index i = 0; i < node->GetNumberOfODE2Coordinates(); i++)
-			{
-				ltgListODE2.Append(gIndex + i);
 			}
 		}
 	}
@@ -401,18 +409,55 @@ inline void CSystemData::ComputeMarkerODE2LTGarray(Index markerNumber, ArrayInde
 inline void CSystemData::ComputeMarkerODE1DataLTGarray(Index markerNumber, ArrayIndex& ltgListODE1, ArrayIndex& ltgListData, bool resetFlag) const
 {
 	CMarker* marker = GetCMarkers()[markerNumber];
-	if (marker->GetType() & Marker::Object) //was before::Object
+	if (marker->GetType() & Marker::Object) 
 	{
-		Index objectNumber = marker->GetObjectNumber();
-		const CObject& object = *(GetCObjects()[objectNumber]);
-
-		//pout << "  nNodes=" << object.GetNumberOfNodes() << "\n";
-
-		//object2 can't be a connector, so must have nodes
-		for (Index j = 0; j < object.GetNumberOfNodes(); j++)
+		for (Index iLocal = 0; iLocal < marker->GetNumberOfObjects(); iLocal++)
 		{
-			const CNode* node = object.GetCNode(j);
-			//pout << "  node ODE2=" << node->GetNumberOfODE2Coordinates() << "\n";
+			Index objectNumber = marker->GetObjectNumber(iLocal);
+			const CObject& object = *(GetCObjects()[objectNumber]);
+
+			//pout << "  nNodes=" << object.GetNumberOfNodes() << "\n";
+
+			//object2 can't be a connector, so must have nodes
+			for (Index j = 0; j < object.GetNumberOfNodes(); j++)
+			{
+				const CNode* node = object.GetCNode(j);
+				//pout << "  node ODE2=" << node->GetNumberOfODE2Coordinates() << "\n";
+				if (node->GetNumberOfODE1Coordinates())
+				{
+					Index gIndex = node->GetGlobalODE1CoordinateIndex();
+					for (Index i = 0; i < node->GetNumberOfODE1Coordinates(); i++)
+					{
+						ltgListODE1.Append(gIndex + i);
+					}
+				}
+				//exclude AE-coordinates, because markers should not act on algebraic coordinates (e.g. rigid body nodes with Euler parameters)
+				//if (node->GetNumberOfAECoordinates())
+				//{
+				//	Index gIndex = node->GetGlobalAECoordinateIndex();
+				//	for (Index i = 0; i < node->GetNumberOfAECoordinates(); i++)
+				//	{
+				//		ltgListAE.Append(gIndex + i);
+				//	}
+				//}
+				if (node->GetNumberOfDataCoordinates())
+				{
+					Index gIndex = node->GetGlobalDataCoordinateIndex();
+					for (Index i = 0; i < node->GetNumberOfDataCoordinates(); i++)
+					{
+						ltgListData.Append(gIndex + i);
+					}
+				}
+			}
+		}
+	}
+	if (marker->GetType() & Marker::Node) //marker can be object + node ==> sliding joing
+	{
+		Index nodeNumber = marker->GetNodeNumber();
+		if (nodeNumber != EXUstd::InvalidIndex)
+		{
+			CNode* node = GetCNodes()[nodeNumber];
+
 			if (node->GetNumberOfODE1Coordinates())
 			{
 				Index gIndex = node->GetGlobalODE1CoordinateIndex();
@@ -437,37 +482,6 @@ inline void CSystemData::ComputeMarkerODE1DataLTGarray(Index markerNumber, Array
 				{
 					ltgListData.Append(gIndex + i);
 				}
-			}
-		}
-	}
-	if (marker->GetType() & Marker::Node) //marker can be object + node ==> sliding joing
-	{
-		Index nodeNumber = marker->GetNodeNumber();
-		CNode* node = GetCNodes()[nodeNumber];
-
-		if (node->GetNumberOfODE1Coordinates())
-		{
-			Index gIndex = node->GetGlobalODE1CoordinateIndex();
-			for (Index i = 0; i < node->GetNumberOfODE1Coordinates(); i++)
-			{
-				ltgListODE1.Append(gIndex + i);
-			}
-		}
-		//exclude AE-coordinates, because markers should not act on algebraic coordinates (e.g. rigid body nodes with Euler parameters)
-		//if (node->GetNumberOfAECoordinates())
-		//{
-		//	Index gIndex = node->GetGlobalAECoordinateIndex();
-		//	for (Index i = 0; i < node->GetNumberOfAECoordinates(); i++)
-		//	{
-		//		ltgListAE.Append(gIndex + i);
-		//	}
-		//}
-		if (node->GetNumberOfDataCoordinates())
-		{
-			Index gIndex = node->GetGlobalDataCoordinateIndex();
-			for (Index i = 0; i < node->GetNumberOfDataCoordinates(); i++)
-			{
-				ltgListData.Append(gIndex + i);
 			}
 		}
 	}

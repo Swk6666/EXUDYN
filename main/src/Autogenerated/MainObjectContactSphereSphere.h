@@ -4,7 +4,7 @@
 *
 * @author       Gerstmayr Johannes, Weyrer Sebastian
 * @date         2019-07-01 (generated)
-* @date         2025-02-04  16:36:00 (last modified)
+* @date         2025-05-16  16:00:57 (last modified)
 *
 * @copyright    This file is part of Exudyn. Exudyn is free software: you can redistribute it and/or modify it under the terms of the Exudyn license. See "LICENSE.txt" for more details.
 * @note         Bug reports, support and further information:
@@ -38,7 +38,7 @@ public: // AUTO:
 
 /** ***********************************************************************************************
 * @class        MainObjectContactSphereSphere
-* @brief        [UNDER CONSTRUCTION] A simple contact connector between two spheres. The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
+* @brief        A simple contact connector between two spheres, using various contact models and the option for contact of sphere inside hollow sphere (marker1). The connector implements at least the same functionality as in GeneralContact and is intended for simple setups and for testing, while GeneralContact is much more efficient due to parallelization approaches and efficient contact search.
 *
 * @author       Gerstmayr Johannes, Weyrer Sebastian
 * @date         2019-07-01 (generated)
@@ -117,6 +117,7 @@ public: // AUTO:
         cObjectContactSphereSphere->GetParameters().markerNumbers = EPyUtils::GetArrayMarkerIndexSafely(d["markerNumbers"]); /* AUTO:  read out dictionary and cast to C++ type*/
         cObjectContactSphereSphere->GetParameters().nodeNumber = EPyUtils::GetNodeIndexSafely(d["nodeNumber"]); /* AUTO:  read out dictionary and cast to C++ type*/
         EPyUtils::SetSlimVectorTemplateSafely<Real, 2>(d, "spheresRadii", cObjectContactSphereSphere->GetParameters().spheresRadii); /*! AUTO:  safely cast to C++ type*/
+        if (EPyUtils::DictItemExists(d, "isHollowSphere1")) { cObjectContactSphereSphere->GetParameters().isHollowSphere1 = py::cast<bool>(d["isHollowSphere1"]); /* AUTO:  read out dictionary and cast to C++ type*/} 
         if (EPyUtils::DictItemExists(d, "dynamicFriction")) { cObjectContactSphereSphere->GetParameters().dynamicFriction = py::cast<Real>(d["dynamicFriction"]); /* AUTO:  read out dictionary and cast to C++ type*/} 
         if (EPyUtils::DictItemExists(d, "frictionProportionalZone")) { cObjectContactSphereSphere->GetParameters().frictionProportionalZone = py::cast<Real>(d["frictionProportionalZone"]); /* AUTO:  read out dictionary and cast to C++ type*/} 
         cObjectContactSphereSphere->GetParameters().contactStiffness = py::cast<Real>(d["contactStiffness"]); /* AUTO:  read out dictionary and cast to C++ type*/
@@ -144,6 +145,7 @@ public: // AUTO:
         d["markerNumbers"] = EPyUtils::GetArrayMarkerIndex(cObjectContactSphereSphere->GetParameters().markerNumbers); //! AUTO: cast variables into python (not needed for standard types) 
         d["nodeNumber"] = (NodeIndex)cObjectContactSphereSphere->GetParameters().nodeNumber; //! AUTO: cast variables into python (not needed for standard types) 
         d["spheresRadii"] = EPyUtils::SlimVector2NumPy(cObjectContactSphereSphere->GetParameters().spheresRadii); //! AUTO: cast variables into python (not needed for standard types) 
+        d["isHollowSphere1"] = (bool)cObjectContactSphereSphere->GetParameters().isHollowSphere1; //! AUTO: cast variables into python (not needed for standard types) 
         d["dynamicFriction"] = (Real)cObjectContactSphereSphere->GetParameters().dynamicFriction; //! AUTO: cast variables into python (not needed for standard types) 
         d["frictionProportionalZone"] = (Real)cObjectContactSphereSphere->GetParameters().frictionProportionalZone; //! AUTO: cast variables into python (not needed for standard types) 
         d["contactStiffness"] = (Real)cObjectContactSphereSphere->GetParameters().contactStiffness; //! AUTO: cast variables into python (not needed for standard types) 
@@ -170,6 +172,7 @@ public: // AUTO:
         else if (parameterName.compare("markerNumbers") == 0) { return py::cast(EPyUtils::GetArrayMarkerIndex(cObjectContactSphereSphere->GetParameters().markerNumbers));} //! AUTO: get parameter
         else if (parameterName.compare("nodeNumber") == 0) { return py::cast((NodeIndex)cObjectContactSphereSphere->GetParameters().nodeNumber);} //! AUTO: get parameter
         else if (parameterName.compare("spheresRadii") == 0) { return EPyUtils::SlimVector2NumPy(cObjectContactSphereSphere->GetParameters().spheresRadii);} //! AUTO: get parameter
+        else if (parameterName.compare("isHollowSphere1") == 0) { return py::cast((bool)cObjectContactSphereSphere->GetParameters().isHollowSphere1);} //! AUTO: get parameter
         else if (parameterName.compare("dynamicFriction") == 0) { return py::cast((Real)cObjectContactSphereSphere->GetParameters().dynamicFriction);} //! AUTO: get parameter
         else if (parameterName.compare("frictionProportionalZone") == 0) { return py::cast((Real)cObjectContactSphereSphere->GetParameters().frictionProportionalZone);} //! AUTO: get parameter
         else if (parameterName.compare("contactStiffness") == 0) { return py::cast((Real)cObjectContactSphereSphere->GetParameters().contactStiffness);} //! AUTO: get parameter
@@ -197,6 +200,7 @@ public: // AUTO:
         else if (parameterName.compare("markerNumbers") == 0) { cObjectContactSphereSphere->GetParameters().markerNumbers = EPyUtils::GetArrayMarkerIndexSafely(value); /* AUTO:  read out dictionary, check if correct index used and store (converted) Index to C++ type*/; } //! AUTO: get parameter
         else if (parameterName.compare("nodeNumber") == 0) { cObjectContactSphereSphere->GetParameters().nodeNumber = EPyUtils::GetNodeIndexSafely(value); /* AUTO:  read out dictionary, check if correct index used and store (converted) Index to C++ type*/; } //! AUTO: get parameter
         else if (parameterName.compare("spheresRadii") == 0) { EPyUtils::SetSlimVectorTemplateSafely<Real, 2>(value, cObjectContactSphereSphere->GetParameters().spheresRadii); /*! AUTO:  safely cast to C++ type*/; } //! AUTO: get parameter
+        else if (parameterName.compare("isHollowSphere1") == 0) { cObjectContactSphereSphere->GetParameters().isHollowSphere1 = py::cast<bool>(value); /* AUTO:  read out dictionary and cast to C++ type*/; } //! AUTO: get parameter
         else if (parameterName.compare("dynamicFriction") == 0) { cObjectContactSphereSphere->GetParameters().dynamicFriction = py::cast<Real>(value); /* AUTO:  read out dictionary and cast to C++ type*/; } //! AUTO: get parameter
         else if (parameterName.compare("frictionProportionalZone") == 0) { cObjectContactSphereSphere->GetParameters().frictionProportionalZone = py::cast<Real>(value); /* AUTO:  read out dictionary and cast to C++ type*/; } //! AUTO: get parameter
         else if (parameterName.compare("contactStiffness") == 0) { cObjectContactSphereSphere->GetParameters().contactStiffness = py::cast<Real>(value); /* AUTO:  read out dictionary and cast to C++ type*/; } //! AUTO: get parameter

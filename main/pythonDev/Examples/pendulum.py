@@ -66,7 +66,7 @@ mbs.AddLoad({'loadType': 'ForceVector',  'markerNumber': nBodies-1,  'loadVector
 print(mbs)
 
 mbs.Assemble()
-exu.StartRenderer()
+SC.renderer.Start()
 
 #time.sleep(10)
 
@@ -95,10 +95,10 @@ if computeDynamic:
     #mbs.visualizationSettings.connectors.showNumbers = True
     SC.visualizationSettings.nodes.defaultSize = 0.05
 
-    exu.InfoStat()
+    exu.special.InfoStat() #check if excessive memory allocation occurs
     mbs.SolveDynamic(simulationSettings, 
                      solverType=exu.DynamicSolverType.TrapezoidalIndex2)
-    exu.InfoStat()
+    exu.special.InfoStat()
 
 else:
     simulationSettings.solutionSettings.coordinatesSolutionFileName = "staticSolution.txt"
@@ -118,6 +118,6 @@ else:
 
 #time.sleep(0.5)
 
-SC.WaitForRenderEngineStopFlag()
-exu.StopRenderer() #safely close rendering window!
+SC.renderer.DoIdleTasks()
+SC.renderer.Stop() #safely close rendering window!
 

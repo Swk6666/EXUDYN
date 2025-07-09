@@ -54,9 +54,9 @@ def GraphicsDataTest(mbs, testInterface):
     mbs.Assemble()
 
     if testInterface.useGraphics: 
-        testInterface.testinterface.exu.StartRenderer()
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.testinterface.SC.renderer.Start()
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
     return 0 #this test only fails (crashes) but does not give an error value
 
@@ -129,7 +129,7 @@ def ANCFCable2DBendingTest(mbs, testInterface):
     simulationSettings.displayStatistics = True
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     mbs.SolveDynamic(simulationSettings)
 
@@ -168,8 +168,8 @@ def ANCFCable2DBendingTest(mbs, testInterface):
     #totalError -= -1.3563894893270607-2.4850981133313548 #reference solution with one element and standard settings except: gen-alpha=0.6, useModifiedNewton = False
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
     return totalError
 
@@ -229,7 +229,7 @@ def SpringDamperMesh(mbs, testInterface):
     mbs.Assemble()
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     simulationSettings = testInterface.exu.SimulationSettings()
     simulationSettings.timeIntegration.numberOfSteps = 100
@@ -245,12 +245,12 @@ def SpringDamperMesh(mbs, testInterface):
     testInterface.SC.visualizationSettings.nodes.defaultSize = 0.05
 
 #    if testInterface.useGraphics: 
-#        testInterface.SC.WaitForRenderEngineStopFlag()
+#        testInterface.SC.renderer.DoIdleTasks()
 
     mbs.SolveDynamic(simulationSettings)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
+        testInterface.SC.renderer.DoIdleTasks()
 
     u = mbs.GetNodeOutput(nBodies-2, testInterface.exu.OutputVariableType.Position) #tip node
     testInterface.exu.Print('dynamic tip displacement (y)=', u[1])
@@ -280,8 +280,8 @@ def SpringDamperMesh(mbs, testInterface):
     totalError = abs(staticError) + abs(dynamicError)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() 
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() 
 
     return totalError
 
@@ -321,7 +321,7 @@ def MathematicalPendulumTest(mbs, testInterface):
     #testInterface.exu.Print(mbs)
     mbs.Assemble()
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     simulationSettings = testInterface.exu.SimulationSettings()
 
@@ -340,8 +340,8 @@ def MathematicalPendulumTest(mbs, testInterface):
 
     mbs.SolveDynamic(simulationSettings)
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
     u1 = mbs.GetNodeOutput(nodeList[0], testInterface.exu.OutputVariableType.Position) #tip node
     testInterface.exu.Print('solution mathematicalPendulum Constraint=',u1[1])
@@ -410,13 +410,13 @@ def RigidPendulumTest(mbs, testInterface):
     simulationSettings.timeIntegration.generalizedAlpha.spectralRadius = 0.5
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     mbs.SolveDynamic(simulationSettings)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
 
     u = mbs.GetNodeOutput(nRigid, testInterface.exu.OutputVariableType.Position) #tip node
@@ -518,7 +518,7 @@ def SliderCrank2DTest(mbs, testInterface):
     simulationSettings.displayStatistics = False
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     #solve generalized alpha / index3:
     mbs.SolveDynamic(simulationSettings)
@@ -543,8 +543,8 @@ def SliderCrank2DTest(mbs, testInterface):
     testInterface.exu.Print('error errorSliderCrankIndex2=',errorSliderCrankIndex2)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
 
     return abs(errorSliderCrankIndex3)+abs(errorSliderCrankIndex2)
@@ -678,7 +678,7 @@ def SlidingJoint2DTest(mbs, testInterface):
     simulationSettings.displayStatistics = False
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     mbs.SolveDynamic(simulationSettings)
 
@@ -698,8 +698,8 @@ def SlidingJoint2DTest(mbs, testInterface):
         #testInterface.exu.Print('error SlidingJoint2DTest=',error)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
     return abs(error)
 
@@ -811,13 +811,13 @@ def CoordinateSpringDamperTest(mbs, testInterface):
     simulationSettings.solutionSettings.writeSolutionToFile=False
 
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
     
     mbs.SolveDynamic(simulationSettings)
     
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
     
     u = mbs.GetNodeOutput(n1, testInterface.exu.OutputVariableType.Position)
     uCoordinateSpringDamper= u[0] - L
@@ -901,13 +901,13 @@ def SwitchingConstraintsTest(mbs, testInterface):
 
     #testInterface.useGraphics = True
     if testInterface.useGraphics: 
-        testInterface.exu.StartRenderer()
+        testInterface.SC.renderer.Start()
 
     mbs.SolveDynamic(simulationSettings)
 
     if testInterface.useGraphics: 
-        testInterface.SC.WaitForRenderEngineStopFlag()
-        testInterface.exu.StopRenderer() #safely close rendering window!
+        testInterface.SC.renderer.DoIdleTasks()
+        testInterface.SC.renderer.Stop() #safely close rendering window!
 
     u = mbs.systemData.GetODE2Coordinates()
     testInterface.exu.Print('u =',u)

@@ -98,18 +98,16 @@
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //MULTITHREADED computation using ngsolve taskmanager; thanks to Joachim Schöberl
-#if !defined(__APPLE__) //currently simd makes problems on different Apple platforms - needs sse2neon.h
-#define USE_NGSOLVE_TASKMANAGER //!< for multithreaded computation
-#endif
+//DELETE:
+//removed 2025-06-18:
+//#if !defined(__APPLE__) //currently simd makes problems on different Apple platforms - needs sse2neon.h
+//#define USE_NGSOLVE_TASKMANAGER //!< for multithreaded computation
+//#endif
 
 #define USE_RESIZABLE_VECTOR_PARALLEL //activating this flag, will replace some vectors in solver with parallelized vector for improved parallel performance
 
-//#define USE_MICROTHREADING //if this is defined, use MicroThreading instead of NGsolve taskmanager
-#ifdef USE_MICROTHREADING
-#define	ResizableVectorParallelThreadingLimit 10000
-#else
-#define	ResizableVectorParallelThreadingLimit 100000 //for ngsolve
-#endif
+#define	ResizableVectorParallelThreadingLimit 20000 //in between microthreading and ngsolve; would also depend on load balancing
+//#define	ResizableVectorParallelThreadingLimit 100000 //old value used for for ngsolve taskmanager
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -211,16 +209,19 @@ namespace EXUstd {
 	const Real pi = 3.14159265358979323846; //as cmath does not work properly (#define _USE_MATH_DEFINES must be included everywhere), pi is defined here
 	const float pi_f = (float)pi;
 	const Index InvalidIndex = -1; //!< invalid index used e.g. in GetIndexOfItem, etc.
-	const float _MINFLOAT = -1e38f; //!< largest negative value to be on the safe side; @TODO use std lib constants instead
-	const float _MAXFLOAT =  1e38f; //!< largest positive value to be on the safe side
+	//const float _MINFLOAT = -1e38f; //!< largest negative value to be on the safe side; @TODO use std lib constants instead
+	//const float _MAXFLOAT =  1e38f; //!< largest positive value to be on the safe side
+
+	const float _MINFLOAT = std::numeric_limits<float>::lowest(); //!< largest negative value to be on the safe side; @TODO use std lib constants instead
+	const float _MAXFLOAT = std::numeric_limits<float>::max(); //!< largest positive value to be on the safe side
 
 	constexpr Index dim3D = 3; //!< this shall make changes to other dimensionalities easier; avoid using 3 in code
 	constexpr Index dim2D = 2; //!< this shall make changes to other dimensionalities easier; avoid using 2 in code
 
-	//not tested if works with MAC or linux
 	constexpr double LOWESTREAL = std::numeric_limits<Real>::lowest(); //lowest (neg) Real number
+	constexpr double EPSILONREAL = std::numeric_limits<Real>::epsilon();  //smallest (pos) Real number relative to one
 	constexpr double MAXREAL = std::numeric_limits<Real>::max();  //highest (pos) Real number
-	constexpr Index MAXINDEX = std::numeric_limits<int>::max();  //highest (pos) Real number
+	constexpr Index MAXINDEX = std::numeric_limits<int>::max();   //highest (pos) Real number
 
 	//empty class for default initialization, cannot be converted from e.g. Real, Index, etc.
 	class Dummy

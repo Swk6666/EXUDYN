@@ -177,13 +177,13 @@ simulationSettings.solutionSettings.solutionInformation = "ANCF cable with impos
 
 solveDynamic = True
 if solveDynamic: 
-    exu.StartRenderer()
-    mbs.WaitForUserToContinue()
+    SC.renderer.Start()
+    SC.renderer.DoIdleTasks()
 
     mbs.SolveDynamic(simulationSettings)
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
 else:
     simulationSettings.staticSolver.newton.numericalDifferentiation.relativeEpsilon = 1e-10*100 #can be quite small; WHY?
@@ -203,7 +203,7 @@ else:
     simulationSettings.staticSolver.pauseAfterEachStep = False
     simulationSettings.staticSolver.stabilizerODE2term = 100
 
-    exu.StartRenderer()
+    SC.renderer.Start()
 
     mbs.SolveStatic(simulationSettings)
 
@@ -211,10 +211,9 @@ else:
     #n = len(sol)
     #print('tip displacement: x='+str(sol[n-4])+', y='+str(sol[n-3])) 
 
-    SC.WaitForRenderEngineStopFlag()
-    exu.StopRenderer() #safely close rendering window!
+    SC.renderer.DoIdleTasks()
+    SC.renderer.Stop() #safely close rendering window!
 
-# exu.InfoStat();
 
 
 

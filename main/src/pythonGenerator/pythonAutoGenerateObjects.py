@@ -10,7 +10,7 @@ currently: automatic generate structures with ostream and initialization
 
 from autoGenerateHelper import GenerateLatexStrKeywordExamples, ExtractExamplesWithKeyword, RemoveSpacesTabs, CountLines, \
     TypeConversion, GenerateHeader, SplitString, Str2Latex, DefaultValue2Python, Str2Doxygen, GetDateStr, GetTypesStringLatex, \
-    PyLatexRST, LatexString2RST, RSTheaderString, RSTlabelString, FileNameLower, RemoveIndentation
+    PyLatexRST, LatexString2RST, RSTheaderString, RSTlabelString, FileNameLower, RemoveIndentation, CutLinesFromString
 
 import copy
 import os
@@ -145,7 +145,7 @@ def IsAArrayIndex(parameterType):
         (parameterType == 'NodeIndex2') or
         (parameterType == 'NodeIndex3') or
         (parameterType == 'NodeIndex4') or
-        (parameterType == 'ArrayObjectIndex') or #unused
+        (parameterType == 'ArrayObjectIndex') or
         (parameterType == 'ArrayMarkerIndex') or
         (parameterType == 'ArrayLoadIndex') or   #unused
         (parameterType == 'ArraySensorIndex')
@@ -233,6 +233,7 @@ def IsItemIndex(parameterType):
         (parameterType == 'NodeIndex2') or
         (parameterType == 'NodeIndex3') or
         (parameterType == 'ArrayNodeIndex') or
+        (parameterType == 'ArrayObjectIndex') or
         (parameterType == 'ArrayMarkerIndex') or
         (parameterType == 'ArraySensorIndex')
         ):
@@ -1135,6 +1136,8 @@ def WriteFile(parseInfo, parameterList, typeConversion):
                         parRead = 'EPyUtils::GetArrayNodeIndex(' + destStr + ')'
                     elif (typeCastStr == 'ArrayMarkerIndex'):
                         parRead = 'EPyUtils::GetArrayMarkerIndex(' + destStr + ')'
+                    elif (typeCastStr == 'ArrayObjectIndex'):
+                        parRead = 'EPyUtils::GetArrayObjectIndex(' + destStr + ')'
                     elif (typeCastStr == 'ArraySensorIndex'):
                         parRead = 'EPyUtils::GetArraySensorIndex(' + destStr + ')'
                     elif (typeCastStr == 'NodeIndex2') or (typeCastStr == 'NodeIndex3') or (typeCastStr == 'NodeIndex4'):
@@ -1431,13 +1434,6 @@ def CreatePybindHeaders(parseInfo, parameterList, typeConversion):
 
     return s
 
-#cut the first 'numberOfCutLines' lines in a string (in order to ignore the header date in comparison of files)
-def CutString(theString, numberOfCutLines):
-    pos = 0
-    for i in range(numberOfCutLines):
-        pos = theString.find('\n', pos) + 1
-
-    return theString[pos:]
 
 #%%************************************************
 #helper functions for symbolic user functions:
@@ -1728,7 +1724,7 @@ try: #still close file if crashes
     #types such as UReal shall be used lateron to perform e.g. range checks prior to setting parameters
     typeConversion = {'Bool':'bool', 'Int':'int', 'Real':'Real', 'UInt':'Index', 'UReal':'Real', 'PInt':'Index', 'PReal':'Real', 
                       'NodeIndex':'Index', 'ObjectIndex':'Index', 'MarkerIndex':'Index', 'LoadIndex':'Index', 'SensorIndex':'Index', #in C++, all indices are the same!!!
-                      'NodeIndex2':'Index2', 'NodeIndex3':'Index3', 'NodeIndex4':'Index4', 'ArrayNodeIndex':'ArrayIndex', 'ArrayMarkerIndex':'ArrayIndex', 'ArraySensorIndex':'ArrayIndex', #in C++, all index lists are the same!!!
+                      'NodeIndex2':'Index2', 'NodeIndex3':'Index3', 'NodeIndex4':'Index4', 'ArrayNodeIndex':'ArrayIndex', 'ArrayObjectIndex':'ArrayIndex', 'ArrayMarkerIndex':'ArrayIndex', 'ArraySensorIndex':'ArrayIndex', #in C++, all index lists are the same!!!
                       'Vector':'Vector', 'Matrix':'Matrix', 'SymmetricMatrix':'Vector', 
                       'NumpyVector':'Vector', 
                       'NumpyMatrix':'Matrix', 
@@ -1996,7 +1992,7 @@ try: #still close file if crashes
                                 if os.path.isfile(fileName):
                                     file=open(fileName,'r'); fileText = file.read();file.close()
                                     
-                                if (CutString(fileText,nLinesHeader) != CutString(fileStr[0],nLinesHeader)):
+                                if (CutLinesFromString(fileText,nLinesHeader) != CutLinesFromString(fileStr[0],nLinesHeader)):
                                     #write computational 'C' class
                                     file=open(fileName,strFileMode) 
                                     file.write(fileStr[0])
@@ -2007,7 +2003,7 @@ try: #still close file if crashes
                                 fileText = 'INVALID'
                                 if os.path.isfile(fileName):
                                     file=open(fileName,'r'); fileText = file.read();file.close()
-                                if (CutString(fileText,nLinesHeader) != CutString(fileStr[1],nLinesHeader)):
+                                if (CutLinesFromString(fileText,nLinesHeader) != CutLinesFromString(fileStr[1],nLinesHeader)):
                                     #write Main class
                                     file=open(fileName,strFileMode) 
                                     file.write(fileStr[1])
@@ -2018,7 +2014,7 @@ try: #still close file if crashes
                                 fileText = 'INVALID'
                                 if os.path.isfile(fileName):
                                     file=open(fileName,'r'); fileText = file.read();file.close()
-                                if (CutString(fileText,nLinesHeader) != CutString(fileStr[2],nLinesHeader)):
+                                if (CutLinesFromString(fileText,nLinesHeader) != CutLinesFromString(fileStr[2],nLinesHeader)):
                                     #write Visualization class
                                     file=open(fileName,strFileMode) 
                                     file.write(fileStr[2])

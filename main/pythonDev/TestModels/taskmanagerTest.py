@@ -161,8 +161,8 @@ for nMasses in [0, 1, 2, 4]:
                         
                         #start solver:
                         if useGraphics:
-                            exu.StartRenderer()
-                            mbs.WaitForUserToContinue()
+                            SC.renderer.Start()
+                            SC.renderer.DoIdleTasks()
                         
                         if caseStatic:
                             mbs.SolveStatic(simulationSettings)
@@ -178,7 +178,7 @@ for nMasses in [0, 1, 2, 4]:
                                                  solverType=solverType)
                         
                         if useGraphics:
-                            exu.StopRenderer()
+                            SC.renderer.Stop()
                         
                         #+++++++++++++++++++++++++++++++++++++
                         #evaluate results
