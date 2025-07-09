@@ -39,10 +39,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: uploaddata-wheels-manylinux-x86-cp3${{ matrix.python-version }}-cp3${{ matrix.python-version }}
-          path: ./main/dist/*manylinux2014_x86_64.whl
+          path: ./main/dist/*manylinux2014*x86_64.whl
 
       - name: Install built wheels for test suite
-        run: python -m pip install main/dist/*manylinux2014_x86_64.whl
+        run: python -m pip install main/dist/*manylinux2014*x86_64.whl
         shell: bash
 
       - name: Change directory and run test suite
