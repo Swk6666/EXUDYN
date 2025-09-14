@@ -1,0 +1,338 @@
+\begin{thebibliography}{10}
+
+\bibitem{Arnold2007}
+M.~Arnold and O.~Br{\"{u}}ls.
+\newblock {Convergence of the generalized-$\alpha$ scheme for constrained mechanical systems}.
+\newblock {\em Multibody System Dynamics}, 85:187--202, 2007.
+
+\bibitem{CraigBampton1968}
+M.~C.~C. Bampton and R.~R. {Craig Jr.}
+\newblock {Coupling of substructures for dynamic analyses}.
+\newblock {\em American Institute of Aeronautics and Astronautics Journal}, 6(7):1313--1319, 1968.
+
+\bibitem{Bauchau2011}
+O.~A. Bauchau.
+\newblock {\em {Flexible Multibody Dynamics}}.
+\newblock Springer New York, Philadelphia, 2011.
+
+\bibitem{berzeri2000}
+M.~Berzeri and A.~Shabana.
+\newblock Development of simple models for the elastic forces in the absolute nodal co-ordinate formulation.
+\newblock {\em Journal of Sound and Vibration}, 235(4):539--565, 2000.
+
+\bibitem{Bruels2011}
+O.~Br{\"{u}}ls, M.~Arnold, and A.~Cardona.
+\newblock {Two Lie group formulations for dynamic multibody systems with large rotations}.
+\newblock In {\em Proceedings of IDETC/MSNDC 2011, ASME 2011 International Design Engineering Technical Conferences}, Washington, USA, 2011.
+
+\bibitem{Carvalho2019}
+A.~S. Carvalho and J.~M. Martins.
+\newblock {Exact restitution and generalizations for the Hunt Crossley contact model}.
+\newblock {\em Mechanism and Machine Theory}, 139:174--194, 2019.
+
+\bibitem{Chiacchio1998}
+P.~Chiacchio and M.~Concilio.
+\newblock The dynamic manipulability ellipsoid for redundant manipulators.
+\newblock {\em Proceedings. 1998 IEEE International Conference on Robotics and Automation (Cat. No.98CH36146)}, 1:95--100 vol.1, 1998.
+
+\bibitem{Chung1993}
+J.~Chung and G.~M. Hulbert.
+\newblock {A Time Integration Algorithm for Structural Dynamics With Improved Numerical Dissipation: The Generalized-$\alpha$ Method}.
+\newblock {\em Journal of Applied Mechanics}, 60(2):371, 1993.
+
+\bibitem{Corke2013}
+P.~Corke.
+\newblock {\em Robotics, Vision and Control: Fundamental Algorithms in MATLAB}.
+\newblock Springer Publishing Company, Incorporated, 1st edition, 2013.
+
+\bibitem{CanudasDeWitEtAl1993}
+C.~C. de~Wit, H.~Olsson, K.~Astr{\"o}m, and P.~Lischinsky.
+\newblock Dynamic friction models and control design.
+\newblock In {\em 1993 American Control Conference}, pages 1920--1926, 1993.
+
+\bibitem{Eder2014}
+R.~Eder and J.~Gerstmayr.
+\newblock Special genetic identification algorithm with smoothing in the frequency domain.
+\newblock {\em Advances in Engineering Software}, 70:113--122, 2014.
+
+\bibitem{Featherstone2008}
+R.~Featherstone, editor.
+\newblock {\em Rigid Body Dynamics Algorithms}.
+\newblock Springer, 2008.
+
+\bibitem{Flores2008}
+P.~Flores, J.~Ambr{\'o}sio, J.~Pimenta~Claro, and H.~Lankarani.
+\newblock {\em Kinematics and Dynamics of Multibody Systems with Imperfect Joints}.
+\newblock Springer Berlin, 2008.
+
+\bibitem{NGsolve2022}
+P.~Gangl, K.~Sturm, M.~Neunteufel, and J.~Sch\"oberl.
+\newblock Fully and semi-automated shape differentiation in ngsolve, 2020.
+
+\bibitem{GazDeLuca2019}
+C.~{Gaz}, M.~{Cognetti}, A.~{Oliva}, P.~{Robuffo Giordano}, and A.~{De Luca}.
+\newblock Dynamic identification of the franka emika panda robot with retrieval of feasible parameters using penalty-based optimization.
+\newblock {\em IEEE Robotics and Automation Letters}, 4(4):4147--4154, 2019.
+
+\bibitem{GeradinCardona2001}
+M.~Geradin and A.~Cardona.
+\newblock {\em Flexible Multibody Dynamics}.
+\newblock John Wiley \& Sons, 2001.
+
+\bibitem{Gerstmayr2009}
+J.~Gerstmayr.
+\newblock {HOTINT -- A C++ Environment for the simulation of multibody dynamics systems and finite elements}.
+\newblock In K.~Arczewski, J.~Fraczek, and M.~Wojtyra, editors, {\em Proceedings of the Multibody Dynamics 2009 Eccomas Thematic Conference}, 2009.
+
+\bibitem{EXUDYNgit}
+J.~Gerstmayr.
+\newblock {Exudyn github repository}.
+\newblock \url{https://github.com/jgerstmayr/EXUDYN} (accessed on March 8, 2023), 2023.
+
+\bibitem{Exudyn2023}
+J.~Gerstmayr.
+\newblock Exudyn -- a {C}++-based {P}ython package for flexible multibody systems.
+\newblock {\em Multibody System Dynamics}, 60:533--561, 2024.
+
+\bibitem{GerstmayrEtAl2013}
+J.~Gerstmayr, A.~Dorninger, R.~Eder, P.~Gruber, D.~Reischl, M.~Saxinger, M.~Sch{\"o}rgenhumer, A.~Humer, K.~Nachbagauer, A.~Pechstein, and Y.~Vetyukov.
+\newblock {HOTINT: A Script Language Based Framework for the Simulation of Multibody Dynamics Systems}.
+\newblock In {\em 9th International Conference on Multibody Systems, Nonlinear Dynamics, and Control, International Design Engineering Technical Conferences and Computers and Information in Engineering Conference (ASME IDETC 2013)}, 2013.
+
+\bibitem{HolzingerGerstmayr2020}
+J.~Gerstmayr and S.~Holzinger.
+\newblock {Explicit time integration of multibody systems modelled with three rotation parameters}.
+\newblock In {\em International Conference on Multibody Systems, Nonlinear Dynamics, and Control, International Design Engineering Technical Conferences and Computers and Information in Engineering Conference (ASME IDETC 2020)}, 2020.
+
+\bibitem{GerstmayrIrschik2008}
+J.~Gerstmayr and H.~Irschik.
+\newblock {On the correct representation of bending and axial deformation in the absolute nodal coordinate formulation with an elastic line approach}.
+\newblock {\em Journal of Sound and Vibration}, 318(3):461--487, 2008.
+
+\bibitem{ExudynNaturalLanguage2024}
+J.~Gerstmayr, P.~Manzl, and M.~Pieber.
+\newblock Multibody models generated from natural language.
+\newblock {\em Multibody System Dynamics}, 62:249--271, 2024.
+
+\bibitem{GerstmayrStangl2004}
+J.~Gerstmayr and M.~Stangl.
+\newblock {High-Order Implicit Runge-Kutta Methods for Discontinuous Multibody Systems}.
+\newblock In D.~A. Indeitsev, editor, {\em Proceedings of the {\{}XXXII{\}} Summer School on Advanced Problems in Mechanics ({\{}APM{\}} 2004)}, 2004.
+
+\bibitem{Gfrerrer2008}
+A.~Gfrerrer.
+\newblock Geometry and kinematics of the mecanum wheel.
+\newblock {\em Computer Aided Geometric Design}, 25(9):784--791, 2008.
+
+\bibitem{Goldberg1989}
+D.~Goldberg.
+\newblock {\em Genetic Algorithms in Search, Optimization and Machine Learning}.
+\newblock Addison-Wesley, Reading, MA., 1989.
+
+\bibitem{Gonthier2004}
+Y.~Gonthier, J.~McPhee, C.~Lange, and J.-C. Piedb{\oe}uf.
+\newblock {A Regularized Contact Model with Asymmetric Damping and Dwell Time Dependent Friction}.
+\newblock {\em Multibody System Dynamics}, 11(3):209--233, 2004.
+
+\bibitem{Hairer1987}
+E.~Hairer, S.~P. N{\o}rsett, and G.~Wanner.
+\newblock {\em Solving ordinary differential equations {I}, nonstiff problems}.
+\newblock Springer Berlin Heidelberg, 1987.
+
+\bibitem{HeirmanDesmet2010}
+G.~H. Heirman and W.~Desmet.
+\newblock Interface reduction of flexible bodies for efficient modeling of body flexibility in multibody dynamics.
+\newblock {\em Multibody system dynamics}, 24:219--234, 2010.
+
+\bibitem{Henderson1977}
+D.~Henderson.
+\newblock {Euler angles, quaternions, and transformation matrices for space shuttle analysis}.
+\newblock Technical report, NASA, 1977.
+
+\bibitem{HolzingerArnoldGerst2023}
+S.~Holzinger, M.~Arnold, and J.~Gerstmayr.
+\newblock Evaluation and implementation of {Lie} group integration methods for rigid multibody systems.
+\newblock preprint, Research Square, \url{https://www.researchsquare.com/article/rs-2715112/v1}, 2023.
+
+\bibitem{Holzinger2021}
+S.~Holzinger and J.~Gerstmayr.
+\newblock Time integration of rigid bodies modelled with three rotation parameters.
+\newblock {\em Multibody System Dynamics}, 53(4):345--378, 2021.
+
+\bibitem{HolzingerSchieferle2022}
+S.~Holzinger, M.~Schieferle, C.~Gutmann, M.~Hofer, and J.~Gerstmayr.
+\newblock {Modeling and Parameter Identification for a Flexible Rotor With Impacts}.
+\newblock {\em Journal of Computational and Nonlinear Dynamics}, 17(5), 2022.
+\newblock 051008.
+
+\bibitem{HolzingerSchoeberl2020}
+S.~Holzinger, J.~Sch{\"{o}}berl, and J.~Gerstmayr.
+\newblock {The equations of motion for a rigid body using non-redundant unified local velocity coordinates}.
+\newblock {\em Multibody System Dynamics}, 48(3):283--309, 2020.
+
+\bibitem{Hunt1975}
+K.~H. Hunt and F.~R.~E. Crossley.
+\newblock {Coefficient of Restitution Interpreted as Damping in Vibroimpact}.
+\newblock {\em Journal of Applied Mechanics}, 42(2):440--445, 06 1975.
+
+\bibitem{Hurty1965}
+W.~C. Hurty.
+\newblock {Dynamic analysis of structural systems using component modes}.
+\newblock {\em American Institute of Aeronautics and Astronautics Journal}, 4(3):678--685, 1965.
+
+\bibitem{pybind11}
+W.~Jakob, J.~Rhinelander, and D.~Moldovan.
+\newblock pybind11 -- {Seamless operability between C++11 and Python}, 2016.
+\newblock https://github.com/pybind/pybind11.
+
+\bibitem{Kiusalaas2013}
+J.~Kiusalaas.
+\newblock {\em Numerical methods in engineering with {Python 3}}.
+\newblock Cambridge University Press, 2013.
+
+\bibitem{LugrisEscalonaDC2011}
+U.~Lugr\'is, J.~Escalona, D.~Dopico, and J.~Cuadrado.
+\newblock Efficient and accurate simulation of the rope-sheave interaction in weight-lifting machines.
+\newblock {\em Proceedings of the Institution of Mechanical Engineers, Part K: Journal of Multi-body Dynamics}, 225(4):331--343, 2011.
+
+\bibitem{ManzlGerstmayr2021}
+P.~Manzl and J.~Gerstmayr.
+\newblock An improved dynamic model of the mecanum wheel for multibody simulations.
+\newblock In {\em ASME 2021 International Design Engineering Technical Conferences and Computers and Information in Engineering Conference}. American Society of Mechanical Engineers Digital Collection, 2021.
+
+\bibitem{ManzlRL2023}
+P.~Manzl, O.~Rogov, J.~Gerstmayr, A.~Mikkola, and G.~Orzechowski.
+\newblock Reliability evaluation of reinforcement learning methods for mechanical systems with increasing complexity.
+\newblock preprint, Research Square, \url{https://www.researchsquare.com/article/rs-3066420/v1}, 2023.
+
+\bibitem{Morrissey2014}
+J.~Morrissey, S.~Thakur, and J.~Ooi.
+\newblock {EDEM Contact Model: Adhesive Elasto-Plastic Model}.
+\newblock 2014.
+
+\bibitem{Mueller2017}
+A.~M{\"{u}}ller.
+\newblock {Coordinate Mappings for Rigid Body Motions}.
+\newblock {\em Journal of Computational and Nonlinear Dynamics}, 12(2):10, 2017.
+
+\bibitem{NeurauterGerstmayr2023}
+R.~Neurauter and J.~Gerstmayr.
+\newblock {A novel motion-reconstruction method for inertial sensors with constraints}.
+\newblock {\em Multibody System Dynamics}, 57:181--209, 2023.
+
+\bibitem{Newmark1959}
+N.~M. Newmark.
+\newblock {A Method of Computation for Structural Dynamics}.
+\newblock {\em ASCE Journal of the Engineering Mechanics Division}, 85(3):67--94, 1959.
+
+\bibitem{Nikravesh1988}
+P.~E. Nikravesh.
+\newblock {\em Computer-Aided Analysis of Mechanical Systems}.
+\newblock Prentice-Hall Inc., Englewood Cliffs, New Jersey, 1988.
+
+\bibitem{PechsteinGerstmayr2013ale}
+A.~Pechstein and J.~Gerstmayr.
+\newblock {A Lagrange-Eulerian formulation of an axially moving beam based on the absolute nodal coordinate formulation}.
+\newblock {\em Multibody System Dynamics}, 30(3):343--358, 2013.
+
+\bibitem{PieberNtarladima2022}
+M.~Pieber, K.~Ntarladima, and J.~Gerstmayr.
+\newblock A {H}ybrid {A}rbitrary {L}agrangian {E}ulerian {F}ormulation for the {I}nvestigation of the {S}tability of {P}ipes {C}onveying {F}luid and {A}xially {M}oving {B}eams.
+\newblock {\em Journal of Computational and Nonlinear Dynamics}, 17(5):051006 (13 pages), 2022.
+
+\bibitem{Qian2018}
+Z.~Qian, D.~Zhang, and C.~Jin.
+\newblock A regularized approach for frictional impact dynamics of flexible multi-link manipulator arms considering the dynamic stiffening effect.
+\newblock {\em Multibody System Dynamics}, 43:229--255, 2018.
+
+\bibitem{RahikainenGonzalezNayaEtAl2020}
+J.~Rahikainen, F.~Gonz\'alez, M.~{\'A}. Naya, J.~Sopanen, and A.~Mikkola.
+\newblock On the cosimulation of multibody systems and hydraulic dynamics.
+\newblock {\em Multibody System Dynamics}, 50, 10 2020.
+
+\bibitem{Schoeberl1997}
+J.~Sch\"oberl.
+\newblock {NETGEN An advancing front 2D/3D-mesh generator based on abstract rules}.
+\newblock {\em Computing and Visualization in Science}, 1:41--52, 1997.
+
+\bibitem{NGsolve2014}
+J.~Sch\"oberl.
+\newblock {C++11 Implementation of Finite Elements in NGSolve, ASC Report 30/2014}.
+\newblock \url{https://www.asc.tuwien.ac.at/~schoeberl/wiki/publications/ngs-cpp11.pdf} (accessed on August 16, 2022), 2014.
+
+\bibitem{Schwertassek1999}
+R.~Schwertassek and O.~Wallrapp.
+\newblock {\em Dynamik flexibler {M}ehrk{\"o}rpersysteme}.
+\newblock {G}rundlagen und {F}ortschritte der {I}ngenieurwissenschaften. Vieweg+{T}eubner {V}erlag, 1999.
+
+\bibitem{Sereinig2023comfortZone}
+M.~Sereinig, P.~Manzl, and J.~Gerstmayr.
+\newblock Task dependent comfort zone, a base placement strategy for autonomous mobile manipulators using manipulability measures.
+\newblock {\em Robotics and Autonomous Systems, submitted}, 2023.
+
+\bibitem{shabana1997ancf}
+A.~A. Shabana.
+\newblock Definition of the slopes and the finite element absolute nodal coordinate formulation.
+\newblock {\em Multibody system dynamics}, 1(3):339--348, 1997.
+
+\bibitem{Shabana2013}
+A.~A. Shabana.
+\newblock {\em {Dynamics of Multibody Systems}}.
+\newblock Cambridge University Press, Cambridge, 4th edition, 2013.
+
+\bibitem{Siciliano2016}
+B.~Siciliano and O.~Khatib, editors.
+\newblock {\em Springer Handbook of Robotics}.
+\newblock Springer, 2016.
+
+\bibitem{Simo1988}
+J.~C. Simo and L.~Vu-Quoc.
+\newblock {On the dynamics in space of rods undergoing large motions - A geometrically exact approach}.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering}, 66(2):125--161, 1988.
+
+\bibitem{Sonneville2017}
+V.~Sonneville, O.~Br{\"{u}}ls, and O.~A. Bauchau.
+\newblock {Interpolation schemes for geometrically exact beams: A motion approach}.
+\newblock {\em International Journal for Numerical Methods in Engineering}, 112:1129--1153, 2017.
+
+\bibitem{Sonneville2014}
+V.~Sonneville, A.~Cardona, and O.~Br{\"{u}}ls.
+\newblock {Geometrically exact beam finite element formulated on the special Euclidean group SE(3)}.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering}, 268:451--474, 2014.
+
+\bibitem{Terze2016}
+Z.~Terze, A.~M{\"{u}}ller, and D.~Zlatar.
+\newblock {Singularity-free time integration of rotational quaternions using non-redundant ordinary differential equations}.
+\newblock {\em Multibody System Dynamics}, 38(3):201--225, 2016.
+
+\bibitem{Whitley1994}
+D.~Whitley.
+\newblock A genetic algorithm tutorial.
+\newblock {\em Statistics and Computing}, 4:65--85, 1994.
+
+\bibitem{woernle2016}
+C.~Woernle.
+\newblock {\em Mehrk{\"o}rpersysteme: Eine Einf{\"u}hrung in die Kinematik und Dynamik von Systemen starrer K{\"o}rper}.
+\newblock Lecture Notes in Applied and Computational Mechanics, Springer Berlin Heidelberg, 2016.
+
+\bibitem{woernle2024}
+C.~Woernle.
+\newblock {\em Multibody Systems -- {A}n Introduction to the Kinematics and Dynamics of Systems of Rigid Bodies}.
+\newblock Springer, 2024.
+
+\bibitem{Yoshikawa1985}
+T.~Yoshikawa.
+\newblock Manipulability of robotic mechanisms.
+\newblock {\em The International Journal of Robotics Research}, 4(2):3--9, 1985.
+
+\bibitem{ZwoelferGerstmayr2020}
+A.~Zw{\"{o}}lfer and J.~Gerstmayr.
+\newblock {A concise nodal-based derivation of the floating frame of reference formulation for displacement-based solid finite elements}.
+\newblock {\em Multibody System Dynamics}, 49(3):291--313, 2020.
+
+\bibitem{ZwoelferGerstmayr2021}
+A.~Zw{\"{o}}lfer and J.~Gerstmayr.
+\newblock {The nodal-based floating frame of reference formulation with modal reduction}.
+\newblock {\em Acta Mechanica}, 232(3):835--851, 2021.
+
+\end{thebibliography}

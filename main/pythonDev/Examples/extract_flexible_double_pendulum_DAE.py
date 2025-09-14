@@ -20,6 +20,8 @@ from exudyn.utilities import * #includes itemInterface and rigidBodyUtilities
 import exudyn.graphics as graphics #only import if it does not conflict
 
 import numpy as np
+import scipy.io
+import os
 # from math import sin, cos, pi
 
 print("=" * 70)
@@ -240,29 +242,61 @@ print(f"增广矩阵形式:")
 print(f"  [M  C^T] [q̈]   [f_ext - D*q̇ - K*q]")
 print(f"  [C   0 ] [λ ] = [      0         ]")
 
-# 保存矩阵到文件
-print(f"\n保存矩阵到文件...")
+# 保存矩阵到.mat文件
+print(f"\n保存矩阵到MAT文件...")
 
-# 质量矩阵
-np.savetxt('flexible_double_pendulum_mass_matrix.txt', M, fmt='%.6e', delimiter='\t')
-print(f"  质量矩阵 M 已保存到 'flexible_double_pendulum_mass_matrix.txt'")
+# 获取当前Python文件的路径和文件名
+current_file_path = os.path.abspath(__file__)
+current_dir = os.path.dirname(current_file_path)
+current_filename = os.path.splitext(os.path.basename(current_file_path))[0]
 
-# 刚度矩阵
-np.savetxt('flexible_double_pendulum_stiffness_matrix.txt', K, fmt='%.6e', delimiter='\t')
-print(f"  刚度矩阵 K 已保存到 'flexible_double_pendulum_stiffness_matrix.txt'")
+# 创建同名文件夹
+output_dir = os.path.join(current_dir, current_filename)
+os.makedirs(output_dir, exist_ok=True)
+print(f"  创建输出目录: {output_dir}")
 
-# 阻尼矩阵
-np.savetxt('flexible_double_pendulum_damping_matrix.txt', D, fmt='%.6e', delimiter='\t')
-print(f"  阻尼矩阵 D 已保存到 'flexible_double_pendulum_damping_matrix.txt'")
+# 准备保存到.mat文件的数据字典
+mat_data = {
+    'M': M,                    # 质量矩阵
+    'K': K,                    # 刚度矩阵  
+    'D': D,                    # 阻尼矩阵
+    'f_ext': f_ext,           # 外力向量
+    'nODE2': nODE2,           # ODE2坐标数
+    'nODE1': nODE1,           # ODE1坐标数
+    'nAE': nAE,               # 代数约束数
+    'system_info': {
+        'nElements1': nElements1,
+        'nElements2': nElements2, 
+        'L1': L1,
+        'L2': L2,
+        'E': E,
+        'rho': rho,
+        'h': h,
+        'b': b,
+        'EI': EI,
+        'EA': EA,
+        'GA': GA
+    }
+}
 
-# 约束雅可比矩阵
+# 如果有约束雅可比矩阵，也添加到数据中
 if C is not None:
-    np.savetxt('flexible_double_pendulum_constraint_jacobian.txt', C, fmt='%.6e', delimiter='\t')
-    print(f"  约束雅可比 C 已保存到 'flexible_double_pendulum_constraint_jacobian.txt'")
+    mat_data['C'] = C
 
-# 外力向量
-np.savetxt('flexible_double_pendulum_external_forces.txt', f_ext, fmt='%.6e', delimiter='\t')
-print(f"  外力向量 f_ext 已保存到 'flexible_double_pendulum_external_forces.txt'")
+# 保存到.mat文件
+mat_filename = os.path.join(output_dir, f'{current_filename}_DAE_matrices.mat')
+scipy.io.savemat(mat_filename, mat_data)
+print(f"  所有DAE矩阵已保存到: {mat_filename}")
+
+# 列出保存的矩阵
+print(f"\n已保存的矩阵和数据:")
+print(f"  - M: 质量矩阵 ({M.shape})")
+print(f"  - K: 刚度矩阵 ({K.shape})")  
+print(f"  - D: 阻尼矩阵 ({D.shape})")
+if C is not None:
+    print(f"  - C: 约束雅可比矩阵 ({C.shape})")
+print(f"  - f_ext: 外力向量 ({f_ext.shape})")
+print(f"  - 系统参数和维数信息")
 
 # 显示矩阵的一些关键信息
 print(f"\n矩阵特性分析:")

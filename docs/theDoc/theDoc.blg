@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: theDoc.aux
+The style file: abbrv.bst
+Database file #1: bibliographyDoc.bib
+Warning--empty journal in Morrissey2014
+You've used 67 entries,
+            2118 wiz_defined-function locations,
+            914 strings with 16601 characters,
+and the built_in function-call counts, 20552 in all, are:
+= -- 1987
+> -- 976
+< -- 1
++ -- 388
+- -- 316
+* -- 1399
+:= -- 3516
+add.period$ -- 203
+call.type$ -- 67
+change.case$ -- 346
+chr.to.int$ -- 0
+cite$ -- 68
+duplicate$ -- 754
+empty$ -- 1673
+format.name$ -- 316
+if$ -- 4231
+int.to.chr$ -- 0
+int.to.str$ -- 67
+missing$ -- 72
+newline$ -- 338
+num.names$ -- 140
+pop$ -- 383
+preamble$ -- 1
+purify$ -- 290
+quote$ -- 0
+skip$ -- 489
+stack$ -- 0
+substring$ -- 1221
+swap$ -- 82
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 240
+warning$ -- 1
+while$ -- 199
+width$ -- 69
+write$ -- 718
+(There was 1 warning)

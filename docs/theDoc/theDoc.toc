@@ -1,0 +1,824 @@
+\contentsline {chapter}{\numberline {1}Installation and Getting Started}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Getting started}{3}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}What is \texttt {Exudyn}\xspace ?}{4}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Developers of \texttt {Exudyn}\xspace and thanks}{5}{subsection.1.1.2}%
+\contentsline {section}{\numberline {1.2}Installation instructions}{7}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Requirements for \texttt {Exudyn}\xspace ?}{7}{subsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.1.1}Run without Anaconda}{7}{subsubsection.1.2.1.1}%
+\contentsline {subsection}{\numberline {1.2.2}Install \texttt {Exudyn}\xspace with PIP INSTALLER (pypi.org)}{8}{subsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.2.1}Troubleshooting pip install}{9}{subsubsection.1.2.2.1}%
+\contentsline {subsection}{\numberline {1.2.3}Install from specific Wheel (Ubuntu and Windows)}{9}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Build and install \texttt {Exudyn}\xspace under Windows 10}{10}{subsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.2.5}Build and install \texttt {Exudyn}\xspace under Mac OS X}{11}{subsection.1.2.5}%
+\contentsline {subsection}{\numberline {1.2.6}Build and install \texttt {Exudyn}\xspace under Ubuntu}{12}{subsection.1.2.6}%
+\contentsline {subsection}{\numberline {1.2.7}Uninstall \texttt {Exudyn}\xspace }{14}{subsection.1.2.7}%
+\contentsline {subsection}{\numberline {1.2.8}How to install \texttt {Exudyn}\xspace and use the C++ source code (advanced)?}{14}{subsection.1.2.8}%
+\contentsline {section}{\numberline {1.3}Further notes}{15}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Goals of \texttt {Exudyn}\xspace }{15}{subsection.1.3.1}%
+\contentsline {section}{\numberline {1.4}Run a simple example in Python}{15}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Trouble shooting and FAQ}{18}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Trouble shooting}{18}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}FAQ}{23}{subsection.1.5.2}%
+\contentsline {chapter}{\numberline {2}Overview on \texttt {Exudyn}\xspace }{27}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Module structure}{27}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Overview of modules}{27}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Conventions: items, indexes, coordinates}{30}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Items: Nodes, Objects, Loads, Markers, Sensors, ...}{32}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Nodes}{32}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Objects}{33}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Markers}{33}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Loads}{33}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Sensors}{33}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}Reference coordinates and displacements}{34}{subsection.2.2.6}%
+\contentsline {section}{\numberline {2.3}Mapping between local and global coordinate indices}{34}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Exudyn Basics}{35}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Interaction with the \texttt {Exudyn}\xspace module}{35}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Simulation settings}{35}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Generating output and results}{36}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Renderer and 3D graphics}{36}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Visualization settings dialog}{38}{subsection.2.4.5}%
+\contentsline {subsection}{\numberline {2.4.6}Execute Command and Help}{39}{subsection.2.4.6}%
+\contentsline {subsection}{\numberline {2.4.7}Graphics pipeline}{41}{subsection.2.4.7}%
+\contentsline {subsection}{\numberline {2.4.8}Raytracing}{42}{subsection.2.4.8}%
+\contentsline {subsection}{\numberline {2.4.9}Storing the model view}{44}{subsection.2.4.9}%
+\contentsline {subsection}{\numberline {2.4.10}Graphics user functions via Python}{45}{subsection.2.4.10}%
+\contentsline {subsection}{\numberline {2.4.11}Color, RGBA and alpha-transparency}{45}{subsection.2.4.11}%
+\contentsline {subsection}{\numberline {2.4.12}Solution viewer}{46}{subsection.2.4.12}%
+\contentsline {subsection}{\numberline {2.4.13}Generating animations}{47}{subsection.2.4.13}%
+\contentsline {subsection}{\numberline {2.4.14}Examples, test models and test suite}{48}{subsection.2.4.14}%
+\contentsline {subsection}{\numberline {2.4.15}Removing convergence problems and solver failures}{49}{subsection.2.4.15}%
+\contentsline {subsection}{\numberline {2.4.16}Performance and ways to speed up computations}{51}{subsection.2.4.16}%
+\contentsline {section}{\numberline {2.5}Advanced topics}{53}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Camera following objects and interacting with model view}{53}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Contact problems}{54}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}OpenVR}{55}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}Interaction with Julia}{55}{subsection.2.5.4}%
+\contentsline {subsection}{\numberline {2.5.5}Interaction with other codes}{57}{subsection.2.5.5}%
+\contentsline {subsection}{\numberline {2.5.6}ROS}{57}{subsection.2.5.6}%
+\contentsline {section}{\numberline {2.6}C++ Code}{57}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Focus of the C++ code}{57}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}C++ Code structure}{58}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}C++ Code: Modules}{59}{subsection.2.6.3}%
+\contentsline {subsection}{\numberline {2.6.4}Code style and conventions}{60}{subsection.2.6.4}%
+\contentsline {subsection}{\numberline {2.6.5}Notation conventions}{60}{subsection.2.6.5}%
+\contentsline {subsection}{\numberline {2.6.6}No-abbreviations-rule}{61}{subsection.2.6.6}%
+\contentsline {subsection}{\numberline {2.6.7}Implementation of new computational items in C++}{62}{subsection.2.6.7}%
+\contentsline {chapter}{\numberline {3}Tutorial}{65}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Mass-Spring-Damper tutorial}{65}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Rigid body and joints tutorial}{71}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Flexible beams tutorial}{79}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Symbolic user function tutorial}{84}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Flexible body -- FFRF tutorial}{85}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Notation}{91}{chapter.4}%
+\contentsline {subsection}{\numberline {4.0.1}Common types}{91}{subsection.4.0.1}%
+\contentsline {subsection}{\numberline {4.0.2}States and coordinate attributes}{92}{subsection.4.0.2}%
+\contentsline {subsection}{\numberline {4.0.3}Symbols in item equations}{93}{subsection.4.0.3}%
+\contentsline {section}{\numberline {4.1}\ac {LHS}--\ac {RHS} naming conventions in EXUDYN}{95}{section.4.1}%
+\contentsline {section}{\numberline {4.2}System assembly}{96}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Nomenclature for system equations of motion and solvers}{97}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Theory and formulations}{99}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction to multibody systems}{99}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Historical development}{100}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Simulation tools in computational engineering}{100}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Components of a multibody system}{101}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Kinematics basics}{102}{subsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.1}Links, joints, kinematic chains and trees}{103}{subsubsection.5.1.4.1}%
+\contentsline {subsubsection}{\numberline {5.1.4.2}Kinematic pairs}{103}{subsubsection.5.1.4.2}%
+\contentsline {subsection}{\numberline {5.1.5}Euler's and Chasles's Theorems}{104}{subsection.5.1.5}%
+\contentsline {subsection}{\numberline {5.1.6}Degree of freedom -- \ac {DOF}}{105}{subsection.5.1.6}%
+\contentsline {subsection}{\numberline {5.1.7}Non-holonomic constraints}{105}{subsection.5.1.7}%
+\contentsline {subsection}{\numberline {5.1.8}Dependent and independent coordinates}{106}{subsection.5.1.8}%
+\contentsline {subsection}{\numberline {5.1.9}Chebychev-Gr\"ubler-Kutzbach criterion}{106}{subsection.5.1.9}%
+\contentsline {subsection}{\numberline {5.1.10}Generalized coordinates}{107}{subsection.5.1.10}%
+\contentsline {subsection}{\numberline {5.1.11}Reference and current coordinates}{107}{subsection.5.1.11}%
+\contentsline {section}{\numberline {5.2}Dynamics: Mechanical principles}{108}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Newton's basic principles}{108}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}The Lagrange-d'Alembert principle}{109}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Generalized Principle of Virtual Work}{109}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Virtual displacements}{110}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Generalized Forces}{110}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}Lagrange's Equations of Motion}{110}{subsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.2.7}Multibody formulations: redundant and minimal coordinates}{111}{subsection.5.2.7}%
+\contentsline {section}{\numberline {5.3}Frames, rotations and coordinate systems}{113}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Reference points and reference frames}{113}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Coordinate systems of frames}{114}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Homogeneous transformations}{114}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Rotations}{116}{subsection.5.3.4}%
+\contentsline {subsubsection}{\numberline {5.3.4.1}Derivation of the transformation matrix from coordinate transformations}{116}{subsubsection.5.3.4.1}%
+\contentsline {subsubsection}{\numberline {5.3.4.2}Elementary rotations}{117}{subsubsection.5.3.4.2}%
+\contentsline {subsubsection}{\numberline {5.3.4.3}Linearized rotations}{119}{subsubsection.5.3.4.3}%
+\contentsline {subsubsection}{\numberline {5.3.4.4}Active and passive rotations}{119}{subsubsection.5.3.4.4}%
+\contentsline {subsubsection}{\numberline {5.3.4.5}Successive rotations}{120}{subsubsection.5.3.4.5}%
+\contentsline {subsection}{\numberline {5.3.5}Rotation tensor: axis-angle representation}{121}{subsection.5.3.5}%
+\contentsline {subsubsection}{\numberline {5.3.5.1}Rotation vector}{122}{subsubsection.5.3.5.1}%
+\contentsline {subsection}{\numberline {5.3.6}Euler angles: Tait-Bryan angles}{123}{subsection.5.3.6}%
+\contentsline {subsubsection}{\numberline {5.3.6.1}Tait-Bryan angles: angular velocity vector}{124}{subsubsection.5.3.6.1}%
+\contentsline {subsection}{\numberline {5.3.7}Euler parameters and unit quaternions}{125}{subsection.5.3.7}%
+\contentsline {subsubsection}{\numberline {5.3.7.1}Quaternion operations}{126}{subsubsection.5.3.7.1}%
+\contentsline {subsubsection}{\numberline {5.3.7.2}Angular velocity vector}{127}{subsubsection.5.3.7.2}%
+\contentsline {section}{\numberline {5.4}Integration Points}{128}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Model order reduction and component mode synthesis}{130}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Import of flexible bodies}{130}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Eigenmodes}{131}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Hurty-Craig-Bampton modes}{133}{subsection.5.5.3}%
+\contentsline {subsubsection}{\numberline {5.5.3.1}Definition of RBE2 / RBE3 interfaces}{135}{subsubsection.5.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.5.3.2}Computation of Hurty-Craig-Bampton modes with RBE2 interfaces}{135}{subsubsection.5.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.5.3.3}Computation of Hurty-Craig-Bampton modes with RBE3 interfaces}{137}{subsubsection.5.5.3.3}%
+\contentsline {subsection}{\numberline {5.5.4}Computation of stresses and strains for CMS modes}{137}{subsection.5.5.4}%
+\contentsline {subsection}{\numberline {5.5.5}Interfaces and boundaries}{140}{subsection.5.5.5}%
+\contentsline {subsection}{\numberline {5.5.6}Node weighting}{141}{subsection.5.5.6}%
+\contentsline {subsection}{\numberline {5.5.7}Reference conditions}{141}{subsection.5.5.7}%
+\contentsline {section}{\numberline {5.6}Modeling of Contact in \texttt {Exudyn}\xspace }{142}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Contact of meshed rigid bodies}{142}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Regularized friction}{143}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}Sphere-sphere contact: Equations}{144}{subsection.5.6.3}%
+\contentsline {subsubsection}{\numberline {5.6.3.1}Contact relations for sphere $g_i$ (marker $m0$) and sphere $g_j$ (marker $m1$)}{145}{subsubsection.5.6.3.1}%
+\contentsline {subsubsection}{\numberline {5.6.3.2}Generalized forces due to contact}{147}{subsubsection.5.6.3.2}%
+\contentsline {subsubsection}{\numberline {5.6.3.3}Jacobi matrix for sphere $g_i$ and sphere $g_j$}{147}{subsubsection.5.6.3.3}%
+\contentsline {subsection}{\numberline {5.6.4}Sphere-triangle contact: Equations}{150}{subsection.5.6.4}%
+\contentsline {subsection}{\numberline {5.6.5}Contact relations for ANCF cable $g_i$ (marker $m0$) and sphere $g_j$ (marker $m1$)}{152}{subsection.5.6.5}%
+\contentsline {chapter}{\numberline {6}Python-C++ command interface}{159}{chapter.6}%
+\contentsline {section}{\numberline {6.1}General information on Python-C++ interface}{159}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Item index}{161}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Copying and referencing C++ objects}{161}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Exceptions and Error Messages}{162}{subsection.6.1.3}%
+\contentsline {section}{\numberline {6.2}\texttt {Exudyn}\xspace }{163}{section.6.2}%
+\contentsline {section}{\numberline {6.3}SystemContainer}{166}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Renderer}{167}{section.6.4}%
+\contentsline {section}{\numberline {6.5}MainSystem}{169}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}MainSystem extensions (create)}{173}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}MainSystem extensions (general)}{204}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}MainSystem: Node}{220}{subsection.6.5.3}%
+\contentsline {subsection}{\numberline {6.5.4}MainSystem: Object}{222}{subsection.6.5.4}%
+\contentsline {subsection}{\numberline {6.5.5}MainSystem: Marker}{224}{subsection.6.5.5}%
+\contentsline {subsection}{\numberline {6.5.6}MainSystem: Load}{226}{subsection.6.5.6}%
+\contentsline {subsection}{\numberline {6.5.7}MainSystem: Sensor}{227}{subsection.6.5.7}%
+\contentsline {section}{\numberline {6.6}SystemData}{229}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}SystemData: Access coordinates}{231}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}SystemData: Get object LTG coordinate mappings}{234}{subsection.6.6.2}%
+\contentsline {section}{\numberline {6.7}Symbolic}{235}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}symbolic.Real}{235}{subsection.6.7.1}%
+\contentsline {subsection}{\numberline {6.7.2}symbolic.Vector}{238}{subsection.6.7.2}%
+\contentsline {subsection}{\numberline {6.7.3}symbolic.Matrix}{240}{subsection.6.7.3}%
+\contentsline {subsection}{\numberline {6.7.4}symbolic.VariableSet}{242}{subsection.6.7.4}%
+\contentsline {subsection}{\numberline {6.7.5}symbolic.UserFunction}{244}{subsection.6.7.5}%
+\contentsline {section}{\numberline {6.8}GeneralContact}{245}{section.6.8}%
+\contentsline {subsection}{\numberline {6.8.1}VisuGeneralContact}{250}{subsection.6.8.1}%
+\contentsline {section}{\numberline {6.9}Data structures}{250}{section.6.9}%
+\contentsline {subsection}{\numberline {6.9.1}MatrixContainer}{250}{subsection.6.9.1}%
+\contentsline {subsection}{\numberline {6.9.2}GraphicsMaterialList}{252}{subsection.6.9.2}%
+\contentsline {subsection}{\numberline {6.9.3}Vector3DList}{254}{subsection.6.9.3}%
+\contentsline {subsection}{\numberline {6.9.4}Vector2DList}{254}{subsection.6.9.4}%
+\contentsline {subsection}{\numberline {6.9.5}Vector6DList}{255}{subsection.6.9.5}%
+\contentsline {subsection}{\numberline {6.9.6}Matrix3DList}{256}{subsection.6.9.6}%
+\contentsline {subsection}{\numberline {6.9.7}Matrix6DList}{256}{subsection.6.9.7}%
+\contentsline {section}{\numberline {6.10}Type definitions}{257}{section.6.10}%
+\contentsline {subsection}{\numberline {6.10.1}OutputVariableType}{257}{subsection.6.10.1}%
+\contentsline {subsection}{\numberline {6.10.2}ConfigurationType}{259}{subsection.6.10.2}%
+\contentsline {subsection}{\numberline {6.10.3}ItemType}{260}{subsection.6.10.3}%
+\contentsline {subsection}{\numberline {6.10.4}NodeType}{260}{subsection.6.10.4}%
+\contentsline {subsection}{\numberline {6.10.5}JointType}{261}{subsection.6.10.5}%
+\contentsline {subsection}{\numberline {6.10.6}DynamicSolverType}{261}{subsection.6.10.6}%
+\contentsline {subsection}{\numberline {6.10.7}CrossSectionType}{262}{subsection.6.10.7}%
+\contentsline {subsection}{\numberline {6.10.8}KeyCode}{262}{subsection.6.10.8}%
+\contentsline {subsection}{\numberline {6.10.9}LinearSolverType}{263}{subsection.6.10.9}%
+\contentsline {subsection}{\numberline {6.10.10}ContactTypeIndex}{263}{subsection.6.10.10}%
+\contentsline {chapter}{\numberline {7}Python utility functions}{265}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Utility: ResultsMonitor}{265}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Module: advancedUtilities}{266}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}CLASS ExpectedType(Enum) (in module advancedUtilities)}{277}{subsection.7.2.1}%
+\contentsline {section}{\numberline {7.3}Module: artificialIntelligence}{277}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}CLASS OpenAIGymInterfaceEnv(Env) (in module artificialIntelligence)}{277}{subsection.7.3.1}%
+\contentsline {section}{\numberline {7.4}Module: basicUtilities}{281}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Module: beams}{286}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Module: demos}{293}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Module: FEM}{294}{section.7.7}%
+\contentsline {subsection}{\numberline {7.7.1}CLASS MaterialBaseClass (in module FEM)}{300}{subsection.7.7.1}%
+\contentsline {subsection}{\numberline {7.7.2}CLASS KirchhoffMaterial(MaterialBaseClass) (in module FEM)}{300}{subsection.7.7.2}%
+\contentsline {subsection}{\numberline {7.7.3}CLASS FiniteElement (in module FEM)}{302}{subsection.7.7.3}%
+\contentsline {subsection}{\numberline {7.7.4}CLASS Tet4(FiniteElement) (in module FEM)}{302}{subsection.7.7.4}%
+\contentsline {subsection}{\numberline {7.7.5}CLASS ObjectFFRFinterface (in module FEM)}{302}{subsection.7.7.5}%
+\contentsline {subsection}{\numberline {7.7.6}CLASS ObjectFFRFreducedOrderInterface (in module FEM)}{303}{subsection.7.7.6}%
+\contentsline {subsection}{\numberline {7.7.7}CLASS HCBstaticModeSelection(Enum) (in module FEM)}{307}{subsection.7.7.7}%
+\contentsline {subsection}{\numberline {7.7.8}CLASS FEMinterface (in module FEM)}{307}{subsection.7.7.8}%
+\contentsline {section}{\numberline {7.8}Module: graphics}{325}{section.7.8}%
+\contentsline {section}{\numberline {7.9}Module: graphicsDataUtilities}{346}{section.7.9}%
+\contentsline {section}{\numberline {7.10}Module: GUI}{350}{section.7.10}%
+\contentsline {section}{\numberline {7.11}Module: interactive}{351}{section.7.11}%
+\contentsline {subsection}{\numberline {7.11.1}CLASS InteractiveDialog (in module interactive)}{354}{subsection.7.11.1}%
+\contentsline {section}{\numberline {7.12}Module: kinematicTree}{358}{section.7.12}%
+\contentsline {subsection}{\numberline {7.12.1}CLASS KinematicTree33 (in module kinematicTree)}{361}{subsection.7.12.1}%
+\contentsline {subsection}{\numberline {7.12.2}CLASS KinematicTree66 (in module kinematicTree)}{363}{subsection.7.12.2}%
+\contentsline {section}{\numberline {7.13}Module: lieGroupBasics}{365}{section.7.13}%
+\contentsline {section}{\numberline {7.14}Module: mainSystemExtensions}{374}{section.7.14}%
+\contentsline {section}{\numberline {7.15}Module: particles}{374}{section.7.15}%
+\contentsline {section}{\numberline {7.16}Module: physics}{375}{section.7.16}%
+\contentsline {section}{\numberline {7.17}Module: plot}{377}{section.7.17}%
+\contentsline {section}{\numberline {7.18}Module: processing}{381}{section.7.18}%
+\contentsline {section}{\numberline {7.19}Module: rigidBodyUtilities}{390}{section.7.19}%
+\contentsline {subsection}{\numberline {7.19.1}CLASS TreeLink (in module rigidBodyUtilities)}{410}{subsection.7.19.1}%
+\contentsline {subsection}{\numberline {7.19.2}CLASS RigidBodyInertia (in module rigidBodyUtilities)}{410}{subsection.7.19.2}%
+\contentsline {subsection}{\numberline {7.19.3}CLASS InertiaCuboid(RigidBodyInertia) (in module rigidBodyUtilities)}{414}{subsection.7.19.3}%
+\contentsline {subsection}{\numberline {7.19.4}CLASS InertiaRodX(RigidBodyInertia) (in module rigidBodyUtilities)}{414}{subsection.7.19.4}%
+\contentsline {subsection}{\numberline {7.19.5}CLASS InertiaMassPoint(RigidBodyInertia) (in module rigidBodyUtilities)}{415}{subsection.7.19.5}%
+\contentsline {subsection}{\numberline {7.19.6}CLASS InertiaSphere(RigidBodyInertia) (in module rigidBodyUtilities)}{415}{subsection.7.19.6}%
+\contentsline {subsection}{\numberline {7.19.7}CLASS InertiaHollowSphere(RigidBodyInertia) (in module rigidBodyUtilities)}{415}{subsection.7.19.7}%
+\contentsline {subsection}{\numberline {7.19.8}CLASS InertiaCylinder(RigidBodyInertia) (in module rigidBodyUtilities)}{416}{subsection.7.19.8}%
+\contentsline {section}{\numberline {7.20}Module: robotics}{416}{section.7.20}%
+\contentsline {subsection}{\numberline {7.20.1}CLASS VRobotLink (in module robotics)}{417}{subsection.7.20.1}%
+\contentsline {subsection}{\numberline {7.20.2}CLASS RobotLink (in module robotics)}{418}{subsection.7.20.2}%
+\contentsline {subsection}{\numberline {7.20.3}CLASS VRobotTool (in module robotics)}{419}{subsection.7.20.3}%
+\contentsline {subsection}{\numberline {7.20.4}CLASS RobotTool (in module robotics)}{420}{subsection.7.20.4}%
+\contentsline {subsection}{\numberline {7.20.5}CLASS VRobotBase (in module robotics)}{420}{subsection.7.20.5}%
+\contentsline {subsection}{\numberline {7.20.6}CLASS RobotBase (in module robotics)}{420}{subsection.7.20.6}%
+\contentsline {subsection}{\numberline {7.20.7}CLASS Robot (in module robotics)}{421}{subsection.7.20.7}%
+\contentsline {subsection}{\numberline {7.20.8}CLASS InverseKinematicsNumerical() (in module robotics)}{426}{subsection.7.20.8}%
+\contentsline {subsection}{\numberline {7.20.9}Module: robotics.rosInterface}{429}{subsection.7.20.9}%
+\contentsline {subsubsection}{\numberline {7.20.9.1}CLASS ROSInterface (in module robotics.rosInterface)}{429}{subsubsection.7.20.9.1}%
+\contentsline {subsection}{\numberline {7.20.10}Module: robotics.future}{433}{subsection.7.20.10}%
+\contentsline {subsection}{\numberline {7.20.11}Module: robotics.models}{435}{subsection.7.20.11}%
+\contentsline {subsection}{\numberline {7.20.12}Module: robotics.mobile}{439}{subsection.7.20.12}%
+\contentsline {subsubsection}{\numberline {7.20.12.1}CLASS MobileKinematics (in module robotics.mobile)}{441}{subsubsection.7.20.12.1}%
+\contentsline {subsection}{\numberline {7.20.13}Module: robotics.motion}{443}{subsection.7.20.13}%
+\contentsline {subsubsection}{\numberline {7.20.13.1}CLASS ProfileConstantAcceleration (in module robotics.motion)}{443}{subsubsection.7.20.13.1}%
+\contentsline {subsubsection}{\numberline {7.20.13.2}CLASS ProfileLinearAccelerationsList (in module robotics.motion)}{443}{subsubsection.7.20.13.2}%
+\contentsline {subsubsection}{\numberline {7.20.13.3}CLASS ProfilePTP (in module robotics.motion)}{444}{subsubsection.7.20.13.3}%
+\contentsline {subsubsection}{\numberline {7.20.13.4}CLASS Trajectory (in module robotics.motion)}{445}{subsubsection.7.20.13.4}%
+\contentsline {subsection}{\numberline {7.20.14}Module: robotics.special}{447}{subsection.7.20.14}%
+\contentsline {subsection}{\numberline {7.20.15}Module: robotics.utilities}{451}{subsection.7.20.15}%
+\contentsline {section}{\numberline {7.21}Module: signalProcessing}{455}{section.7.21}%
+\contentsline {section}{\numberline {7.22}Module: solver}{458}{section.7.22}%
+\contentsline {section}{\numberline {7.23}Module: utilities}{460}{section.7.23}%
+\contentsline {subsection}{\numberline {7.23.1}CLASS TCPIPdata (in module utilities)}{470}{subsection.7.23.1}%
+\contentsline {chapter}{\numberline {8}Objects, nodes, markers, loads and sensors reference manual}{471}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Nodes}{472}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}NodePoint}{472}{subsection.8.1.1}%
+\contentsline {subsubsection}{\numberline {8.1.1.1}DESCRIPTION of NodePoint:}{473}{subsubsection.8.1.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{473}{section*.36}%
+\contentsline {paragraph}{Detailed information:}{473}{section*.37}%
+\contentsline {subsection}{\numberline {8.1.2}NodePoint2D}{475}{subsection.8.1.2}%
+\contentsline {subsubsection}{\numberline {8.1.2.1}DESCRIPTION of NodePoint2D:}{475}{subsubsection.8.1.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{475}{section*.38}%
+\contentsline {paragraph}{Detailed information:}{476}{section*.39}%
+\contentsline {subsection}{\numberline {8.1.3}NodeRigidBodyEP}{478}{subsection.8.1.3}%
+\contentsline {subsubsection}{\numberline {8.1.3.1}DESCRIPTION of NodeRigidBodyEP:}{479}{subsubsection.8.1.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{479}{section*.40}%
+\contentsline {paragraph}{Detailed information:}{480}{section*.41}%
+\contentsline {subsection}{\numberline {8.1.4}NodeRigidBodyRxyz}{482}{subsection.8.1.4}%
+\contentsline {subsubsection}{\numberline {8.1.4.1}DESCRIPTION of NodeRigidBodyRxyz:}{483}{subsubsection.8.1.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{483}{section*.42}%
+\contentsline {paragraph}{Detailed information:}{483}{section*.43}%
+\contentsline {subsection}{\numberline {8.1.5}NodeRigidBodyRotVecLG}{485}{subsection.8.1.5}%
+\contentsline {subsubsection}{\numberline {8.1.5.1}DESCRIPTION of NodeRigidBodyRotVecLG:}{486}{subsubsection.8.1.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{486}{section*.44}%
+\contentsline {paragraph}{Detailed information:}{487}{section*.45}%
+\contentsline {subsection}{\numberline {8.1.6}NodeRigidBody2D}{488}{subsection.8.1.6}%
+\contentsline {subsubsection}{\numberline {8.1.6.1}DESCRIPTION of NodeRigidBody2D:}{489}{subsubsection.8.1.6.1}%
+\contentsline {paragraph}{Information on input parameters:}{489}{section*.46}%
+\contentsline {paragraph}{Detailed information:}{489}{section*.47}%
+\contentsline {subsection}{\numberline {8.1.7}Node1D}{491}{subsection.8.1.7}%
+\contentsline {subsubsection}{\numberline {8.1.7.1}DESCRIPTION of Node1D:}{491}{subsubsection.8.1.7.1}%
+\contentsline {paragraph}{Information on input parameters:}{491}{section*.49}%
+\contentsline {paragraph}{Detailed information:}{492}{section*.50}%
+\contentsline {subsection}{\numberline {8.1.8}NodePoint2DSlope1}{493}{subsection.8.1.8}%
+\contentsline {subsubsection}{\numberline {8.1.8.1}DESCRIPTION of NodePoint2DSlope1:}{494}{subsubsection.8.1.8.1}%
+\contentsline {subsection}{\numberline {8.1.9}NodePointSlope1}{495}{subsection.8.1.9}%
+\contentsline {subsubsection}{\numberline {8.1.9.1}DESCRIPTION of NodePointSlope1:}{496}{subsubsection.8.1.9.1}%
+\contentsline {subsection}{\numberline {8.1.10}NodePointSlope12}{497}{subsection.8.1.10}%
+\contentsline {subsubsection}{\numberline {8.1.10.1}DESCRIPTION of NodePointSlope12:}{498}{subsubsection.8.1.10.1}%
+\contentsline {subsection}{\numberline {8.1.11}NodePointSlope23}{499}{subsection.8.1.11}%
+\contentsline {subsubsection}{\numberline {8.1.11.1}DESCRIPTION of NodePointSlope23:}{500}{subsubsection.8.1.11.1}%
+\contentsline {subsection}{\numberline {8.1.12}NodeGenericODE2}{501}{subsection.8.1.12}%
+\contentsline {subsubsection}{\numberline {8.1.12.1}DESCRIPTION of NodeGenericODE2:}{501}{subsubsection.8.1.12.1}%
+\contentsline {paragraph}{Information on input parameters:}{501}{section*.51}%
+\contentsline {subsection}{\numberline {8.1.13}NodeGenericODE1}{503}{subsection.8.1.13}%
+\contentsline {subsubsection}{\numberline {8.1.13.1}DESCRIPTION of NodeGenericODE1:}{503}{subsubsection.8.1.13.1}%
+\contentsline {paragraph}{Information on input parameters:}{503}{section*.52}%
+\contentsline {subsection}{\numberline {8.1.14}NodeGenericAE}{505}{subsection.8.1.14}%
+\contentsline {subsubsection}{\numberline {8.1.14.1}DESCRIPTION of NodeGenericAE:}{505}{subsubsection.8.1.14.1}%
+\contentsline {paragraph}{Information on input parameters:}{505}{section*.53}%
+\contentsline {subsection}{\numberline {8.1.15}NodeGenericData}{506}{subsection.8.1.15}%
+\contentsline {subsubsection}{\numberline {8.1.15.1}DESCRIPTION of NodeGenericData:}{506}{subsubsection.8.1.15.1}%
+\contentsline {paragraph}{Information on input parameters:}{506}{section*.54}%
+\contentsline {subsection}{\numberline {8.1.16}NodePointGround}{508}{subsection.8.1.16}%
+\contentsline {subsubsection}{\numberline {8.1.16.1}DESCRIPTION of NodePointGround:}{509}{subsubsection.8.1.16.1}%
+\contentsline {paragraph}{Information on input parameters:}{509}{section*.55}%
+\contentsline {section}{\numberline {8.2}Objects (Body)}{510}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}ObjectGround}{510}{subsection.8.2.1}%
+\contentsline {subsubsection}{\numberline {8.2.1.1}DESCRIPTION of ObjectGround:}{511}{subsubsection.8.2.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{511}{section*.56}%
+\contentsline {subsubsection}{\numberline {8.2.1.2}Equations}{511}{subsubsection.8.2.1.2}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {graphicsDataUserFunction(mbs, itemNumber)} \vspace {6pt}\\}{511}{section*.57}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{512}{section*.58}%
+\contentsline {subsection}{\numberline {8.2.2}ObjectMassPoint}{514}{subsection.8.2.2}%
+\contentsline {subsubsection}{\numberline {8.2.2.1}DESCRIPTION of ObjectMassPoint:}{514}{subsubsection.8.2.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{514}{section*.59}%
+\contentsline {subsubsection}{\numberline {8.2.2.2}Definition of quantities}{515}{subsubsection.8.2.2.2}%
+\contentsline {subsubsection}{\numberline {8.2.2.3}Equations of motion}{515}{subsubsection.8.2.2.3}%
+\contentsline {subsubsection}{\numberline {8.2.2.4}MINI EXAMPLE for ObjectMassPoint}{516}{subsubsection.8.2.2.4}%
+\contentsline {subsection}{\numberline {8.2.3}ObjectMassPoint2D}{517}{subsection.8.2.3}%
+\contentsline {subsubsection}{\numberline {8.2.3.1}DESCRIPTION of ObjectMassPoint2D:}{517}{subsubsection.8.2.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{517}{section*.60}%
+\contentsline {subsubsection}{\numberline {8.2.3.2}Definition of quantities}{518}{subsubsection.8.2.3.2}%
+\contentsline {subsubsection}{\numberline {8.2.3.3}Equations of motion}{518}{subsubsection.8.2.3.3}%
+\contentsline {subsubsection}{\numberline {8.2.3.4}MINI EXAMPLE for ObjectMassPoint2D}{519}{subsubsection.8.2.3.4}%
+\contentsline {subsection}{\numberline {8.2.4}ObjectMass1D}{520}{subsection.8.2.4}%
+\contentsline {subsubsection}{\numberline {8.2.4.1}DESCRIPTION of ObjectMass1D:}{521}{subsubsection.8.2.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{521}{section*.61}%
+\contentsline {subsubsection}{\numberline {8.2.4.2}Definition of quantities}{521}{subsubsection.8.2.4.2}%
+\contentsline {subsubsection}{\numberline {8.2.4.3}Equations of motion}{522}{subsubsection.8.2.4.3}%
+\contentsline {subsubsection}{\numberline {8.2.4.4}MINI EXAMPLE for ObjectMass1D}{522}{subsubsection.8.2.4.4}%
+\contentsline {subsection}{\numberline {8.2.5}ObjectRotationalMass1D}{524}{subsection.8.2.5}%
+\contentsline {subsubsection}{\numberline {8.2.5.1}DESCRIPTION of ObjectRotationalMass1D:}{525}{subsubsection.8.2.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{525}{section*.62}%
+\contentsline {subsubsection}{\numberline {8.2.5.2}Definition of quantities}{525}{subsubsection.8.2.5.2}%
+\contentsline {subsubsection}{\numberline {8.2.5.3}Equations of motion}{526}{subsubsection.8.2.5.3}%
+\contentsline {subsubsection}{\numberline {8.2.5.4}MINI EXAMPLE for ObjectRotationalMass1D}{526}{subsubsection.8.2.5.4}%
+\contentsline {subsection}{\numberline {8.2.6}ObjectRigidBody}{528}{subsection.8.2.6}%
+\contentsline {subsubsection}{\numberline {8.2.6.1}DESCRIPTION of ObjectRigidBody:}{529}{subsubsection.8.2.6.1}%
+\contentsline {paragraph}{Information on input parameters:}{529}{section*.63}%
+\contentsline {subsubsection}{\numberline {8.2.6.2}Definition of quantities}{530}{subsubsection.8.2.6.2}%
+\contentsline {subsubsection}{\numberline {8.2.6.3}Rotation parametrization}{531}{subsubsection.8.2.6.3}%
+\contentsline {subsubsection}{\numberline {8.2.6.4}Equations of motion for \ac {COM}}{532}{subsubsection.8.2.6.4}%
+\contentsline {subsubsection}{\numberline {8.2.6.5}Equations of motion for arbitrary reference point}{532}{subsubsection.8.2.6.5}%
+\contentsline {subsubsection}{\numberline {8.2.6.6}Euler parameters}{533}{subsubsection.8.2.6.6}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {graphicsDataUserFunction(mbs, itemNumber)} \vspace {6pt}\\}{533}{section*.64}%
+\contentsline {subsection}{\numberline {8.2.7}ObjectRigidBody2D}{535}{subsection.8.2.7}%
+\contentsline {subsubsection}{\numberline {8.2.7.1}DESCRIPTION of ObjectRigidBody2D:}{536}{subsubsection.8.2.7.1}%
+\contentsline {paragraph}{Information on input parameters:}{536}{section*.65}%
+\contentsline {subsubsection}{\numberline {8.2.7.2}Definition of quantities}{536}{subsubsection.8.2.7.2}%
+\contentsline {subsubsection}{\numberline {8.2.7.3}Equations of motion}{537}{subsubsection.8.2.7.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {graphicsDataUserFunction(mbs, itemNumber)} \vspace {6pt}\\}{538}{section*.66}%
+\contentsline {subsubsection}{\numberline {8.2.7.4}MINI EXAMPLE for ObjectRigidBody2D}{538}{subsubsection.8.2.7.4}%
+\contentsline {section}{\numberline {8.3}Objects (SuperElement)}{540}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}ObjectGenericODE2}{540}{subsection.8.3.1}%
+\contentsline {subsubsection}{\numberline {8.3.1.1}DESCRIPTION of ObjectGenericODE2:}{542}{subsubsection.8.3.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{542}{section*.67}%
+\contentsline {subsubsection}{\numberline {8.3.1.2}Additional output variables for superelement node access}{543}{subsubsection.8.3.1.2}%
+\contentsline {subsubsection}{\numberline {8.3.1.3}Equations of motion}{543}{subsubsection.8.3.1.3}%
+\contentsline {subsubsection}{\numberline {8.3.1.4}Equations of motion}{543}{subsubsection.8.3.1.4}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {forceUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{544}{section*.68}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {massMatrixUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{544}{section*.69}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {jacobianUserFunction(mbs, t, itemNumber, q, q\_t, fODE2, fODE2\_t)} \vspace {6pt}\\}{545}{section*.70}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {graphicsDataUserFunction(mbs, itemNumber)} \vspace {6pt}\\}{545}{section*.71}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{546}{section*.72}%
+\contentsline {subsubsection}{\numberline {8.3.1.5}MINI EXAMPLE for ObjectGenericODE2}{546}{subsubsection.8.3.1.5}%
+\contentsline {subsection}{\numberline {8.3.2}ObjectKinematicTree}{549}{subsection.8.3.2}%
+\contentsline {subsubsection}{\numberline {8.3.2.1}DESCRIPTION of ObjectKinematicTree:}{552}{subsubsection.8.3.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{552}{section*.73}%
+\contentsline {subsubsection}{\numberline {8.3.2.2}SensorKinematicTree output variables}{553}{subsubsection.8.3.2.2}%
+\contentsline {subsubsection}{\numberline {8.3.2.3}General notes}{553}{subsubsection.8.3.2.3}%
+\contentsline {subsubsection}{\numberline {8.3.2.4}General}{554}{subsubsection.8.3.2.4}%
+\contentsline {subsubsection}{\numberline {8.3.2.5}Equations of motion}{554}{subsubsection.8.3.2.5}%
+\contentsline {subsubsection}{\numberline {8.3.2.6}Implementation and user functions}{555}{subsubsection.8.3.2.6}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {forceUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{558}{section*.74}%
+\contentsline {subsubsection}{\numberline {8.3.2.7}MINI EXAMPLE for ObjectKinematicTree}{558}{subsubsection.8.3.2.7}%
+\contentsline {subsection}{\numberline {8.3.3}ObjectFFRF}{560}{subsection.8.3.3}%
+\contentsline {subsubsection}{\numberline {8.3.3.1}DESCRIPTION of ObjectFFRF:}{562}{subsubsection.8.3.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{562}{section*.75}%
+\contentsline {subsubsection}{\numberline {8.3.3.2}Additional output variables for superelement node access}{563}{subsubsection.8.3.3.2}%
+\contentsline {subsubsection}{\numberline {8.3.3.3}Super element output variables}{563}{subsubsection.8.3.3.3}%
+\contentsline {subsubsection}{\numberline {8.3.3.4}Definition of quantities}{564}{subsubsection.8.3.3.4}%
+\contentsline {subsubsection}{\numberline {8.3.3.5}Nodal coordinates}{564}{subsubsection.8.3.3.5}%
+\contentsline {subsubsection}{\numberline {8.3.3.6}Kinematics}{565}{subsubsection.8.3.3.6}%
+\contentsline {subsubsection}{\numberline {8.3.3.7}Equations of motion}{566}{subsubsection.8.3.3.7}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {forceUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{567}{section*.76}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {massMatrixUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{568}{section*.77}%
+\contentsline {subsection}{\numberline {8.3.4}ObjectFFRFreducedOrder}{569}{subsection.8.3.4}%
+\contentsline {subsubsection}{\numberline {8.3.4.1}DESCRIPTION of ObjectFFRFreducedOrder:}{571}{subsubsection.8.3.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{571}{section*.78}%
+\contentsline {subsubsection}{\numberline {8.3.4.2}Super element output variables}{572}{subsubsection.8.3.4.2}%
+\contentsline {subsubsection}{\numberline {8.3.4.3}Modal reduction and reduced inertia matrices}{574}{subsubsection.8.3.4.3}%
+\contentsline {subsubsection}{\numberline {8.3.4.4}Equations of motion}{575}{subsubsection.8.3.4.4}%
+\contentsline {subsubsection}{\numberline {8.3.4.5}Position Jacobian}{577}{subsubsection.8.3.4.5}%
+\contentsline {subsubsection}{\numberline {8.3.4.6}Joints and Loads}{577}{subsubsection.8.3.4.6}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {forceUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{578}{section*.79}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {massMatrixUserFunction(mbs, t, itemNumber, q, q\_t)} \vspace {6pt}\\}{578}{section*.80}%
+\contentsline {section}{\numberline {8.4}Objects (FiniteElement)}{580}{section.8.4}%
+\contentsline {subsection}{\numberline {8.4.1}ObjectANCFCable}{580}{subsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.1.1}DESCRIPTION of ObjectANCFCable:}{581}{subsubsection.8.4.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{581}{section*.82}%
+\contentsline {subsubsection}{\numberline {8.4.1.2}MINI EXAMPLE for ObjectANCFCable}{582}{subsubsection.8.4.1.2}%
+\contentsline {subsection}{\numberline {8.4.2}ObjectANCFCable2D}{584}{subsection.8.4.2}%
+\contentsline {subsubsection}{\numberline {8.4.2.1}DESCRIPTION of ObjectANCFCable2D:}{585}{subsubsection.8.4.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{585}{section*.83}%
+\contentsline {subsubsection}{\numberline {8.4.2.2}Definition of quantities}{586}{subsubsection.8.4.2.2}%
+\contentsline {subsubsection}{\numberline {8.4.2.3}Kinematics and interpolation}{587}{subsubsection.8.4.2.3}%
+\contentsline {subsubsection}{\numberline {8.4.2.4}Mass matrix}{588}{subsubsection.8.4.2.4}%
+\contentsline {subsubsection}{\numberline {8.4.2.5}Elastic forces}{588}{subsubsection.8.4.2.5}%
+\contentsline {subsubsection}{\numberline {8.4.2.6}Numerical integration of Elastic Forces}{590}{subsubsection.8.4.2.6}%
+\contentsline {subsubsection}{\numberline {8.4.2.7}Access functions}{591}{subsubsection.8.4.2.7}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {axialForceUserFunction(mbs, t, itemNumber, axialPositionNormalized, axialStrain, axialStrain\_t, axialStrainRef, physicsAxialStiffness, physicsAxialDamping, curvature, curvature\_t, curvatureRef)} \vspace {6pt}\\}{591}{section*.84}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {bendingMomentUserFunction(mbs, t, itemNumber, axialPositionNormalized, curvature, curvature\_t, curvatureRef, physicsBendingStiffness, physicsBendingDamping, axialStrain, axialStrain\_t, axialStrainRef)} \vspace {6pt}\\}{592}{section*.85}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{592}{section*.86}%
+\contentsline {subsubsection}{\numberline {8.4.2.8}MINI EXAMPLE for ObjectANCFCable2D}{593}{subsubsection.8.4.2.8}%
+\contentsline {subsection}{\numberline {8.4.3}ObjectALEANCFCable2D}{595}{subsection.8.4.3}%
+\contentsline {subsubsection}{\numberline {8.4.3.1}DESCRIPTION of ObjectALEANCFCable2D:}{597}{subsubsection.8.4.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{597}{section*.87}%
+\contentsline {subsection}{\numberline {8.4.4}ObjectANCFBeam}{599}{subsection.8.4.4}%
+\contentsline {subsubsection}{\numberline {8.4.4.1}DESCRIPTION of ObjectANCFBeam:}{600}{subsubsection.8.4.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{600}{section*.88}%
+\contentsline {subsection}{\numberline {8.4.5}ObjectBeamGeometricallyExact2D}{601}{subsection.8.4.5}%
+\contentsline {subsubsection}{\numberline {8.4.5.1}DESCRIPTION of ObjectBeamGeometricallyExact2D:}{602}{subsubsection.8.4.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{602}{section*.89}%
+\contentsline {subsection}{\numberline {8.4.6}ObjectBeamGeometricallyExact}{604}{subsection.8.4.6}%
+\contentsline {subsubsection}{\numberline {8.4.6.1}DESCRIPTION of ObjectBeamGeometricallyExact:}{605}{subsubsection.8.4.6.1}%
+\contentsline {paragraph}{Information on input parameters:}{605}{section*.90}%
+\contentsline {subsection}{\numberline {8.4.7}ObjectANCFThinPlate}{606}{subsection.8.4.7}%
+\contentsline {subsubsection}{\numberline {8.4.7.1}DESCRIPTION of ObjectANCFThinPlate:}{607}{subsubsection.8.4.7.1}%
+\contentsline {paragraph}{Information on input parameters:}{607}{section*.91}%
+\contentsline {subsubsection}{\numberline {8.4.7.2}MINI EXAMPLE for ObjectANCFThinPlate}{608}{subsubsection.8.4.7.2}%
+\contentsline {section}{\numberline {8.5}Objects (Joint)}{609}{section.8.5}%
+\contentsline {subsection}{\numberline {8.5.1}ObjectJointGeneric}{609}{subsection.8.5.1}%
+\contentsline {subsubsection}{\numberline {8.5.1.1}DESCRIPTION of ObjectJointGeneric:}{610}{subsubsection.8.5.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{610}{section*.92}%
+\contentsline {subsubsection}{\numberline {8.5.1.2}Definition of quantities}{611}{subsubsection.8.5.1.2}%
+\contentsline {subsubsection}{\numberline {8.5.1.3}Connector constraint equations}{612}{subsubsection.8.5.1.3}%
+\contentsline {paragraph}{Equations for translational part (\texttt {activeConnector = True})}{612}{section*.93}%
+\contentsline {paragraph}{Equations for rotational part (\texttt {activeConnector = True})}{613}{section*.94}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {offsetUserFunction(mbs, t, itemNumber, offsetUserFunctionParameters)} \vspace {6pt}\\}{613}{section*.95}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {offsetUserFunction\_t(mbs, t, itemNumber, offsetUserFunctionParameters)} \vspace {6pt}\\}{614}{section*.96}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{614}{section*.97}%
+\contentsline {subsection}{\numberline {8.5.2}ObjectJointRevoluteZ}{616}{subsection.8.5.2}%
+\contentsline {subsubsection}{\numberline {8.5.2.1}DESCRIPTION of ObjectJointRevoluteZ:}{617}{subsubsection.8.5.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{617}{section*.98}%
+\contentsline {subsubsection}{\numberline {8.5.2.2}Definition of quantities}{618}{subsubsection.8.5.2.2}%
+\contentsline {subsubsection}{\numberline {8.5.2.3}Connector constraint equations}{619}{subsubsection.8.5.2.3}%
+\contentsline {paragraph}{Equations for translational part (\texttt {activeConnector = True})}{619}{section*.99}%
+\contentsline {paragraph}{Equations for rotational part (\texttt {activeConnector = True})}{619}{section*.100}%
+\contentsline {subsubsection}{\numberline {8.5.2.4}MINI EXAMPLE for ObjectJointRevoluteZ}{619}{subsubsection.8.5.2.4}%
+\contentsline {subsection}{\numberline {8.5.3}ObjectJointPrismaticX}{621}{subsection.8.5.3}%
+\contentsline {subsubsection}{\numberline {8.5.3.1}DESCRIPTION of ObjectJointPrismaticX:}{622}{subsubsection.8.5.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{622}{section*.101}%
+\contentsline {subsubsection}{\numberline {8.5.3.2}Definition of quantities}{623}{subsubsection.8.5.3.2}%
+\contentsline {subsubsection}{\numberline {8.5.3.3}Connector constraint equations}{624}{subsubsection.8.5.3.3}%
+\contentsline {paragraph}{Equations for translational part (\texttt {activeConnector = True})}{624}{section*.102}%
+\contentsline {paragraph}{Equations for rotational part (\texttt {activeConnector = True})}{624}{section*.103}%
+\contentsline {subsection}{\numberline {8.5.4}ObjectJointSpherical}{625}{subsection.8.5.4}%
+\contentsline {subsubsection}{\numberline {8.5.4.1}DESCRIPTION of ObjectJointSpherical:}{626}{subsubsection.8.5.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{626}{section*.104}%
+\contentsline {subsubsection}{\numberline {8.5.4.2}Definition of quantities}{626}{subsubsection.8.5.4.2}%
+\contentsline {subsubsection}{\numberline {8.5.4.3}Connector constraint equations}{626}{subsubsection.8.5.4.3}%
+\contentsline {paragraph}{\texttt {activeConnector = True}:}{626}{section*.105}%
+\contentsline {paragraph}{\texttt {activeConnector = False}:}{627}{section*.106}%
+\contentsline {subsubsection}{\numberline {8.5.4.4}Example for body position marker}{627}{subsubsection.8.5.4.4}%
+\contentsline {subsection}{\numberline {8.5.5}ObjectJointRollingDisc}{629}{subsection.8.5.5}%
+\contentsline {subsubsection}{\numberline {8.5.5.1}DESCRIPTION of ObjectJointRollingDisc:}{630}{subsubsection.8.5.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{630}{section*.107}%
+\contentsline {subsubsection}{\numberline {8.5.5.2}Definition of quantities}{630}{subsubsection.8.5.5.2}%
+\contentsline {subsubsection}{\numberline {8.5.5.3}Geometric relations}{631}{subsubsection.8.5.5.3}%
+\contentsline {subsubsection}{\numberline {8.5.5.4}Connector constraint equations}{632}{subsubsection.8.5.5.4}%
+\contentsline {subsection}{\numberline {8.5.6}ObjectJointRevolute2D}{634}{subsection.8.5.6}%
+\contentsline {subsubsection}{\numberline {8.5.6.1}DESCRIPTION of ObjectJointRevolute2D:}{634}{subsubsection.8.5.6.1}%
+\contentsline {subsection}{\numberline {8.5.7}ObjectJointPrismatic2D}{636}{subsection.8.5.7}%
+\contentsline {subsubsection}{\numberline {8.5.7.1}DESCRIPTION of ObjectJointPrismatic2D:}{637}{subsubsection.8.5.7.1}%
+\contentsline {subsection}{\numberline {8.5.8}ObjectJointSliding2D}{638}{subsection.8.5.8}%
+\contentsline {subsubsection}{\numberline {8.5.8.1}DESCRIPTION of ObjectJointSliding2D:}{639}{subsubsection.8.5.8.1}%
+\contentsline {paragraph}{Information on input parameters:}{639}{section*.108}%
+\contentsline {subsubsection}{\numberline {8.5.8.2}Definition of quantities}{640}{subsubsection.8.5.8.2}%
+\contentsline {subsubsection}{\numberline {8.5.8.3}Geometric relations}{641}{subsubsection.8.5.8.3}%
+\contentsline {subsubsection}{\numberline {8.5.8.4}Connector constraint equations (classicalFormulation=True)}{641}{subsubsection.8.5.8.4}%
+\contentsline {subsubsection}{\numberline {8.5.8.5}Connector constraint equations (classicalFormulation=False)}{642}{subsubsection.8.5.8.5}%
+\contentsline {subsubsection}{\numberline {8.5.8.6}Post Newton Step}{643}{subsubsection.8.5.8.6}%
+\contentsline {subsection}{\numberline {8.5.9}ObjectJointALEMoving2D}{644}{subsection.8.5.9}%
+\contentsline {subsubsection}{\numberline {8.5.9.1}DESCRIPTION of ObjectJointALEMoving2D:}{645}{subsubsection.8.5.9.1}%
+\contentsline {paragraph}{Information on input parameters:}{645}{section*.109}%
+\contentsline {subsubsection}{\numberline {8.5.9.2}Definition of quantities}{646}{subsubsection.8.5.9.2}%
+\contentsline {subsubsection}{\numberline {8.5.9.3}Geometric relations}{646}{subsubsection.8.5.9.3}%
+\contentsline {subsubsection}{\numberline {8.5.9.4}Connector constraint equations}{647}{subsubsection.8.5.9.4}%
+\contentsline {subsubsection}{\numberline {8.5.9.5}Post Newton Step}{648}{subsubsection.8.5.9.5}%
+\contentsline {section}{\numberline {8.6}Objects (Connector)}{649}{section.8.6}%
+\contentsline {subsection}{\numberline {8.6.1}ObjectConnectorSpringDamper}{649}{subsection.8.6.1}%
+\contentsline {subsubsection}{\numberline {8.6.1.1}DESCRIPTION of ObjectConnectorSpringDamper:}{650}{subsubsection.8.6.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{650}{section*.110}%
+\contentsline {subsubsection}{\numberline {8.6.1.2}Definition of quantities}{651}{subsubsection.8.6.1.2}%
+\contentsline {subsubsection}{\numberline {8.6.1.3}Connector forces}{651}{subsubsection.8.6.1.3}%
+\contentsline {subsubsection}{\numberline {8.6.1.4}Connector Jacobian}{652}{subsubsection.8.6.1.4}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceUserFunction(mbs, t, itemNumber, deltaL, deltaL\_t, stiffness, damping, force)} \vspace {6pt}\\}{653}{section*.111}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{653}{section*.112}%
+\contentsline {subsubsection}{\numberline {8.6.1.5}MINI EXAMPLE for ObjectConnectorSpringDamper}{654}{subsubsection.8.6.1.5}%
+\contentsline {subsection}{\numberline {8.6.2}ObjectConnectorCartesianSpringDamper}{656}{subsection.8.6.2}%
+\contentsline {subsubsection}{\numberline {8.6.2.1}DESCRIPTION of ObjectConnectorCartesianSpringDamper:}{657}{subsubsection.8.6.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{657}{section*.113}%
+\contentsline {subsubsection}{\numberline {8.6.2.2}Definition of quantities}{657}{subsubsection.8.6.2.2}%
+\contentsline {subsubsection}{\numberline {8.6.2.3}Connector forces}{658}{subsubsection.8.6.2.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceUserFunction(mbs, t, itemNumber, displacement, velocity, stiffness, damping, offset)} \vspace {6pt}\\}{659}{section*.114}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{660}{section*.115}%
+\contentsline {subsubsection}{\numberline {8.6.2.4}MINI EXAMPLE for ObjectConnectorCartesianSpringDamper}{660}{subsubsection.8.6.2.4}%
+\contentsline {subsection}{\numberline {8.6.3}ObjectConnectorRigidBodySpringDamper}{662}{subsection.8.6.3}%
+\contentsline {subsubsection}{\numberline {8.6.3.1}DESCRIPTION of ObjectConnectorRigidBodySpringDamper:}{664}{subsubsection.8.6.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{664}{section*.116}%
+\contentsline {subsubsection}{\numberline {8.6.3.2}Definition of quantities}{664}{subsubsection.8.6.3.2}%
+\contentsline {subsubsection}{\numberline {8.6.3.3}Connector forces}{665}{subsubsection.8.6.3.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceTorqueUserFunction(mbs, t, itemNumber, displacement, rotation, velocity, angularVelocity, stiffness, damping, rotJ0, rotJ1, offset)} \vspace {6pt}\\}{665}{section*.117}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {postNewtonStepUserFunction(mbs, t, Index itemIndex, dataCoordinates, displacement, rotation, velocity, angularVelocity, stiffness, damping, rotJ0, rotJ1, offset)} \vspace {6pt}\\}{666}{section*.118}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{667}{section*.119}%
+\contentsline {subsubsection}{\numberline {8.6.3.4}MINI EXAMPLE for ObjectConnectorRigidBodySpringDamper}{667}{subsubsection.8.6.3.4}%
+\contentsline {subsection}{\numberline {8.6.4}ObjectConnectorLinearSpringDamper}{669}{subsection.8.6.4}%
+\contentsline {subsubsection}{\numberline {8.6.4.1}DESCRIPTION of ObjectConnectorLinearSpringDamper:}{670}{subsubsection.8.6.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{670}{section*.120}%
+\contentsline {subsubsection}{\numberline {8.6.4.2}Definition of quantities}{671}{subsubsection.8.6.4.2}%
+\contentsline {subsubsection}{\numberline {8.6.4.3}Connector forces}{671}{subsubsection.8.6.4.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceUserFunction(mbs, t, itemNumber, displacement, velocity, stiffness, damping, offset)} \vspace {6pt}\\}{671}{section*.121}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{672}{section*.122}%
+\contentsline {subsubsection}{\numberline {8.6.4.4}MINI EXAMPLE for ObjectConnectorLinearSpringDamper}{672}{subsubsection.8.6.4.4}%
+\contentsline {subsection}{\numberline {8.6.5}ObjectConnectorTorsionalSpringDamper}{674}{subsection.8.6.5}%
+\contentsline {subsubsection}{\numberline {8.6.5.1}DESCRIPTION of ObjectConnectorTorsionalSpringDamper:}{675}{subsubsection.8.6.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{675}{section*.123}%
+\contentsline {subsubsection}{\numberline {8.6.5.2}Definition of quantities}{676}{subsubsection.8.6.5.2}%
+\contentsline {subsubsection}{\numberline {8.6.5.3}Connector forces}{676}{subsubsection.8.6.5.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springTorqueUserFunction(mbs, t, itemNumber, rotation, angularVelocity, stiffness, damping, offset)} \vspace {6pt}\\}{677}{section*.124}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{677}{section*.125}%
+\contentsline {subsubsection}{\numberline {8.6.5.4}MINI EXAMPLE for ObjectConnectorTorsionalSpringDamper}{677}{subsubsection.8.6.5.4}%
+\contentsline {subsection}{\numberline {8.6.6}ObjectConnectorCoordinateSpringDamper}{679}{subsection.8.6.6}%
+\contentsline {subsubsection}{\numberline {8.6.6.1}DESCRIPTION of ObjectConnectorCoordinateSpringDamper:}{680}{subsubsection.8.6.6.1}%
+\contentsline {paragraph}{Information on input parameters:}{680}{section*.126}%
+\contentsline {subsubsection}{\numberline {8.6.6.2}Definition of quantities}{680}{subsubsection.8.6.6.2}%
+\contentsline {subsubsection}{\numberline {8.6.6.3}Connector forces}{680}{subsubsection.8.6.6.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceUserFunction(mbs, t, itemNumber, displacement, velocity, stiffness, damping, offset, dryFriction, dryFrictionProportionalZone)} \vspace {6pt}\\}{681}{section*.127}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{682}{section*.128}%
+\contentsline {subsubsection}{\numberline {8.6.6.4}MINI EXAMPLE for ObjectConnectorCoordinateSpringDamper}{682}{subsubsection.8.6.6.4}%
+\contentsline {subsection}{\numberline {8.6.7}ObjectConnectorCoordinateSpringDamperExt}{684}{subsection.8.6.7}%
+\contentsline {subsubsection}{\numberline {8.6.7.1}DESCRIPTION of ObjectConnectorCoordinateSpringDamperExt:}{686}{subsubsection.8.6.7.1}%
+\contentsline {paragraph}{Information on input parameters:}{686}{section*.129}%
+\contentsline {subsubsection}{\numberline {8.6.7.2}Definition of quantities}{687}{subsubsection.8.6.7.2}%
+\contentsline {subsubsection}{\numberline {8.6.7.3}Connector forces}{687}{subsubsection.8.6.7.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {springForceUserFunction(mbs, t, itemNumber, displacement, velocity, stiffness, damping, offset, velocityOffset, fDynamicFriction, fStaticFrictionOffset, exponentialDecayStatic, fViscousFriction, frictionProportionalZone)} \vspace {6pt}\\}{689}{section*.130}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{689}{section*.131}%
+\contentsline {subsection}{\numberline {8.6.8}ObjectConnectorGravity}{691}{subsection.8.6.8}%
+\contentsline {subsubsection}{\numberline {8.6.8.1}DESCRIPTION of ObjectConnectorGravity:}{692}{subsubsection.8.6.8.1}%
+\contentsline {paragraph}{Information on input parameters:}{692}{section*.132}%
+\contentsline {subsubsection}{\numberline {8.6.8.2}Definition of quantities}{692}{subsubsection.8.6.8.2}%
+\contentsline {subsubsection}{\numberline {8.6.8.3}Connector forces}{692}{subsubsection.8.6.8.3}%
+\contentsline {subsubsection}{\numberline {8.6.8.4}MINI EXAMPLE for ObjectConnectorGravity}{693}{subsubsection.8.6.8.4}%
+\contentsline {subsection}{\numberline {8.6.9}ObjectConnectorHydraulicActuatorSimple}{695}{subsection.8.6.9}%
+\contentsline {subsubsection}{\numberline {8.6.9.1}DESCRIPTION of ObjectConnectorHydraulicActuatorSimple:}{697}{subsubsection.8.6.9.1}%
+\contentsline {paragraph}{Information on input parameters:}{697}{section*.133}%
+\contentsline {subsubsection}{\numberline {8.6.9.2}Definition of quantities}{698}{subsubsection.8.6.9.2}%
+\contentsline {subsubsection}{\numberline {8.6.9.3}Connector forces}{698}{subsubsection.8.6.9.3}%
+\contentsline {subsubsection}{\numberline {8.6.9.4}Pressure build up equations}{698}{subsubsection.8.6.9.4}%
+\contentsline {subsection}{\numberline {8.6.10}ObjectConnectorReevingSystemSprings}{701}{subsection.8.6.10}%
+\contentsline {subsubsection}{\numberline {8.6.10.1}DESCRIPTION of ObjectConnectorReevingSystemSprings:}{703}{subsubsection.8.6.10.1}%
+\contentsline {paragraph}{Information on input parameters:}{703}{section*.134}%
+\contentsline {subsubsection}{\numberline {8.6.10.2}General model assumptions}{703}{subsubsection.8.6.10.2}%
+\contentsline {subsubsection}{\numberline {8.6.10.3}Common tangent of two circles in 3D}{704}{subsubsection.8.6.10.3}%
+\contentsline {subsubsection}{\numberline {8.6.10.4}Connector forces}{705}{subsubsection.8.6.10.4}%
+\contentsline {subsection}{\numberline {8.6.11}ObjectConnectorRollingDiscPenalty}{707}{subsection.8.6.11}%
+\contentsline {subsubsection}{\numberline {8.6.11.1}DESCRIPTION of ObjectConnectorRollingDiscPenalty:}{708}{subsubsection.8.6.11.1}%
+\contentsline {paragraph}{Information on input parameters:}{708}{section*.135}%
+\contentsline {subsubsection}{\numberline {8.6.11.2}Definition of quantities}{709}{subsubsection.8.6.11.2}%
+\contentsline {subsubsection}{\numberline {8.6.11.3}Geometric relations}{710}{subsubsection.8.6.11.3}%
+\contentsline {subsubsection}{\numberline {8.6.11.4}Computation of normal and tangential forces}{711}{subsubsection.8.6.11.4}%
+\contentsline {subsubsection}{\numberline {8.6.11.5}Connector forces}{712}{subsubsection.8.6.11.5}%
+\contentsline {subsection}{\numberline {8.6.12}ObjectContactConvexRoll}{714}{subsection.8.6.12}%
+\contentsline {subsubsection}{\numberline {8.6.12.1}DESCRIPTION of ObjectContactConvexRoll:}{715}{subsubsection.8.6.12.1}%
+\contentsline {paragraph}{Information on input parameters:}{715}{section*.136}%
+\contentsline {subsubsection}{\numberline {8.6.12.2}Definition of quantities}{716}{subsubsection.8.6.12.2}%
+\contentsline {subsubsection}{\numberline {8.6.12.3}Geometric relations}{717}{subsubsection.8.6.12.3}%
+\contentsline {subsection}{\numberline {8.6.13}ObjectContactCoordinate}{719}{subsection.8.6.13}%
+\contentsline {subsubsection}{\numberline {8.6.13.1}DESCRIPTION of ObjectContactCoordinate:}{720}{subsubsection.8.6.13.1}%
+\contentsline {subsection}{\numberline {8.6.14}ObjectContactCircleCable2D}{721}{subsection.8.6.14}%
+\contentsline {subsubsection}{\numberline {8.6.14.1}DESCRIPTION of ObjectContactCircleCable2D:}{722}{subsubsection.8.6.14.1}%
+\contentsline {subsubsection}{\numberline {8.6.14.2}Connector equations}{722}{subsubsection.8.6.14.2}%
+\contentsline {subsection}{\numberline {8.6.15}ObjectContactFrictionCircleCable2D}{723}{subsection.8.6.15}%
+\contentsline {subsubsection}{\numberline {8.6.15.1}DESCRIPTION of ObjectContactFrictionCircleCable2D:}{725}{subsubsection.8.6.15.1}%
+\contentsline {paragraph}{Information on input parameters:}{725}{section*.137}%
+\contentsline {subsubsection}{\numberline {8.6.15.2}Definition of quantities}{725}{subsubsection.8.6.15.2}%
+\contentsline {subsubsection}{\numberline {8.6.15.3}Connector forces: contact geometry}{726}{subsubsection.8.6.15.3}%
+\contentsline {subsubsection}{\numberline {8.6.15.4}Contact frame and relative motion}{727}{subsubsection.8.6.15.4}%
+\contentsline {subsubsection}{\numberline {8.6.15.5}Contact forces: definition}{729}{subsubsection.8.6.15.5}%
+\contentsline {subsubsection}{\numberline {8.6.15.6}PostNewtonStep}{729}{subsubsection.8.6.15.6}%
+\contentsline {subsubsection}{\numberline {8.6.15.7}Computation of connector forces in Newton}{731}{subsubsection.8.6.15.7}%
+\contentsline {subsubsection}{\numberline {8.6.15.8}Computation of LHS terms for circle and ANCF cable element}{732}{subsubsection.8.6.15.8}%
+\contentsline {subsection}{\numberline {8.6.16}ObjectContactSphereSphere}{734}{subsection.8.6.16}%
+\contentsline {subsubsection}{\numberline {8.6.16.1}DESCRIPTION of ObjectContactSphereSphere:}{736}{subsubsection.8.6.16.1}%
+\contentsline {paragraph}{Information on input parameters:}{736}{section*.138}%
+\contentsline {subsubsection}{\numberline {8.6.16.2}Definition of quantities}{737}{subsubsection.8.6.16.2}%
+\contentsline {subsubsection}{\numberline {8.6.16.3}Connector Forces}{737}{subsubsection.8.6.16.3}%
+\contentsline {subsection}{\numberline {8.6.17}ObjectContactSphereTorus}{741}{subsection.8.6.17}%
+\contentsline {subsubsection}{\numberline {8.6.17.1}DESCRIPTION of ObjectContactSphereTorus:}{743}{subsubsection.8.6.17.1}%
+\contentsline {paragraph}{Information on input parameters:}{743}{section*.139}%
+\contentsline {subsubsection}{\numberline {8.6.17.2}Definition of quantities}{744}{subsubsection.8.6.17.2}%
+\contentsline {subsubsection}{\numberline {8.6.17.3}Connector Forces}{744}{subsubsection.8.6.17.3}%
+\contentsline {subsection}{\numberline {8.6.18}ObjectContactSphereTriangle}{745}{subsection.8.6.18}%
+\contentsline {subsubsection}{\numberline {8.6.18.1}DESCRIPTION of ObjectContactSphereTriangle:}{747}{subsubsection.8.6.18.1}%
+\contentsline {paragraph}{Information on input parameters:}{747}{section*.140}%
+\contentsline {subsubsection}{\numberline {8.6.18.2}Definition of quantities}{747}{subsubsection.8.6.18.2}%
+\contentsline {subsubsection}{\numberline {8.6.18.3}Connector Forces}{748}{subsubsection.8.6.18.3}%
+\contentsline {subsection}{\numberline {8.6.19}ObjectContactCurveCircles}{749}{subsection.8.6.19}%
+\contentsline {subsubsection}{\numberline {8.6.19.1}DESCRIPTION of ObjectContactCurveCircles:}{751}{subsubsection.8.6.19.1}%
+\contentsline {paragraph}{Information on input parameters:}{751}{section*.141}%
+\contentsline {subsubsection}{\numberline {8.6.19.2}Definition of quantities}{752}{subsubsection.8.6.19.2}%
+\contentsline {subsubsection}{\numberline {8.6.19.3}Geometric relations}{752}{subsubsection.8.6.19.3}%
+\contentsline {section}{\numberline {8.7}Objects (Constraint)}{753}{section.8.7}%
+\contentsline {subsection}{\numberline {8.7.1}ObjectConnectorDistance}{753}{subsection.8.7.1}%
+\contentsline {subsubsection}{\numberline {8.7.1.1}DESCRIPTION of ObjectConnectorDistance:}{754}{subsubsection.8.7.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{754}{section*.142}%
+\contentsline {subsubsection}{\numberline {8.7.1.2}Definition of quantities}{754}{subsubsection.8.7.1.2}%
+\contentsline {subsubsection}{\numberline {8.7.1.3}Connector forces constraint equations}{754}{subsubsection.8.7.1.3}%
+\contentsline {subsubsection}{\numberline {8.7.1.4}MINI EXAMPLE for ObjectConnectorDistance}{755}{subsubsection.8.7.1.4}%
+\contentsline {subsection}{\numberline {8.7.2}ObjectConnectorCoordinate}{757}{subsection.8.7.2}%
+\contentsline {subsubsection}{\numberline {8.7.2.1}DESCRIPTION of ObjectConnectorCoordinate:}{758}{subsubsection.8.7.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{758}{section*.143}%
+\contentsline {subsubsection}{\numberline {8.7.2.2}Definition of quantities}{758}{subsubsection.8.7.2.2}%
+\contentsline {subsubsection}{\numberline {8.7.2.3}Connector constraint equations}{759}{subsubsection.8.7.2.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {offsetUserFunction(mbs, t, itemNumber, lOffset)} \vspace {6pt}\\}{759}{section*.144}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {offsetUserFunction\_t(mbs, t, itemNumber, lOffset)} \vspace {6pt}\\}{760}{section*.145}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{760}{section*.146}%
+\contentsline {subsubsection}{\numberline {8.7.2.4}MINI EXAMPLE for ObjectConnectorCoordinate}{761}{subsubsection.8.7.2.4}%
+\contentsline {subsection}{\numberline {8.7.3}ObjectConnectorCoordinateVector}{763}{subsection.8.7.3}%
+\contentsline {subsubsection}{\numberline {8.7.3.1}DESCRIPTION of ObjectConnectorCoordinateVector:}{764}{subsubsection.8.7.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{764}{section*.147}%
+\contentsline {subsubsection}{\numberline {8.7.3.2}Definition of quantities}{765}{subsubsection.8.7.3.2}%
+\contentsline {subsubsection}{\numberline {8.7.3.3}Remarks}{765}{subsubsection.8.7.3.3}%
+\contentsline {subsubsection}{\numberline {8.7.3.4}Connector constraint equations}{765}{subsubsection.8.7.3.4}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {constraintUserFunction(mbs, t, itemNumber, q, q\_t, velocityLevel)} \vspace {6pt}\\}{766}{section*.148}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {jacobianUserFunction(mbs, t, itemNumber, q, q\_t, velocityLevel)} \vspace {6pt}\\}{767}{section*.149}%
+\contentsline {section}{\numberline {8.8}Objects (Object)}{768}{section.8.8}%
+\contentsline {subsection}{\numberline {8.8.1}ObjectGenericODE1}{768}{subsection.8.8.1}%
+\contentsline {subsubsection}{\numberline {8.8.1.1}DESCRIPTION of ObjectGenericODE1:}{769}{subsubsection.8.8.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{769}{section*.150}%
+\contentsline {subsubsection}{\numberline {8.8.1.2}Equations of motion}{769}{subsubsection.8.8.1.2}%
+\contentsline {subsubsection}{\numberline {8.8.1.3}Equations of motion}{769}{subsubsection.8.8.1.3}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {rhsUserFunction(mbs, t, itemNumber, q)} \vspace {6pt}\\}{770}{section*.151}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{770}{section*.152}%
+\contentsline {subsubsection}{\numberline {8.8.1.4}MINI EXAMPLE for ObjectGenericODE1}{770}{subsubsection.8.8.1.4}%
+\contentsline {section}{\numberline {8.9}Markers}{772}{section.8.9}%
+\contentsline {subsection}{\numberline {8.9.1}MarkerBodyMass}{772}{subsection.8.9.1}%
+\contentsline {subsubsection}{\numberline {8.9.1.1}DESCRIPTION of MarkerBodyMass:}{772}{subsubsection.8.9.1.1}%
+\contentsline {subsection}{\numberline {8.9.2}MarkerBodyPosition}{774}{subsection.8.9.2}%
+\contentsline {subsubsection}{\numberline {8.9.2.1}DESCRIPTION of MarkerBodyPosition:}{774}{subsubsection.8.9.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{774}{section*.153}%
+\contentsline {subsection}{\numberline {8.9.3}MarkerBodyRigid}{777}{subsection.8.9.3}%
+\contentsline {subsubsection}{\numberline {8.9.3.1}DESCRIPTION of MarkerBodyRigid:}{777}{subsubsection.8.9.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{777}{section*.154}%
+\contentsline {subsection}{\numberline {8.9.4}MarkerNodePosition}{779}{subsection.8.9.4}%
+\contentsline {subsubsection}{\numberline {8.9.4.1}DESCRIPTION of MarkerNodePosition:}{779}{subsubsection.8.9.4.1}%
+\contentsline {subsection}{\numberline {8.9.5}MarkerNodeRigid}{781}{subsection.8.9.5}%
+\contentsline {subsubsection}{\numberline {8.9.5.1}DESCRIPTION of MarkerNodeRigid:}{781}{subsubsection.8.9.5.1}%
+\contentsline {subsection}{\numberline {8.9.6}MarkerNodeCoordinate}{783}{subsection.8.9.6}%
+\contentsline {subsubsection}{\numberline {8.9.6.1}DESCRIPTION of MarkerNodeCoordinate:}{783}{subsubsection.8.9.6.1}%
+\contentsline {subsection}{\numberline {8.9.7}MarkerNodeCoordinates}{785}{subsection.8.9.7}%
+\contentsline {subsubsection}{\numberline {8.9.7.1}DESCRIPTION of MarkerNodeCoordinates:}{785}{subsubsection.8.9.7.1}%
+\contentsline {subsection}{\numberline {8.9.8}MarkerNodeODE1Coordinate}{786}{subsection.8.9.8}%
+\contentsline {subsection}{\numberline {8.9.9}MarkerNodeRotationCoordinate}{787}{subsection.8.9.9}%
+\contentsline {subsubsection}{\numberline {8.9.9.1}DESCRIPTION of MarkerNodeRotationCoordinate:}{787}{subsubsection.8.9.9.1}%
+\contentsline {subsection}{\numberline {8.9.10}MarkerBodiesRelativeTranslationCoordinate}{788}{subsection.8.9.10}%
+\contentsline {subsubsection}{\numberline {8.9.10.1}DESCRIPTION of MarkerBodiesRelativeTranslationCoordinate:}{789}{subsubsection.8.9.10.1}%
+\contentsline {paragraph}{Information on input parameters:}{789}{section*.155}%
+\contentsline {subsection}{\numberline {8.9.11}MarkerBodiesRelativeRotationCoordinate}{790}{subsection.8.9.11}%
+\contentsline {subsubsection}{\numberline {8.9.11.1}DESCRIPTION of MarkerBodiesRelativeRotationCoordinate:}{791}{subsubsection.8.9.11.1}%
+\contentsline {paragraph}{Information on input parameters:}{791}{section*.156}%
+\contentsline {subsection}{\numberline {8.9.12}MarkerSuperElementPosition}{793}{subsection.8.9.12}%
+\contentsline {subsubsection}{\numberline {8.9.12.1}DESCRIPTION of MarkerSuperElementPosition:}{794}{subsubsection.8.9.12.1}%
+\contentsline {paragraph}{Information on input parameters:}{794}{section*.157}%
+\contentsline {subsubsection}{\numberline {8.9.12.2}Marker quantities}{794}{subsubsection.8.9.12.2}%
+\contentsline {subsubsection}{\numberline {8.9.12.3}MINI EXAMPLE for MarkerSuperElementPosition}{794}{subsubsection.8.9.12.3}%
+\contentsline {subsection}{\numberline {8.9.13}MarkerSuperElementRigid}{797}{subsection.8.9.13}%
+\contentsline {subsubsection}{\numberline {8.9.13.1}DESCRIPTION of MarkerSuperElementRigid:}{798}{subsubsection.8.9.13.1}%
+\contentsline {paragraph}{Information on input parameters:}{798}{section*.158}%
+\contentsline {subsubsection}{\numberline {8.9.13.2}Marker background}{800}{subsubsection.8.9.13.2}%
+\contentsline {subsubsection}{\numberline {8.9.13.3}Marker quantities}{800}{subsubsection.8.9.13.3}%
+\contentsline {subsubsection}{\numberline {8.9.13.4}Standard approach for computation of rotation (\texttt {useAlternativeApproach = False})}{801}{subsubsection.8.9.13.4}%
+\contentsline {subsubsection}{\numberline {8.9.13.5}Alternative computation of rotation (\texttt {useAlternativeApproach = True})}{802}{subsubsection.8.9.13.5}%
+\contentsline {subsection}{\numberline {8.9.14}MarkerKinematicTreeRigid}{804}{subsection.8.9.14}%
+\contentsline {subsubsection}{\numberline {8.9.14.1}DESCRIPTION of MarkerKinematicTreeRigid:}{805}{subsubsection.8.9.14.1}%
+\contentsline {paragraph}{Information on input parameters:}{805}{section*.159}%
+\contentsline {subsubsection}{\numberline {8.9.14.2}Marker quantities}{805}{subsubsection.8.9.14.2}%
+\contentsline {subsection}{\numberline {8.9.15}MarkerObjectODE2Coordinates}{806}{subsection.8.9.15}%
+\contentsline {subsubsection}{\numberline {8.9.15.1}DESCRIPTION of MarkerObjectODE2Coordinates:}{806}{subsubsection.8.9.15.1}%
+\contentsline {subsection}{\numberline {8.9.16}MarkerBodyCable2DShape}{807}{subsection.8.9.16}%
+\contentsline {subsubsection}{\numberline {8.9.16.1}DESCRIPTION of MarkerBodyCable2DShape:}{807}{subsubsection.8.9.16.1}%
+\contentsline {subsection}{\numberline {8.9.17}MarkerBodyCable2DCoordinates}{809}{subsection.8.9.17}%
+\contentsline {subsubsection}{\numberline {8.9.17.1}DESCRIPTION of MarkerBodyCable2DCoordinates:}{809}{subsubsection.8.9.17.1}%
+\contentsline {section}{\numberline {8.10}Loads}{810}{section.8.10}%
+\contentsline {subsection}{\numberline {8.10.1}LoadForceVector}{810}{subsection.8.10.1}%
+\contentsline {subsubsection}{\numberline {8.10.1.1}DESCRIPTION of LoadForceVector:}{811}{subsubsection.8.10.1.1}%
+\contentsline {paragraph}{Information on input parameters:}{811}{section*.160}%
+\contentsline {subsubsection}{\numberline {8.10.1.2}Details}{811}{subsubsection.8.10.1.2}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {loadVectorUserFunction(mbs, t, loadVector)} \vspace {6pt}\\}{812}{section*.161}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{812}{section*.162}%
+\contentsline {subsection}{\numberline {8.10.2}LoadTorqueVector}{813}{subsection.8.10.2}%
+\contentsline {subsubsection}{\numberline {8.10.2.1}DESCRIPTION of LoadTorqueVector:}{814}{subsubsection.8.10.2.1}%
+\contentsline {paragraph}{Information on input parameters:}{814}{section*.163}%
+\contentsline {subsubsection}{\numberline {8.10.2.2}Details}{814}{subsubsection.8.10.2.2}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {loadVectorUserFunction(mbs, t, loadVector)} \vspace {6pt}\\}{814}{section*.164}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{814}{section*.165}%
+\contentsline {subsection}{\numberline {8.10.3}LoadMassProportional}{816}{subsection.8.10.3}%
+\contentsline {subsubsection}{\numberline {8.10.3.1}DESCRIPTION of LoadMassProportional:}{816}{subsubsection.8.10.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{816}{section*.166}%
+\contentsline {subsubsection}{\numberline {8.10.3.2}Details}{817}{subsubsection.8.10.3.2}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {loadVectorUserFunction(mbs, t, loadVector)} \vspace {6pt}\\}{817}{section*.167}%
+\contentsline {subsubsection}{\numberline {8.10.3.3}MINI EXAMPLE for LoadMassProportional}{817}{subsubsection.8.10.3.3}%
+\contentsline {subsection}{\numberline {8.10.4}LoadCoordinate}{819}{subsection.8.10.4}%
+\contentsline {subsubsection}{\numberline {8.10.4.1}DESCRIPTION of LoadCoordinate:}{819}{subsubsection.8.10.4.1}%
+\contentsline {paragraph}{Information on input parameters:}{819}{section*.168}%
+\contentsline {subsubsection}{\numberline {8.10.4.2}Details}{819}{subsubsection.8.10.4.2}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {loadUserFunction(mbs, t, load)} \vspace {6pt}\\}{820}{section*.169}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{820}{section*.170}%
+\contentsline {section}{\numberline {8.11}Sensors}{822}{section.8.11}%
+\contentsline {subsection}{\numberline {8.11.1}SensorNode}{822}{subsection.8.11.1}%
+\contentsline {subsubsection}{\numberline {8.11.1.1}DESCRIPTION of SensorNode:}{823}{subsubsection.8.11.1.1}%
+\contentsline {subsection}{\numberline {8.11.2}SensorObject}{824}{subsection.8.11.2}%
+\contentsline {subsubsection}{\numberline {8.11.2.1}DESCRIPTION of SensorObject:}{824}{subsubsection.8.11.2.1}%
+\contentsline {subsection}{\numberline {8.11.3}SensorBody}{826}{subsection.8.11.3}%
+\contentsline {subsubsection}{\numberline {8.11.3.1}DESCRIPTION of SensorBody:}{826}{subsubsection.8.11.3.1}%
+\contentsline {paragraph}{Information on input parameters:}{826}{section*.171}%
+\contentsline {subsection}{\numberline {8.11.4}SensorSuperElement}{828}{subsection.8.11.4}%
+\contentsline {subsubsection}{\numberline {8.11.4.1}DESCRIPTION of SensorSuperElement:}{829}{subsubsection.8.11.4.1}%
+\contentsline {subsection}{\numberline {8.11.5}SensorKinematicTree}{830}{subsection.8.11.5}%
+\contentsline {subsubsection}{\numberline {8.11.5.1}DESCRIPTION of SensorKinematicTree:}{831}{subsubsection.8.11.5.1}%
+\contentsline {paragraph}{Information on input parameters:}{831}{section*.172}%
+\contentsline {subsection}{\numberline {8.11.6}SensorMarker}{832}{subsection.8.11.6}%
+\contentsline {subsubsection}{\numberline {8.11.6.1}DESCRIPTION of SensorMarker:}{832}{subsubsection.8.11.6.1}%
+\contentsline {subsection}{\numberline {8.11.7}SensorLoad}{834}{subsection.8.11.7}%
+\contentsline {subsubsection}{\numberline {8.11.7.1}DESCRIPTION of SensorLoad:}{834}{subsubsection.8.11.7.1}%
+\contentsline {subsection}{\numberline {8.11.8}SensorUserFunction}{836}{subsection.8.11.8}%
+\contentsline {subsubsection}{\numberline {8.11.8.1}DESCRIPTION of SensorUserFunction:}{836}{subsubsection.8.11.8.1}%
+\contentsline {paragraph}{Information on input parameters:}{836}{section*.173}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf Userfunction}: \texttt {sensorUserFunction(mbs, t, sensorNumbers, factors, configuration)} \vspace {6pt}\\}{837}{section*.174}%
+\contentsline {paragraph}{\textcolor {steelblue}{\bf User function example:}}{837}{section*.175}%
+\contentsline {chapter}{\numberline {9}Structures and Settings}{839}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Structures for structural elements}{839}{section.9.1}%
+\contentsline {subsubsection}{\numberline {9.1.0.1}PyBeamSection}{839}{subsubsection.9.1.0.1}%
+\contentsline {subsubsection}{\numberline {9.1.0.2}BeamSectionGeometry}{840}{subsubsection.9.1.0.2}%
+\contentsline {section}{\numberline {9.2}Simulation settings}{840}{section.9.2}%
+\contentsline {subsubsection}{\numberline {9.2.0.1}SolutionSettings}{840}{subsubsection.9.2.0.1}%
+\contentsline {subsubsection}{\numberline {9.2.0.2}NumericalDifferentiationSettings}{844}{subsubsection.9.2.0.2}%
+\contentsline {subsubsection}{\numberline {9.2.0.3}DiscontinuousSettings}{845}{subsubsection.9.2.0.3}%
+\contentsline {subsubsection}{\numberline {9.2.0.4}NewtonSettings}{846}{subsubsection.9.2.0.4}%
+\contentsline {subsubsection}{\numberline {9.2.0.5}GeneralizedAlphaSettings}{847}{subsubsection.9.2.0.5}%
+\contentsline {subsubsection}{\numberline {9.2.0.6}ExplicitIntegrationSettings}{848}{subsubsection.9.2.0.6}%
+\contentsline {subsubsection}{\numberline {9.2.0.7}TimeIntegrationSettings}{849}{subsubsection.9.2.0.7}%
+\contentsline {subsubsection}{\numberline {9.2.0.8}StaticSolverSettings}{852}{subsubsection.9.2.0.8}%
+\contentsline {subsubsection}{\numberline {9.2.0.9}LinearSolverSettings}{854}{subsubsection.9.2.0.9}%
+\contentsline {subsubsection}{\numberline {9.2.0.10}Parallel}{855}{subsubsection.9.2.0.10}%
+\contentsline {subsubsection}{\numberline {9.2.0.11}SimulationSettings}{857}{subsubsection.9.2.0.11}%
+\contentsline {section}{\numberline {9.3}Visualization settings}{857}{section.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.0.1}VSettingsGeneral}{858}{subsubsection.9.3.0.1}%
+\contentsline {subsubsection}{\numberline {9.3.0.2}VSettingsContour}{860}{subsubsection.9.3.0.2}%
+\contentsline {subsubsection}{\numberline {9.3.0.3}VSettingsNodes}{861}{subsubsection.9.3.0.3}%
+\contentsline {subsubsection}{\numberline {9.3.0.4}VSettingsBeams}{862}{subsubsection.9.3.0.4}%
+\contentsline {subsubsection}{\numberline {9.3.0.5}VSettingsKinematicTree}{863}{subsubsection.9.3.0.5}%
+\contentsline {subsubsection}{\numberline {9.3.0.6}VSettingsBodies}{863}{subsubsection.9.3.0.6}%
+\contentsline {subsubsection}{\numberline {9.3.0.7}VSettingsConnectors}{864}{subsubsection.9.3.0.7}%
+\contentsline {subsubsection}{\numberline {9.3.0.8}VSettingsMarkers}{864}{subsubsection.9.3.0.8}%
+\contentsline {subsubsection}{\numberline {9.3.0.9}VSettingsLoads}{865}{subsubsection.9.3.0.9}%
+\contentsline {subsubsection}{\numberline {9.3.0.10}VSettingsTraces}{866}{subsubsection.9.3.0.10}%
+\contentsline {subsubsection}{\numberline {9.3.0.11}VSettingsSensors}{867}{subsubsection.9.3.0.11}%
+\contentsline {subsubsection}{\numberline {9.3.0.12}VSettingsContact}{867}{subsubsection.9.3.0.12}%
+\contentsline {subsubsection}{\numberline {9.3.0.13}VSettingsWindow}{869}{subsubsection.9.3.0.13}%
+\contentsline {subsubsection}{\numberline {9.3.0.14}VSettingsDialogs}{870}{subsubsection.9.3.0.14}%
+\contentsline {subsubsection}{\numberline {9.3.0.15}VSettingsMaterial}{870}{subsubsection.9.3.0.15}%
+\contentsline {subsubsection}{\numberline {9.3.0.16}VSettingsRaytracer}{871}{subsubsection.9.3.0.16}%
+\contentsline {subsubsection}{\numberline {9.3.0.17}VSettingsOpenGL}{873}{subsubsection.9.3.0.17}%
+\contentsline {subsubsection}{\numberline {9.3.0.18}VSettingsExportImages}{877}{subsubsection.9.3.0.18}%
+\contentsline {subsubsection}{\numberline {9.3.0.19}VSettingsOpenVR}{878}{subsubsection.9.3.0.19}%
+\contentsline {subsubsection}{\numberline {9.3.0.20}VSettingsInteractive}{879}{subsubsection.9.3.0.20}%
+\contentsline {subsubsection}{\numberline {9.3.0.21}VisualizationSettings}{880}{subsubsection.9.3.0.21}%
+\contentsline {section}{\numberline {9.4}Solver substructures}{881}{section.9.4}%
+\contentsline {subsubsection}{\numberline {9.4.0.1}CSolverTimer}{881}{subsubsection.9.4.0.1}%
+\contentsline {subsubsection}{\numberline {9.4.0.2}SolverIterationData}{882}{subsubsection.9.4.0.2}%
+\contentsline {subsubsection}{\numberline {9.4.0.3}SolverConvergenceData}{884}{subsubsection.9.4.0.3}%
+\contentsline {subsubsection}{\numberline {9.4.0.4}SolverOutputData}{885}{subsubsection.9.4.0.4}%
+\contentsline {subsubsection}{\numberline {9.4.0.5}MainSolverStatic}{886}{subsubsection.9.4.0.5}%
+\contentsline {subsubsection}{\numberline {9.4.0.6}MainSolverImplicitSecondOrder}{889}{subsubsection.9.4.0.6}%
+\contentsline {subsubsection}{\numberline {9.4.0.7}MainSolverExplicit}{894}{subsubsection.9.4.0.7}%
+\contentsline {chapter}{\numberline {10}Graphics and visualization}{899}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Mouse input}{899}{section.10.1}%
+\contentsline {subsection}{\numberline {10.1.1}6D mouse}{899}{subsection.10.1.1}%
+\contentsline {section}{\numberline {10.2}Keyboard input}{900}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Render state}{901}{section.10.3}%
+\contentsline {section}{\numberline {10.4}GraphicsData}{903}{section.10.4}%
+\contentsline {subsection}{\numberline {10.4.1}BodyGraphicsData}{903}{subsection.10.4.1}%
+\contentsline {subsection}{\numberline {10.4.2}GraphicsData: Line}{904}{subsection.10.4.2}%
+\contentsline {subsection}{\numberline {10.4.3}GraphicsData: Lines}{904}{subsection.10.4.3}%
+\contentsline {subsection}{\numberline {10.4.4}GraphicsData: Circle}{904}{subsection.10.4.4}%
+\contentsline {subsection}{\numberline {10.4.5}GraphicsData: Text}{905}{subsection.10.4.5}%
+\contentsline {subsection}{\numberline {10.4.6}GraphicsData: TriangleList}{905}{subsection.10.4.6}%
+\contentsline {section}{\numberline {10.5}Character encoding: UTF-8}{906}{section.10.5}%
+\contentsline {chapter}{\numberline {11}Solvers}{909}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Solvers in \texttt {Exudyn}\xspace \ }{909}{section.11.1}%
+\contentsline {subsection}{\numberline {11.1.1}System equations of motion}{910}{subsection.11.1.1}%
+\contentsline {section}{\numberline {11.2}General solver structure}{911}{section.11.2}%
+\contentsline {section}{\numberline {11.3}Explicit solvers}{915}{section.11.3}%
+\contentsline {subsection}{\numberline {11.3.1}Explicit Runge-Kutta method}{915}{subsection.11.3.1}%
+\contentsline {subsection}{\numberline {11.3.2}Automatic step size control}{916}{subsection.11.3.2}%
+\contentsline {subsection}{\numberline {11.3.3}Stability limit}{917}{subsection.11.3.3}%
+\contentsline {subsection}{\numberline {11.3.4}Explicit Lie group integrators}{918}{subsection.11.3.4}%
+\contentsline {subsection}{\numberline {11.3.5}Constraints with explicit solvers}{918}{subsection.11.3.5}%
+\contentsline {section}{\numberline {11.4}Implicit trapezoidal rule-based, Newmark and Generalized-alpha solver}{918}{section.11.4}%
+\contentsline {subsection}{\numberline {11.4.1}Newmark and Generalized-alpha method}{919}{subsection.11.4.1}%
+\contentsline {subsection}{\numberline {11.4.2}Parameter selection for Generalized-alpha}{920}{subsection.11.4.2}%
+\contentsline {subsection}{\numberline {11.4.3}Newton iteration}{920}{subsection.11.4.3}%
+\contentsline {subsubsection}{\numberline {11.4.3.1}(A) Solve for unknown accelerations}{921}{subsubsection.11.4.3.1}%
+\contentsline {subsubsection}{\numberline {11.4.3.2}(B) Solve for unknown displacements}{922}{subsubsection.11.4.3.2}%
+\contentsline {subsection}{\numberline {11.4.4}Initial accelerations}{922}{subsection.11.4.4}%
+\contentsline {section}{\numberline {11.5}Optimization and parameter variation}{924}{section.11.5}%
+\contentsline {subsection}{\numberline {11.5.1}Parameter Variation}{924}{subsection.11.5.1}%
+\contentsline {subsection}{\numberline {11.5.2}Genetic Optimization}{924}{subsection.11.5.2}%
+\contentsline {chapter}{\numberline {12}Issues and bugs}{927}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Resolved issues and resolved bugs}{927}{section.12.1}%
+\contentsline {section}{\numberline {12.2}Known open bugs}{1024}{section.12.2}%
+\contentsline {chapter}{References}{1026}{section*.176}%
+\contentsline {chapter}{\numberline {13}License}{1033}{chapter.13}%
