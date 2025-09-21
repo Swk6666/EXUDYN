@@ -34,11 +34,11 @@ from exudyn.FEM import (
 class FlexibleLinkParameters:
     """Geometric/material data and CMS options shared by both flexible links."""
 
-    length_first: float = 0.5          # [m]
-    length_second: float = 0.4         # [m]
+    length_first: float = 0.5 *2          # [m]
+    length_second: float = 0.4 *2         # [m]
     width: float = 0.012               # [m]
     thickness: float = 0.003           # [m]
-    youngs_modulus: float = 1.1e8      # [Pa]
+    youngs_modulus: float = 8.1e8     # [Pa]
     density: float = 1180.0            # [kg/m^3]
     poisson: float = 0.34
     modes_first: int = 8
@@ -84,8 +84,34 @@ def _planar_velocity(omega: float, position: np.ndarray) -> np.ndarray:
 
 
 def _collect_element_arrays(element_sets) -> Dict[str, np.ndarray]:
-    """Flatten FEMinterface element dictionaries to numpy arrays."""
-    collected: Dict[str, list[np.ndarray]] = {}
+    """Flatten FEMinterface element dictionaries to numpy arrays.
+    输入的 element_sets 是从 Exudyn 的 FEMinterface 对象中获取的单元信息。这个信息的原始格式是一个列表，列表中的每个成员都是一个字典，代表一种类型的有限元单元（比如四面体、六面体等）。
+    element_sets = [
+    {
+        'Name': 'Tetrahedron',
+        'Nodes': [[0, 1, 2, 3], [4, 5, 6, 7], ...],  # 很多四面体单元
+        'SomeOtherInfo': [...] 
+    },
+    {
+        'Name': 'Hexahedron',
+        'Nodes': [[8, 9, 10, 11, 12, 13, 14, 15], ...], # 很多六面体单元
+        'SomeOtherInfo': [...]
+    },
+    # 可能还有其他类型的单元...
+]
+这个函数的目标是把这些信息按“键”（key）重新组织，将所有类型单元中具有相同键（例如 'Nodes'）的数据合并到一个大的 NumPy 数组中。
+{
+    'Nodes': np.array([
+        [0, 1, 2, 3], 
+        [4, 5, 6, 7], 
+        ...,
+        [8, 9, 10, 11, 12, 13, 14, 15],
+        ...
+    ]),
+    'SomeOtherInfo': np.array([...]) 
+}
+    """
+    collected: Dict[str, list[np.ndarray]] = {} #初始化一个名为 collected 的空字典。
     for element_dict in element_sets:
         for key, value in element_dict.items():
             if key == "Name":
