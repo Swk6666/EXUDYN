@@ -68,7 +68,7 @@ class InitialState:
 class SimulationSettings:
     end_time: float = 20.0
     step_size: float = 1e-3
-    render: bool = True
+    render: bool = False
     frames_per_second: int = 60
     store_trajectory: bool = True
     matlab_export: Optional[Path] = Path("output/flexible_pendulum_sim.mat")
@@ -205,7 +205,7 @@ def _create_superelement_marker(
     mesh_nodes: np.ndarray,
     weights: np.ndarray,
     offset: Iterable[float] | None = None,
-    show: bool = False,
+    show: bool = True,
 ) -> int:
     if offset is None:
         offset = [0.0, 0.0, 0.0]
@@ -552,7 +552,11 @@ def run_simulation(
 
 
 if __name__ == "__main__":
+    import time
+    start_time = time.time()
     params = FlexibleLinkParameters()
     init = InitialState()
     sim = SimulationSettings()
     run_simulation(params, init, sim)
+    end_time = time.time()
+    exu.Print(f"Time taken: {end_time - start_time:.2f} seconds")
