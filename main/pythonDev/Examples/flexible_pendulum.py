@@ -13,8 +13,9 @@ Prerequisites: NGsolve/Netgen must be installed and importable from Python.
 
 from __future__ import annotations
 
+import json
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Dict, Iterable, Optional, Tuple
 
@@ -72,6 +73,11 @@ class SimulationSettings:
     frames_per_second: int = 60
     store_trajectory: bool = True
     matlab_export: Optional[Path] = Path("output/flexible_pendulum_sim.mat")
+    adaptive_step: bool = True
+    spectral_radius: float = 0.85
+    modified_newton: bool = True
+    newton_tol: float = 1e-8
+    newton_max_iter: int = 12
 
 
 def _rot_z(angle: float) -> np.ndarray:
@@ -391,6 +397,8 @@ def build_system(
     return {
         "SC": SC,
         "mbs": mbs,
+        "cms_first": cms_first,
+        "cms_second": cms_second,
         "obj_first": obj_first,
         "obj_second": obj_second,
         "tip_sensor": tip_sensor,
@@ -401,6 +409,10 @@ def build_system(
         "rot2": rot2,
         "pos_first": pos_first,
         "pos_second": pos_second,
+        "vel_first": vel_first,
+        "vel_second": vel_second,
+        "omega1_vec": omega1_vec,
+        "omega2_vec": omega2_vec,
         "sensor_numbers_beam1": sensors_first,
         "sensor_numbers_beam2": sensors_second,
     }
@@ -497,6 +509,91 @@ def _export_matlab_data(
     exu.Print(f"Saved MATLAB simulation data to {export_path}")
 
 
+def export_cms_data(
+    model: Dict[str, object],
+    params: FlexibleLinkParameters,
+    init: InitialState,
+    sim: SimulationSettings,
+    export_dir: Path,
+) -> None:
+    """Persist Craig–Bampton data and metadata for both flexible links."""
+
+    export_path = Path(export_dir)
+    export_path.mkdir(parents=True, exist_ok=True)
+
+    def _store_beam(prefix: str, beam: Dict[str, object]) -> None:
+        beam_dict: Dict[str, np.ndarray] = {
+            "nodes": np.asarray(beam["nodes"], dtype=float),
+            "nodes_root": np.asarray(beam["nodes_root"], dtype=int),
+            "nodes_tip": np.asarray(beam["nodes_tip"], dtype=int),
+            "weights_root": np.asarray(beam["weights_root"], dtype=float),
+            "weights_tip": np.asarray(beam["weights_tip"], dtype=float),
+            "root_mean": np.asarray(beam["root_mean"], dtype=float),
+            "tip_mean": np.asarray(beam["tip_mean"], dtype=float),
+            "surface_trigs": np.asarray(beam["surface_trigs"], dtype=int),
+        }
+
+        for elem_type, elem_array in beam["elements"].items():
+            beam_dict[f"elements_{elem_type}"] = np.asarray(elem_array, dtype=int)
+
+        np.savez(export_path / f"{prefix}_beam.npz", **beam_dict)
+
+    def _store_cms(prefix: str, cms: ObjectFFRFreducedOrderInterface) -> None:
+        cms_dict = cms.GetDictionary()
+        keys_to_store = {
+            "modeBasis",
+            "massMatrixReduced",
+            "stiffnessMatrixReduced",
+            "chiU",
+            "chiUtilde",
+            "mPsiTildePsi",
+            "mPsiTildePsiTilde",
+            "mPhitTPsi",
+            "mPhitTPsiTilde",
+            "mXRefTildePsi",
+            "mXRefTildePsiTilde",
+            "xRef",
+            "inertiaLocal",
+            "Mtt",
+            "totalMass",
+            "infoList",
+        }
+
+        processed: Dict[str, np.ndarray] = {}
+        for key in keys_to_store:
+            value = cms_dict[key]
+            if isinstance(value, np.ndarray):
+                processed[key] = value
+            elif isinstance(value, list):
+                processed[key] = np.asarray(value)
+            else:
+                processed[key] = np.asarray(value)
+
+        np.savez(export_path / f"{prefix}_cms.npz", **processed)
+
+    _store_beam("link1", model["beam_first"])
+    _store_beam("link2", model["beam_second"])
+    _store_cms("link1", model["cms_first"])
+    _store_cms("link2", model["cms_second"])
+
+    metadata = {
+        "params": asdict(params),
+        "initial_state": asdict(init),
+        "simulation": asdict(sim),
+        "hinge_pos": np.asarray(model["hinge_pos"], dtype=float).tolist(),
+        "pos_first": np.asarray(model["pos_first"], dtype=float).tolist(),
+        "pos_second": np.asarray(model["pos_second"], dtype=float).tolist(),
+        "vel_first": np.asarray(model["vel_first"], dtype=float).tolist(),
+        "vel_second": np.asarray(model["vel_second"], dtype=float).tolist(),
+        "omega1_vec": np.asarray(model["omega1_vec"], dtype=float).tolist(),
+        "omega2_vec": np.asarray(model["omega2_vec"], dtype=float).tolist(),
+        "rot1": np.asarray(model["rot1"], dtype=float).tolist(),
+        "rot2": np.asarray(model["rot2"], dtype=float).tolist(),
+    }
+
+    metadata_path = export_path / "metadata.json"
+    metadata_path.write_text(json.dumps(metadata, indent=2))
+
 def run_simulation(
     params: FlexibleLinkParameters = FlexibleLinkParameters(),
     init: InitialState = InitialState(),
@@ -512,9 +609,12 @@ def run_simulation(
     settings.timeIntegration.endTime = sim.end_time
     settings.timeIntegration.numberOfSteps = int(sim.end_time / sim.step_size)
     settings.timeIntegration.verboseMode = 1
-    settings.timeIntegration.newton.useModifiedNewton = True
-    settings.timeIntegration.generalizedAlpha.spectralRadius = 0.85
-    settings.timeIntegration.adaptiveStep = True
+    settings.timeIntegration.newton.useModifiedNewton = sim.modified_newton
+    settings.timeIntegration.newton.relativeTolerance = sim.newton_tol
+    settings.timeIntegration.newton.absoluteTolerance = sim.newton_tol
+    settings.timeIntegration.newton.maxIterations = sim.newton_max_iter
+    settings.timeIntegration.generalizedAlpha.spectralRadius = sim.spectral_radius
+    settings.timeIntegration.adaptiveStep = sim.adaptive_step
     settings.solutionSettings.writeSolutionToFile = False
     if sim.store_trajectory:
         settings.solutionSettings.sensorsWritePeriod = 1.0 / sim.frames_per_second
@@ -549,6 +649,18 @@ def run_simulation(
 
     if sim.matlab_export is not None:
         _export_matlab_data(model, params, sim, mbs, Path(sim.matlab_export))
+
+
+def export_flexible_pendulum_dataset(
+    export_dir: Path,
+    params: FlexibleLinkParameters = FlexibleLinkParameters(),
+    init: InitialState = InitialState(),
+    sim: SimulationSettings = SimulationSettings(store_trajectory=False, matlab_export=None),
+) -> None:
+    """Build the flexible double pendulum and dump Craig–Bampton data for external use."""
+
+    model = build_system(params, init, sim)
+    export_cms_data(model, params, init, sim, export_dir)
 
 
 if __name__ == "__main__":
