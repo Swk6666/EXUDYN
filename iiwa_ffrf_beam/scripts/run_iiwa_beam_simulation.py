@@ -133,11 +133,26 @@ def build_robot(mbs: exu.MainSystem, sim_cfg: Dict) -> Dict:
     for idx, link in enumerate(robot_data["linkList"]):
         link_numbers[link["name"]] = idx
 
+    number_of_joints = robot_data["numberOfJoints"]
+    p_control = np.concatenate([
+        np.array([8e4, 6e4, 6e4, 2e4, 2e4, 1e4, 1e4]),
+        5e3 * np.ones(max(0, number_of_joints - 7))
+    ])
+    d_control = np.concatenate([
+        np.array([4e3, 3e3, 3e3, 1.2e3, 1.2e3, 600.0, 600.0]),
+        300.0 * np.ones(max(0, number_of_joints - 7))
+    ])
+
     for link_data in robot_data["linkList"]:
         vis = link_data.get("graphicsDataList", [])
         link_vis = VRobotLink(graphicsData=vis, showMBSjoint=False)
         parent_name = link_data.get("parentName", "None")
         parent_index = link_numbers.get(parent_name, -1)
+        joint_number = link_data.get("jointNumber", None)
+        if joint_number is not None and joint_number < len(p_control):
+            pd_pair = (float(p_control[joint_number]), float(d_control[joint_number]))
+        else:
+            pd_pair = (0.0, 0.0)
         mbs_robot.AddLink(RobotLink(
             mass=link_data["mass"],
             parent=parent_index,
@@ -145,7 +160,7 @@ def build_robot(mbs: exu.MainSystem, sim_cfg: Dict) -> Dict:
             inertia=link_data["inertiaCOM"],
             preHT=link_data["preHT"],
             jointType=link_data["jointType"],
-            PDcontrol=(0.0, 0.0),
+            PDcontrol=pd_pair,
             visualization=link_vis
         ))
 
@@ -296,6 +311,10 @@ def configure_simulation_settings(sim_cfg: Dict) -> exu.SimulationSettings:
     sim_settings.solutionSettings.sensorsWritePeriod = sim_cfg["simulation"].get("sensor_write_period", 0.01)
     solver_type = sim_cfg["simulation"].get("solver_type", "GeneralizedAlpha")
     sim_settings.timeIntegration.generalizedAlpha.computeInitialAccelerations = True
+    sim_settings.timeIntegration.generalizedAlpha.spectralRadius = 0.9
+    sim_settings.timeIntegration.newton.useModifiedNewton = True
+    sim_settings.timeIntegration.newton.maxIterations = 15
+    sim_settings.timeIntegration.newton.relativeTolerance = 1e-6
     sim_settings.timeIntegration.verboseMode = 1
     return sim_settings
 
@@ -337,6 +356,16 @@ def main() -> None:
 
     mbs.SetPreStepUserFunction(prestep_callback)
 
+    static_settings = exu.SimulationSettings()
+    static_settings.staticSolver.newton.useModifiedNewton = True
+    static_settings.staticSolver.newton.relativeTolerance = 1e-6
+    static_settings.staticSolver.newton.maxIterations = 20
+    static_settings.staticSolver.verboseMode = 0
+    try:
+        mbs.SolveStatic(static_settings)
+    except Exception as exc:
+        exu.Print(f"WARNING: static solve failed: {exc}")
+
     sc.visualizationSettings.general.drawWorldBasis = True
     sc.visualizationSettings.window.renderWindowSize = [1600, 900]
     configure_visualization(sc, sim_cfg)
@@ -348,7 +377,8 @@ def main() -> None:
     gui_available = getattr(exu, 'GUIavailable', lambda: False)()
     if gui_available:
         sc.renderer.Start()
-        sc.renderer.SetZoom3D(1.0)
+        if hasattr(sc.renderer, 'ZoomAll'):
+            sc.renderer.ZoomAll()
 
     solver_name = sim_cfg["simulation"].get("solver_type", "GeneralizedAlpha")
     solver_enum = getattr(exu.DynamicSolverType, solver_name, exu.DynamicSolverType.TrapezoidalIndex2)
