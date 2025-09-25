@@ -67,13 +67,13 @@ class InitialState:
 
 @dataclass
 class SimulationSettings:
-    end_time: float = 20.0
+    end_time: float = 10.0
     step_size: float = 1e-3
     render: bool = False
     frames_per_second: int = 60
     store_trajectory: bool = True
     matlab_export: Optional[Path] = Path("output/flexible_pendulum_sim.mat")
-    adaptive_step: bool = True
+    adaptive_step: bool = False
     spectral_radius: float = 0.85
     modified_newton: bool = True
     newton_tol: float = 1e-8
