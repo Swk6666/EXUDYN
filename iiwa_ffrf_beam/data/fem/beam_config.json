@@ -1,0 +1,32 @@
+{
+  "fem_cache_basename": "data/fem/iiwa_beam",
+  "generate_with_ngsolve": false,
+  "mesh_order": 2,
+  "material": {
+    "youngs_modulus": 2.1e11,
+    "poissons_ratio": 0.3,
+    "density": 7800
+  },
+  "geometry": {
+    "type": "box",
+    "length": 0.6,
+    "width": 0.05,
+    "height": 0.05,
+    "mesh_size": 0.05
+  },
+  "interfaces": [
+    {
+      "name": "base",
+      "selection_type": "plane",
+      "point": [0.0, 0.0, 0.0],
+      "normal": [1.0, 0.0, 0.0],
+      "tolerance": 1e-4,
+      "weighting": "uniform"
+    }
+  ],
+  "n_eigen_modes": 12,
+  "use_sparse_solver": true,
+  "hcb_mode": "RBE2",
+  "stiffness_proportional_damping": 0.01,
+  "compute_stress_modes": false
+}

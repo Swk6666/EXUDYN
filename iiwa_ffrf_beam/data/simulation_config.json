@@ -1,0 +1,38 @@
+{
+  "beam_config_path": "data/fem/beam_config.json",
+  "fem_cache_suffix": "_cms",
+  "trajectory_csv": "data/trajectories/joint_trajectory.csv",
+  "trajectory_hold_final": true,
+  "urdf": {
+    "file": "iiwa_description/urdf/iiwa14.urdf",
+    "base_path": "iiwa_description",
+    "gravity": [0.0, 0.0, -9.81]
+  },
+  "attachment": {
+    "link_index": 6,
+    "beam_interface": "base",
+    "robot_marker_local_position": [0.0, 0.0, 0.0],
+    "beam_marker_offset": [0.0, 0.0, 0.0],
+    "rotation_marker0": [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0],
+      [0.0, 0.0, 1.0]
+    ],
+    "rotation_marker1": [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0],
+      [0.0, 0.0, 1.0]
+    ]
+  },
+  "simulation": {
+    "end_time": 2.0,
+    "step_size": 0.001,
+    "solution_write_period": 0.01,
+    "sensor_write_period": 0.01,
+    "solver_type": "GeneralizedAlpha"
+  },
+  "visualization": {
+    "show_beam_contour": true,
+    "contour_variable": "DisplacementLocal"
+  }
+}
